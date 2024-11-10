@@ -4,7 +4,6 @@ import { Button } from ".";
 // import { Button, ButtonVariants } from '../dist/index';
 
 // import Center from '../../lib/center/Center';
-import { BeakerIcon } from "@heroicons/react/24/outline";
 
 const meta: Meta<typeof Button> = {
   component: Button,
