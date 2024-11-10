@@ -6,6 +6,7 @@ import {
   Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { UserButton } from "@clerk/nextjs";
 
 export const Nav = () => {
   const mainNavItems = [
@@ -32,6 +33,7 @@ export const Nav = () => {
               {item.label}
             </Link>
           ))}
+          <UserButton />
         </div>
       </div>
     </nav>
