@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import { StoryFn } from "@storybook/react";
 
 import { Button } from ".";
 // import { Button, ButtonVariants } from '../dist/index';
@@ -8,7 +9,7 @@ import { Button } from ".";
 const meta: Meta<typeof Button> = {
   component: Button,
   decorators: [
-    (Story: any) => (
+    (Story: StoryFn) => (
       // <Center>
       <Story />
       // </Center>
