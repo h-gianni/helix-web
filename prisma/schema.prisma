@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  clerkId   String?   @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  teams     Team[]    // Teams owned by the user
+  members   Member[]  // Teams where user is a member
+}
+
+model Team {
+  id          String       @id @default(cuid())
+  name        String
+  description String?      // Add this line
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  ownerId     String
+  owner       User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  members     Member[]
+  initiatives Initiative[]
+  selectedInitiatives TeamInitiative[]
+}
+
+model Member {
+  id        String      @id @default(cuid())
+  userId    String
+  teamId    String
+  title     String?
+  firstName String?
+  lastName  String?
+  isAdmin   Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team      Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  goals     Goal[]
+  scores    Score[]     // Add this relation
+  reports   Report[]    // Add this relation
+
+  @@unique([userId, teamId])
+}
+
+model Initiative {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  teamId      String?   // Make teamId optional
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  team        Team?     @relation(fields: [teamId], references: [id], onDelete: Cascade) // Make team relation optional
+  teams TeamInitiative[]
+  scores      Score[]
+}
+
+model TeamInitiative {
+  id          String     @id @default(cuid())
+  teamId      String
+  initiativeId String
+  createdAt   DateTime   @default(now())
+  team        Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  initiative  Initiative @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, initiativeId])
+}
+
+model Score {
+  id           String     @id @default(cuid())
+  value        Int
+  feedback     String?
+  memberId     String
+  initiativeId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  member       Member     @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  initiative   Initiative @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
+}
+
+model Goal {
+  id          String    @id @default(cuid())
+  memberId    String
+  description String
+  year        Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  member      Member    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id        String    @id @default(cuid())
+  content   String
+  memberId  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  member    Member    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+}

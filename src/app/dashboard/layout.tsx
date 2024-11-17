@@ -1,18 +1,21 @@
 import React from "react";
 import Nav from "./_component/NavBar";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>
-      <div className=" grid grid-cols-12">
-        <div className=" col-span-3">
-          <Nav />
-        </div>
-        <div className="col-span-9 bg-red-400 min-h-screen w-full">
-          {children}
+    <ClerkProvider>
+      <div>
+        <div className="grid grid-cols-12">
+          <div className="col-span-3">
+            <Nav />
+          </div>
+          <div className="col-span-9 min-h-screen">
+            {children}
+          </div>
         </div>
       </div>
-    </div>
+    </ClerkProvider>
   );
 };
 

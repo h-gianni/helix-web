@@ -1,0 +1,221 @@
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
+import type { ApiResponse, TeamMemberResponse, AddTeamMemberInput } from "@/lib/types/api";
+
+// Helper to check if user is team admin
+async function isTeamAdmin(teamId: string, userId: string) {
+  const member = await prisma.member.findFirst({
+    where: {
+      teamId,
+      userId,
+      isAdmin: true,
+    },
+  });
+  return !!member;
+}
+
+// Helper to check if user is team owner
+async function isTeamOwner(clerkId: string, teamId: string) {
+  const user = await prisma.user.findUnique({
+    where: { clerkId },
+  });
+
+  if (!user) return false;
+
+  const team = await prisma.team.findFirst({
+    where: {
+      id: teamId,
+      ownerId: user.id,
+    },
+  });
+
+  return !!team;
+}
+
+// Helper to get or create user by email
+async function getOrCreateUser(email: string) {
+  let user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        email,
+        clerkId: null, // This user doesn't have a Clerk account yet
+      },
+    });
+  }
+
+  return user;
+}
+
+// GET /api/teams/[teamId]/members - List team members
+export async function GET(
+  req: Request,
+  { params }: { params: { teamId: string } }
+) {
+  try {
+    const { userId } = await auth();
+    
+    if (!userId) {
+      return NextResponse.json<ApiResponse<never>>({
+        success: false,
+        error: "Unauthorized",
+      }, { status: 401 });
+    }
+
+    // Check if user is owner first
+    const isOwner = await isTeamOwner(userId, params.teamId);
+    
+    // If not owner, check if they're a team member
+    if (!isOwner) {
+      const user = await prisma.user.findUnique({
+        where: { clerkId: userId },
+      });
+
+      if (!user) {
+        return NextResponse.json<ApiResponse<never>>({
+          success: false,
+          error: "User not found",
+        }, { status: 404 });
+      }
+
+      const membership = await prisma.member.findFirst({
+        where: {
+          teamId: params.teamId,
+          userId: user.id,
+        },
+      });
+
+      if (!membership) {
+        return NextResponse.json<ApiResponse<never>>({
+          success: false,
+          error: "Access denied",
+        }, { status: 403 });
+      }
+    }
+
+    // Get all team members
+    const members = await prisma.member.findMany({
+      where: {
+        teamId: params.teamId,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+
+    return NextResponse.json<ApiResponse<TeamMemberResponse[]>>({
+      success: true,
+      data: members as TeamMemberResponse[],
+    });
+
+  } catch (error) {
+    console.error("Error fetching team members:", error);
+    return NextResponse.json<ApiResponse<never>>({
+      success: false,
+      error: "Internal server error",
+    }, { status: 500 });
+  }
+}
+
+// POST /api/teams/[teamId]/members - Add new member
+export async function POST(
+  req: Request,
+  { params }: { params: { teamId: string } }
+) {
+  try {
+    const { userId } = await auth();
+    
+    if (!userId) {
+      return NextResponse.json<ApiResponse<never>>({
+        success: false,
+        error: "Unauthorized",
+      }, { status: 401 });
+    }
+
+    // Check if user is owner first
+    const isOwner = await isTeamOwner(userId, params.teamId);
+    
+    // If not owner, check if they're an admin
+    if (!isOwner) {
+      const isAdmin = await isTeamAdmin(params.teamId, userId);
+      if (!isAdmin) {
+        return NextResponse.json<ApiResponse<never>>({
+          success: false,
+          error: "Only team owners or admins can add members",
+        }, { status: 403 });
+      }
+    }
+
+    const body = await req.json();
+    const { email, title, isAdmin = false } = body as AddTeamMemberInput;
+
+    if (!email?.trim()) {
+      return NextResponse.json<ApiResponse<never>>({
+        success: false,
+        error: "Email is required",
+      }, { status: 400 });
+    }
+
+    // Get or create user
+    const userToAdd = await getOrCreateUser(email.trim());
+
+    // Check if user is already a member
+    const existingMember = await prisma.member.findFirst({
+      where: {
+        teamId: params.teamId,
+        userId: userToAdd.id,
+      },
+    });
+
+    if (existingMember) {
+      return NextResponse.json<ApiResponse<never>>({
+        success: false,
+        error: "User is already a team member",
+      }, { status: 400 });
+    }
+
+    // Add member
+    const member = await prisma.member.create({
+      data: {
+        teamId: params.teamId,
+        userId: userToAdd.id,
+        title: title?.trim() || null,
+        isAdmin,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json<ApiResponse<TeamMemberResponse>>({
+      success: true,
+      data: member as TeamMemberResponse,
+    }, { status: 201 });
+
+  } catch (error) {
+    console.error("Error adding team member:", error);
+    return NextResponse.json<ApiResponse<never>>({
+      success: false,
+      error: "Internal server error",
+    }, { status: 500 });
+  }
+}

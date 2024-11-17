@@ -1,26 +1,22 @@
 import React from "react";
-
 import {
   ChatBubbleLeftEllipsisIcon,
   UserGroupIcon,
   Cog6ToothIcon,
+  UsersIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 
 export const Nav = () => {
   const mainNavItems = [
-    {
-      to: "/add-feedback",
-      icon: ChatBubbleLeftEllipsisIcon,
-      label: "Add Feedback",
-    },
-    { to: "/team", icon: UserGroupIcon, label: "Team" },
-    { to: "/settings", icon: Cog6ToothIcon, label: "Settings" },
+    { to: "/dashboard/", icon: ChatBubbleLeftEllipsisIcon, label: "Dashboard" },
+    { to: "/dashboard/teams", icon: UsersIcon, label: "Teams" },
+    { to: "/dashboard/settings", icon: Cog6ToothIcon, label: "Settings" },
   ];
 
   return (
-    <nav className="nav ">
+    <nav className="nav">
       <div className="nav-logo">
         <span className="nav-logo-icon"></span>
         <span className="nav-logo-text">UpScore</span>
@@ -33,8 +29,10 @@ export const Nav = () => {
               {item.label}
             </Link>
           ))}
-          <UserButton />
         </div>
+      </div>
+      <div className="mt-auto p-4">
+        <UserButton afterSignOutUrl="/" />
       </div>
     </nav>
   );
