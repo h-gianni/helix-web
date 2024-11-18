@@ -1,6 +1,11 @@
 // app/dashboard/teams/_teamCreateModal.tsx
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
@@ -14,31 +19,33 @@ interface TeamCreateModalProps {
 export default function TeamCreateModal({
   isOpen,
   onClose,
-  onCreateTeam
+  onCreateTeam,
 }: TeamCreateModalProps) {
-  const [teamName, setTeamName] = useState('');
+  const [teamName, setTeamName] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Reset form
   const resetForm = () => {
-    setTeamName('');
+    setTeamName("");
     setError(null);
   };
 
   // Handle submit
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log("create modal");
+
     e.preventDefault();
-    
+
     try {
       setSaving(true);
       setError(null);
-      
+
       await onCreateTeam(teamName.trim());
       resetForm();
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setSaving(false);
     }
@@ -84,11 +91,8 @@ export default function TeamCreateModal({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={saving || !teamName.trim()}
-            >
-              {saving ? 'Creating...' : 'Create Team'}
+            <Button type="submit" disabled={saving || !teamName.trim()}>
+              {saving ? "Creating..." : "Create Team"}
             </Button>
           </div>
         </form>

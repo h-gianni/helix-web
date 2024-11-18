@@ -33,24 +33,31 @@ interface Initiative {
 }
 
 export const POST = async (request: Request) => {
+  const { userId } = await auth();
+  console.log("api teams", userId);
+
   try {
-    const { userId } = await auth();
-    
     if (!userId) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Unauthorized",
-      }, { status: 401 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
     const body = await request.json();
     const { name } = body;
 
     if (!name?.trim()) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Team name is required",
-      }, { status: 400 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Team name is required",
+        },
+        { status: 400 }
+      );
     }
 
     // Get user from Clerk ID
@@ -59,13 +66,16 @@ export const POST = async (request: Request) => {
     });
 
     if (!user) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "User not found",
-      }, { status: 404 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "User not found",
+        },
+        { status: 404 }
+      );
     }
 
-    console.log('Creating team for user:', user.id);
+    console.log("Creating team for user:", user.id);
 
     // Get all available initiatives
     const initiatives = await prisma.initiative.findMany();
@@ -93,57 +103,69 @@ export const POST = async (request: Request) => {
       return newTeam;
     });
 
-    console.log('Team created:', team);
+    console.log("Team created:", team);
 
-    return NextResponse.json<ApiResponse<TeamResponse>>({
-      success: true,
-      data: team as TeamResponse,
-    }, { status: 201 });
-
+    return NextResponse.json<ApiResponse<TeamResponse>>(
+      {
+        success: true,
+        data: team as TeamResponse,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error creating team:", error);
-    return NextResponse.json<ApiResponse<never>>({
-      success: false,
-      error: "Internal server error",
-    }, { status: 500 });
+    return NextResponse.json<ApiResponse<never>>(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 };
 
 export const GET = async (request: Request) => {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Unauthorized",
-      }, { status: 401 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
-    const user = await prisma.user.findUnique({
+    const user = (await prisma.user.findUnique({
       where: { clerkId: userId },
       include: {
-        teams: true,     // Teams owned by user
-        members: {       // Teams where user is a member
+        teams: true, // Teams owned by user
+        members: {
+          // Teams where user is a member
           include: {
             team: true,
           },
         },
       },
-    }) as UserWithTeams | null;
+    })) as UserWithTeams | null;
 
     if (!user) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "User not found",
-      }, { status: 404 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "User not found",
+        },
+        { status: 404 }
+      );
     }
 
     // Create a Map to store unique teams by ID
     const teamsMap = new Map(
       [
         ...user.teams,
-        ...user.members.map((member: TeamMember) => member.team)
+        ...user.members.map((member: TeamMember) => member.team),
       ].map((team: Team) => [team.id, team])
     );
 
@@ -154,12 +176,14 @@ export const GET = async (request: Request) => {
       success: true,
       data: teams as TeamResponse[],
     });
-
   } catch (error) {
     console.error("Error fetching teams:", error);
-    return NextResponse.json<ApiResponse<never>>({
-      success: false,
-      error: "Internal server error",
-    }, { status: 500 });
+    return NextResponse.json<ApiResponse<never>>(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 };
