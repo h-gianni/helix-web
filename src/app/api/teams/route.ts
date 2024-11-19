@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import type { PrismaClient } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import type { ApiResponse, TeamResponse } from "@/lib/types/api";
 
 interface UserWithTeams {
@@ -34,7 +34,6 @@ interface Initiative {
 
 export const POST = async (request: Request) => {
   const { userId } = await auth();
-  console.log("api teams", userId);
 
   try {
     if (!userId) {
@@ -81,27 +80,29 @@ export const POST = async (request: Request) => {
     const initiatives = await prisma.initiative.findMany();
 
     // Create team and associate all initiatives in a transaction
-    const team = await prisma.$transaction(async (tx: PrismaClient) => {
-      // Create the team
-      const newTeam = await tx.team.create({
-        data: {
-          name: name.trim(),
-          ownerId: user.id,
-        },
-      });
-
-      // Associate all initiatives with the team
-      if (initiatives.length > 0) {
-        await tx.teamInitiative.createMany({
-          data: initiatives.map((initiative: Initiative) => ({
-            teamId: newTeam.id,
-            initiativeId: initiative.id,
-          })),
+    const team = await prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        // Create the team
+        const newTeam = await tx.team.create({
+          data: {
+            name: name.trim(),
+            ownerId: user.id,
+          },
         });
-      }
 
-      return newTeam;
-    });
+        // Associate all initiatives with the team
+        if (initiatives.length > 0) {
+          await tx.teamInitiative.createMany({
+            data: initiatives.map((initiative: Initiative) => ({
+              teamId: newTeam.id,
+              initiativeId: initiative.id,
+            })),
+          });
+        }
+
+        return newTeam;
+      }
+    );
 
     console.log("Team created:", team);
 
@@ -127,6 +128,8 @@ export const POST = async (request: Request) => {
 export const GET = async (request: Request) => {
   try {
     const { userId } = await auth();
+
+    //const token = await auth().se;
 
     if (!userId) {
       return NextResponse.json<ApiResponse<never>>(
