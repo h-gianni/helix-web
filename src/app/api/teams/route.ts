@@ -59,10 +59,14 @@ export const POST = async (request: Request) => {
       );
     }
 
+    console.log("Creating team for user:", userId);
+
     // Get user from Clerk ID
     const user = await prisma.user.findUnique({
       where: { clerkId: userId },
     });
+
+    console.log("User ID:", user);
 
     if (!user) {
       return NextResponse.json<ApiResponse<never>>(
