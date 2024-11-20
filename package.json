@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@clerk/clerk-sdk-node": "^5.0.65",
-    "@clerk/nextjs": "^6.3.1",
+    "@clerk/nextjs": "^6.4.0",
     "@heroicons/react": "^2.1.5",
     "@prisma/client": "^5.22.0",
     "@radix-ui/react-alert-dialog": "^1.1.2",
@@ -33,6 +33,7 @@
     "prisma": "^5.22.0",
     "react": "^18",
     "react-dom": "^18",
+    "svix": "^1.40.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^1.1.1"
