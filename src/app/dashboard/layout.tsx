@@ -5,7 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <ClerkProvider>
-      <div>
+      <div className="test">
         <div className="grid grid-cols-12">
           <div className="col-span-3">
             <Nav />
