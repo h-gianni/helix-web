@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import type { ApiResponse, TeamDetailsResponse, TeamResponse } from "@/lib/types/api";
-import { PrismaClient } from "@prisma/client";
+import type {
+  ApiResponse,
+  TeamDetailsResponse,
+  TeamResponse,
+  TransactionClient,
+} from "@/lib/types/api";
 
 // Helper to check if user is team owner
 async function isTeamOwner(clerkId: string, teamId: string) {
@@ -58,21 +62,27 @@ export const GET = async (
 ) => {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Unauthorized",
-      }, { status: 401 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
     // Check if user is owner or has team access
     const hasAccess = await checkTeamAccess(params.teamId, userId);
     if (!hasAccess) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Access denied",
-      }, { status: 403 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Access denied",
+        },
+        { status: 403 }
+      );
     }
 
     const team = await prisma.team.findUnique({
@@ -89,27 +99,80 @@ export const GET = async (
             },
           },
         },
+        initiatives: {
+          include: {
+            team: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
       },
     });
 
     if (!team) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Team not found",
-      }, { status: 404 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Team not found",
+        },
+        { status: 404 }
+      );
     }
+
+    // Transform the data to match TeamDetailsResponse type
+    const transformedTeam: TeamDetailsResponse = {
+      id: team.id,
+      name: team.name,
+      description: team.description,
+      ownerId: team.ownerId, // Add ownerId field
+      createdAt: team.createdAt,
+      updatedAt: team.updatedAt,
+      members: team.members.map((member) => ({
+        id: member.id,
+        userId: member.userId,
+        teamId: member.teamId,
+        title: member.title,
+        isAdmin: member.isAdmin,
+        firstName: member.firstName,
+        lastName: member.lastName,
+        createdAt: member.createdAt,
+        updatedAt: member.updatedAt,
+        user: {
+          id: member.user.id,
+          email: member.user.email,
+          name: member.user.name,
+        },
+      })),
+      initiatives: team.initiatives.map((initiative) => ({
+        id: initiative.id,
+        name: initiative.name,
+        description: initiative.description,
+        teamId: initiative.teamId,
+        createdAt: initiative.createdAt,
+        updatedAt: initiative.updatedAt,
+        team: initiative.team,
+      })),
+    };
 
     return NextResponse.json<ApiResponse<TeamDetailsResponse>>({
       success: true,
-      data: team as TeamDetailsResponse,
+      data: transformedTeam,
     });
-
   } catch (error) {
     console.error("Error fetching team details:", error);
-    return NextResponse.json<ApiResponse<never>>({
-      success: false,
-      error: "Internal server error",
-    }, { status: 500 });
+    return NextResponse.json<ApiResponse<never>>(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -163,25 +226,31 @@ export const DELETE = async (
 ) => {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Unauthorized",
-      }, { status: 401 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
     // Check if user is the team owner
     const isOwner = await isTeamOwner(userId, params.teamId);
     if (!isOwner) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Only team owners can delete teams",
-      }, { status: 403 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Only team owners can delete teams",
+        },
+        { status: 403 }
+      );
     }
 
     // Delete all related records in a transaction
-    await prisma.$transaction(async (tx: PrismaClient) => {
+    await prisma.$transaction(async (tx: TransactionClient) => {
       // Delete all scores for this team's members
       await tx.score.deleteMany({
         where: {
@@ -235,12 +304,14 @@ export const DELETE = async (
       success: true,
       data: undefined,
     });
-
   } catch (error) {
     console.error("Error deleting team:", error);
-    return NextResponse.json<ApiResponse<never>>({
-      success: false,
-      error: "Internal server error",
-    }, { status: 500 });
+    return NextResponse.json<ApiResponse<never>>(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 };

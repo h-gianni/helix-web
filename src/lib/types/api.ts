@@ -18,6 +18,7 @@ export type TeamResponse = {
   name: string;
   description?: string | null;
   createdAt: Date;
+
   updatedAt: Date;
   ownerId: string;
 };
