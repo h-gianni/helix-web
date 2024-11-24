@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
+
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import {
