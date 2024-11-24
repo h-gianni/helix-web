@@ -1,14 +1,16 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/Table";
-import { Users, Target, Star, MessageSquare, ArrowUp, ArrowDown } from "lucide-react";
-import TeamCreateModal from '../dashboard/teams/_teamCreateModal';
-import PerformanceRatingModal from './_component/_performanceRatingModal';
-import { PerformersByCategory, performanceCategories } from './_component/_performersByCategory';
+import { Users, Target, Star, MessageSquare } from "lucide-react";
+import TeamCreateModal from "../dashboard/teams/_teamCreateModal";
+import PerformanceRatingModal from "./_component/_performanceRatingModal";
+import {
+  PerformersByCategory,
+  performanceCategories,
+} from "./_component/_performersByCategory";
 import type { TeamResponse } from "@/lib/types/api";
 
 interface Performer {
@@ -36,9 +38,9 @@ export default function DashboardPage() {
   const fetchTeams = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/teams');
+      const response = await fetch("/api/teams");
       const data = await response.json();
-      
+
       if (data.success) {
         setTeams(data.data);
         if (data.data.length > 0) {
@@ -46,7 +48,7 @@ export default function DashboardPage() {
         }
       }
     } catch (error) {
-      console.error('Error fetching teams:', error);
+      console.error("Error fetching teams:", error);
     } finally {
       setLoading(false);
     }
@@ -54,35 +56,35 @@ export default function DashboardPage() {
 
   const fetchPerformers = async () => {
     try {
-      const response = await fetch('/api/dashboard/performers');
+      const response = await fetch("/api/dashboard/performers");
       const data = await response.json();
-      
+
       if (data.success) {
         setPerformers(data.data.performers);
       }
     } catch (error) {
-      console.error('Error fetching performers:', error);
+      console.error("Error fetching performers:", error);
     }
   };
 
   const handleCreateTeam = async (name: string) => {
     try {
-      const response = await fetch('/api/teams', {
-        method: 'POST',
+      const response = await fetch("/api/teams", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ name }),
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         setIsCreateModalOpen(false);
-        router.push('/dashboard/teams');
+        router.push("/dashboard/teams");
       }
     } catch (error) {
-      console.error('Error creating team:', error);
+      console.error("Error creating team:", error);
     }
   };
 
@@ -94,27 +96,30 @@ export default function DashboardPage() {
     feedback?: string;
   }) => {
     try {
-      const response = await fetch(`/api/teams/${data.teamId}/members/${data.memberId}/ratings`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          initiativeId: data.initiativeId,
-          rating: data.rating,
-          feedback: data.feedback,
-        }),
-      });
-  
+      const response = await fetch(
+        `/api/teams/${data.teamId}/members/${data.memberId}/ratings`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            initiativeId: data.initiativeId,
+            rating: data.rating,
+            feedback: data.feedback,
+          }),
+        }
+      );
+
       if (!response.ok) {
-        throw new Error('Failed to save rating');
+        throw new Error("Failed to save rating");
       }
-  
+
       // Only fetch performers data
       await fetchPerformers();
       setIsRatingModalOpen(false);
     } catch (error) {
-      console.error('Error saving rating:', error);
+      console.error("Error saving rating:", error);
       throw error;
     }
   };
@@ -132,7 +137,7 @@ export default function DashboardPage() {
               Get started by following these steps:
             </p>
           </div>
-          
+
           <div className="grid gap-6 max-w-[800px] mx-auto">
             <div className="grid gap-6 md:grid-cols-2">
               <Card className="p-4">
@@ -142,7 +147,9 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold">1. Create a Team</h3>
-                    <p className="text-sm text-gray-500">Start by creating your first team and adding team members</p>
+                    <p className="text-sm text-gray-500">
+                      Start by creating your first team and adding team members
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -154,7 +161,9 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold">2. Configure Initiatives</h3>
-                    <p className="text-sm text-gray-500">Set up performance initiatives for your team</p>
+                    <p className="text-sm text-gray-500">
+                      Set up performance initiatives for your team
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -166,7 +175,9 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold">3. Rate Performance</h3>
-                    <p className="text-sm text-gray-500">Add ratings and track member performance on initiatives</p>
+                    <p className="text-sm text-gray-500">
+                      Add ratings and track member performance on initiatives
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -178,7 +189,9 @@ export default function DashboardPage() {
                   </div>
                   <div>
                     <h3 className="font-semibold">4. Provide Feedback</h3>
-                    <p className="text-sm text-gray-500">Give detailed feedback to help members improve</p>
+                    <p className="text-sm text-gray-500">
+                      Give detailed feedback to help members improve
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -197,8 +210,8 @@ export default function DashboardPage() {
   );
 
   const TeamsContent = () => {
-    const [isLoadingPerformers, setIsLoadingPerformers] = useState(true);
-  
+    const [isLoadingPerformers] = useState(true);
+
     return (
       <div className="space-y-6">
         {/* Action Buttons */}
@@ -206,20 +219,17 @@ export default function DashboardPage() {
           <Button
             size="lg"
             variant="outline"
-            onClick={() => router.push('/dashboard/feedback')}
+            onClick={() => router.push("/dashboard/feedback")}
           >
             <MessageSquare className="w-4 h-4 mr-2" />
             Add Feedback on Member
           </Button>
-          <Button
-            size="lg"
-            onClick={() => setIsRatingModalOpen(true)}
-          >
+          <Button size="lg" onClick={() => setIsRatingModalOpen(true)}>
             <Star className="w-4 h-4 mr-2" />
             Rate Member Performance
           </Button>
         </div>
-  
+
         {/* Performance Categories */}
         <div>
           <div className="space-y-6">
@@ -244,7 +254,7 @@ export default function DashboardPage() {
   return (
     <div className="p-4">
       {teams.length === 0 ? <NoTeamsContent /> : <TeamsContent />}
-      
+
       <TeamCreateModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}

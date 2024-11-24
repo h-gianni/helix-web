@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { RotateCcw, Save } from "lucide-react";
 import type { InitiativeResponse, TeamResponse } from "@/lib/types/api";
+import { TeamInitiative } from "@/lib/types/intiative";
 
 interface TeamInitiativesConfigProps {
   team: TeamResponse;
@@ -16,7 +17,9 @@ export default function TeamInitiativesConfig({
   onUpdate,
 }: TeamInitiativesConfigProps) {
   const [initiatives, setInitiatives] = useState<InitiativeResponse[]>([]);
-  const [selectedInitiativeIds, setSelectedInitiativeIds] = useState<string[]>([]);
+  const [selectedInitiativeIds, setSelectedInitiativeIds] = useState<string[]>(
+    []
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,9 +43,9 @@ export default function TeamInitiativesConfig({
         const teamInitiativeData = await teamInitiativeRes.json();
         if (!teamInitiativeData.success)
           throw new Error(teamInitiativeData.error);
-        
+
         setSelectedInitiativeIds(
-          teamInitiativeData.data.map((ti: any) => ti.initiativeId)
+          teamInitiativeData.data.map((ti: TeamInitiative) => ti.initiativeId)
         );
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -85,15 +88,15 @@ export default function TeamInitiativesConfig({
   };
 
   const handleInitiativeToggle = (initiativeId: string) => {
-    setSelectedInitiativeIds(prev =>
+    setSelectedInitiativeIds((prev) =>
       prev.includes(initiativeId)
-        ? prev.filter(id => id !== initiativeId)
+        ? prev.filter((id) => id !== initiativeId)
         : [...prev, initiativeId]
     );
   };
 
   const handleSelectAll = () => {
-    setSelectedInitiativeIds(initiatives.map(initiative => initiative.id));
+    setSelectedInitiativeIds(initiatives.map((initiative) => initiative.id));
   };
 
   const handleUnselectAll = () => {
@@ -148,7 +151,8 @@ export default function TeamInitiativesConfig({
           </div>
         </div>
         <p className="text-sm text-gray-600 mb-4">
-          Select which initiatives will be used for performance ratings in this team.
+          Select which initiatives will be used for performance ratings in this
+          team.
         </p>
       </div>
 
@@ -183,7 +187,9 @@ export default function TeamInitiativesConfig({
 
       <div className="mt-4 pt-4 border-t">
         <button
-          onClick={() => window.location.href = "/dashboard/settings?tab=initiatives"}
+          onClick={() =>
+            (window.location.href = "/dashboard/settings?tab=initiatives")
+          }
           className="text-blue-600 hover:underline text-sm"
         >
           Manage initiatives

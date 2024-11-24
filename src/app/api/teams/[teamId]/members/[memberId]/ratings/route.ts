@@ -4,11 +4,11 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { ApiResponse, ScoreResponse } from "@/lib/types/api";
 
-async function getUserFromClerkId(clerkId: string) {
-  return await prisma.user.findUnique({
-    where: { clerkId },
-  });
-}
+// async function getUserFromClerkId(clerkId: string) {
+//   return await prisma.user.findUnique({
+//     where: { clerkId },
+//   });
+// }
 
 async function checkTeamAccess(teamId: string, userId: string) {
   const user = await prisma.user.findUnique({
@@ -37,22 +37,19 @@ async function checkTeamAccess(teamId: string, userId: string) {
 }
 
 async function validateInitiative(teamId: string, initiativeId: string) {
-  console.log('Validating initiative:', { teamId, initiativeId }); // Debug log
+  console.log("Validating initiative:", { teamId, initiativeId }); // Debug log
 
   const teamInitiative = await prisma.teamInitiative.findFirst({
     where: {
-      AND: [
-        { teamId: teamId },
-        { initiativeId: initiativeId }
-      ]
+      AND: [{ teamId: teamId }, { initiativeId: initiativeId }],
     },
     include: {
       initiative: true,
-      team: true
-    }
+      team: true,
+    },
   });
 
-  console.log('Found teamInitiative:', teamInitiative); // Debug log
+  console.log("Found teamInitiative:", teamInitiative); // Debug log
 
   return !!teamInitiative;
 }
@@ -79,9 +76,9 @@ export async function GET(
     }
 
     const url = new URL(request.url);
-    const initiativeId = url.searchParams.get('initiativeId');
-    const limit = parseInt(url.searchParams.get('limit') || '10');
-    const page = parseInt(url.searchParams.get('page') || '1');
+    const initiativeId = url.searchParams.get("initiativeId");
+    const limit = parseInt(url.searchParams.get("limit") || "10");
+    const page = parseInt(url.searchParams.get("page") || "1");
     const skip = (page - 1) * limit;
 
     const where = {
@@ -107,7 +104,7 @@ export async function GET(
           },
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
         skip,
         take: limit,
@@ -115,9 +112,13 @@ export async function GET(
       prisma.score.count({ where }),
     ]);
 
-    const averageRating = ratings.length > 0
-      ? ratings.reduce((sum: number, rating: { value: number }) => sum + rating.value, 0) / ratings.length
-      : 0;
+    const averageRating =
+      ratings.length > 0
+        ? ratings.reduce(
+            (sum: number, rating: { value: number }) => sum + rating.value,
+            0
+          ) / ratings.length
+        : 0;
 
     return NextResponse.json({
       success: true,
@@ -135,7 +136,6 @@ export async function GET(
         },
       },
     });
-
   } catch (error) {
     console.error("Error fetching ratings:", error);
     return NextResponse.json<ApiResponse<never>>(
@@ -170,21 +170,24 @@ export async function POST(
     const { initiativeId, rating, feedback } = body;
 
     // Add debug logs
-    console.log('Received rating request:', {
+    console.log("Received rating request:", {
       teamId: params.teamId,
       memberId: params.memberId,
       initiativeId,
       rating,
-      feedback
+      feedback,
     });
 
     // Validate initiative association
-    const isValidInitiative = await validateInitiative(params.teamId, initiativeId);
-    
+    const isValidInitiative = await validateInitiative(
+      params.teamId,
+      initiativeId
+    );
+
     if (!isValidInitiative) {
       // Check if the initiative exists at all
       const initiativeExists = await prisma.initiative.findUnique({
-        where: { id: initiativeId }
+        where: { id: initiativeId },
       });
 
       if (!initiativeExists) {
@@ -195,7 +198,10 @@ export async function POST(
       }
 
       return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Initiative is not associated with this team" },
+        {
+          success: false,
+          error: "Initiative is not associated with this team",
+        },
         { status: 400 }
       );
     }

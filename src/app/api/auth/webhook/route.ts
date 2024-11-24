@@ -7,22 +7,22 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-type UserWebhookEvent = {
-  data: {
-    id: string;
-    email_addresses: Array<{
-      email_address: string;
-      verification: { status: string };
-    }>;
-    first_name: string | null;
-    last_name: string | null;
-    external_accounts: Array<{
-      provider: string;
-      email_address: string;
-    }>;
-  };
-  type: string;
-};
+// type UserWebhookEvent = {
+//   data: {
+//     id: string;
+//     email_addresses: Array<{
+//       email_address: string;
+//       verification: { status: string };
+//     }>;
+//     first_name: string | null;
+//     last_name: string | null;
+//     external_accounts: Array<{
+//       provider: string;
+//       email_address: string;
+//     }>;
+//   };
+//   type: string;
+// };
 
 export async function POST(request: Request) {
   try {

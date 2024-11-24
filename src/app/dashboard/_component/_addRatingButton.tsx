@@ -1,6 +1,11 @@
 // app/dashboard/_components/_performanceRatingModal.tsx
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
+import React, { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
 import {
@@ -10,10 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import StarRating from './_starRating';
+import StarRating from "./_starRating";
 import type { InitiativeResponse } from "@/lib/types/api";
-import { Label } from '@/components/ui/Label';
-import { User } from 'lucide-react';
+import { Label } from "@/components/ui/Label";
+import { User } from "lucide-react";
 
 interface PerformanceRatingModalProps {
   isOpen: boolean;
@@ -33,19 +38,19 @@ export default function PerformanceRatingModal({
   isOpen,
   onClose,
   teamId,
-  memberId,
+
   memberName,
   memberTitle,
-  onSubmit
+  onSubmit,
 }: PerformanceRatingModalProps) {
   const [initiatives, setInitiatives] = useState<InitiativeResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>('');
+  const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
-  const [feedback, setFeedback] = useState<string>('');
+  const [feedback, setFeedback] = useState<string>("");
 
   useEffect(() => {
     const fetchInitiatives = async () => {
@@ -55,18 +60,18 @@ export default function PerformanceRatingModal({
 
         const response = await fetch(`/api/initiatives?teamId=${teamId}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch initiatives');
+          throw new Error("Failed to fetch initiatives");
         }
 
         const data = await response.json();
         if (!data.success) {
-          throw new Error(data.error || 'Failed to fetch initiatives');
+          throw new Error(data.error || "Failed to fetch initiatives");
         }
 
         setInitiatives(data.data);
       } catch (err) {
-        console.error('Error fetching initiatives:', err);
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error("Error fetching initiatives:", err);
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
       }
@@ -92,16 +97,16 @@ export default function PerformanceRatingModal({
       handleReset();
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setSaving(false);
     }
   };
 
   const handleReset = () => {
-    setSelectedInitiativeId('');
+    setSelectedInitiativeId("");
     setRating(0);
-    setFeedback('');
+    setFeedback("");
   };
 
   const handleClose = () => {
@@ -191,13 +196,9 @@ export default function PerformanceRatingModal({
             </Button>
             <Button
               type="submit"
-              disabled={
-                saving ||
-                !selectedInitiativeId ||
-                rating === 0
-              }
+              disabled={saving || !selectedInitiativeId || rating === 0}
             >
-              {saving ? 'Saving...' : 'Save Rating'}
+              {saving ? "Saving..." : "Save Rating"}
             </Button>
           </div>
         </form>

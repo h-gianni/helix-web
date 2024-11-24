@@ -1,18 +1,20 @@
-export type ApiResponse<T> = {
-  success: true;
-  data: T;
-  error?: never;
-} | {
-  success: false;
-  data?: never;
-  error: string;
-};
+export type ApiResponse<T> =
+  | {
+      success: true;
+      data: T;
+      error?: never;
+    }
+  | {
+      success: false;
+      data?: never;
+      error: string;
+    };
 
 // Existing team types
 export type TeamResponse = {
   id: string;
   name: string;
-  description: string | null;
+  description?: string | null;
   createdAt: Date;
   updatedAt: Date;
   ownerId: string;

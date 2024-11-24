@@ -132,6 +132,7 @@ export const POST = async (request: Request) => {
 export const GET = async (request: Request) => {
   try {
     const { userId } = await auth();
+    console.log(request);
 
     //const token = await auth().se;
 

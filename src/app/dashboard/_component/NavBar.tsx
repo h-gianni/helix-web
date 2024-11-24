@@ -1,7 +1,6 @@
 import React from "react";
 import {
   ChatBubbleLeftEllipsisIcon,
-  UserGroupIcon,
   Cog6ToothIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
