@@ -7,7 +7,6 @@ import type {
   TeamMemberResponse,
   TransactionClient,
 } from "@/lib/types/api";
-import { PrismaClient } from "@prisma/client";
 
 // Helper to get user from clerkId
 async function getUserFromClerkId(clerkId: string) {
