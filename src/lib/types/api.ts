@@ -61,8 +61,9 @@ export type UpdateTeamMemberInput = {
 export type InitiativeResponse = {
   id: string;
   name: string;
+
   description: string | null;
-  teamId: string;
+  teamId: string | null;
   createdAt: Date;
   updatedAt: Date;
   scores?: ScoreResponse[];
