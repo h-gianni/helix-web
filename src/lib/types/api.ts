@@ -1,3 +1,5 @@
+import { PrismaClient } from "@prisma/client";
+
 export type ApiResponse<T> =
   | {
       success: true;
@@ -133,3 +135,8 @@ export type TeamInitiativeSummary = {
   recentScores: ScoreResponse[];
   memberPerformance: MemberScoreSummary[];
 };
+
+export type TransactionClient = Omit<
+  PrismaClient,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;

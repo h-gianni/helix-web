@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import type { ApiResponse, UpdateTeamMemberInput, TeamMemberResponse } from "@/lib/types/api";
+import type {
+  ApiResponse,
+  UpdateTeamMemberInput,
+  TeamMemberResponse,
+  TransactionClient,
+} from "@/lib/types/api";
 import { PrismaClient } from "@prisma/client";
 
 // Helper to get user from clerkId
@@ -46,35 +51,47 @@ async function verifyMember(memberId: string, teamId: string) {
 }
 
 // GET endpoint to retrieve member details
-export async function GET(req: Request, { params }: { params: { teamId: string; memberId: string } }) {
+export async function GET(
+  req: Request,
+  { params }: { params: { teamId: string; memberId: string } }
+) {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Unauthorized",
-      }, { status: 401 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
     const user = await getUserFromClerkId(userId);
     if (!user) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "User not found",
-      }, { status: 404 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "User not found",
+        },
+        { status: 404 }
+      );
     }
 
     // Check if user is owner first, if yes, they always have access
     const isOwner = await isTeamOwner(params.teamId, user.id);
-    
+
     // If not owner, check if they're an admin
     if (!isOwner) {
       const isAdmin = await isTeamAdmin(params.teamId, user.id);
       if (!isAdmin) {
-        return NextResponse.json<ApiResponse<never>>({
-          success: false,
-          error: "Access denied",
-        }, { status: 403 });
+        return NextResponse.json<ApiResponse<never>>(
+          {
+            success: false,
+            error: "Access denied",
+          },
+          { status: 403 }
+        );
       }
     }
 
@@ -99,17 +116,20 @@ export async function GET(req: Request, { params }: { params: { teamId: string; 
         },
         goals: {
           orderBy: {
-            year: 'desc',
+            year: "desc",
           },
         },
       },
     });
 
     if (!member) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Member not found",
-      }, { status: 404 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Member not found",
+        },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json<ApiResponse<TeamMemberResponse>>({
@@ -118,58 +138,84 @@ export async function GET(req: Request, { params }: { params: { teamId: string; 
     });
   } catch (error) {
     console.error("Error fetching member details:", error);
-    return NextResponse.json<ApiResponse<never>>({
-      success: false,
-      error: "Internal server error",
-    }, { status: 500 });
+    return NextResponse.json<ApiResponse<never>>(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 }
 
 // PATCH endpoint to update member details
-export async function PATCH(req: Request, { params }: { params: { teamId: string; memberId: string } }) {
+export async function PATCH(
+  req: Request,
+  { params }: { params: { teamId: string; memberId: string } }
+) {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Unauthorized",
-      }, { status: 401 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
     const user = await getUserFromClerkId(userId);
     if (!user) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "User not found",
-      }, { status: 404 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "User not found",
+        },
+        { status: 404 }
+      );
     }
 
     // Check if user is owner first
     const isOwner = await isTeamOwner(params.teamId, user.id);
-    
+
     // If not owner, check if they're an admin
     if (!isOwner) {
       const isAdmin = await isTeamAdmin(params.teamId, user.id);
       if (!isAdmin) {
-        return NextResponse.json<ApiResponse<never>>({
-          success: false,
-          error: "Only team owners or admins can update members",
-        }, { status: 403 });
+        return NextResponse.json<ApiResponse<never>>(
+          {
+            success: false,
+            error: "Only team owners or admins can update members",
+          },
+          { status: 403 }
+        );
       }
     }
 
     const existingMember = await verifyMember(params.memberId, params.teamId);
     if (!existingMember) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Member not found",
-      }, { status: 404 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Member not found",
+        },
+        { status: 404 }
+      );
     }
 
-    const { firstName, lastName, title, isAdmin: newIsAdmin } = await req.json() as UpdateTeamMemberInput;
+    const {
+      firstName,
+      lastName,
+      title,
+      isAdmin: newIsAdmin,
+    } = (await req.json()) as UpdateTeamMemberInput;
 
     // If changing admin status, check special conditions
-    if (typeof newIsAdmin !== 'undefined' && newIsAdmin !== existingMember.isAdmin) {
+    if (
+      typeof newIsAdmin !== "undefined" &&
+      newIsAdmin !== existingMember.isAdmin
+    ) {
       // Only check admin count if not the owner and removing admin status
       if (!isOwner && !newIsAdmin && existingMember.isAdmin) {
         const adminCount = await prisma.member.count({
@@ -180,10 +226,14 @@ export async function PATCH(req: Request, { params }: { params: { teamId: string
         });
 
         if (adminCount === 1) {
-          return NextResponse.json<ApiResponse<never>>({
-            success: false,
-            error: "Cannot remove the last admin. Assign another admin first.",
-          }, { status: 400 });
+          return NextResponse.json<ApiResponse<never>>(
+            {
+              success: false,
+              error:
+                "Cannot remove the last admin. Assign another admin first.",
+            },
+            { status: 400 }
+          );
         }
       }
     }
@@ -213,52 +263,70 @@ export async function PATCH(req: Request, { params }: { params: { teamId: string
     });
   } catch (error) {
     console.error("Error updating team member:", error);
-    return NextResponse.json<ApiResponse<never>>({
-      success: false,
-      error: "Internal server error",
-    }, { status: 500 });
+    return NextResponse.json<ApiResponse<never>>(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 }
 
 // DELETE endpoint to remove a member and their associated records
-export async function DELETE(req: Request, { params }: { params: { teamId: string; memberId: string } }) {
+export async function DELETE(
+  req: Request,
+  { params }: { params: { teamId: string; memberId: string } }
+) {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Unauthorized",
-      }, { status: 401 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
     const user = await getUserFromClerkId(userId);
     if (!user) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "User not found",
-      }, { status: 404 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "User not found",
+        },
+        { status: 404 }
+      );
     }
 
     // Check if user is owner first
     const isOwner = await isTeamOwner(params.teamId, user.id);
-    
+
     // If not owner, check if they're an admin
     if (!isOwner) {
       const isAdmin = await isTeamAdmin(params.teamId, user.id);
       if (!isAdmin) {
-        return NextResponse.json<ApiResponse<never>>({
-          success: false,
-          error: "Only team owners or admins can remove members",
-        }, { status: 403 });
+        return NextResponse.json<ApiResponse<never>>(
+          {
+            success: false,
+            error: "Only team owners or admins can remove members",
+          },
+          { status: 403 }
+        );
       }
     }
 
     const member = await verifyMember(params.memberId, params.teamId);
     if (!member) {
-      return NextResponse.json<ApiResponse<never>>({
-        success: false,
-        error: "Member not found",
-      }, { status: 404 });
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Member not found",
+        },
+        { status: 404 }
+      );
     }
 
     // If trying to delete an admin, ensure there's at least one other admin
@@ -272,15 +340,18 @@ export async function DELETE(req: Request, { params }: { params: { teamId: strin
       });
 
       if (adminCount === 1) {
-        return NextResponse.json<ApiResponse<never>>({
-          success: false,
-          error: "Cannot delete the last admin. Assign another admin first.",
-        }, { status: 400 });
+        return NextResponse.json<ApiResponse<never>>(
+          {
+            success: false,
+            error: "Cannot delete the last admin. Assign another admin first.",
+          },
+          { status: 400 }
+        );
       }
     }
 
     // Delete all related records in a transaction
-    await prisma.$transaction(async (tx: PrismaClient) => {
+    await prisma.$transaction(async (tx: TransactionClient) => {
       await tx.goal.deleteMany({ where: { memberId: params.memberId } });
       await tx.score.deleteMany({ where: { memberId: params.memberId } });
       await tx.report.deleteMany({ where: { memberId: params.memberId } });
@@ -293,9 +364,12 @@ export async function DELETE(req: Request, { params }: { params: { teamId: strin
     });
   } catch (error) {
     console.error("Error removing team member:", error);
-    return NextResponse.json<ApiResponse<never>>({
-      success: false,
-      error: "Internal server error",
-    }, { status: 500 });
+    return NextResponse.json<ApiResponse<never>>(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 }
