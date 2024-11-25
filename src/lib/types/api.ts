@@ -1,19 +1,24 @@
-export type ApiResponse<T> = {
-  success: true;
-  data: T;
-  error?: never;
-} | {
-  success: false;
-  data?: never;
-  error: string;
-};
+import { PrismaClient } from "@prisma/client";
+
+export type ApiResponse<T> =
+  | {
+      success: true;
+      data: T;
+      error?: never;
+    }
+  | {
+      success: false;
+      data?: never;
+      error: string;
+    };
 
 // Existing team types
 export type TeamResponse = {
   id: string;
   name: string;
-  description: string | null;
+  description?: string | null;
   createdAt: Date;
+
   updatedAt: Date;
   ownerId: string;
 };
@@ -59,8 +64,9 @@ export type UpdateTeamMemberInput = {
 export type InitiativeResponse = {
   id: string;
   name: string;
+
   description: string | null;
-  teamId: string;
+  teamId: string | null;
   createdAt: Date;
   updatedAt: Date;
   scores?: ScoreResponse[];
@@ -130,3 +136,8 @@ export type TeamInitiativeSummary = {
   recentScores: ScoreResponse[];
   memberPerformance: MemberScoreSummary[];
 };
+
+export type TransactionClient = Omit<
+  PrismaClient,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;

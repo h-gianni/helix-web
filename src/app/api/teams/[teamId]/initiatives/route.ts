@@ -5,6 +5,11 @@ import { prisma } from "@/lib/prisma";
 import type { PrismaClient } from "@prisma/client";
 import type { ApiResponse } from "@/lib/types/api";
 
+type TransactionClient = Omit<
+  PrismaClient,
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+>;
+
 export async function PUT(
   request: Request,
   { params }: { params: { teamId: string } }
@@ -20,18 +25,18 @@ export async function PUT(
 
     const { initiativeIds } = await request.json();
 
-    await prisma.$transaction(async (tx: PrismaClient) => {
+    await prisma.$transaction(async (tx: TransactionClient) => {
       // Delete existing relationships
       await tx.teamInitiative.deleteMany({
-        where: { teamId: params.teamId }
+        where: { teamId: params.teamId },
       });
 
       // Create new relationships
       await tx.teamInitiative.createMany({
         data: initiativeIds.map((initiativeId: string) => ({
           teamId: params.teamId,
-          initiativeId
-        }))
+          initiativeId,
+        })),
       });
     });
 
@@ -61,13 +66,13 @@ export async function GET(
     const teamInitiatives = await prisma.teamInitiative.findMany({
       where: { teamId: params.teamId },
       include: {
-        initiative: true
-      }
+        initiative: true,
+      },
     });
 
     return NextResponse.json({
       success: true,
-      data: teamInitiatives
+      data: teamInitiatives,
     });
   } catch (error) {
     console.error("Error fetching team initiatives:", error);

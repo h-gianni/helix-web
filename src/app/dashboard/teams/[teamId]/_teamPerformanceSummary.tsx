@@ -1,8 +1,9 @@
 // app/dashboard/teams/[teamId]/_teamPerformanceSummary.tsx
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card, CardHeader, CardContent } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
+import { LucideIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,13 +28,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/AlertDialog";
-import {
-  TrendingUp,
-  TrendingDown,
-  Minus,
-  MoreVertical,
-  Star,
-} from "lucide-react";
+import { TrendingUp, MoreVertical, Star } from "lucide-react";
 
 interface MemberPerformance {
   id: string;
@@ -48,7 +43,7 @@ interface PerformanceCategory {
   minRating: number;
   maxRating: number;
   className: string;
-  Icon: React.ComponentType<any>;
+  Icon: LucideIcon;
 }
 
 interface TeamPerformanceSummaryProps {
@@ -63,45 +58,50 @@ const performanceCategories: PerformanceCategory[] = [
     minRating: 4.6,
     maxRating: 5,
     className: "text-green-600",
-    Icon: (props: any) => (
-      <TrendingUp className="w-5 h-5 text-green-600" {...props} />
-    ),
+    // Icon: (props: LucideProps ) => (
+    //   <TrendingUp className="w-5 h-5 text-green-600" {...props} />
+    // ),
+    Icon: TrendingUp,
   },
   {
     label: "Strong",
     minRating: 4,
     maxRating: 4.5,
     className: "text-emerald-600",
-    Icon: (props: any) => (
-      <TrendingUp className="w-5 h-5 text-emerald-600" {...props} />
-    ),
+    // Icon: (props: any) => (
+    //   <TrendingUp className="w-5 h-5 text-emerald-600" {...props} />
+    // ),
+    Icon: TrendingUp,
   },
   {
     label: "Solid",
     minRating: 3,
     maxRating: 3.9,
     className: "text-blue-600",
-    Icon: (props: any) => (
-      <TrendingUp className="w-5 h-5 text-blue-600" {...props} />
-    ),
+    // Icon: (props: any) => (
+    //   <TrendingUp className="w-5 h-5 text-blue-600" {...props} />
+    // ),
+    Icon: TrendingUp,
   },
   {
     label: "Lower",
     minRating: 2.1,
     maxRating: 2.9,
     className: "text-amber-600",
-    Icon: (props: any) => (
-      <TrendingDown className="w-5 h-5 text-amber-600" {...props} />
-    ),
+    // Icon: (props: any) => (
+    //   <TrendingDown className="w-5 h-5 text-amber-600" {...props} />
+    // ),
+    Icon: TrendingUp,
   },
   {
     label: "Poor",
     minRating: 1,
     maxRating: 2,
     className: "text-red-600",
-    Icon: (props: any) => (
-      <TrendingDown className="w-5 h-5 text-red-600" {...props} />
-    ),
+    // Icon: (props: any) => (
+    //   <TrendingDown className="w-5 h-5 text-red-600" {...props} />
+    // ),
+    Icon: TrendingUp,
   },
 ];
 
@@ -115,9 +115,10 @@ const getPerformanceCategory = (
       minRating: 0,
       maxRating: 0,
       className: "text-gray-500",
-      Icon: (props: any) => (
-        <Minus className="w-5 h-5 text-gray-500" {...props} />
-      ),
+      // Icon: (props: any) => (
+      //   <Minus className="w-5 h-5 text-gray-500" {...props} />
+      // ),
+      Icon: TrendingUp,
     };
   }
 
@@ -129,9 +130,10 @@ const getPerformanceCategory = (
       minRating: 0,
       maxRating: 0,
       className: "text-gray-500",
-      Icon: (props: any) => (
-        <Minus className="w-5 h-5 text-gray-500" {...props} />
-      ),
+      // Icon: (props: any) => (
+      //   <Minus className="w-5 h-5 text-gray-500" {...props} />
+      // ),
+      Icon: TrendingUp,
     }
   );
 };
@@ -171,7 +173,7 @@ const StarRatingDisplay = ({
 
 export function TeamPerformanceSummary({
   teamId,
-  teamName,
+
   members,
 }: TeamPerformanceSummaryProps) {
   const router = useRouter();

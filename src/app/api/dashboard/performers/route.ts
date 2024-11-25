@@ -4,6 +4,8 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { ApiResponse } from "@/lib/types/api";
 
+export const dynamic = 'force-dynamic'
+
 interface Performer {
   id: string;
   name: string;

@@ -11,12 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/Table";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert";
 import {
   ChevronRight,
-  Users,
-  AlertCircle,
-  PlusCircle,
   Star,
   Gem,
   Sparkles,
@@ -24,6 +20,7 @@ import {
   Footprints,
   LifeBuoy,
   MinusCircle,
+  LucideIcon,
 } from "lucide-react";
 
 interface Performer {
@@ -41,7 +38,7 @@ interface PerformerCategory {
   minRating: number;
   maxRating: number;
   className: string;
-  Icon: React.ComponentType<any>;
+  Icon: LucideIcon;
   description?: string;
 }
 
@@ -99,7 +96,7 @@ export const performanceCategories: PerformerCategory[] = [
     className: "text-gray-600",
     Icon: MinusCircle,
     description: "Members awaiting their first performance rating",
-  }
+  },
 ];
 
 const StarRatingDisplay = ({ rating }: { rating: number }) => {
@@ -128,25 +125,26 @@ const StarRatingDisplay = ({ rating }: { rating: number }) => {
 export function PerformersByCategory({
   category,
   performers,
-  isLoading = false,
 }: PerformersByCategoryProps) {
   const router = useRouter();
 
-  const categoryPerformers = performers.filter((performer) => {
-    if (category.title === "Not Rated") {
-      return performer.ratingsCount === 0;
-    }
-    return (
-      performer.ratingsCount > 0 &&
-      performer.averageRating >= category.minRating &&
-      performer.averageRating <= category.maxRating
-    );
-  }).sort((a, b) => {
-    if (category.title === "Not Rated") {
-      return a.name.localeCompare(b.name);
-    }
-    return b.averageRating - a.averageRating;
-  });
+  const categoryPerformers = performers
+    .filter((performer) => {
+      if (category.title === "Not Rated") {
+        return performer.ratingsCount === 0;
+      }
+      return (
+        performer.ratingsCount > 0 &&
+        performer.averageRating >= category.minRating &&
+        performer.averageRating <= category.maxRating
+      );
+    })
+    .sort((a, b) => {
+      if (category.title === "Not Rated") {
+        return a.name.localeCompare(b.name);
+      }
+      return b.averageRating - a.averageRating;
+    });
 
   const EmptyState = () => (
     <div className="flex flex-col items-center justify-center py-8 space-y-4">
@@ -158,7 +156,8 @@ export function PerformersByCategory({
         <p className="text-muted-foreground text-sm max-w-[400px]">
           {category.title === "Not Rated"
             ? "All team members have received at least one rating."
-            : category.title === "Poor Performers" || category.title === "Weak Performers"
+            : category.title === "Poor Performers" ||
+              category.title === "Weak Performers"
             ? "Great news! You don't have any team members performing below expectations."
             : `No team members currently fall into the ${category.title.toLowerCase()} category.`}
         </p>
@@ -203,9 +202,7 @@ export function PerformersByCategory({
           <TableBody>
             {categoryPerformers.map((performer) => (
               <TableRow key={performer.id}>
-                <TableCell className="font-medium">
-                  {performer.name}
-                </TableCell>
+                <TableCell className="font-medium">{performer.name}</TableCell>
                 <TableCell>{performer.title || "No title"}</TableCell>
                 <TableCell>{performer.teamName}</TableCell>
                 <TableCell>
@@ -219,7 +216,9 @@ export function PerformersByCategory({
                         </div>
                       </>
                     ) : (
-                      <span className="text-sm text-gray-500">No ratings yet</span>
+                      <span className="text-sm text-gray-500">
+                        No ratings yet
+                      </span>
                     )}
                   </div>
                 </TableCell>
