@@ -10,7 +10,7 @@ interface TeamEditModalProps {
   isOpen: boolean;
   onClose: () => void;
   teamName: string;
-  teamDescription: string | null;
+  teamDescription?: string | null;
   onSave: (name: string, description: string | null) => Promise<void>;
 }
 

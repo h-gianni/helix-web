@@ -1,9 +1,9 @@
 // app/dashboard/teams/[teamId]/members/[memberId]/_ratingsSection.tsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Plus, RotateCcw } from "lucide-react";
-import StarRating from '@/app/dashboard/_component/_starRating';
+import StarRating from "@/app/dashboard/_component/_starRating";
 import type { ScoreResponse } from "@/lib/types/api";
 
 interface RatingsSectionProps {
@@ -12,9 +12,16 @@ interface RatingsSectionProps {
   onAddRating: () => void;
 }
 
-export default function RatingsSection({ teamId, memberId, onAddRating }: RatingsSectionProps) {
+export default function RatingsSection({
+  teamId,
+  memberId,
+  onAddRating,
+}: RatingsSectionProps) {
   const [ratings, setRatings] = useState<ScoreResponse[]>([]);
-  const [stats, setStats] = useState<{ average: number; count: number }>({ average: 0, count: 0 });
+  const [stats, setStats] = useState<{ average: number; count: number }>({
+    average: 0,
+    count: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -25,20 +32,20 @@ export default function RatingsSection({ teamId, memberId, onAddRating }: Rating
         setIsRefreshing(true);
       }
       setError(null);
-      
+
       const response = await fetch(
         `/api/teams/${teamId}/members/${memberId}/ratings?t=${new Date().getTime()}`
       );
       const data = await response.json();
 
       if (!data.success) {
-        throw new Error(data.error || 'Failed to fetch ratings');
+        throw new Error(data.error || "Failed to fetch ratings");
       }
 
       setRatings(data.data.ratings);
       setStats(data.data.stats);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
       setIsRefreshing(false);
@@ -69,7 +76,9 @@ export default function RatingsSection({ teamId, memberId, onAddRating }: Rating
             onClick={() => fetchRatings()}
             disabled={isRefreshing}
           >
-            <RotateCcw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <RotateCcw
+              className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
+            />
           </Button>
           <Button onClick={onAddRating}>
             <Plus className="w-4 h-4 mr-2" />
@@ -87,7 +96,8 @@ export default function RatingsSection({ teamId, memberId, onAddRating }: Rating
         </div>
       ) : ratings.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
-          No ratings yet. Click "Add Rating" to provide the first rating.
+          No ratings yet. Click &ldquo;Add Rating&rdquo; to provide the first
+          rating.
         </div>
       ) : (
         <div className="space-y-4">
@@ -99,13 +109,19 @@ export default function RatingsSection({ teamId, memberId, onAddRating }: Rating
                     <h3 className="font-medium">{rating.initiative.name}</h3>
                   )}
                   <div className="flex items-center gap-2">
-                    <StarRating value={rating.value} onChange={() => {}} size="sm" />
+                    <StarRating
+                      value={rating.value}
+                      onChange={() => {}}
+                      size="sm"
+                    />
                     <span className="text-sm text-gray-500">
                       {new Date(rating.createdAt).toLocaleDateString()}
                     </span>
                   </div>
                   {rating.feedback && (
-                    <p className="text-sm text-gray-600 mt-2">{rating.feedback}</p>
+                    <p className="text-sm text-gray-600 mt-2">
+                      {rating.feedback}
+                    </p>
                   )}
                 </div>
               </div>

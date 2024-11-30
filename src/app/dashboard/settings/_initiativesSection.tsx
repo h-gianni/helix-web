@@ -1,11 +1,27 @@
-import { useState, useEffect } from 'react';
-import { useUser } from "@clerk/nextjs";
+import { useState, useEffect } from "react";
+
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Table, TableHeader, TableRow, TableHead, TableCell, TableBody } from "@/components/ui/Table";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableBody,
+} from "@/components/ui/Table";
 import { Target, PlusCircle, Edit, Trash2, RotateCcw } from "lucide-react";
-import { InitiativeModal } from './_initiativeModal';
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from "@/components/ui/AlertDialog";
+import { InitiativeModal } from "./_initiativeModal";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "@/components/ui/AlertDialog";
 import type { ApiResponse, InitiativeResponse } from "@/lib/types/api";
 
 interface InitiativesSectionProps {
@@ -13,11 +29,11 @@ interface InitiativesSectionProps {
 }
 
 export function InitiativesSection({ onUpdate }: InitiativesSectionProps) {
-  const { user } = useUser();
   const [initiatives, setInitiatives] = useState<InitiativeResponse[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedInitiative, setSelectedInitiative] = useState<InitiativeResponse | null>(null);
+  const [selectedInitiative, setSelectedInitiative] =
+    useState<InitiativeResponse | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +44,9 @@ export function InitiativesSection({ onUpdate }: InitiativesSectionProps) {
       }
       setError(null);
 
-      const response = await fetch(`/api/initiatives?t=${new Date().getTime()}`);
+      const response = await fetch(
+        `/api/initiatives?t=${new Date().getTime()}`
+      );
       const data: ApiResponse<InitiativeResponse[]> = await response.json();
 
       if (!data.success) {
@@ -70,7 +88,7 @@ export function InitiativesSection({ onUpdate }: InitiativesSectionProps) {
       const response = await fetch(
         `/api/initiatives/${selectedInitiative.id}`,
         {
-          method: 'DELETE',
+          method: "DELETE",
         }
       );
 
@@ -80,7 +98,7 @@ export function InitiativesSection({ onUpdate }: InitiativesSectionProps) {
         onUpdate();
       }
     } catch (error) {
-      console.error('Error deleting initiative:', error);
+      console.error("Error deleting initiative:", error);
     } finally {
       setIsDeleteDialogOpen(false);
       setSelectedInitiative(null);
@@ -98,7 +116,9 @@ export function InitiativesSection({ onUpdate }: InitiativesSectionProps) {
             onClick={() => fetchInitiatives()}
             disabled={isRefreshing}
           >
-            <RotateCcw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <RotateCcw
+              className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
+            />
           </Button>
         </div>
         <Button onClick={handleCreateClick}>
@@ -110,7 +130,12 @@ export function InitiativesSection({ onUpdate }: InitiativesSectionProps) {
       {error && (
         <div className="bg-red-50 text-red-500 p-4 rounded-md">
           {error}
-          <Button variant="outline" size="sm" onClick={() => fetchInitiatives()} className="ml-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fetchInitiatives()}
+            className="ml-2"
+          >
             Retry
           </Button>
         </div>
@@ -121,7 +146,9 @@ export function InitiativesSection({ onUpdate }: InitiativesSectionProps) {
           <div className="text-center">
             <Target className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-2 text-lg font-medium">No initiatives yet</h3>
-            <p className="mt-1 text-gray-500">Create initiatives to track team performance.</p>
+            <p className="mt-1 text-gray-500">
+              Create initiatives to track team performance.
+            </p>
             <Button onClick={handleCreateClick} className="mt-4">
               <PlusCircle className="w-4 h-4 mr-2" />
               Create Initiative
@@ -142,14 +169,24 @@ export function InitiativesSection({ onUpdate }: InitiativesSectionProps) {
             {initiatives.map((initiative) => (
               <TableRow key={initiative.id}>
                 <TableCell>{initiative.name}</TableCell>
-                <TableCell>{initiative.description || "No description"}</TableCell>
+                <TableCell>
+                  {initiative.description || "No description"}
+                </TableCell>
                 <TableCell>{initiative._count?.scores || 0}</TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={() => handleEditClick(initiative)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleEditClick(initiative)}
+                    >
                       <Edit className="w-4 h-4" />
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleDeleteClick(initiative)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDeleteClick(initiative)}
+                    >
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -173,18 +210,27 @@ export function InitiativesSection({ onUpdate }: InitiativesSectionProps) {
         }}
       />
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Initiative</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this initiative? This action cannot be undone.
-              All associated ratings and feedback will be permanently deleted.
+              Are you sure you want to delete this initiative? This action
+              cannot be undone. All associated ratings and feedback will be
+              permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete} className="bg-red-500 hover:bg-red-600">
+            <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-red-500 hover:bg-red-600"
+            >
               Delete Initiative
             </AlertDialogAction>
           </AlertDialogFooter>

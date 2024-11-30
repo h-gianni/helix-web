@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/Table";
-import { Users, Target, Star, MessageSquare, ArrowUp, ArrowDown } from "lucide-react";
-import TeamCreateModal from '../dashboard/teams/_teamCreateModal';
-import PerformanceRatingModal from './_component/_performanceRatingModal';
-import { PerformersByCategory, performanceCategories } from './_component/_performersByCategory';
+import { Users, Target, Star, MessageSquare } from "lucide-react";
+import TeamCreateModal from "../dashboard/teams/_teamCreateModal";
+import PerformanceRatingModal from "./_component/_performanceRatingModal";
+import {
+  PerformersByCategory,
+  performanceCategories,
+} from "./_component/_performersByCategory";
 import type { TeamResponse } from "@/lib/types/api";
 
 interface Performer {
@@ -171,9 +173,9 @@ export default function DashboardPage() {
   const fetchTeams = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/teams');
+      const response = await fetch("/api/teams");
       const data = await response.json();
-      
+
       if (data.success) {
         setTeams(data.data);
         if (data.data.length > 0) {
@@ -181,7 +183,7 @@ export default function DashboardPage() {
         }
       }
     } catch (error) {
-      console.error('Error fetching teams:', error);
+      console.error("Error fetching teams:", error);
     } finally {
       setLoading(false);
     }
@@ -189,35 +191,35 @@ export default function DashboardPage() {
 
   const fetchPerformers = async () => {
     try {
-      const response = await fetch('/api/dashboard/performers');
+      const response = await fetch("/api/dashboard/performers");
       const data = await response.json();
-      
+
       if (data.success) {
         setPerformers(data.data.performers);
       }
     } catch (error) {
-      console.error('Error fetching performers:', error);
+      console.error("Error fetching performers:", error);
     }
   };
 
   const handleCreateTeam = async (name: string) => {
     try {
-      const response = await fetch('/api/teams', {
-        method: 'POST',
+      const response = await fetch("/api/teams", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ name }),
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
         setIsCreateModalOpen(false);
-        router.push('/dashboard/teams');
+        router.push("/dashboard/teams");
       }
     } catch (error) {
-      console.error('Error creating team:', error);
+      console.error("Error creating team:", error);
     }
   };
 
@@ -242,13 +244,13 @@ export default function DashboardPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save rating');
+        throw new Error("Failed to save rating");
       }
 
       await fetchPerformers();
       setIsRatingModalOpen(false);
     } catch (error) {
-      console.error('Error saving rating:', error);
+      console.error("Error saving rating:", error);
       throw error;
     }
   };

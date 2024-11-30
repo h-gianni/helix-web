@@ -1,12 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
+import React, { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
-import { Label } from '@/components/ui/Label';
-import { User, Users } from 'lucide-react';
-import StarRating from './_starRating';
-import type { InitiativeResponse, TeamResponse, TeamMemberResponse } from "@/lib/types/api";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select";
+import { Label } from "@/components/ui/Label";
+import { User, Users } from "lucide-react";
+import StarRating from "./_starRating";
+import type {
+  InitiativeResponse,
+  TeamResponse,
+  TeamMemberResponse,
+} from "@/lib/types/api";
+import { TeamInitiative } from "@/lib/types/intiative";
 
 interface PerformanceRatingModalProps {
   isOpen: boolean;
@@ -31,16 +47,20 @@ export default function PerformanceRatingModal({
   memberId: initialMemberId,
   memberName: initialMemberName,
   memberTitle: initialMemberTitle,
-  onSubmit
+  onSubmit,
 }: PerformanceRatingModalProps) {
   const [teams, setTeams] = useState<TeamResponse[]>([]);
-  const [selectedTeamId, setSelectedTeamId] = useState<string>(initialTeamId || '');
+  const [selectedTeamId, setSelectedTeamId] = useState<string>(
+    initialTeamId || ""
+  );
   const [members, setMembers] = useState<TeamMemberResponse[]>([]);
-  const [selectedMemberId, setSelectedMemberId] = useState<string>(initialMemberId || '');
+  const [selectedMemberId, setSelectedMemberId] = useState<string>(
+    initialMemberId || ""
+  );
   const [initiatives, setInitiatives] = useState<InitiativeResponse[]>([]);
-  const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>('');
+  const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
-  const [feedback, setFeedback] = useState<string>('');
+  const [feedback, setFeedback] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -60,7 +80,7 @@ export default function PerformanceRatingModal({
 
   const fetchTeams = async () => {
     try {
-      const response = await fetch('/api/teams');
+      const response = await fetch("/api/teams");
       const data = await response.json();
       if (data.success) {
         setTeams(data.data);
@@ -69,7 +89,8 @@ export default function PerformanceRatingModal({
         }
       }
     } catch (err) {
-      setError('Failed to fetch teams');
+      console.log(err);
+      setError("Failed to fetch teams");
     }
   };
 
@@ -81,27 +102,31 @@ export default function PerformanceRatingModal({
         setMembers(data.data);
       }
     } catch (err) {
-      setError('Failed to fetch team members');
+      console.log(err);
+      setError("Failed to fetch team members");
     }
   };
 
-// Update the fetchInitiatives function in PerformanceRatingModal:
-const fetchInitiatives = async (teamId: string) => {
-  try {
-    setLoading(true);
-    const response = await fetch(`/api/teams/${teamId}/initiatives`);
-    const data = await response.json();
-    if (data.success) {
-      // Each item in data.data is a TeamInitiative object that has an initiative property
-      const teamInitiatives = data.data.map((ti: any) => ti.initiative);
-      setInitiatives(teamInitiatives);
+  // Update the fetchInitiatives function in PerformanceRatingModal:
+  const fetchInitiatives = async (teamId: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/teams/${teamId}/initiatives`);
+      const data = await response.json();
+      if (data.success) {
+        // Each item in data.data is a TeamInitiative object that has an initiative property
+        const teamInitiatives = data.data.map(
+          (ti: TeamInitiative) => ti.initiative
+        );
+        setInitiatives(teamInitiatives);
+      }
+    } catch (err) {
+      console.log(err);
+      setError("Failed to fetch initiatives");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    setError('Failed to fetch initiatives');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -120,24 +145,24 @@ const fetchInitiatives = async (teamId: string) => {
       handleReset();
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setSaving(false);
     }
   };
 
   const handleReset = () => {
-    if (!initialTeamId) setSelectedTeamId('');
-    if (!initialMemberId) setSelectedMemberId('');
-    setSelectedInitiativeId('');
+    if (!initialTeamId) setSelectedTeamId("");
+    if (!initialMemberId) setSelectedMemberId("");
+    setSelectedInitiativeId("");
     setRating(0);
-    setFeedback('');
+    setFeedback("");
   };
 
   const getSelectedMemberName = () => {
     if (initialMemberName) return initialMemberName;
-    const member = members.find(m => m.id === selectedMemberId);
-    return member?.user.name || member?.user.email || '';
+    const member = members.find((m) => m.id === selectedMemberId);
+    return member?.user.name || member?.user.email || "";
   };
 
   return (
@@ -166,7 +191,7 @@ const fetchInitiatives = async (teamId: string) => {
                   <SelectValue placeholder="Select a team" />
                 </SelectTrigger>
                 <SelectContent>
-                  {teams.map(team => (
+                  {teams.map((team) => (
                     <SelectItem key={team.id} value={team.id}>
                       {team.name}
                     </SelectItem>
@@ -183,12 +208,15 @@ const fetchInitiatives = async (teamId: string) => {
                 <User className="w-4 h-4" />
                 Select Member
               </Label>
-              <Select value={selectedMemberId} onValueChange={setSelectedMemberId}>
+              <Select
+                value={selectedMemberId}
+                onValueChange={setSelectedMemberId}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a member" />
                 </SelectTrigger>
                 <SelectContent>
-                  {members.map(member => (
+                  {members.map((member) => (
                     <SelectItem key={member.id} value={member.id}>
                       {member.user.name || member.user.email}
                       {member.title && ` - ${member.title}`}
@@ -209,7 +237,9 @@ const fetchInitiatives = async (teamId: string) => {
                   <span className="text-base">
                     {getSelectedMemberName()}
                     {initialMemberTitle && (
-                      <span className="text-gray-500 ml-1">- {initialMemberTitle}</span>
+                      <span className="text-gray-500 ml-1">
+                        - {initialMemberTitle}
+                      </span>
                     )}
                   </span>
                 </div>
@@ -217,51 +247,53 @@ const fetchInitiatives = async (teamId: string) => {
             </div>
           )}
 
-{/* Initiative Selection */}
-<div className="space-y-2">
-  <Label>Select Initiative</Label>
-  <Select
-    value={selectedInitiativeId}
-    onValueChange={setSelectedInitiativeId}
-    disabled={loading || !selectedTeamId || !selectedMemberId}
-  >
-    <SelectTrigger>
-      <SelectValue placeholder={
-        loading 
-          ? "Loading initiatives..." 
-          : !selectedTeamId || !selectedMemberId
-          ? "Select team and member first"
-          : "Select an initiative"
-      } />
-    </SelectTrigger>
-    <SelectContent>
-      {initiatives.length === 0 ? (
-        <div className="p-2 text-sm text-gray-500">
-          {loading 
-            ? "Loading..." 
-            : "No initiatives available for this team"}
-        </div>
-      ) : (
-        initiatives.map((initiative) => (
-          <SelectItem key={initiative.id} value={initiative.id}>
-            {initiative.name}
-            {initiative.description && (
-              <span className="text-muted-foreground ml-2">
-                ({initiative.description})
-              </span>
+          {/* Initiative Selection */}
+          <div className="space-y-2">
+            <Label>Select Initiative</Label>
+            <Select
+              value={selectedInitiativeId}
+              onValueChange={setSelectedInitiativeId}
+              disabled={loading || !selectedTeamId || !selectedMemberId}
+            >
+              <SelectTrigger>
+                <SelectValue
+                  placeholder={
+                    loading
+                      ? "Loading initiatives..."
+                      : !selectedTeamId || !selectedMemberId
+                      ? "Select team and member first"
+                      : "Select an initiative"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {initiatives.length === 0 ? (
+                  <div className="p-2 text-sm text-gray-500">
+                    {loading
+                      ? "Loading..."
+                      : "No initiatives available for this team"}
+                  </div>
+                ) : (
+                  initiatives.map((initiative) => (
+                    <SelectItem key={initiative.id} value={initiative.id}>
+                      {initiative.name}
+                      {initiative.description && (
+                        <span className="text-muted-foreground ml-2">
+                          ({initiative.description})
+                        </span>
+                      )}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+            {initiatives.length === 0 && !loading && selectedTeamId && (
+              <p className="text-sm text-yellow-600">
+                No initiatives configured for this team. Please configure
+                initiatives in the team settings.
+              </p>
             )}
-          </SelectItem>
-        ))
-      )}
-    </SelectContent>
-  </Select>
-  {initiatives.length === 0 && !loading && selectedTeamId && (
-    <p className="text-sm text-yellow-600">
-      No initiatives configured for this team. 
-      Please configure initiatives in the team settings.
-    </p>
-  )}
-</div>
+          </div>
 
           {/* Rating */}
           <div className="space-y-2">
@@ -302,7 +334,7 @@ const fetchInitiatives = async (teamId: string) => {
                 rating === 0
               }
             >
-              {saving ? 'Saving...' : 'Save Rating'}
+              {saving ? "Saving..." : "Save Rating"}
             </Button>
           </div>
         </form>

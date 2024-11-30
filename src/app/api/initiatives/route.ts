@@ -2,7 +2,11 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import type { ApiResponse, InitiativeResponse, CreateInitiativeInput } from "@/lib/types/api";
+import type {
+  ApiResponse,
+  InitiativeResponse,
+  CreateInitiativeInput,
+} from "@/lib/types/api";
 
 // Helper to check team access
 async function checkTeamAccess(teamId: string, userId: string) {
@@ -44,16 +48,15 @@ export async function GET(request: Request) {
     }
 
     const url = new URL(request.url);
-    const teamId = url.searchParams.get('teamId');
+    const teamId = url.searchParams.get("teamId");
 
     // Modify query to include null teamId or matching teamId
     const initiatives = await prisma.initiative.findMany({
-      where: teamId ? {
-        OR: [
-          { teamId },
-          { teamId: null }
-        ]
-      } : {},
+      where: teamId
+        ? {
+            OR: [{ teamId }, { teamId: null }],
+          }
+        : {},
       include: {
         team: {
           select: {
@@ -63,7 +66,7 @@ export async function GET(request: Request) {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
