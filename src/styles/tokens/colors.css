@@ -1,0 +1,33 @@
+:root {
+    /* Core palette */
+    --palette-primary-50: 210 40% 98%;
+    --palette-primary-100: 210 40% 96%;
+    --palette-primary-200: 214 32% 91%;
+    --palette-primary-300: 213 27% 84%;
+    --palette-primary-400: 215 20% 65%;
+    --palette-primary-500: 215 16% 47%;
+    --palette-primary-600: 215 19% 35%;
+    --palette-primary-700: 215 25% 27%;
+    --palette-primary-800: 217 33% 17%;
+    --palette-primary-900: 222 47% 11%;
+    
+    /* Semantic colors */
+    --color-success-light: 142 72% 29%;
+    --color-success-dark: 142 76% 36%;
+    --color-warning-light: 38 92% 50%;
+    --color-warning-dark: 48 96% 53%;
+    --color-error-light: 0 84% 60%;
+    --color-error-dark: 0 74% 42%;
+    
+    /* Neutral tones */
+    --color-neutral-50: 0 0% 98%;
+    --color-neutral-100: 0 0% 96%;
+    --color-neutral-200: 0 0% 90%;
+    --color-neutral-300: 0 0% 83%;
+    --color-neutral-400: 0 0% 64%;
+    --color-neutral-500: 0 0% 45%;
+    --color-neutral-600: 0 0% 32%;
+    --color-neutral-700: 0 0% 25%;
+    --color-neutral-800: 0 0% 15%;
+    --color-neutral-900: 0 0% 9%;
+  }

@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 
 export const Nav = () => {
   const mainNavItems = [
@@ -31,7 +32,8 @@ export const Nav = () => {
           ))}
         </div>
       </div>
-      <div className="mt-auto p-4">
+      <div className="mt-auto p-4 flex flex-col items-start space-y-4">
+        <ThemeSwitcher />
         <UserButton afterSignOutUrl="/" />
       </div>
     </nav>
