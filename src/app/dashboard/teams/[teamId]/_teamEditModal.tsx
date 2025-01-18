@@ -1,10 +1,19 @@
 // app/dashboard/teams/[teamId]/_teamEditModal.tsx
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/Dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Label } from "@/components/ui/Label";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { AlertCircle } from "lucide-react";
 
 interface TeamEditModalProps {
   isOpen: boolean;
@@ -56,42 +65,53 @@ export default function TeamEditModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent>
+      <DialogContent size="base">
         <DialogHeader>
           <DialogTitle>Edit Team Details</DialogTitle>
+          <DialogDescription>
+            Make changes to your team's information.
+          </DialogDescription>
         </DialogHeader>
+        
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="text-red-500 text-sm bg-red-50 p-3 rounded-md">
-              {error}
-            </div>
+            <Alert variant="danger">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
+          
           <div className="space-y-2">
-            <Label htmlFor="teamName">Team Name</Label>
             <Input
               id="teamName"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter team name"
               required
+              inputSize="base"
+              withLabel
+              label="Team Name"
             />
           </div>
+          
           <div className="space-y-2">
-            <Label htmlFor="teamDescription">
-              Description <span className="text-gray-500">(Optional)</span>
-            </Label>
             <Textarea
               id="teamDescription"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter team description"
               rows={3}
+              inputSize="base"
+              withLabel
+              label="Description"
             />
           </div>
-          <div className="flex justify-end gap-2 pt-4">
+
+          <DialogFooter>
             <Button
               type="button"
-              variant="outline"
+              variant="neutral"
+              appearance="outline"
               onClick={handleClose}
               disabled={saving}
             >
@@ -99,11 +119,13 @@ export default function TeamEditModal({
             </Button>
             <Button
               type="submit"
+              variant="primary"
               disabled={saving || (!name.trim() || (name === teamName && description === (teamDescription || '')))}
+              isLoading={saving}
             >
-              {saving ? 'Saving...' : 'Save Changes'}
+              Save Changes
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

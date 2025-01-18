@@ -1,136 +1,146 @@
 // app/dashboard/_component/_performersByCategory.tsx
 import React from "react";
 import { useRouter } from "next/navigation";
+import { MemberPerformance, PerformanceCategory } from '@/app/dashboard/types/member';
+import { TeamPerformanceView } from "./_teamPerformanceView";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/Table";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/Select';
 import {
-  ChevronRight,
-  Star,
   Gem,
   Sparkles,
   Sparkle,
   Footprints,
   LifeBuoy,
   MinusCircle,
-  LucideIcon,
+  LayoutGrid,
+  Table as TableIcon,
 } from "lucide-react";
 
-interface Performer {
+interface Team {
   id: string;
   name: string;
-  title: string | null;
-  teamId: string;
-  teamName: string;
-  averageRating: number;
-  ratingsCount: number;
-}
-
-interface PerformerCategory {
-  title: string;
-  minRating: number;
-  maxRating: number;
-  className: string;
-  Icon: LucideIcon;
-  description?: string;
 }
 
 interface PerformersByCategoryProps {
-  category: PerformerCategory;
-  performers: Performer[];
+  category: PerformanceCategory;
+  performers: MemberPerformance[];
+  teams: Team[];
   isLoading?: boolean;
+  viewType: 'table' | 'grid';
+  onViewChange: (value: 'table' | 'grid') => void;
 }
 
-export const performanceCategories: PerformerCategory[] = [
+export const performanceCategories: PerformanceCategory[] = [
   {
-    title: "Top Performers",
+    label: "Top Performers",
     minRating: 4.6,
     maxRating: 5,
-    className: "text-green-600",
+    className: "text-success-500 bg-success-50",
     Icon: Gem,
     description: "Outstanding performance across all initiatives",
   },
   {
-    title: "Strong Performers",
+    label: "Strong Performers",
     minRating: 4,
     maxRating: 4.5,
-    className: "text-emerald-600",
+    className: "text-success-500 bg-success-50",
     Icon: Sparkles,
     description: "Consistently exceeding expectations",
   },
   {
-    title: "Solid Performers",
+    label: "Solid Performers",
     minRating: 3,
     maxRating: 3.9,
-    className: "text-blue-600",
+    className: "text-info-500 bg-info-50",
     Icon: Sparkle,
     description: "Meeting expectations consistently",
   },
   {
-    title: "Weak Performers",
+    label: "Weak Performers",
     minRating: 2.1,
     maxRating: 2.9,
-    className: "text-amber-600",
+    className: "text-warning-500 bg-warning-50",
     Icon: Footprints,
     description: "Need support to improve performance",
   },
   {
-    title: "Poor Performers",
+    label: "Poor Performers",
     minRating: 1,
     maxRating: 2,
-    className: "text-red-600",
+    className: "text-danger-500 bg-danger-50",
     Icon: LifeBuoy,
     description: "Requires immediate attention and support",
   },
   {
-    title: "Not Rated",
+    label: "Not Rated",
     minRating: 0,
     maxRating: 0,
-    className: "text-gray-600",
+    className: "text-neutral-500 bg-neutral-50",
     Icon: MinusCircle,
     description: "Members awaiting their first performance rating",
   },
 ];
 
-const StarRatingDisplay = ({ rating }: { rating: number }) => {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 >= 0.5;
+// ViewSwitcher component
+export const ViewSwitcher = ({ 
+  viewType, 
+  onViewChange 
+}: { 
+  viewType: 'table' | 'grid';
+  onViewChange: (value: 'table' | 'grid') => void;
+}) => {
+  const icons = {
+    table: <TableIcon />,
+    grid: <LayoutGrid />
+  };
 
   return (
-    <div className="flex items-center gap-1">
-      {[...Array(5)].map((_, index) => (
-        <Star
-          key={index}
-          className={`w-4 h-4 ${
-            index < fullStars
-              ? "fill-yellow-400 text-yellow-400"
-              : index === fullStars && hasHalfStar
-              ? "fill-yellow-400/50 text-yellow-400"
-              : "fill-transparent text-gray-300"
-          }`}
-        />
-      ))}
-      <span className="ml-2 text-sm font-medium">{rating.toFixed(1)}</span>
-    </div>
+    <Select 
+      size="sm"
+      value={viewType} 
+      onValueChange={onViewChange}
+    >
+      <SelectTrigger icon={icons[viewType]}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem 
+          value="table"
+          withIcon={icons.table}
+        >
+          Table View
+        </SelectItem>
+        <SelectItem 
+          value="grid"
+          withIcon={icons.grid}
+        >
+          Card View
+        </SelectItem>
+      </SelectContent>
+    </Select>
   );
 };
 
 export function PerformersByCategory({
   category,
   performers,
+  teams,
+  isLoading,
+  viewType,
+  onViewChange
 }: PerformersByCategoryProps) {
   const router = useRouter();
 
+  // Filter performers for this specific category
   const categoryPerformers = performers
     .filter((performer) => {
-      if (category.title === "Not Rated") {
+      if (category.label === "Not Rated") {
         return performer.ratingsCount === 0;
       }
       return (
@@ -140,26 +150,26 @@ export function PerformersByCategory({
       );
     })
     .sort((a, b) => {
-      if (category.title === "Not Rated") {
+      if (category.label === "Not Rated") {
         return a.name.localeCompare(b.name);
       }
       return b.averageRating - a.averageRating;
     });
 
   const EmptyState = () => (
-    <div className="flex flex-col items-center justify-center py-8 space-y-4">
-      <div className={`p-4 rounded-full bg-muted/50 ${category.className}`}>
-        <category.Icon className="w-8 h-8" />
+    <div className="flex flex-col items-center justify-center space-y-2">
+      <div className={`p-2 rounded-full bg-surface-1 ${category.className}`}>
+        <category.Icon className="size-6" />
       </div>
-      <div className="text-center space-y-2">
-        <h3 className="text-lg font-semibold">No {category.title}</h3>
-        <p className="text-muted-foreground text-sm max-w-[400px]">
-          {category.title === "Not Rated"
+      <div className="text-center space-y-1">
+        <h3 className="text-heading-3">No {category.label}</h3>
+        <p className="text-p-small text-muted max-w-[360px]">
+          {category.label === "Not Rated"
             ? "All team members have received at least one rating."
-            : category.title === "Poor Performers" ||
-              category.title === "Weak Performers"
+            : category.label === "Poor Performers" ||
+              category.label === "Weak Performers"
             ? "Great news! You don't have any team members performing below expectations."
-            : `No team members currently fall into the ${category.title.toLowerCase()} category.`}
+            : `No team members currently fall into the ${category.label.toLowerCase()} category.`}
         </p>
       </div>
     </div>
@@ -167,7 +177,7 @@ export function PerformersByCategory({
 
   if (categoryPerformers.length === 0) {
     return (
-      <Card>
+      <Card size="default" background={true} border={true}>
         <CardContent>
           <EmptyState />
         </CardContent>
@@ -176,70 +186,27 @@ export function PerformersByCategory({
   }
 
   return (
-    <Card>
+    <Card size="default" background={true} border={true}>
       <CardHeader>
-        <CardTitle className={`flex items-center gap-2 text-gray-900`}>
-          <category.Icon className={`w-5 h-5 ${category.className}`} />
-          {category.title}
+        <CardTitle className="flex items-center gap-2">
+          <category.Icon className={`size-5 ${category.className}`} />
+          {category.label}
           {category.description && (
-            <span className="text-sm font-normal text-gray-500 ml-2">
+            <span className="text-p-small text-muted">
               - {category.description}
             </span>
           )}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Job Title</TableHead>
-              <TableHead>Team</TableHead>
-              <TableHead>Rating</TableHead>
-              <TableHead className="sr-only">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {categoryPerformers.map((performer) => (
-              <TableRow key={performer.id}>
-                <TableCell className="font-medium">{performer.name}</TableCell>
-                <TableCell>{performer.title || "No title"}</TableCell>
-                <TableCell>{performer.teamName}</TableCell>
-                <TableCell>
-                  <div className="space-y-1">
-                    {performer.ratingsCount > 0 ? (
-                      <>
-                        <StarRatingDisplay rating={performer.averageRating} />
-                        <div className="text-sm text-gray-500">
-                          {performer.ratingsCount}{" "}
-                          {performer.ratingsCount === 1 ? "rating" : "ratings"}
-                        </div>
-                      </>
-                    ) : (
-                      <span className="text-sm text-gray-500">
-                        No ratings yet
-                      </span>
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      router.push(
-                        `/dashboard/teams/${performer.teamId}/members/${performer.id}`
-                      )
-                    }
-                  >
-                    View Details
-                    <ChevronRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <TeamPerformanceView
+          members={categoryPerformers}
+          teams={teams}
+          showAvatar={true}
+          mode="compact"
+          viewType={viewType}
+          onViewChange={onViewChange}
+        />
       </CardContent>
     </Card>
   );

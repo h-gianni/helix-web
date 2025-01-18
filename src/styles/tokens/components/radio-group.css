@@ -1,0 +1,168 @@
+/* radio-group.css */
+
+/* Base Radio Group */
+.radio-group-base {
+  @apply w-full;
+}
+
+/* Orientation Variants */
+.radio-group-vertical {
+  @apply grid gap-2;
+}
+
+.radio-group-horizontal {
+  @apply flex gap-6;
+}
+
+/* Block Variant */
+.radio-group-blocks-vertical {
+  @apply grid gap-4;
+}
+
+.radio-group-blocks-horizontal {
+  @apply flex gap-4;
+}
+
+/* Compact Variant */
+.radio-group-compact {
+  @apply flex overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-800;
+}
+
+.radio-group-compact-vertical {
+  @apply flex-col divide-y divide-neutral-200 dark:divide-neutral-800;
+}
+
+.radio-group-compact-horizontal {
+  @apply h-full divide-x divide-neutral-200 dark:divide-neutral-800;
+}
+
+/* Error State */
+.radio-group-error {
+  @apply border-danger-500;
+}
+
+/* Base Radio */
+.radio-base {
+  @apply size-4 rounded-full border
+         bg-white dark:bg-neutral-800 dark:border-neutral-700
+         transition-all duration-150 ease-out;
+         border-color: var(--border-form);
+}
+
+/* Radio States */
+.radio-default {
+  @apply hover:border-primary-500 dark:hover:border-primary-400
+         data-[state=checked]:border-primary-500 data-[state=checked]:bg-primary-500
+         dark:data-[state=checked]:border-primary-500 dark:data-[state=checked]:bg-primary-500;
+}
+
+.radio-error {
+  @apply border-danger-500 hover:border-danger-600
+         data-[state=checked]:border-danger-500 data-[state=checked]:bg-danger-500;
+}
+
+/* Focus States */
+.radio-focus {
+  @apply ring-offset-white dark:ring-offset-neutral-900
+         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+         focus-visible:ring-primary-500 dark:focus-visible:ring-primary-400;
+}
+
+.radio-focus-error {
+  @apply focus-visible:ring-danger-500;
+}
+
+/* Disabled State */
+.radio-disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
+/* Radio Container */
+.radio-container {
+  @apply relative flex size-4 items-center justify-center;
+}
+
+/* Radio Indicator */
+.radio-indicator {
+  @apply flex h-full w-full items-center justify-center text-white dark:text-neutral-800
+         data-[state=checked]:text-white dark:data-[state=checked]:text-white
+         animate-in zoom-in-50 duration-150;
+}
+
+/* Block and Compact Label */
+.radio-label-wrapper {
+  @apply relative flex cursor-pointer flex-1 h-full
+         transition-colors duration-150
+         hover:bg-neutral-50 dark:hover:bg-neutral-800/50
+         p-4;
+}
+
+.radio-label-wrapper[data-state="checked"] {
+  @apply bg-primary-50 dark:bg-primary-900/10;
+}
+
+/* Add styles for radio checked state in blocks variant */
+.radio-label-wrapper-blocks[data-state="checked"] {
+  @apply border-primary-500 dark:border-primary-500;
+}
+
+/* Add styles for radio checked state in compact variant */
+.radio-label-wrapper-compact-vertical[data-state="checked"],
+.radio-label-wrapper-compact-horizontal[data-state="checked"] {
+  @apply border-primary-500 dark:border-primary-500;
+}
+
+.radio-label-wrapper-blocks {
+  @apply rounded-lg border border-neutral-200 dark:border-neutral-800
+         data-[state=checked]:border-primary-500;
+}
+
+.radio-label-wrapper-compact-vertical {
+  @apply first:rounded-t-lg last:rounded-b-lg
+         data-[state=checked]:border data-[state=checked]:border-primary-500;
+}
+
+.radio-label-wrapper-compact-horizontal {
+  @apply first:rounded-l-lg last:rounded-r-lg h-full
+         data-[state=checked]:border data-[state=checked]:border-primary-500;
+}
+
+/* Content Wrapper */
+.radio-content-wrapper {
+  @apply flex min-w-0 w-full gap-3 items-start;
+}
+
+.radio-content-wrapper-horizontal {
+  @apply h-full;
+}
+
+/* Label Content */
+.radio-label-content {
+  @apply min-w-0 flex-1 -mt-1 space-y-0.5;
+}
+.radio-label-row {
+ @apply flex items-center gap-3;
+}
+
+.radio-label-text {
+  @apply text-heading-4;
+}
+
+.radio-description {
+  @apply text-p-small text-neutral-500;
+}
+
+/* Print styles */
+@media print {
+  .radio-base {
+    @apply  bg-white text-neutral-900
+           print:ring-offset-white;
+           border-color: var(--border-form);
+  }
+  
+  .radio-group-compact,
+  .radio-label-wrapper-blocks {
+    @apply print:border;
+    border-color: var(--border-form);
+  }
+}

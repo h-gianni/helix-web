@@ -12,14 +12,14 @@ interface MemberPerformance {
   ratingsCount: number;
 }
 
-interface MemberWithScores {
+interface MemberWithRatings {
   id: string;
   title: string | null;
   user: {
     name: string | null;
     email: string;
   };
-  scores: {
+  ratings: {
     value: number;
   }[];
 }
@@ -39,7 +39,7 @@ export async function GET(
       );
     }
 
-    // Get team and its members
+    // Get team and its members with ratings
     const team = await prisma.team.findUnique({
       where: { 
         id: params.teamId 
@@ -53,7 +53,7 @@ export async function GET(
                 email: true,
               },
             },
-            scores: {
+            ratings: {  // Changed from scores to ratings
               select: {
                 value: true,
               },
@@ -75,16 +75,16 @@ export async function GET(
     }
 
     // Map members to performance data
-    const performanceData: MemberPerformance[] = team.members.map((member: MemberWithScores) => {
+    const performanceData: MemberPerformance[] = team.members.map((member: MemberWithRatings) => {
       console.log('Processing member:', member.user.email);
-      console.log('Member scores:', member.scores.length);
+      console.log('Member ratings:', member.ratings.length);
 
-      const totalScores = member.scores.length;
-      const averageRating = totalScores > 0
-        ? member.scores.reduce(
-            (sum: number, score: { value: number }) => sum + score.value, 
+      const totalRatings = member.ratings.length;
+      const averageRating = totalRatings > 0
+        ? member.ratings.reduce(
+            (sum: number, rating: { value: number }) => sum + rating.value, 
             0
-          ) / totalScores
+          ) / totalRatings
         : 0;
 
       return {
@@ -92,7 +92,7 @@ export async function GET(
         name: member.user.name || member.user.email,
         title: member.title,
         averageRating,
-        ratingsCount: totalScores,
+        ratingsCount: totalRatings,
       };
     });
 

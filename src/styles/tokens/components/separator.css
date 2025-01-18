@@ -1,0 +1,160 @@
+/* separator.css */
+
+/* Base Separator */
+.separator-base {
+  @apply shrink-0 transition-colors duration-150;
+}
+
+/* Variants */
+.separator-default {
+  @apply bg-neutral-300 dark:bg-neutral-700;
+}
+
+.separator-muted {
+  @apply bg-neutral-200 dark:bg-neutral-800;
+}
+
+.separator-accent {
+  @apply bg-primary-500 dark:bg-primary-400;
+}
+
+/* Orientations */
+.separator-horizontal {
+  @apply h-px w-full my-2;
+}
+
+.separator-vertical {
+  @apply h-full w-px mx-2;
+}
+
+/* Dashed Variant */
+.separator-dashed {
+  @apply bg-transparent border-0;
+}
+
+.separator-dashed.separator-horizontal {
+  @apply border-b border-dashed border-neutral-200 dark:border-neutral-700;
+}
+
+.separator-dashed.separator-vertical {
+  @apply border-r border-dashed border-neutral-200 dark:border-neutral-700;
+}
+
+/* Dotted Variant */
+.separator-dotted {
+  @apply bg-transparent border-0;
+}
+
+.separator-dotted.separator-horizontal {
+  @apply border-b border-dotted border-neutral-200 dark:border-neutral-700;
+}
+
+.separator-dotted.separator-vertical {
+  @apply border-r border-dotted border-neutral-200 dark:border-neutral-700;
+}
+
+/* Gradient Variants */
+.separator-gradient {
+  @apply border-none;
+}
+
+.separator-gradient.separator-horizontal {
+  @apply bg-gradient-to-r from-transparent via-neutral-200 to-transparent
+         dark:via-neutral-700;
+}
+
+.separator-gradient.separator-vertical {
+  @apply bg-gradient-to-b from-transparent via-neutral-200 to-transparent
+         dark:via-neutral-700;
+}
+
+/* With Text */
+.separator-with-text {
+  @apply flex items-center gap-4 my-4 text-p-small;
+}
+
+.separator-with-text::before,
+.separator-with-text::after {
+  @apply flex-1 h-px bg-neutral-200 dark:bg-neutral-700;
+  content: '';
+}
+
+/* With Text Variants */
+.separator-with-text-muted::before,
+.separator-with-text-muted::after {
+  @apply bg-neutral-100 dark:bg-neutral-800;
+}
+
+.separator-with-text-accent::before,
+.separator-with-text-accent::after {
+  @apply bg-primary-500 dark:bg-primary-400;
+}
+
+.separator-with-text-gradient::before {
+  @apply bg-gradient-to-r from-transparent to-neutral-200 dark:to-neutral-700;
+}
+
+.separator-with-text-gradient::after {
+  @apply bg-gradient-to-r from-neutral-200 to-transparent dark:from-neutral-700;
+}
+
+/* Sizes */
+.separator-sm {
+  @apply my-2;
+}
+
+.separator-md {
+  @apply my-4;
+}
+
+.separator-lg {
+  @apply my-6;
+}
+
+/* Thickness Variants */
+.separator-thin {
+  @apply h-[0.5px] dark:h-px;
+}
+
+.separator-thick {
+  @apply h-0.5;
+}
+
+.separator-thicker {
+  @apply h-1;
+}
+
+/* Interactive States */
+.separator-interactive {
+  @apply hover:bg-neutral-300 dark:hover:bg-neutral-600
+         active:bg-neutral-400 dark:active:bg-neutral-500
+         cursor-col-resize;
+}
+
+/* Animated Variants */
+.separator-shimmer {
+  @apply relative overflow-hidden;
+}
+
+.separator-shimmer::after {
+  @apply absolute inset-0 -translate-x-full
+         bg-gradient-to-r from-transparent
+         via-white/10 to-transparent dark:via-white/5;
+  animation: shimmer 2s infinite;
+  content: '';
+}
+
+/* Double Line */
+.separator-double.separator-horizontal {
+  @apply h-[3px] bg-none border-t border-b border-neutral-200 dark:border-neutral-700;
+}
+
+.separator-double.separator-vertical {
+  @apply w-[3px] bg-none border-l border-r border-neutral-200 dark:border-neutral-700;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

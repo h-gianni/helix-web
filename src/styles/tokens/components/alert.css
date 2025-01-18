@@ -1,0 +1,166 @@
+/* alert.css */
+
+/* Base Alert Styles */
+.alert-base {
+  @apply relative rounded
+         flex items-start 
+         transition-all duration-150 ease-out
+         outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+/* Size Variants */
+.alert-base {
+  @apply px-4 py-3 gap-3;
+}
+
+.alert-sm {
+  @apply px-3 py-2.5 gap-2.5;
+}
+
+/* Alert Variants */
+.alert-default {
+  @apply bg-surface-0 dark:bg-surface-2
+         border border-neutral-200 dark:border-neutral-800
+         shadow-sm
+         focus:ring-neutral-200 dark:focus:ring-neutral-800;
+}
+
+.alert-primary {
+  @apply bg-primary-25 dark:bg-primary-500/10
+         border border-primary-100 dark:border-primary-800
+         shadow-sm
+         focus:ring-primary-200 dark:focus:ring-primary-800;
+}
+
+.alert-danger {
+  @apply bg-danger-25 dark:bg-danger-500/10
+         border border-danger-100 dark:border-danger-800
+         shadow-sm
+         focus:ring-danger-200 dark:focus:ring-danger-800;
+}
+
+.alert-warning {
+  @apply bg-warning-25 dark:bg-warning-500/10
+         border border-warning-100 dark:border-warning-800
+         shadow-sm
+         focus:ring-warning-200 dark:focus:ring-warning-800;
+}
+
+/* Icon Container */
+.alert-icon {
+  @apply flex-shrink-0 mt-[2px];
+}
+
+/* Icon sizes */
+.alert-icon-base svg {
+  @apply size-5;
+}
+
+.alert-icon-sm svg {
+  @apply size-4;
+}
+
+/* Icon colors */
+.alert-icon-default {
+  @apply text-neutral-400 dark:text-neutral-400;
+}
+
+.alert-icon-primary {
+  @apply text-primary-300 dark:text-primary-400;
+}
+
+.alert-icon-danger {
+  @apply text-danger-300 dark:text-danger-400;
+}
+
+.alert-icon-warning {
+  @apply text-warning-300 dark:text-warning-400;
+}
+
+/* Content Container */
+.alert-content {
+  @apply flex-grow min-w-0 relative;
+}
+
+.alert-content div {
+  @apply space-y-0;
+}
+
+/* Alert Title */
+.alert-title {
+  @apply font-semibold;
+}
+
+/* Title sizes */
+.alert-title-base {
+  @apply text-base;
+}
+
+.alert-title-sm {
+  @apply text-sm;
+}
+
+/* Title colors */
+.alert-title-default {
+  @apply text-neutral-600 dark:text-neutral-200;
+}
+
+.alert-title-primary {
+  @apply text-primary-600 dark:text-primary-300;
+}
+
+.alert-title-danger {
+  @apply text-danger-600 dark:text-danger-300;
+}
+
+.alert-title-warning {
+  @apply text-warning-600 dark:text-warning-300;
+}
+
+/* Alert Description */
+.alert-description {
+  @apply leading-normal;
+}
+
+/* Description sizes */
+.alert-description-base {
+  @apply text-base;
+}
+
+.alert-description-sm {
+  @apply text-sm;
+}
+
+/* Description colors */
+.alert-description-default {
+  @apply text-neutral-600 dark:text-neutral-400;
+}
+
+.alert-description-primary {
+  @apply text-primary-600 dark:text-primary-400;
+}
+
+.alert-description-danger {
+  @apply text-danger-600 dark:text-danger-400;
+}
+
+.alert-description-warning {
+  @apply text-warning-600 dark:text-warning-400;
+}
+
+/* Focus and Hover states */
+.alert-base:focus-visible {
+  @apply outline-none ring-2 ring-offset-2;
+}
+
+/* Animation */
+.alert-base {
+  @apply animate-in fade-in-0 duration-300;
+}
+
+/* Print styles */
+@media print {
+  .alert-base {
+    @apply shadow-none border print:break-inside-avoid;
+  }
+}

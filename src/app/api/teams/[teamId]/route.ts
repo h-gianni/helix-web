@@ -1,3 +1,4 @@
+// app/api/teams/[teamId]/route.ts
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
@@ -10,16 +11,17 @@ import type {
 
 // Helper to check if user is team owner
 async function isTeamOwner(clerkId: string, teamId: string) {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.appUser.findUnique({
     where: { clerkId },
   });
 
   if (!user) return false;
 
-  const team = await prisma.team.findFirst({
+  const team = await prisma.gTeam.findFirst({
     where: {
       id: teamId,
       ownerId: user.id,
+      deletedAt: null,
     },
   });
 
@@ -28,28 +30,36 @@ async function isTeamOwner(clerkId: string, teamId: string) {
 
 // Helper to check if user has access to team
 async function checkTeamAccess(teamId: string, userId: string) {
-  // First check if user exists
-  const user = await prisma.user.findUnique({
-    where: { clerkId: userId },
+  // First check if user exists and not deleted
+  const user = await prisma.appUser.findUnique({
+    where: { 
+      clerkId: userId,
+      deletedAt: null
+    },
   });
 
   if (!user) return false;
 
   // Check if user is team owner first
-  const team = await prisma.team.findFirst({
+  const team = await prisma.gTeam.findFirst({
     where: {
       id: teamId,
       ownerId: user.id,
+      deletedAt: null,
     },
   });
 
   if (team) return true; // Owner always has access
 
   // If not owner, check if they're a member
-  const member = await prisma.member.findFirst({
+  const member = await prisma.teamMember.findFirst({
     where: {
       teamId,
       userId: user.id,
+      deletedAt: null,
+      team: {
+        deletedAt: null
+      }
     },
   });
 
@@ -85,10 +95,25 @@ export const GET = async (
       );
     }
 
-    const team = await prisma.team.findUnique({
-      where: { id: params.teamId },
+    const team = await prisma.gTeam.findUnique({
+      where: { 
+        id: params.teamId,
+        deletedAt: null
+      },
       include: {
-        members: {
+        teamFunction: {
+          include: {
+            jobTitles: {
+              where: {
+                deletedAt: null
+              }
+            },
+          }
+        },
+        teamMembers: {
+          where: {
+            deletedAt: null
+          },
           include: {
             user: {
               select: {
@@ -97,9 +122,18 @@ export const GET = async (
                 name: true,
               },
             },
+            jobGrade: true,
+            ratings: {
+              include: {
+                activity: true,
+              },
+            },
           },
         },
-        initiatives: {
+        activities: {
+          where: {
+            deletedAt: null
+          },
           include: {
             team: {
               select: {
@@ -130,17 +164,31 @@ export const GET = async (
       id: team.id,
       name: team.name,
       description: team.description,
-      ownerId: team.ownerId, // Add ownerId field
+      businessFunctionId: team.teamFunctionId,
+      businessFunction: {
+        id: team.teamFunction.id,
+        name: team.teamFunction.name,
+        description: team.teamFunction.description,
+        jobTitles: team.teamFunction.jobTitles,
+        createdAt: team.teamFunction.createdAt,
+        updatedAt: team.teamFunction.updatedAt,
+      },
+      ownerId: team.ownerId,
       createdAt: team.createdAt,
       updatedAt: team.updatedAt,
-      members: team.members.map((member) => ({
+      members: team.teamMembers.map((member) => ({
         id: member.id,
         userId: member.userId,
         teamId: member.teamId,
         title: member.title,
         isAdmin: member.isAdmin,
+        status: member.status,
         firstName: member.firstName,
         lastName: member.lastName,
+        photoUrl: member.photoUrl,
+        joinedDate: member.joinedDate,
+        jobGradeId: member.jobGradeId,
+        jobGrade: member.jobGrade,
         createdAt: member.createdAt,
         updatedAt: member.updatedAt,
         user: {
@@ -148,15 +196,27 @@ export const GET = async (
           email: member.user.email,
           name: member.user.name,
         },
+        ratings: member.ratings.map(rating => ({
+          id: rating.id,
+          value: rating.value,
+          activityId: rating.activityId,
+          activity: rating.activity,
+          createdAt: rating.createdAt,
+          updatedAt: rating.updatedAt,
+        })),
       })),
-      initiatives: team.initiatives.map((initiative) => ({
-        id: initiative.id,
-        name: initiative.name,
-        description: initiative.description,
-        teamId: initiative.teamId,
-        createdAt: initiative.createdAt,
-        updatedAt: initiative.updatedAt,
-        team: initiative.team,
+      businessActivities: team.activities.map((activity) => ({
+        id: activity.id,
+        name: activity.name,
+        description: activity.description,
+        teamId: activity.teamId,
+        category: activity.category,
+        priority: activity.priority,
+        status: activity.status,
+        dueDate: activity.dueDate,
+        createdAt: activity.createdAt,
+        updatedAt: activity.updatedAt,
+        team: activity.team,
       })),
     };
 
@@ -189,6 +249,15 @@ export async function PATCH(
       );
     }
 
+    // Check if user is owner
+    const isOwner = await isTeamOwner(userId, params.teamId);
+    if (!isOwner) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Only team owners can update team details" },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { name, description } = body;
 
@@ -199,17 +268,44 @@ export async function PATCH(
       );
     }
 
-    const team = await prisma.team.update({
+    const team = await prisma.gTeam.update({
       where: { id: params.teamId },
       data: {
         name: name.trim(),
         description: description?.trim() || null,
       },
+      include: {
+        teamFunction: {
+          include: {
+            jobTitles: {
+              where: {
+                deletedAt: null
+              }
+            },
+          }
+        },
+      },
     });
 
     return NextResponse.json<ApiResponse<TeamResponse>>({
       success: true,
-      data: team as TeamResponse,
+      data: {
+        id: team.id,
+        name: team.name,
+        description: team.description,
+        businessFunctionId: team.teamFunctionId,
+        businessFunction: {
+          id: team.teamFunction.id,
+          name: team.teamFunction.name,
+          description: team.teamFunction.description,
+          jobTitles: team.teamFunction.jobTitles,
+          createdAt: team.teamFunction.createdAt,
+          updatedAt: team.teamFunction.updatedAt,
+        },
+        ownerId: team.ownerId,
+        createdAt: team.createdAt,
+        updatedAt: team.updatedAt,
+      },
     });
   } catch (error) {
     console.error("Error updating team:", error);
@@ -249,53 +345,85 @@ export const DELETE = async (
       );
     }
 
-    // Delete all related records in a transaction
+    const now = new Date();
+
+    // Soft delete all related records in a transaction
     await prisma.$transaction(async (tx: TransactionClient) => {
-      // Delete all scores for this team's members
-      await tx.score.deleteMany({
+      // Soft delete all ratings for this team's members
+      await tx.memberRating.updateMany({
         where: {
-          member: {
+          teamMember: {
             teamId: params.teamId,
           },
         },
-      });
-
-      // Delete all goals for this team's members
-      await tx.goal.deleteMany({
-        where: {
-          member: {
-            teamId: params.teamId,
-          },
+        data: {
+          deletedAt: now,
         },
       });
 
-      // Delete all reports for this team's members
-      await tx.report.deleteMany({
+      // Soft delete all structured feedback
+      await tx.structuredFeedback.updateMany({
         where: {
-          member: {
+          teamMember: {
             teamId: params.teamId,
           },
         },
+        data: {
+          deletedAt: now,
+        },
       });
 
-      // Delete all members
-      await tx.member.deleteMany({
+      // Soft delete all comments
+      await tx.memberComment.updateMany({
+        where: {
+          teamMember: {
+            teamId: params.teamId,
+          },
+        },
+        data: {
+          deletedAt: now,
+        },
+      });
+
+      // Soft delete all performance reviews
+      await tx.performanceReview.updateMany({
+        where: {
+          teamMember: {
+            teamId: params.teamId,
+          },
+        },
+        data: {
+          deletedAt: now,
+        },
+      });
+
+      // Soft delete all members
+      await tx.teamMember.updateMany({
         where: {
           teamId: params.teamId,
         },
-      });
-
-      // Delete all initiatives
-      await tx.initiative.deleteMany({
-        where: {
-          teamId: params.teamId,
+        data: {
+          deletedAt: now,
         },
       });
 
-      // Finally, delete the team
-      await tx.team.delete({
+      // Soft delete activities for this team
+      await tx.businessActivity.updateMany({
+        where: {
+          teamId: params.teamId,
+        },
+        data: {
+          deletedAt: now,
+        },
+      });
+
+      // Finally, soft delete the team
+      await tx.gTeam.update({
         where: {
           id: params.teamId,
+        },
+        data: {
+          deletedAt: now,
         },
       });
     });

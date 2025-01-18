@@ -1,0 +1,87 @@
+/* avatar.css */
+
+/* Base Avatar Styles */
+.avatar-base {
+  @apply relative flex shrink-0 overflow-hidden rounded-full 
+         ring-2 ring-white dark:ring-neutral-900
+         transition-all duration-150 ease-out;
+}
+
+/* Avatar Sizes */
+.avatar-sm {
+  @apply h-7 w-7;
+}
+
+.avatar-md {
+  @apply h-10 w-10;
+}
+
+.avatar-lg {
+  @apply h-14 w-14;
+}
+
+.avatar-xl {
+  @apply h-20 w-20;
+}
+
+/* Avatar Image */
+.avatar-image {
+  @apply aspect-square h-full w-full object-cover;
+}
+
+/* Avatar Fallback */
+.avatar-fallback {
+  @apply flex h-full w-full items-center justify-center rounded-full
+         bg-neutral-100 dark:bg-neutral-700
+         text-neutral-600 dark:text-neutral-300
+         font-medium;
+}
+
+/* Fallback Text Sizes */
+.avatar-fallback-sm {
+  @apply text-xs;
+}
+
+.avatar-fallback-md {
+  @apply text-sm;
+}
+
+.avatar-fallback-lg {
+  @apply text-base;
+}
+
+.avatar-fallback-xl {
+  @apply text-xl;
+}
+
+/* Avatar Group */
+.avatar-group {
+  @apply flex -space-x-2;
+}
+
+.avatar-group .avatar-base {
+  @apply ring-2 ring-white dark:ring-neutral-900;
+}
+
+/* Avatar Status - if needed 
+.avatar-status {
+  @apply absolute bottom-0 right-0 h-1/4 w-1/4 
+         rounded-full ring-2 ring-white dark:ring-neutral-900;
+}
+
+.avatar-status-online {
+  @apply bg-success-500;
+}
+
+.avatar-status-offline {
+  @apply bg-neutral-300 dark:bg-neutral-600;
+}
+
+.avatar-status-busy {
+  @apply bg-danger-500;
+}
+
+.avatar-status-away {
+  @apply bg-warning-500;
+}
+*/

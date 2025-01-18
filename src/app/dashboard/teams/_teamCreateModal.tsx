@@ -1,19 +1,29 @@
-// app/dashboard/teams/_teamCreateModal.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { AlertCircle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/Select";
+import type { DisciplineResponse } from "@/lib/types/api";
 
 interface TeamCreateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateTeam: (name: string) => Promise<void>;
+  onCreateTeam: (name: string, disciplineId: string) => Promise<void>;
 }
 
 export default function TeamCreateModal({
@@ -22,26 +32,56 @@ export default function TeamCreateModal({
   onCreateTeam,
 }: TeamCreateModalProps) {
   const [teamName, setTeamName] = useState("");
+  const [disciplineId, setDisciplineId] = useState("");
+  const [disciplines, setDisciplines] = useState<DisciplineResponse[]>([]);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Reset form
+  useEffect(() => {
+    const fetchDisciplines = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch("/api/disciplines");
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || "Failed to fetch disciplines");
+        }
+
+        setDisciplines(data.data);
+      } catch (err) {
+        console.error("Error fetching disciplines:", err);
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isOpen) {
+      fetchDisciplines();
+    }
+  }, [isOpen]);
+
   const resetForm = () => {
     setTeamName("");
+    setDisciplineId("");
     setError(null);
   };
 
-  // Handle submit
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log("create modal");
-
     e.preventDefault();
 
     try {
       setSaving(true);
       setError(null);
 
-      await onCreateTeam(teamName.trim());
+      if (!disciplineId) {
+        throw new Error("Please select a discipline");
+      }
+
+      await onCreateTeam(teamName.trim(), disciplineId);
       resetForm();
       onClose();
     } catch (err) {
@@ -51,7 +91,6 @@ export default function TeamCreateModal({
     }
   };
 
-  // Handle modal close
   const handleClose = () => {
     resetForm();
     onClose();
@@ -59,42 +98,79 @@ export default function TeamCreateModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent>
+      <DialogContent size="base">
         <DialogHeader>
           <DialogTitle>Create New Team</DialogTitle>
+          <DialogDescription>
+            Create a new team by selecting its discipline and providing a name.
+          </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="text-red-500 text-sm bg-red-50 p-3 rounded-md">
-              {error}
-            </div>
+            <Alert variant="danger">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="teamName">Team Name</Label>
+          <div className="space-y-4">
+            <Select 
+              value={disciplineId} 
+              onValueChange={setDisciplineId}
+              disabled={loading}
+              withLabel
+              label="Discipline"
+            >
+              <SelectTrigger>
+                <SelectValue 
+                  placeholder={loading ? "Loading disciplines..." : "Select a discipline"} 
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {disciplines.map((discipline) => (
+                  <SelectItem 
+                    key={discipline.id} 
+                    value={discipline.id}
+                  >
+                    {discipline.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <Input
               id="teamName"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
               placeholder="Enter team name"
+              inputSize="base"
               required
+              withLabel
+              label="Team Name"
+              error={!!error}
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
+          <DialogFooter>
             <Button
               type="button"
-              variant="outline"
+              variant="neutral"
+              appearance="default"
               onClick={handleClose}
               disabled={saving}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={saving || !teamName.trim()}>
-              {saving ? "Creating..." : "Create Team"}
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={saving || !teamName.trim() || !disciplineId || loading}
+              isLoading={saving}
+            >
+              Create Team
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

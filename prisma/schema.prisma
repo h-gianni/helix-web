@@ -1,106 +1,306 @@
+// This schema uses PostgreSQL specific features
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  clerkId   String?  @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  members   Member[]
-  teams     Team[]
+// Enums
+enum TeamMemberStatus {
+  ACTIVE
+  INACTIVE
+  ONLEAVE
 }
 
-model Team {
-  id                  String           @id @default(cuid())
-  name                String
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
-  ownerId             String
-  description         String?
-  initiatives         Initiative[]
-  members             Member[]
-  owner               User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  selectedInitiatives TeamInitiative[]
+enum ReviewStatus {
+  DRAFT
+  PUBLISHED
+  ACKNOWLEDGED
 }
 
-model Member {
-  id        String   @id @default(cuid())
-  userId    String
-  teamId    String
-  title     String?
-  isAdmin   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  firstName String?
-  lastName  String?
-  goals     Goal[]
-  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reports   Report[]
-  scores    Score[]
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum BusinessActivityStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum EntityType {
+  APP_USER
+  TEAM_FUNCTION
+  JOB_TITLE
+  JOB_GRADE
+  BUSINESS_ACTIVITY
+  G_TEAM
+  TEAM_MEMBER
+  MEMBER_RATING
+  STRUCTURED_FEEDBACK
+  MEMBER_COMMENT
+  PERFORMANCE_REVIEW
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  RESTORE
+  STATUS_CHANGE
+}
+
+/// @description Stores user authentication and basic profile information
+model AppUser {
+  id        String    @id @default(cuid())
+  /// @description User's email address for notifications and communication
+  email     String    @unique @db.VarChar(255)
+  name      String?   @db.VarChar(100)
+  /// @description Unique identifier from Clerk authentication service
+  clerkId   String?   @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  customFields Json?  // For extensible user properties
+  
+  // Relations
+  teamMembers      TeamMember[]
+  teams          GTeam[]    @relation("TeamOwner")
+  createdActivities BusinessActivity[]
+
+  @@map("app_users")
+  @@index([deletedAt])
+}
+
+model TeamFunction {
+  id          String    @id @default(cuid())
+  name        String    @unique @db.VarChar(100)
+  description String?   @db.VarChar(500)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  customFields Json?
+
+  // Relations
+  jobTitles   JobTitle[]
+  teams       GTeam[]
+
+  @@map("team_functions")
+  @@index([deletedAt])
+}
+
+model JobTitle {
+  id             String       @id @default(cuid())
+  name           String       @db.VarChar(100)
+  teamFunctionId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  customFields   Json?
+
+  // Relations
+  teamFunction   TeamFunction @relation(fields: [teamFunctionId], references: [id])
+
+  @@unique([name, teamFunctionId])
+  @@index([teamFunctionId])
+  @@index([deletedAt])
+  @@map("job_titles")
+}
+
+model JobGrade {
+  id                      String    @id @default(cuid())
+  level                   Int       @unique
+  grade                   String    @unique @db.VarChar(50)
+  typicalResponsibilities String?   @db.Text
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime   @updatedAt
+  deletedAt              DateTime?
+  customFields           Json?
+
+  // Relations
+  teamMembers           TeamMember[]
+
+  @@map("job_grades")
+  @@index([deletedAt])
+}
+
+model BusinessActivity {
+  id          String                 @id @default(cuid())
+  name        String                 @unique @db.VarChar(200)
+  description String?                @db.Text
+  category    String?                @db.VarChar(100)
+  priority    Priority               @default(MEDIUM)
+  status      BusinessActivityStatus @default(ACTIVE)
+  dueDate     DateTime?
+  teamId      String
+  createdBy   String
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  deletedAt   DateTime?
+  customFields Json?
+
+  // Relations
+  team        GTeam          @relation(fields: [teamId], references: [id])
+  user        AppUser       @relation(fields: [createdBy], references: [id])
+  ratings     MemberRating[]
+
+  @@index([teamId, createdAt])
+  @@index([status])
+  @@index([createdBy])
+  @@index([deletedAt])
+  @@map("business_activities")
+}
+
+model GTeam {
+  id             String       @id @default(cuid())
+  name           String       @db.VarChar(200)
+  description    String?      @db.Text
+  teamFunctionId String
+  ownerId        String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  customFields   Json?
+
+  // Relations
+  teamFunction   TeamFunction @relation(fields: [teamFunctionId], references: [id])
+  owner          AppUser      @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  teamMembers    TeamMember[]
+  activities     BusinessActivity[]
+
+  @@unique([name, ownerId])
+  @@index([teamFunctionId])
+  @@index([ownerId])
+  @@index([deletedAt])
+  @@map("g_teams")
+}
+
+model TeamMember {
+  id          String               @id @default(cuid())
+  userId      String
+  teamId      String
+  title       String?              @db.VarChar(100)
+  isAdmin     Boolean              @default(false)
+  status      TeamMemberStatus     @default(ACTIVE)
+  firstName   String?              @db.VarChar(50)
+  lastName    String?              @db.VarChar(50)
+  photoUrl    String?              @db.Text
+  joinedDate  DateTime?
+  jobGradeId  String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  deletedAt   DateTime?
+  customFields Json?
+
+  // Relations
+  user        AppUser              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  team        GTeam                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  jobGrade    JobGrade?            @relation(fields: [jobGradeId], references: [id])
+  ratings     MemberRating[]
+  feedback    StructuredFeedback[]
+  comments    MemberComment[]
+  reviews     PerformanceReview[]
 
   @@unique([userId, teamId])
+  @@index([teamId])
+  @@index([jobGradeId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("team_members")
 }
 
-model Initiative {
-  id          String           @id @default(cuid())
-  name        String
-  description String?
-  teamId      String?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-  team        Team?            @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  scores      Score[]
-  teams       TeamInitiative[]
-}
-
-model TeamInitiative {
-  id           String     @id @default(cuid())
-  teamId       String
-  initiativeId String
-  createdAt    DateTime   @default(now())
-  initiative   Initiative @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
-  team         Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
-
-  @@unique([teamId, initiativeId])
-}
-
-model Score {
-  id           String     @id @default(cuid())
-  value        Int
-  feedback     String?
-  memberId     String
-  initiativeId String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  initiative   Initiative @relation(fields: [initiativeId], references: [id], onDelete: Cascade)
-  member       Member     @relation(fields: [memberId], references: [id], onDelete: Cascade)
-}
-
-model Goal {
+model MemberRating {
   id          String   @id @default(cuid())
-  memberId    String
-  description String
-  year        Int
+  value       Int      @db.SmallInt
+  teamMemberId String
+  activityId  String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  // Relations
+  teamMember  TeamMember       @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  activity    BusinessActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@index([teamMemberId])
+  @@index([activityId])
+  @@index([createdAt])
+  @@map("member_ratings")
 }
 
-model Report {
-  id        String   @id @default(cuid())
-  content   String
-  memberId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  member    Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+model StructuredFeedback {
+  id           String   @id @default(cuid())
+  strengths    String[] @db.Text
+  improvements String[] @db.Text
+  goals        String[] @db.Text
+  teamMemberId String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  customFields Json?
+
+  // Relations
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  @@index([teamMemberId])
+  @@index([createdAt])
+  @@map("structured_feedback")
+}
+
+model MemberComment {
+  id           String   @id @default(cuid())
+  content      String   @db.VarChar(2000)
+  teamMemberId String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  teamMember   TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  @@index([teamMemberId])
+  @@index([createdAt])
+  @@map("member_comments")
+}
+
+model PerformanceReview {
+  id           String       @id @default(cuid())
+  quarter      Int         @db.SmallInt
+  year         Int
+  content      String      @db.Text
+  status       ReviewStatus @default(DRAFT)
+  version      Int         @default(1)
+  teamMemberId String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  customFields Json?
+
+  // Relations
+  teamMember   TeamMember  @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+
+  @@unique([teamMemberId, quarter, year])
+  @@index([teamMemberId])
+  @@index([status, teamMemberId])
+  @@index([year, quarter])
+  @@index([createdAt])
+  @@map("performance_reviews")
+}
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  action      AuditAction
+  entityType  EntityType
+  entityId    String
+  changes     Json
+  performedBy String
+  createdAt   DateTime    @default(now())
+
+  @@index([entityType, entityId])
+  @@index([performedBy])
+  @@index([createdAt])
+  @@map("audit_logs")
 }

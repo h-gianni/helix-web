@@ -2,195 +2,230 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import type { Prisma } from "@prisma/client";
 import type { ApiResponse, TeamResponse } from "@/lib/types/api";
 
-interface UserWithTeams {
-  teams: Team[];
-  members: TeamMember[];
-}
-
-interface Team {
-  id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-  ownerId: string;
-}
-
-interface TeamMember {
-  team: Team;
-}
-
-// Add initiative interface based on your schema
-interface Initiative {
-  id: string;
-  name: string;
-  description: string | null;
-  teamId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export const POST = async (request: Request) => {
-  const { userId } = await auth();
-
-  try {
-    if (!userId) {
-      return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "Unauthorized",
-        },
-        { status: 401 }
-      );
-    }
-
-    const body = await request.json();
-    const { name } = body;
-
-    if (!name?.trim()) {
-      return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "Team name is required",
-        },
-        { status: 400 }
-      );
-    }
-
-    console.log("Creating team for user:", userId);
-
-    // Get user from Clerk ID
-    const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
-    });
-
-    console.log("User ID:", user);
-
-    if (!user) {
-      return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "User not found",
-        },
-        { status: 404 }
-      );
-    }
-
-    console.log("Creating team for user:", user.id);
-
-    // Get all available initiatives
-    const initiatives = await prisma.initiative.findMany();
-
-    // Create team and associate all initiatives in a transaction
-    const team = await prisma.$transaction(
-      async (tx: Prisma.TransactionClient) => {
-        // Create the team
-        const newTeam = await tx.team.create({
-          data: {
-            name: name.trim(),
-            ownerId: user.id,
-          },
-        });
-
-        // Associate all initiatives with the team
-        if (initiatives.length > 0) {
-          await tx.teamInitiative.createMany({
-            data: initiatives.map((initiative: Initiative) => ({
-              teamId: newTeam.id,
-              initiativeId: initiative.id,
-            })),
-          });
-        }
-
-        return newTeam;
-      }
-    );
-
-    console.log("Team created:", team);
-
-    return NextResponse.json<ApiResponse<TeamResponse>>(
-      {
-        success: true,
-        data: team as TeamResponse,
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error("Error creating team:", error);
-    return NextResponse.json<ApiResponse<never>>(
-      {
-        success: false,
-        error: "Internal server error",
-      },
-      { status: 500 }
-    );
-  }
-};
-
 export const GET = async (request: Request) => {
+  console.log("🎯 GET /api/teams - Started");
   try {
     const { userId } = await auth();
-    console.log(request);
-
-    //const token = await auth().se;
 
     if (!userId) {
+      console.log("❌ No userId found");
       return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "Unauthorized",
-        },
+        { success: false, error: "Unauthorized" },
         { status: 401 }
       );
     }
 
-    const user = (await prisma.user.findUnique({
-      where: { clerkId: userId },
+    console.log("👤 Finding user with clerkId:", userId);
+    const user = await prisma.appUser.findUnique({
+      where: { 
+        clerkId: userId,
+        deletedAt: null 
+      },
       include: {
-        teams: true, // Teams owned by user
-        members: {
-          // Teams where user is a member
+        teams: {
+          where: {
+            deletedAt: null
+          },
           include: {
-            team: true,
+            teamFunction: {
+              include: {
+                jobTitles: {
+                  where: {
+                    deletedAt: null
+                  }
+                },
+              }
+            },
+          },
+        },
+        teamMembers: {
+          where: {
+            deletedAt: null,
+            team: {
+              deletedAt: null
+            }
+          },
+          include: {
+            team: {
+              include: {
+                teamFunction: {
+                  include: {
+                    jobTitles: {
+                      where: {
+                        deletedAt: null
+                      }
+                    },
+                  }
+                },
+              },
+            },
           },
         },
       },
-    })) as UserWithTeams | null;
+    });
 
     if (!user) {
+      console.log("❌ User not found - Please complete registration");
       return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: "User not found",
-        },
+        { success: false, error: "Please complete registration first" },
         { status: 404 }
       );
     }
 
     // Create a Map to store unique teams by ID
-    const teamsMap = new Map(
-      [
-        ...user.teams,
-        ...user.members.map((member: TeamMember) => member.team),
-      ].map((team: Team) => [team.id, team])
-    );
+    const teamsMap = new Map([
+      ...user.teams,
+      ...user.teamMembers.map((member: { team: any }) => member.team),
+    ].map((team) => [team.id, team]));
 
-    // Convert Map back to array
-    const teams = Array.from(teamsMap.values());
+    // Convert Map back to array and transform to match TeamResponse type
+    const teams: TeamResponse[] = Array.from(teamsMap.values()).map(team => ({
+      id: team.id,
+      name: team.name,
+      description: team.description,
+      businessFunctionId: team.teamFunctionId,
+      businessFunction: {
+        id: team.teamFunction.id,
+        name: team.teamFunction.name,
+        description: team.teamFunction.description,
+        jobTitles: team.teamFunction.jobTitles,
+        createdAt: team.teamFunction.createdAt,
+        updatedAt: team.teamFunction.updatedAt,
+      },
+      ownerId: team.ownerId,
+      createdAt: team.createdAt,
+      updatedAt: team.updatedAt,
+    }));
+
+    console.log("✅ Successfully fetched teams:", teams.length);
 
     return NextResponse.json<ApiResponse<TeamResponse[]>>({
       success: true,
-      data: teams as TeamResponse[],
+      data: teams,
     });
   } catch (error) {
-    console.error("Error fetching teams:", error);
+    console.error("❌ Error fetching teams:", error);
     return NextResponse.json<ApiResponse<never>>(
-      {
-        success: false,
-        error: "Internal server error",
+      { success: false, error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+};
+
+export const POST = async (request: Request) => {
+  console.log("🎯 POST /api/teams - Started");
+  
+  // Debug auth header
+  const authHeader = request.headers.get('authorization');
+  console.log("📝 Auth header:", authHeader?.substring(0, 20) + "...");
+
+  try {
+    const { userId } = await auth();
+    console.log("🔑 Auth result:", { userId });
+
+    if (!userId) {
+      console.log("❌ No userId found in auth result");
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    console.log("📦 Request body:", body);
+
+    const { name, businessFunctionId, description } = body;
+
+    if (!name?.trim() || !businessFunctionId) {
+      console.log("❌ Missing required fields:", { name, businessFunctionId });
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Team name and business function are required" },
+        { status: 400 }
+      );
+    }
+
+    console.log("👤 Finding user with clerkId:", userId);
+    const user = await prisma.appUser.findUnique({
+      where: { 
+        clerkId: userId,
+        deletedAt: null 
       },
+    });
+
+    if (!user) {
+      console.log("❌ User not found - Please complete registration");
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Please complete registration first" },
+        { status: 404 }
+      );
+    }
+
+    // Verify business function exists
+    const businessFunction = await prisma.teamFunction.findUnique({
+      where: { 
+        id: businessFunctionId,
+        deletedAt: null
+      },
+    });
+
+    if (!businessFunction) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Business function not found" },
+        { status: 404 }
+      );
+    }
+
+    console.log("📝 Creating team for user:", user.id);
+    const team = await prisma.gTeam.create({
+      data: {
+        name: name.trim(),
+        description: description?.trim(),
+        teamFunctionId: businessFunctionId,
+        ownerId: user.id,
+      },
+      include: {
+        teamFunction: {
+          include: {
+            jobTitles: {
+              where: {
+                deletedAt: null
+              }
+            },
+          }
+        },
+      },
+    });
+
+    const teamResponse: TeamResponse = {
+      id: team.id,
+      name: team.name,
+      description: team.description,
+      businessFunctionId: team.teamFunctionId,
+      businessFunction: {
+        id: team.teamFunction.id,
+        name: team.teamFunction.name,
+        description: team.teamFunction.description,
+        jobTitles: team.teamFunction.jobTitles,
+        createdAt: team.teamFunction.createdAt,
+        updatedAt: team.teamFunction.updatedAt,
+      },
+      ownerId: team.ownerId,
+      createdAt: team.createdAt,
+      updatedAt: team.updatedAt,
+    };
+
+    console.log("✅ Team created successfully:", teamResponse);
+
+    return NextResponse.json<ApiResponse<TeamResponse>>(
+      { success: true, data: teamResponse },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("❌ Error creating team:", error);
+    return NextResponse.json<ApiResponse<never>>(
+      { success: false, error: "Internal server error" },
       { status: 500 }
     );
   }

@@ -1,0 +1,51 @@
+/* breadcrumb.css */
+
+/* Base Breadcrumb Nav */
+.breadcrumb-nav {
+  @apply w-full text-neutral-500 dark:text-neutral-400;
+}
+
+/* Breadcrumb List */
+.breadcrumb-list {
+  @apply flex flex-wrap items-center gap-2.5 
+         break-words text-sm text-neutral-500 dark:text-neutral-400;
+}
+
+/* Breadcrumb Item */
+.breadcrumb-item {
+  @apply inline-flex items-center gap-1.5;
+}
+
+/* Breadcrumb Link */
+.breadcrumb-link {
+  @apply text-neutral-900 dark:text-neutral-100
+         transition-colors duration-150
+         hover:text-primary-600 dark:hover:text-primary-400
+         focus:outline-none focus:ring-2
+         focus:ring-primary-500 focus:ring-offset-2;
+}
+
+/* Breadcrumb Current Page */
+.breadcrumb-page {
+  @apply font-normal text-neutral-500 dark:text-neutral-400;
+}
+
+/* Breadcrumb Separator */
+.breadcrumb-separator {
+  @apply text-neutral-400 dark:text-neutral-600;
+}
+
+.breadcrumb-separator svg {
+  @apply w-3.5 h-3.5;
+}
+
+/* Breadcrumb Ellipsis */
+.breadcrumb-ellipsis {
+  @apply flex items-center justify-center
+         h-9 w-9
+         text-neutral-500 dark:text-neutral-400;
+}
+
+.breadcrumb-ellipsis svg {
+  @apply h-4 w-4;
+}

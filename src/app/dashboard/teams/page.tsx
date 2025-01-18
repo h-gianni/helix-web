@@ -1,121 +1,101 @@
 // app/dashboard/teams/page.tsx
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { RefreshCcw, Plus } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/Card";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Plus, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
 import type { ApiResponse, TeamResponse } from "@/lib/types/api";
-import TeamCreateModal from './_teamCreateModal';
-import EmptyTeamsView from './_emptyTeamsView';
+import TeamCreateModal from "./_teamCreateModal";
+import EmptyTeamsView from "./_emptyTeamsView";
+import { useTeams } from "@/lib/context/teams-context";
 
 export default function TeamsPage() {
   const router = useRouter();
-  const [teams, setTeams] = useState<TeamResponse[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { teams, fetchTeams, isLoading } = useTeams() as { 
+    teams: TeamResponse[]; 
+    fetchTeams: () => Promise<void>; 
+    isLoading: boolean; 
+  };
   const [error, setError] = useState<string | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  const fetchTeams = async (showRefreshIndicator = true) => {
-    try {
-      if (showRefreshIndicator) {
-        setIsRefreshing(true);
-      }
-      setError(null);
-      
-      const response = await fetch(`/api/teams?t=${new Date().getTime()}`);
-      const data: ApiResponse<TeamResponse[]> = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to fetch teams');
-      }
+  useEffect(() => {
+    fetchTeams();
+  }, [fetchTeams]);
 
-      setTeams(data.data || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-      setIsRefreshing(false);
-    }
-  };
-
-  const handleCreateTeam = async (name: string) => {
+  const handleCreateTeam = async (name: string, disciplineId: string) => {
     try {
-      const response = await fetch('/api/teams', {
-        method: 'POST',
+      const response = await fetch("/api/teams", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ 
+          name,
+          disciplineId  // Add disciplineId to the request
+        }),
       });
-  
+
       const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to create team');
-      }
-  
-      await fetchTeams();
-      setIsCreateModalOpen(false);
-      
-      // Navigate to the new team's page
-      if (data.data?.id) {
+
+      if (data.success) {
+        setIsCreateModalOpen(false);
         router.push(`/dashboard/teams/${data.data.id}`);
+      } else {
+        throw new Error(data.error || "Failed to create team");
       }
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      console.error("Error creating team:", error);
+      throw error;
     }
   };
 
-  // Initial load
-  useEffect(() => {
-    fetchTeams(false);
-  }, []);
-
-  // Refresh on window focus
-  useEffect(() => {
-    const handleFocus = () => {
-      fetchTeams(false);
-    };
-
-    window.addEventListener('focus', handleFocus);
-    return () => {
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, []);
-
-  if (loading) {
-    return <div className="p-4">Loading teams...</div>;
+  if (isLoading) {
+    return (
+      <>
+        <PageBreadcrumbs
+          items={[{ href: "/dashboard/teams", label: "Teams" }]}
+        />
+        <div className="text-muted-foreground">Loading teams...</div>
+      </>
+    );
   }
 
   if (error) {
     return (
-      <div className="p-4">
-        <div className="text-red-500 mb-2">{error}</div>
-        <Button onClick={() => fetchTeams()}>Retry</Button>
-      </div>
+      <>
+        <PageBreadcrumbs
+          items={[{ href: "/dashboard/teams", label: "Teams" }]}
+        />
+        <Alert variant="danger">
+          <AlertCircle className="size-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        <Button variant="primary" onClick={() => fetchTeams()}>
+          Retry
+        </Button>
+      </>
     );
   }
 
   return (
-    <div className="p-4">
+    <>
+      <PageBreadcrumbs items={[{ href: "/dashboard/teams", label: "Teams" }]} />
+
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold">Teams</h1>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => fetchTeams()}
-            disabled={isRefreshing}
-          >
-            <RefreshCcw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-          </Button>
+          <h1 className="text-display-1">Teams</h1>
         </div>
-        <Button onClick={() => setIsCreateModalOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
+        <Button
+          variant="neutral"
+          onClick={() => setIsCreateModalOpen(true)}
+          leadingIcon={<Plus className="size-4" />}
+        >
           Create Team
         </Button>
       </div>
@@ -126,11 +106,22 @@ export default function TeamsPage() {
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {teams.map((team) => (
             <Link key={team.id} href={`/dashboard/teams/${team.id}`}>
-              <Card className="p-4 hover:shadow-lg transition-shadow">
-                <h3 className="font-semibold">{team.name}</h3>
-                <p className="text-sm text-gray-500">
-                  Created: {new Date(team.createdAt).toLocaleDateString()}
-                </p>
+              <Card
+                size="default"
+                background={true}
+                border={true}
+                interactive={true}
+                shadow="sm"
+              >
+                <CardContent className="p-4">
+                  <h3 className="text-heading-4">{team.name}</h3>
+                  <p className="text-p-small text-primary-600">
+                    {team.discipline.name}
+                  </p>
+                  <p className="text-p-small text-muted">
+                    Created: {new Date(team.createdAt).toLocaleDateString()}
+                  </p>
+                </CardContent>
               </Card>
             </Link>
           ))}
@@ -142,6 +133,6 @@ export default function TeamsPage() {
         onClose={() => setIsCreateModalOpen(false)}
         onCreateTeam={handleCreateTeam}
       />
-    </div>
+    </>
   );
 }

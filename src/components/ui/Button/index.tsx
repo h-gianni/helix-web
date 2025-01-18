@@ -2,103 +2,182 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
-// Updated button variants to use design tokens
-const buttonVariants = cva(
-  [
-    "inline-flex items-center justify-center",
-    "gap-2 whitespace-nowrap rounded-md",
-    "text-sm font-medium",
-    "transition-colors",
-    "focus-visible:outline-none",
-    "focus-visible:ring-2",
-    "focus-visible:ring-action-primary", // Token-based ring color
-    "focus-visible:ring-offset-2",
-    "disabled:pointer-events-none",
-    "disabled:opacity-50",
-    "[&_svg]:pointer-events-none",
-    "[&_svg]:size-4",
-    "[&_svg]:shrink-0",
-  ].join(" "),
-  {
-    variants: {
-      variant: {
-        default: [
-          "bg-action-primary",
-          "text-text-primary", // Token for text color
-          "hover:bg-action-primary-hover",
-          "disabled:bg-action-primary-disabled",
-          "disabled:text-text-disabled",
-        ].join(" "),
-        destructive: [
-          "bg-state-error",
-          "text-text-primary", // Text token
-          "hover:bg-state-error/90",
-          "disabled:bg-state-error/50",
-        ].join(" "),
-        outline: [
-          "border",
-          "border-border-normal",
-          "bg-surface-0",
-          "text-text-primary",
-          "hover:bg-surface-1",
-          "hover:border-border-bold",
-          "disabled:bg-surface-0",
-          "disabled:border-border-light",
-        ].join(" "),
-        secondary: [
-          "bg-surface-2",
-          "text-text-primary",
-          "hover:bg-surface-2/80",
-          "disabled:bg-surface-1",
-        ].join(" "),
-        ghost: [
-          "text-text-secondary",
-          "hover:bg-surface-1",
-          "hover:text-text-primary",
-          "disabled:text-text-disabled",
-          "disabled:hover:bg-transparent",
-        ].join(" "),
-        link: [
-          "text-action-primary",
-          "underline-offset-4",
-          "hover:underline",
-          "hover:text-action-primary-hover",
-          "disabled:text-text-disabled",
-        ].join(" "),
-      },
-      size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
-      },
+const buttonVariants = cva(["button-base"], {
+  variants: {
+    variant: {
+      primary: "",
+      neutral: "",
+      warning: "",
+      danger: "",
     },
-    defaultVariants: {
-      variant: "default",
+    appearance: {
+      default: "button-default",
+      outline: "button-outline",
+      text: "button-text",
+      "icon-only": "button-icon-only",
+    },
+    size: {
+      sm: "button-sm",
+      default: "button-default-size",
+      lg: "button-lg",
+    },
+    isLoading: {
+      true: "button-loading",
+    },
+  },
+  compoundVariants: [
+    // Primary variant
+    {
+      variant: "primary",
+      appearance: ["default", "icon-only"],
+      className: "button-primary",
+    },
+    {
+      variant: "primary",
+      appearance: "outline",
+      className: "button-primary-outline",
+    },
+    {
+      variant: "primary",
+      appearance: ["text", "icon-only"],
+      className: "button-primary-text",
+    },
+    // Warning variant
+    {
+      variant: "warning",
+      appearance: ["default", "icon-only"],
+      className: "button-warning",
+    },
+    {
+      variant: "danger",
+      appearance: "outline",
+      className: "button-danger-outline",
+    },
+    {
+      variant: "danger",
+      appearance: ["text", "icon-only"],
+      className: "button-danger-text",
+    },
+    // Danger variant
+    {
+      variant: "danger",
+      appearance: ["default", "icon-only"],
+      className: "button-danger",
+    },
+    {
+      variant: "danger",
+      appearance: "outline",
+      className: "button-danger-outline",
+    },
+    {
+      variant: "danger",
+      appearance: ["text", "icon-only"],
+      className: "button-danger-text",
+    },
+    // Neutral variant
+    {
+      variant: "neutral",
+      appearance: "outline",
+      className: "button-neutral-outline",
+    },
+    {
+      variant: "neutral",
+      appearance: ["text"],
+      className: "button-neutral-text",
+    },
+    {
+      variant: "neutral",
+      appearance: ["icon-only"],
+      className: "button-neutral-icon",
+    },
+    // Icon sizes
+    {
+      appearance: "icon-only",
+      size: "sm",
+      className: "button-icon-sm",
+    },
+    {
+      appearance: "icon-only",
       size: "default",
+      className: "button-icon-default",
     },
-  }
-);
+    {
+      appearance: "icon-only",
+      size: "lg",
+      className: "button-icon-lg",
+    },
+  ],
+  defaultVariants: {
+    variant: "neutral",
+    appearance: "default",
+    size: "default",
+    isLoading: false,
+  },
+});
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  isLoading?: boolean;
+  leadingIcon?: React.ReactNode;
+  trailingIcon?: React.ReactNode;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    {
+      className,
+      variant,
+      appearance,
+      size,
+      isLoading = false,
+      leadingIcon,
+      trailingIcon,
+      children,
+      disabled,
+      asChild = false,
+      ...props
+    },
+    ref
+  ) => {
     const Comp = asChild ? Slot : "button";
+    const isIconOnly = appearance === "icon-only";
+
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({
+            variant,
+            appearance,
+            size,
+            isLoading,
+            className,
+          })
+        )}
+        disabled={isLoading || disabled}
         ref={ref}
         {...props}
-      />
+      >
+        {isLoading ? (
+          <>
+            <Loader2 className="animate-spin" />
+            {!isIconOnly && children}
+          </>
+        ) : (
+          <>
+            {leadingIcon}
+            {!isIconOnly && children}
+            {trailingIcon}
+          </>
+        )}
+      </Comp>
     );
   }
 );
+
 Button.displayName = "Button";
 
 export { Button, buttonVariants };

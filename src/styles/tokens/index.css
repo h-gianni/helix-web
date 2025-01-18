@@ -1,0 +1,7 @@
+/* tokens/index.css */
+@import './foundations.css';
+@import './semantic.css';
+@import './typography.css';
+@import './themes/light.css';
+@import './themes/dark.css';
+@import './components/index.css';

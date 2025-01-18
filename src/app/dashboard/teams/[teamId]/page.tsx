@@ -1,50 +1,68 @@
-// app/dashboard/teams/[teamId]/page.tsx
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, MouseEvent } from "react";
 import { useParams, useRouter } from "next/navigation";
+import AddMemberModal from "./_addMemberModal";
+import { MemberPerformance } from "@/app/dashboard/types/member";
+import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/Dialog";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogAction,
+  AlertDialogCancel,
 } from "@/components/ui/AlertDialog";
-import { UserPlus, Trash2, RotateCcw, PenSquare } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import {
+  UserPlus,
+  Trash2,
+  RotateCcw,
+  PenSquare,
+  AlertCircle,
+  ArrowLeft,
+  EllipsisVertical,
+} from "lucide-react";
 import { TeamPerformanceSummary } from "./_teamPerformanceSummary";
 import EmptyTeamView from "./_emptyTeamView";
 import TeamEditModal from "./_teamEditModal";
+import { Label } from "@/components/ui/Label";
 import type { ApiResponse, TeamDetailsResponse } from "@/lib/types/api";
+import { useTeams } from "@/lib/context/teams-context";
 
 interface PageParams {
   teamId: string;
   [key: string]: string;
 }
 
-interface PerformanceData {
-  id: string;
-  name: string;
-  title: string | null;
-  averageRating: number;
-  ratingsCount: number;
-}
-
-export default function TeamDetailsPage() {
-  const params = useParams() as PageParams;
+export default function TeamDetailsPage({
+  params,
+}: {
+  params: { teamId: string };
+}) {
   const router = useRouter();
+  const { fetchTeams } = useTeams();
   const [team, setTeam] = useState<TeamDetailsResponse | null>(null);
   const [performanceData, setPerformanceData] = useState<{
-    members: PerformanceData[];
+    members: MemberPerformance[];
   }>({ members: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -54,6 +72,24 @@ export default function TeamDetailsPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [viewType, setViewType] = useState<"table" | "grid">("table");
+
+  const breadcrumbItems = [
+    { href: "/dashboard/teams", label: "Teams" },
+    { label: team?.name || "Team Details" },
+  ];
+
+  const fetchTeamPerformance = async () => {
+    try {
+      const response = await fetch(`/api/teams/${params.teamId}/performance`);
+      const data = await response.json();
+      if (data.success) {
+        setPerformanceData(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching performance data:", error);
+    }
+  };
 
   const fetchTeamDetails = useCallback(
     async (showRefreshIndicator = true) => {
@@ -94,18 +130,6 @@ export default function TeamDetailsPage() {
     [params.teamId]
   );
 
-  const fetchTeamPerformance = async () => {
-    try {
-      const response = await fetch(`/api/teams/${params.teamId}/performance`);
-      const data = await response.json();
-      if (data.success) {
-        setPerformanceData(data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching performance data:", error);
-    }
-  };
-
   const handleSaveTeamDetails = async (
     name: string,
     description: string | null
@@ -133,58 +157,52 @@ export default function TeamDetailsPage() {
     }
   };
 
-  const handleAddMember = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleAddMember = async (data: {
+    teamId: string;
+    email: string;
+    title?: string;
+  }) => {
     try {
-      const trimmedEmail = addMemberEmail.trim();
-      const trimmedTitle = addMemberTitle.trim();
-
-      if (!trimmedEmail) {
-        throw new Error("Email is required");
-      }
-
-      const response = await fetch(`/api/teams/${params.teamId}/members`, {
+      const response = await fetch(`/api/teams/${data.teamId}/members`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: trimmedEmail,
-          title: trimmedTitle || undefined,
+          email: data.email,
+          title: data.title,
         }),
       });
 
-      const data = await response.json();
+      const responseData = await response.json();
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || "Failed to add member");
+      if (!response.ok || !responseData.success) {
+        throw new Error(responseData.error || "Failed to add member");
       }
 
-      setIsAddMemberDialogOpen(false);
-      setAddMemberEmail("");
-      setAddMemberTitle("");
       await fetchTeamDetails();
     } catch (err) {
       console.error("Error adding member:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
+      throw err;
     }
   };
 
-  const handleDeleteTeam = async () => {
+  const handleDeleteTeam = async (e: MouseEvent<HTMLButtonElement>) => {
     try {
       const response = await fetch(`/api/teams/${params.teamId}`, {
         method: "DELETE",
       });
-
       const data = await response.json();
-      if (data.success) {
-        router.push("/dashboard/teams");
-      } else {
+
+      if (!data.success) {
         throw new Error(data.error || "Failed to delete team");
       }
-    } catch (err) {
-      console.error("Error deleting team:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
+
+      await fetchTeams(); // Fetch updated teams list before redirecting
+      router.push("/dashboard/teams"); // Redirect after successful deletion and data refresh
+    } catch (error) {
+      console.error("Error deleting team:", error);
+      // Handle error appropriately
     }
   };
 
@@ -211,120 +229,107 @@ export default function TeamDetailsPage() {
 
   if (error) {
     return (
-      <div className="p-4">
-        <div className="text-red-500 mb-4">{error}</div>
-        <Button onClick={() => router.back()}>Go Back</Button>
-      </div>
+      <>
+        <Alert variant="danger">
+          <AlertCircle className="size-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        <Button
+          variant="primary"
+          onClick={() => router.back()}
+          leadingIcon={<RotateCcw className="size-4" />}
+        >
+          Go Back
+        </Button>
+      </>
     );
   }
 
   if (!team) {
     return (
-      <div className="p-4">
-        <div className="mb-4">Team not found</div>
-        <Button onClick={() => router.back()}>Go Back</Button>
-      </div>
+      <>
+        <Alert variant="warning">
+          <AlertCircle className="size-4" />
+          <AlertDescription>Team not found</AlertDescription>
+        </Alert>
+        <Button
+          variant="primary"
+          onClick={() => router.back()}
+          leadingIcon={<RotateCcw className="size-4" />}
+        >
+          Go Back
+        </Button>
+      </>
     );
   }
 
   return (
-    <div className="p-4 space-y-6">
+    <>
+      <PageBreadcrumbs items={breadcrumbItems} />
+      
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">{team.name}</h1>
-            {team.description && (
-              <p className="text-sm text-gray-500 mt-1">{team.description}</p>
-            )}
-            <p className="text-sm text-gray-500 mt-1">
-              Created: {new Date(team.createdAt).toLocaleDateString()}
-            </p>
-          </div>
-          <div className="space-x-2">
+          <div className="flex gap-4">
             <Button
-              variant="outline"
+              variant="neutral"
+              appearance="icon-only"
+              size="sm"
               onClick={() => router.push("/dashboard/teams")}
-            >
-              Back to Teams
-            </Button>
+              leadingIcon={<ArrowLeft className="size-4" />}
+            />
+            <div>
+              <h1 className="text-display-1">{team.name}</h1>
+              {team.description && (
+                <p className="text-p-small mt-1">{team.description}</p>
+              )}
+              <p className="text-p-small mt-1">
+                Created: {new Date(team.createdAt).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <AddMemberModal
+              isOpen={isAddMemberDialogOpen}
+              onClose={() => setIsAddMemberDialogOpen(false)}
+              teamId={params.teamId}
+              onSubmit={handleAddMember}
+            />
             <Button
-              variant="outline"
-              size="icon"
-              onClick={() => fetchTeamDetails()}
-              disabled={isRefreshing}
+              variant="primary"
+              onClick={() => setIsAddMemberDialogOpen(true)}
+              leadingIcon={<UserPlus className="size-4" />}
             >
-              <RotateCcw
-                className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
-              />
+              Add Member
             </Button>
-
-            <Dialog
-              open={isAddMemberDialogOpen}
-              onOpenChange={setIsAddMemberDialogOpen}
-            >
-              <Button onClick={() => setIsAddMemberDialogOpen(true)}>
-                <UserPlus className="w-4 h-4 mr-2" />
-                Add Member
-              </Button>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Add Team Member</DialogTitle>
-                </DialogHeader>
-                <form onSubmit={handleAddMember} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Email
-                    </label>
-                    <Input
-                      type="email"
-                      value={addMemberEmail}
-                      onChange={(e) => setAddMemberEmail(e.target.value)}
-                      placeholder="member@example.com"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">
-                      Title (Optional)
-                    </label>
-                    <Input
-                      type="text"
-                      value={addMemberTitle}
-                      onChange={(e) => setAddMemberTitle(e.target.value)}
-                      placeholder="e.g., Developer"
-                    />
-                  </div>
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsAddMemberDialogOpen(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit" disabled={!addMemberEmail.trim()}>
-                      Add Member
-                    </Button>
-                  </div>
-                </form>
-              </DialogContent>
-            </Dialog>
-            <Button variant="outline" onClick={() => setIsEditModalOpen(true)}>
-              <PenSquare className="w-4 h-4 mr-2" />
-              Edit Team
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => setIsDeleteDialogOpen(true)}
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete Team
-            </Button>
+  
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="neutral"
+                  appearance="icon-only"
+                  size="default"
+                  leadingIcon={<EllipsisVertical className="size-4" />}
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
+                  <PenSquare className="size-4 mr-2" />
+                  Edit Team
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  destructive
+                  onClick={() => setIsDeleteDialogOpen(true)}
+                >
+                  <Trash2 className="size-4 mr-2" />
+                  Delete Team
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
-
+  
       {/* Content */}
       {!team.members ||
       team.members.length === 0 ||
@@ -336,9 +341,11 @@ export default function TeamDetailsPage() {
           teamId={team.id}
           teamName={team.name}
           members={performanceData.members}
+          viewType={viewType}
+          onViewChange={setViewType}
         />
       )}
-
+  
       {/* Team Edit Modal */}
       <TeamEditModal
         isOpen={isEditModalOpen}
@@ -347,13 +354,13 @@ export default function TeamDetailsPage() {
         teamDescription={team.description}
         onSave={handleSaveTeamDetails}
       />
-
+  
       {/* Delete Team Dialog */}
       <AlertDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
       >
-        <AlertDialogContent>
+        <AlertDialogContent variant="danger" withIcon>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Team</AlertDialogTitle>
             <AlertDialogDescription>
@@ -363,18 +370,15 @@ export default function TeamDetailsPage() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={() => setIsDeleteDialogOpen(false)}>
+            <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>
               Cancel
-            </AlertDialogAction>
-            <AlertDialogAction
-              onClick={handleDeleteTeam}
-              className="bg-red-500 hover:bg-red-600"
-            >
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteTeam} variant="danger">
               Delete Team
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </>
   );
 }

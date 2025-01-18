@@ -3,6 +3,7 @@ import { Roboto_Flex } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { TeamsProvider } from "@/lib/context/teams-context";
 
 const robotoFlex = Roboto_Flex({
   subsets: ['latin'],
@@ -36,7 +37,9 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className={`${robotoFlex.variable} antialiased`}>
           <ThemeProvider defaultTheme="system" storageKey="ui-theme">
-            {children}
+            <TeamsProvider>
+              {children}
+            </TeamsProvider>
           </ThemeProvider>
         </body>
       </html>

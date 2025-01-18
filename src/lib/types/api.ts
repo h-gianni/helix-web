@@ -1,3 +1,4 @@
+// lib/types/api.ts
 import { PrismaClient } from "@prisma/client";
 
 export type ApiResponse<T> =
@@ -12,13 +13,14 @@ export type ApiResponse<T> =
       error: string;
     };
 
-// Existing team types
+// Team types
 export type TeamResponse = {
   id: string;
   name: string;
   description?: string | null;
+  businessFunctionId: string;
+  businessFunction: BusinessFunctionResponse;
   createdAt: Date;
-
   updatedAt: Date;
   ownerId: string;
 };
@@ -40,11 +42,98 @@ export type TeamMemberResponse = {
 
 export type TeamDetailsResponse = TeamResponse & {
   members: TeamMemberResponse[];
-  initiatives: InitiativeResponse[];
+  businessActivities: BusinessActivityResponse[];
 };
 
+// BusinessActivity types (formerly Initiative)
+export type BusinessActivityResponse = {
+  id: string;
+  name: string;
+  description: string | null;
+  teamId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  ratings?: RatingResponse[];
+  _count?: {
+    ratings: number;
+  };
+};
+
+// Rating types (formerly Score)
+export type RatingResponse = {
+  id: string;
+  value: number;
+  feedback: string | null;
+  memberId: string;
+  activityId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  member?: TeamMemberResponse;
+  activity?: {
+    id: string;
+    name: string;
+    description: string | null;
+  };
+};
+
+// BusinessFunction types (formerly Discipline)
+export type BusinessFunctionResponse = {
+  id: string;
+  name: string;
+  description: string | null;
+  jobTitles: JobTitleResponse[];
+  createdAt: Date;
+  updatedAt: Date;
+  _count?: {
+    teams: number;
+  };
+};
+
+export type JobTitleResponse = {
+  id: string;
+  name: string;
+  businessFunctionId: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+// Feedback and Review types
+export type StructuredFeedbackResponse = {
+  id: string;
+  strengths: string[];
+  improvements: string[];
+  goals: string[];
+  memberId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  member?: {
+    id: string;
+    userId: string;
+    teamId: string;
+  };
+};
+
+export type PerformanceReviewResponse = {
+  id: string;
+  quarter: number;
+  year: number;
+  content: string;
+  status: 'DRAFT' | 'PUBLISHED' | 'ACKNOWLEDGED';
+  memberId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  member?: {
+    id: string;
+    userId: string;
+    teamId: string;
+  };
+};
+
+// Input types
 export type CreateTeamInput = {
   name: string;
+  businessFunctionId: string;
+  description?: string;
 };
 
 export type AddTeamMemberInput = {
@@ -60,81 +149,60 @@ export type UpdateTeamMemberInput = {
   isAdmin?: boolean;
 };
 
-// New Initiative types
-export type InitiativeResponse = {
-  id: string;
-  name: string;
-
-  description: string | null;
-  teamId: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  scores?: ScoreResponse[];
-  _count?: {
-    scores: number;
-  };
-};
-
-export type CreateInitiativeInput = {
+export type CreateBusinessActivityInput = {
   name: string;
   description?: string;
   teamId: string;
 };
 
-export type UpdateInitiativeInput = {
+export type UpdateBusinessActivityInput = {
   name?: string;
   description?: string | null;
 };
 
-// Score types for initiatives
-export type ScoreResponse = {
-  id: string;
-  value: number;
-  feedback: string | null;
-  memberId: string;
-  initiativeId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  member?: TeamMemberResponse;
-  initiative?: {
-    id: string;
-    name: string;
-    description: string | null;
-  };
-};
-
-export type CreateScoreInput = {
+export type CreateRatingInput = {
   value: number;
   feedback?: string;
   memberId: string;
-  initiativeId: string;
+  activityId: string;
 };
 
-export type UpdateScoreInput = {
+export type UpdateRatingInput = {
   value?: number;
   feedback?: string | null;
 };
 
-// Aggregate types for dashboard views
-export type InitiativeWithStats = InitiativeResponse & {
-  averageScore: number;
-  totalScores: number;
-  recentScores: ScoreResponse[];
+export type CreateBusinessFunctionInput = {
+  name: string;
+  description?: string;
+  jobTitles?: string[];
 };
 
-export type MemberScoreSummary = {
+export type UpdateBusinessFunctionInput = {
+  name?: string;
+  description?: string | null;
+};
+
+// Aggregate types
+export type BusinessActivityWithStats = BusinessActivityResponse & {
+  averageRating: number;
+  totalRatings: number;
+  recentRatings: RatingResponse[];
+};
+
+export type MemberRatingSummary = {
   memberId: string;
-  initiativeId: string;
-  averageScore: number;
-  scoreCount: number;
-  lastScore: ScoreResponse;
+  activityId: string;
+  averageRating: number;
+  ratingCount: number;
+  lastRating: RatingResponse;
 };
 
-export type TeamInitiativeSummary = {
-  initiativeCount: number;
-  activeInitiatives: InitiativeResponse[];
-  recentScores: ScoreResponse[];
-  memberPerformance: MemberScoreSummary[];
+export type TeamBusinessActivitySummary = {
+  activityCount: number;
+  activeActivities: BusinessActivityResponse[];
+  recentRatings: RatingResponse[];
+  memberPerformance: MemberRatingSummary[];
 };
 
 export type TransactionClient = Omit<

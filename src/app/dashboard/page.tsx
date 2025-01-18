@@ -1,15 +1,17 @@
-'use client';
+"use client";
 
 import React, { useEffect, useState } from "react";
+import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Users, Target, Star, MessageSquare } from "lucide-react";
+import { Users, Target, Star, MessageSquare, Plus } from "lucide-react";
 import TeamCreateModal from "../dashboard/teams/_teamCreateModal";
 import PerformanceRatingModal from "./_component/_performanceRatingModal";
 import {
   PerformersByCategory,
   performanceCategories,
+  ViewSwitcher,
 } from "./_component/_performersByCategory";
 import type { TeamResponse } from "@/lib/types/api";
 
@@ -23,75 +25,99 @@ interface Performer {
   ratingsCount: number;
 }
 
+const breadcrumbItems = [{ label: "Dashboard" }];
+
 // Empty State Component
 const NoTeamsContent = ({ onCreateTeam }: { onCreateTeam: () => void }) => (
-  <Card>
-    <CardContent className="pt-6">
-      <div className="text-center space-y-6">
-        <div className="bg-primary/5 rounded-full p-3 w-12 h-12 mx-auto">
-          <Users className="w-6 h-6 text-primary" />
+  <Card size="default" background={true} border={true}>
+    <CardContent>
+      <div className="text-center space-y-8">
+        <div className="space-y-4">
+          <div className="bg-primary-50 rounded-full p-3 size-12 mx-auto">
+            <Users className="size-6 text-primary-600" />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-display-1">Welcome to UpScore</h2>
+            <p className="max-w-xl mx-auto">
+              Get started by following these steps:
+            </p>
+          </div>
         </div>
-        <div className="space-y-2">
-          <h2 className="text-2xl font-bold">Welcome to UpScore</h2>
-          <p className="text-gray-500 max-w-[600px] mx-auto">
-            Get started by following these steps:
-          </p>
-        </div>
-        
-        <div className="grid gap-6 max-w-[800px] mx-auto">
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card className="p-4">
-              <div className="flex gap-4">
-                <div className="bg-primary/10 rounded-lg p-2 h-fit">
-                  <Users className="w-5 h-5 text-primary" />
+
+        <div className="grid gap-4 max-w-[1000px] mx-auto">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card size="sm" border={true} shadow="sm">
+              <CardContent>
+                <div className="flex flex-col justify-center space-y-2">
+                  <div className="bg-primary-25 rounded-full p-2 size-8 mx-auto">
+                    <Users className="size-4 text-primary-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-heading-4">1. Create a Team</h3>
+                    <p className="text-p-small">
+                      Start by creating your first team and adding team members
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold">1. Create a Team</h3>
-                  <p className="text-sm text-gray-500">Start by creating your first team and adding team members</p>
-                </div>
-              </div>
+              </CardContent>
             </Card>
 
-            <Card className="p-4">
-              <div className="flex gap-4">
-                <div className="bg-primary/10 rounded-lg p-2 h-fit">
-                  <Target className="w-5 h-5 text-primary" />
+            <Card size="sm" border={true} shadow="sm">
+              <CardContent>
+                <div className="flex flex-col justify-center space-y-2">
+                  <div className="bg-primary-25 rounded-full p-2 size-8 mx-auto">
+                    <Target className="size-4 text-primary-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-heading-4">2. Configure Initiatives</h3>
+                    <p className="text-p-small">
+                      Set up performance initiatives for your team
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold">2. Configure Initiatives</h3>
-                  <p className="text-sm text-gray-500">Set up performance initiatives for your team</p>
-                </div>
-              </div>
+              </CardContent>
             </Card>
 
-            <Card className="p-4">
-              <div className="flex gap-4">
-                <div className="bg-primary/10 rounded-lg p-2 h-fit">
-                  <Star className="w-5 h-5 text-primary" />
+            <Card size="sm" border={true} shadow="sm">
+              <CardContent>
+                <div className="flex flex-col justify-center space-y-2">
+                  <div className="bg-primary-25 rounded-full p-2 size-8 mx-auto">
+                    <Star className="size-4 text-primary-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-heading-4">3. Rate Performance</h3>
+                    <p className="text-p-small">
+                      Add ratings and track member performance on initiatives
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold">3. Rate Performance</h3>
-                  <p className="text-sm text-gray-500">Add ratings and track member performance on initiatives</p>
-                </div>
-              </div>
+              </CardContent>
             </Card>
 
-            <Card className="p-4">
-              <div className="flex gap-4">
-                <div className="bg-primary/10 rounded-lg p-2 h-fit">
-                  <MessageSquare className="w-5 h-5 text-primary" />
+            <Card size="sm" border={true} shadow="sm">
+              <CardContent>
+                <div className="flex flex-col justify-center space-y-2">
+                  <div className="bg-primary-25 rounded-full p-2 size-8 mx-auto">
+                    <MessageSquare className="size-4 text-primary-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-heading-4">4. Provide Feedback</h3>
+                    <p className="text-p-small">
+                      Give detailed feedback to help members improve
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold">4. Provide Feedback</h3>
-                  <p className="text-sm text-gray-500">Give detailed feedback to help members improve</p>
-                </div>
-              </div>
+              </CardContent>
             </Card>
           </div>
 
-          <div className="flex justify-center">
-            <Button size="lg" onClick={onCreateTeam}>
-              <Users className="w-4 h-4 mr-2" />
+          <div className="flex justify-center pt-4">
+            <Button
+              size="lg"
+              variant="primary"
+              onClick={onCreateTeam}
+              leadingIcon={<Plus className="size-4" />}
+            >
               Create Your First Team
             </Button>
           </div>
@@ -102,15 +128,20 @@ const NoTeamsContent = ({ onCreateTeam }: { onCreateTeam: () => void }) => (
 );
 
 // Teams Content Component
-const TeamsContent = ({ 
-  performers, 
-  onAddRating, 
-  router 
-}: { 
-  performers: Performer[]; 
-  onAddRating: () => void; 
+const TeamsContent = ({
+  performers,
+  teams,
+  onAddRating,
+  router,
+  initialViewType,
+}: {
+  performers: Performer[];
+  teams: TeamResponse[];
+  onAddRating: () => void;
   router: ReturnType<typeof useRouter>;
+  initialViewType: "table" | "grid";
 }) => {
+  const [viewType, setViewType] = useState<"table" | "grid">(initialViewType);
   const [isLoadingPerformers, setIsLoadingPerformers] = useState(true);
 
   useEffect(() => {
@@ -120,35 +151,48 @@ const TeamsContent = ({
   }, [performers]);
 
   return (
-    <div className="space-y-6">
-      {/* Action Buttons */}
-      <div className="flex justify-end gap-4">
-        <Button
-          size="lg"
-          variant="outline"
-          onClick={() => router.push('/dashboard/feedback')}
-        >
-          <MessageSquare className="w-4 h-4 mr-2" />
-          Add Feedback on Member
-        </Button>
-        <Button
-          size="lg"
-          onClick={onAddRating}
-        >
-          <Star className="w-4 h-4 mr-2" />
-          Rate Member Performance
-        </Button>
+    <div className="space-y-4">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex items-center gap-4">
+          <h1 className="text-display-1">Dashboard</h1>
+        </div>
+        <div className="flex items-center gap-4">
+          <Button
+            size="default"
+            variant="neutral"
+            appearance="default"
+            leadingIcon={<MessageSquare />}
+            onClick={() => router.push("/dashboard/feedback")}
+          >
+            Add Feedback on Member
+          </Button>
+          <Button
+            size="default"
+            variant="primary"
+            appearance="default"
+            leadingIcon={<Star />}
+            onClick={onAddRating}
+          >
+            Rate Member Performance
+          </Button>
+        </div>
       </div>
 
       {/* Performance Categories */}
       <div>
-        <div className="space-y-6">
+        <div className="space-y-4">
+          <div className="flex gap-4 justify-end">
+            <ViewSwitcher viewType={viewType} onViewChange={setViewType} />
+          </div>
           {performanceCategories.map((category) => (
             <PerformersByCategory
-              key={category.title}
+              key={category.label}
               category={category}
               performers={performers}
+              teams={teams}
               isLoading={isLoadingPerformers}
+              viewType={viewType}
+              onViewChange={setViewType}
             />
           ))}
         </div>
@@ -165,6 +209,7 @@ export default function DashboardPage() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [performers, setPerformers] = useState<Performer[]>([]);
+  const [viewType, setViewType] = useState<"table" | "grid">("table");
 
   useEffect(() => {
     fetchTeams();
@@ -231,17 +276,20 @@ export default function DashboardPage() {
     feedback?: string;
   }) => {
     try {
-      const response = await fetch(`/api/teams/${data.teamId}/members/${data.memberId}/ratings`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          initiativeId: data.initiativeId,
-          rating: data.rating,
-          feedback: data.feedback,
-        }),
-      });
+      const response = await fetch(
+        `/api/teams/${data.teamId}/members/${data.memberId}/ratings`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            initiativeId: data.initiativeId,
+            rating: data.rating,
+            feedback: data.feedback,
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to save rating");
@@ -260,17 +308,20 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="p-4">
+    <>
+      <PageBreadcrumbs items={breadcrumbItems} />
       {teams.length === 0 ? (
         <NoTeamsContent onCreateTeam={() => setIsCreateModalOpen(true)} />
       ) : (
-        <TeamsContent 
-          performers={performers} 
-          onAddRating={() => setIsRatingModalOpen(true)} 
+        <TeamsContent
+          performers={performers}
+          teams={teams}
+          onAddRating={() => setIsRatingModalOpen(true)}
           router={router}
+          initialViewType={viewType}
         />
       )}
-      
+
       <TeamCreateModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
@@ -282,6 +333,6 @@ export default function DashboardPage() {
         onClose={() => setIsRatingModalOpen(false)}
         onSubmit={handleRatingSubmit}
       />
-    </div>
+    </>
   );
 }

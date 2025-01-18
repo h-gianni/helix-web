@@ -1,0 +1,16 @@
+[data-theme="light"] {
+  /* Light theme specific overrides */
+  /* --color-background: hsl(var(--color-neutral-50));
+  --color-foreground: hsl(var(--color-neutral-900));
+  
+  --color-surface: hsl(var(--color-neutral-100));
+  --color-surface-hover: hsl(var(--color-neutral-200));
+  
+  --color-border: hsl(var(--color-neutral-200));
+  --color-border-hover: hsl(var(--color-neutral-300));
+  
+  --color-primary: hsl(var(--color-primary-600));
+  --color-primary-hover: hsl(var(--color-primary-700));
+  
+  --shadow-color: 0 0% 0%; */
+}

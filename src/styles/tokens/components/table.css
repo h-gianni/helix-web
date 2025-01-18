@@ -1,0 +1,204 @@
+/* table.css */
+
+/* Table Container */
+.table-container {
+  @apply relative w-full overflow-auto;
+
+  /* Scrollbar Styling */
+  @apply scrollbar-thin scrollbar-thumb-neutral-200 dark:scrollbar-thumb-neutral-700
+         scrollbar-track-transparent;
+
+  /* Fixed Header Shadow on Scroll */
+  &::after {
+    @apply absolute top-0 left-0 right-0 h-px
+           bg-gradient-to-b from-neutral-200/50 dark:from-neutral-800/50
+           opacity-0 transition-opacity duration-150;
+    content: '';
+  }
+
+  &[data-scrolled=true]::after {
+    @apply opacity-100;
+  }
+}
+
+/* Base Table */
+.table-base {
+  @apply w-full caption-bottom border-collapse font-sans text-p;
+
+  /* Cell Focus Ring */
+  @apply [--table-cell-ring-offset:transparent]
+         [--table-cell-ring-color:theme(colors.primary.500)];
+}
+
+/* Size Variants */
+.table-base[data-size="base"] {
+  .table-cell {
+    @apply p-4 text-p;
+  }
+
+  .table-head {
+    @apply h-10 px-4;
+  }
+}
+
+.table-base[data-size="sm"] {
+  .table-cell {
+    @apply p-2 text-p-small;
+  }
+
+  .table-head {
+    @apply h-8 px-2;
+  }
+}
+
+/* Zebra Striping */
+.table-zebra tbody tr:nth-child(even) {
+  @apply bg-neutral-50 dark:bg-neutral-800;
+}
+
+/* Table Header */
+.table-header {
+  @apply sticky top-0 z-10 
+         border-b border-neutral-200 dark:border-neutral-800
+         bg-neutral-50/95 dark:bg-neutral-800/95
+         backdrop-blur-sm backdrop-saturate-150
+         text-xs text-neutral-500 dark:text-neutral-400
+         shadow-sm;
+}
+
+/* Table Body */
+.table-body {
+  @apply bg-white dark:bg-neutral-900 
+         divide-y divide-neutral-200 dark:divide-neutral-800
+         [&_tr:last-child]:border-0;
+}
+
+/* Table Footer */
+.table-footer {
+  @apply border-t border-neutral-200 dark:border-neutral-800
+         bg-neutral-100 dark:bg-neutral-800
+         font-semibold
+         [&>tr]:last:border-b-0;
+}
+.table-footer td.table-cell {
+  @apply !font-semibold;
+}
+
+/* Table Head Cell */
+.table-head {
+  @apply text-left align-middle
+         font-medium text-neutral-500 dark:text-neutral-400
+         whitespace-nowrap
+         transition-colors duration-150;
+
+  /* Checkbox Column */
+  &:has([role=checkbox]) {
+    @apply w-[calc(1rem+2rem)] pr-0 pl-4;
+  }
+
+  /* Sort Button */
+  &:has(button:not([role=checkbox])) {
+    @apply p-0;
+
+    & > button:not([role=checkbox]) {
+      @apply px-4 py-2 w-full 
+             flex items-center justify-between gap-2
+             font-medium text-neutral-500 dark:text-neutral-400
+             hover:text-neutral-900 dark:hover:text-neutral-100
+             hover:bg-neutral-100 dark:hover:bg-neutral-800
+             transition-colors duration-150;
+
+      /* Sort Icon */
+      & > svg {
+        @apply size-4 opacity-0 transition-opacity;
+      }
+
+      &[data-sort-direction=asc] > svg {
+        @apply opacity-100 rotate-0;
+      }
+
+      &[data-sort-direction=desc] > svg {
+        @apply opacity-100 rotate-180;
+      }
+
+      &:hover > svg {
+        @apply opacity-50;
+      }
+    }
+  }
+}
+
+/* Table Cell */
+.table-cell {
+  @apply align-middle
+         max-w-[20rem] overflow-hidden text-ellipsis
+         transition-colors duration-150;
+
+  /* Checkbox Column */
+  &:has([role=checkbox]) {
+    @apply w-[calc(1rem+2rem)] pr-0 pl-4;
+  }
+
+  /* Actions Column */
+  &:has(.table-action-trigger) {
+    @apply w-10 pr-2 text-right;
+
+  /* Status Indicator */
+  &:has([data-status]) {
+    @apply relative pl-8;
+
+    & > [data-status] {
+      @apply absolute left-4 top-1/2 -translate-y-1/2
+             size-2 rounded-full;
+    }
+  }
+}
+
+  /* Focus State */
+  &:focus-within {
+    @apply relative;
+
+    &::after {
+      @apply absolute inset-0 rounded-sm
+             ring-2 ring-offset-2
+             ring-[var(--table-cell-ring-color)]
+             ring-offset-[var(--table-cell-ring-offset)];
+      content: '';
+    }
+  }
+}
+
+/* Table Row */
+.table-row {
+  @apply border-b border-neutral-200 dark:border-neutral-800
+         transition-colors duration-150 ease-out
+         hover:bg-neutral-50 dark:hover:bg-neutral-800/50
+         data-[state=selected]:bg-primary-50 dark:data-[state=selected]:bg-primary-900/10
+         focus-within:outline-none focus-within:bg-neutral-50 dark:focus-within:bg-neutral-800/50;
+
+  /* Interactive Row */
+  &[data-interactive=true] {
+    @apply cursor-pointer;
+  }
+
+  /* Disabled Row */
+  &[data-disabled=true] {
+    @apply opacity-50 pointer-events-none;
+  }
+}
+
+/* Table Caption */
+.table-caption {
+  @apply mt-4 mb-2 text-sm
+         text-neutral-500 dark:text-neutral-400
+         text-left;
+}
+
+/* Table Empty State */
+.table-empty {
+  @apply p-8 text-center;
+}
+
+.table-head button {
+  @apply -ml-4;
+}

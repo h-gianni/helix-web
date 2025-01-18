@@ -1,0 +1,140 @@
+/* input.css */
+
+/* Form Control Wrapper */
+.form-control {
+  @apply flex flex-col w-full;
+}
+
+/* Input Wrapper */
+.input-wrapper {
+  @apply relative w-full;
+}
+
+.label-input-wrapper {
+  @apply space-y-0.5
+}
+
+/* Base Input */
+.input {
+  @apply flex w-full rounded-base border
+         bg-white text-neutral-600
+         transition-colors duration-150 ease-out
+         dark:bg-neutral-950 dark:text-neutral-50
+         dark:border-neutral-800;
+         border-color: var(--border-form);
+
+  /* Hover */
+  @apply hover:border-neutral-300
+         dark:hover:border-neutral-700;
+
+  /* Focus */
+  @apply focus:outline-none focus:ring-2
+         focus:ring-primary-500 focus:ring-offset-2
+         focus:border-primary-500
+         dark:focus:border-primary-400
+         dark:focus:ring-primary-400
+         dark:ring-offset-neutral-950;
+
+  /* Placeholder */
+  @apply placeholder:text-neutral-400
+         dark:placeholder:text-neutral-400;
+
+  /* Disabled */
+  @apply disabled:cursor-not-allowed
+         disabled:opacity-50
+         disabled:bg-neutral-100
+         dark:disabled:bg-neutral-800;
+
+  /* Read Only */
+  @apply read-only:bg-neutral-50
+         read-only:cursor-default
+         dark:read-only:bg-neutral-900;
+}
+
+/* Input Sizes */
+.input-sm {
+  @apply h-8 text-sm px-2;
+}
+
+.input-base {
+  @apply h-10 text-base px-3;
+}
+
+.input-lg {
+  @apply h-12 text-lg px-4;
+}
+
+/* Error State */
+.input-error {
+  @apply border-danger-500
+         hover:border-danger-600
+         focus:border-danger-500
+         focus:ring-danger-500
+         dark:border-danger-400
+         dark:hover:border-danger-300
+         dark:focus:border-danger-400
+         dark:focus:ring-danger-400;
+}
+
+/* Leading Icon */
+.input-icon {
+  @apply absolute top-0 bottom-0 flex items-center
+         text-neutral-500 dark:text-neutral-400
+         pointer-events-none;
+}
+
+.input-icon-sm {
+  @apply left-3;
+  svg { @apply size-3.5; }
+}
+
+.input-icon-base {
+  @apply left-3.5;
+  svg { @apply size-4; }
+}
+
+.input-icon-lg {
+  @apply left-4;
+  svg { @apply size-5; }
+}
+
+.input-icon-error {
+  @apply text-danger-500 dark:text-danger-400;
+}
+
+.input-icon-disabled {
+  @apply opacity-50;
+}
+
+/* Input with Icon Padding */
+.input-with-icon-sm {
+  @apply pl-8 pr-2;
+}
+
+.input-with-icon-base {
+  @apply pl-10 pr-3;
+}
+
+.input-with-icon-lg {
+  @apply pl-12 pr-4;
+}
+
+/* Helper Text */
+.input-helper {
+  @apply mt-1.5 text-sm text-neutral-500 dark:text-neutral-400;
+}
+
+.input-helper-error {
+  @apply text-danger-500 dark:text-danger-400;
+}
+
+/* Print styles */
+@media print {
+  .input {
+    @apply border-neutral-300 bg-white text-neutral-900;
+  }
+  
+  .input-error {
+    @apply border-danger-700 text-danger-700;
+  }
+}

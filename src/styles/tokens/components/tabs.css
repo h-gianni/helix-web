@@ -1,0 +1,77 @@
+/* tabs.css */
+
+/* Base Tabs List */
+.tabs-list-base {
+  @apply inline-flex items-center justify-center;
+}
+
+/* List Variants - Appearance */
+.tabs-list-appearance-base {
+  @apply border-b border-neutral-200 dark:border-neutral-800;
+}
+
+.tabs-list-appearance-compact {
+  @apply rounded-t-md
+         bg-neutral-100 dark:bg-neutral-800;
+}
+
+/* List Variants - Width */
+.tabs-list-width-inline {
+  @apply w-fit;
+}
+
+.tabs-list-width-full {
+  @apply w-full;
+}
+
+/* List Variants - Size */
+.tabs-list-size-base {
+  @apply p-1 pb-0 text-heading-5;
+}
+
+.tabs-list-size-lg {
+  @apply p-4 pb-0 text-heading-4;
+}
+
+/* Base Tabs Trigger */
+.tabs-trigger-base {
+  @apply inline-flex items-center justify-center
+         whitespace-nowrap
+         transition-all duration-150 ease-out
+         disabled:pointer-events-none disabled:opacity-50
+         focus-visible:outline-none focus-visible:ring-2
+         focus-visible:ring-primary-500 focus-visible:ring-offset-2;
+}
+
+/* Trigger Variants - Appearance */
+.tabs-trigger-appearance-base {
+  @apply border-b-2 border-transparent -mb-px
+         data-[state=active]:border-primary-500
+         data-[state=active]:text-primary-600 dark:data-[state=active]:text-neutral-100;
+}
+
+.tabs-trigger-appearance-compact {
+  @apply border-b-0 rounded-sm
+         hover:bg-neutral-200 dark:hover:bg-neutral-700
+         data-[state=active]:bg-white dark:data-[state=active]:bg-neutral-900
+         data-[state=active]:text-primary-500 dark:data-[state=active]:text-primary-100;
+}
+
+/* Trigger Variants - Size */
+.tabs-trigger-size-base {
+  @apply px-4 py-2 gap-2;
+}
+
+.tabs-trigger-size-lg {
+  @apply px-6 py-4 gap-3;
+}
+
+/* Tabs Content */
+.tabs-content {
+  @apply mt-4 ring-offset-white dark:ring-offset-neutral-900
+         focus-visible:outline-none focus-visible:ring-2
+         focus-visible:ring-primary-500 focus-visible:ring-offset-2
+         data-[state=inactive]:animate-out
+         data-[state=active]:animate-in
+         fade-in-0 zoom-in-95;
+}

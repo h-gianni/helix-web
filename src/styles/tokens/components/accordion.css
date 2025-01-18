@@ -1,0 +1,52 @@
+.accordionRoot {
+    @apply w-full min-w-[400px];
+  }
+  
+  .accordionRoot.sm .accordionTrigger {
+    @apply text-heading-5 py-2;
+  }
+  
+  .accordionRoot.base .accordionTrigger {
+    @apply text-heading-4 py-4;
+  }
+  
+  .accordionRoot.lg .accordionTrigger {
+    @apply text-heading-3 py-6;
+  }
+  
+  .accordionItem {
+    @apply border-b border-neutral-200;
+  }
+  
+  .accordionHeader {
+    @apply flex;
+  }
+  
+  .accordionTrigger {
+    @apply flex flex-1 items-center justify-between transition-all text-left;
+  }
+  
+  .accordionTrigger[data-state="open"] > svg {
+    @apply rotate-180;
+  }
+  
+  .chevronIcon {
+    @apply size-4 shrink-0 text-muted transition-transform duration-200;
+  }
+  
+  .accordionContent {
+    @apply overflow-hidden text-p-small;
+  }
+  
+  .accordionContent[data-state="closed"] {
+    @apply animate-accordion-up;
+  }
+  
+  .accordionContent[data-state="open"] {
+    @apply animate-accordion-down;
+  }
+  
+  .contentInner {
+    @apply pb-4 pt-0;
+  }
+  

@@ -4,6 +4,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
@@ -16,13 +18,14 @@ import {
 } from "@/components/ui/Select";
 import { Label } from "@/components/ui/Label";
 import { User, Users } from "lucide-react";
-import StarRating from "./_starRating";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
 import type {
   InitiativeResponse,
   TeamResponse,
   TeamMemberResponse,
 } from "@/lib/types/api";
 import { TeamInitiative } from "@/lib/types/intiative";
+import StarRating from '@/components/ui/StarRating';
 
 interface PerformanceRatingModalProps {
   isOpen: boolean;
@@ -50,13 +53,9 @@ export default function PerformanceRatingModal({
   onSubmit,
 }: PerformanceRatingModalProps) {
   const [teams, setTeams] = useState<TeamResponse[]>([]);
-  const [selectedTeamId, setSelectedTeamId] = useState<string>(
-    initialTeamId || ""
-  );
+  const [selectedTeamId, setSelectedTeamId] = useState<string>(initialTeamId || "");
   const [members, setMembers] = useState<TeamMemberResponse[]>([]);
-  const [selectedMemberId, setSelectedMemberId] = useState<string>(
-    initialMemberId || ""
-  );
+  const [selectedMemberId, setSelectedMemberId] = useState<string>(initialMemberId || "");
   const [initiatives, setInitiatives] = useState<InitiativeResponse[]>([]);
   const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
@@ -107,17 +106,13 @@ export default function PerformanceRatingModal({
     }
   };
 
-  // Update the fetchInitiatives function in PerformanceRatingModal:
   const fetchInitiatives = async (teamId: string) => {
     try {
       setLoading(true);
       const response = await fetch(`/api/teams/${teamId}/initiatives`);
       const data = await response.json();
       if (data.success) {
-        // Each item in data.data is a TeamInitiative object that has an initiative property
-        const teamInitiatives = data.data.map(
-          (ti: TeamInitiative) => ti.initiative
-        );
+        const teamInitiatives = data.data.map((ti: TeamInitiative) => ti.initiative);
         setInitiatives(teamInitiatives);
       }
     } catch (err) {
@@ -167,32 +162,41 @@ export default function PerformanceRatingModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent size="base">
         <DialogHeader>
           <DialogTitle>Add Performance Rating</DialogTitle>
+          <DialogDescription>
+            Rate team member performance and provide feedback.
+          </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="text-red-500 text-sm bg-red-50 p-3 rounded-md">
-              {error}
-            </div>
+            <Alert variant="danger">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
-          {/* Team Selection (only if not provided and multiple teams exist) */}
+          {/* Team Selection */}
           {!initialTeamId && teams.length > 1 && (
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                Select Team
-              </Label>
-              <Select value={selectedTeamId} onValueChange={setSelectedTeamId}>
-                <SelectTrigger>
+            <div>
+              <Select 
+                value={selectedTeamId} 
+                onValueChange={setSelectedTeamId}
+                width="full"
+                withLabel
+                label="Select Team"
+              >
+                <SelectTrigger size="base">
                   <SelectValue placeholder="Select a team" />
                 </SelectTrigger>
                 <SelectContent>
                   {teams.map((team) => (
-                    <SelectItem key={team.id} value={team.id}>
+                    <SelectItem 
+                      key={team.id} 
+                      value={team.id} 
+                      size="base"
+                    >
                       {team.name}
                     </SelectItem>
                   ))}
@@ -201,25 +205,27 @@ export default function PerformanceRatingModal({
             </div>
           )}
 
-          {/* Member Selection (only if not provided) */}
+          {/* Member Selection */}
           {!initialMemberId && selectedTeamId && (
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <User className="w-4 h-4" />
-                Select Member
-              </Label>
-              <Select
-                value={selectedMemberId}
+            <div>
+              <Select 
+                value={selectedMemberId} 
                 onValueChange={setSelectedMemberId}
+                width="full"
+                withLabel
+                label="Select Member"
               >
-                <SelectTrigger>
+                <SelectTrigger size="base">
                   <SelectValue placeholder="Select a member" />
                 </SelectTrigger>
                 <SelectContent>
                   {members.map((member) => (
-                    <SelectItem key={member.id} value={member.id}>
+                    <SelectItem 
+                      key={member.id} 
+                      value={member.id} 
+                      size="base"
+                    >
                       {member.user.name || member.user.email}
-                      {member.title && ` - ${member.title}`}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -227,35 +233,19 @@ export default function PerformanceRatingModal({
             </div>
           )}
 
-          {/* Member Display (when selected) */}
-          {(initialMemberId || selectedMemberId) && (
-            <div className="space-y-2">
-              <Label>Member</Label>
-              <div className="p-2 border rounded-md bg-muted">
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-base">
-                    {getSelectedMemberName()}
-                    {initialMemberTitle && (
-                      <span className="text-gray-500 ml-1">
-                        - {initialMemberTitle}
-                      </span>
-                    )}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Initiative Selection */}
-          <div className="space-y-2">
-            <Label>Select Initiative</Label>
+          <div>
             <Select
               value={selectedInitiativeId}
               onValueChange={setSelectedInitiativeId}
-              disabled={loading || !selectedTeamId || !selectedMemberId}
+              width="full"
+              withLabel
+              label="Select Initiative"
             >
-              <SelectTrigger>
+              <SelectTrigger 
+                size="base"
+                disabled={loading || !selectedTeamId || !selectedMemberId}
+              >
                 <SelectValue
                   placeholder={
                     loading
@@ -268,76 +258,71 @@ export default function PerformanceRatingModal({
               </SelectTrigger>
               <SelectContent>
                 {initiatives.length === 0 ? (
-                  <div className="p-2 text-sm text-gray-500">
-                    {loading
-                      ? "Loading..."
-                      : "No initiatives available for this team"}
+                  <div className="p-2 text-sm text-muted-foreground">
+                    {loading ? "Loading..." : "No initiatives available for this team"}
                   </div>
                 ) : (
                   initiatives.map((initiative) => (
-                    <SelectItem key={initiative.id} value={initiative.id}>
+                    <SelectItem 
+                      key={initiative.id} 
+                      value={initiative.id} 
+                      size="base"
+                    >
                       {initiative.name}
-                      {initiative.description && (
-                        <span className="text-muted-foreground ml-2">
-                          ({initiative.description})
-                        </span>
-                      )}
                     </SelectItem>
                   ))
                 )}
               </SelectContent>
             </Select>
-            {initiatives.length === 0 && !loading && selectedTeamId && (
-              <p className="text-sm text-yellow-600">
-                No initiatives configured for this team. Please configure
-                initiatives in the team settings.
-              </p>
-            )}
           </div>
 
           {/* Rating */}
           <div className="space-y-2">
             <Label>Rating</Label>
-            <div className="flex justify-center py-2">
-              <StarRating value={rating} onChange={setRating} size="lg" />
+            <div>
+            <StarRating 
+      value={rating} 
+      onChange={setRating} 
+      size="lg"
+      showValue={true}
+    />
             </div>
           </div>
 
           {/* Feedback */}
-          <div className="space-y-2">
-            <Label>Feedback (Optional)</Label>
+          <div>
             <Textarea
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
               placeholder="Enter feedback..."
               rows={3}
+              inputSize="base"
+              showCount
+              maxLength={1000}
+              withLabel
+              label="Feedback (Optional)"
             />
           </div>
-
-          {/* Actions */}
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleReset}
-              disabled={saving}
-            >
-              Reset
-            </Button>
-            <Button
-              type="submit"
-              disabled={
-                saving ||
-                !selectedTeamId ||
-                !selectedMemberId ||
-                !selectedInitiativeId ||
-                rating === 0
-              }
-            >
-              {saving ? "Saving..." : "Save Rating"}
-            </Button>
-          </div>
         </form>
+
+        <DialogFooter>
+          <Button
+            variant="neutral"
+            appearance="text"
+            onClick={handleReset}
+            disabled={saving}
+          >
+            Reset
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleSubmit}
+            disabled={saving || !selectedTeamId || !selectedMemberId || !selectedInitiativeId || rating === 0}
+            isLoading={saving}
+          >
+            Save Rating
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

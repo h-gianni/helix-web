@@ -1,0 +1,180 @@
+/* button.css */
+
+/* Base button styles */
+.button-base {
+  @apply inline-flex items-center justify-center gap-2.5
+    whitespace-nowrap
+    rounded
+    text-base font-medium capitalize
+    transition-colors duration-150 ease-out
+    cursor-pointer
+    focus-visible:outline-none focus-visible:ring-2
+    focus-visible:ring-ring focus-visible:ring-offset-2
+    disabled:cursor-not-allowed
+    disabled:opacity-50;
+}
+
+.button-base svg {
+  @apply size-4 shrink-0;
+}
+
+/* Appearance variants */
+.button-default {
+  @apply bg-neutral-200 dark:bg-neutral-800
+    text-neutral-800 dark:text-neutral-100
+    hover:bg-neutral-300 dark:hover:bg-neutral-700
+    active:bg-neutral-300 dark:active:bg-neutral-600
+    disabled:bg-neutral-100 dark:disabled:bg-neutral-800;
+}
+
+.button-outline {
+  @apply border border-current
+    hover:text-white
+    hover:bg-neutral-50 dark:hover:bg-neutral-800
+    disabled:hover:bg-transparent;
+}
+
+.button-text {
+  @apply hover:bg-neutral-50 dark:hover:bg-neutral-800
+    active:bg-neutral-100 dark:active:bg-neutral-700;
+}
+
+.button-icon-only {
+  @apply p-0 flex items-center justify-center
+    aspect-square
+    bg-transparent
+    disabled:bg-neutral-50 dark:disabled:bg-neutral-800;
+}
+
+/* Size variants */
+.button-sm {
+  @apply h-8 min-w-8 px-3 text-sm;
+}
+
+.button-default-size {
+  @apply h-10 min-w-10 px-4 text-base !leading-null;
+}
+
+.button-lg {
+  @apply h-12 min-w-12 px-6 text-base;
+}
+
+/* Loading state */
+.button-loading {
+  @apply cursor-wait opacity-100;
+}
+
+/* Primary variant */
+.button-primary {
+  @apply bg-primary-500
+    text-white
+    hover:bg-primary-600
+    active:bg-primary-700
+    disabled:bg-primary-200;
+}
+
+.button-primary-outline {
+  @apply border-primary-500
+    text-primary-500
+    hover:bg-primary-500
+    hover:text-white
+    dark:border-primary-400
+    dark:text-primary-400
+    dark:hover:bg-primary-400
+    dark:hover:text-black;
+}
+
+.button-primary-text,
+.button-primary-icon {
+  @apply bg-transparent
+    text-primary-500
+    hover:bg-primary-50
+    dark:text-primary-400
+    dark:hover:bg-primary-950/50;
+}
+
+/* Warning variant */
+.button-warning {
+  @apply bg-warning-500
+    text-white
+    hover:bg-warning-600
+    active:bg-warning-700
+    disabled:bg-warning-200;
+}
+
+.button-warning-outline {
+  @apply border-warning-500
+    text-warning-500
+    hover:bg-warning-500
+    hover:text-white
+    dark:border-warning-400
+    dark:text-warning-400
+    dark:hover:bg-warning-400
+    dark:hover:text-black;
+}
+
+.button-warning-text,
+.button-warning-icon {
+  @apply bg-transparent
+    text-warning-500
+    hover:bg-warning-50
+    dark:text-warning-400
+    dark:hover:bg-warning-950/50;
+}
+
+/* Danger variant */
+.button-danger {
+  @apply bg-danger-500
+    text-white
+    hover:bg-danger-600
+    active:bg-danger-700
+    disabled:bg-danger-200;
+}
+
+.button-danger-outline {
+  @apply border-danger-500
+    text-danger-500
+    hover:bg-danger-500
+    hover:text-white
+    dark:border-danger-400
+    dark:text-danger-400
+    dark:hover:bg-danger-400
+    dark:hover:text-black;
+}
+
+.button-danger-text,
+.button-danger-icon {
+  @apply bg-transparent
+    text-danger-500
+    hover:bg-danger-50
+    dark:text-danger-400
+    dark:hover:bg-danger-950/50;
+}
+
+/* Neutral variant */
+.button-neutral-outline {
+  @apply border-neutral-800 dark:border-neutral-200
+    text-neutral-800 dark:text-neutral-200
+    hover:bg-neutral-800 dark:hover:bg-neutral-200
+    hover:text-white dark:hover:text-black;
+}
+
+.button-neutral-text,
+.button-neutral-icon {
+  @apply bg-transparent
+    text-neutral-800 dark:text-neutral-200
+    hover:bg-neutral-200 dark:hover:bg-neutral-800;
+}
+
+/* Icon-only sizes */
+.button-icon-sm {
+  @apply h-8 w-8 p-0;
+}
+
+.button-icon-default {
+  @apply h-10 w-10 p-0;
+}
+
+.button-icon-lg {
+  @apply h-12 w-12 p-0;
+}

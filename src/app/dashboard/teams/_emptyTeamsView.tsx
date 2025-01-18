@@ -1,5 +1,5 @@
 // app/dashboard/teams/_emptyTeamsView.tsx
-import { Users } from "lucide-react";
+import { Users, UserPlus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 
@@ -9,50 +9,62 @@ interface EmptyTeamsViewProps {
 
 const EmptyTeamsView = ({ onCreateTeam }: EmptyTeamsViewProps) => {
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="text-center space-y-6 py-8">
-          <div className="bg-primary/5 rounded-full p-3 w-12 h-12 mx-auto">
-            <Users className="w-6 h-6 text-primary" />
+    <Card size="default" background={true} border={true}>
+      <CardContent>
+        <div className="text-center space-y-4 py-4">
+          <div className="bg-primary-25 rounded-full p-3 size-12 mx-auto">
+            <Users className="size-6 text-primary-600" />
           </div>
+
           <div className="space-y-2">
-            {/* <h2 className="text-2xl font-bold">Welcome to UpScore</h2> */}
-            <p className="text-gray-500 max-w-[600px] mx-auto">
-              Get started by creating your first team. Teams help you organize members
-              and track their performance through various initiatives.
+            <p className="max-w-[600px] mx-auto">
+              Get started by creating your first team. Teams help you organize
+              members and track their performance through various initiatives.
             </p>
           </div>
-          
-          <div className="grid gap-6 max-w-[800px] mx-auto">
-            <div className="grid gap-6 md:grid-cols-2">
-              <Card className="p-4">
-                <div className="flex gap-4">
-                  <div className="bg-primary/10 rounded-lg p-2 h-fit">
-                    <Users className="w-5 h-5 text-primary" />
+
+          <div className="grid gap-4 max-w-[800px] mx-auto">
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card size="sm" background={true} border={true} shadow="sm">
+                <CardContent>
+                  <div className="flex flex-col justify-center space-y-2">
+                    <div className="bg-primary-25 rounded-full p-2 size-8 mx-auto">
+                      <Users className="size-4 text-primary-600" />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="text-heading-4">1. Create a Team</h3>
+                      <p className="text-p-small">
+                        Start by creating your first team and add team members
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">1. Create a Team</h3>
-                    <p className="text-sm text-gray-500">Start by creating your first team and add team members</p>
-                  </div>
-                </div>
+                </CardContent>
               </Card>
 
-              <Card className="p-4">
-                <div className="flex gap-4">
-                  <div className="bg-primary/10 rounded-lg p-2 h-fit">
-                    <Users className="w-5 h-5 text-primary" />
+              <Card size="sm" background={true} border={true} shadow="sm">
+                <CardContent>
+                  <div className="flex flex-col justify-center space-y-2">
+                    <div className="bg-primary-25 rounded-full p-2 size-8 mx-auto">
+                      <UserPlus className="size-4 text-primary-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-heading-4">2. Add Members</h3>
+                      <p className="text-p-small">
+                        Invite your team members to join and collaborate
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="font-semibold">2. Add Members</h3>
-                    <p className="text-sm text-gray-500">Invite your team members to join and collaborate</p>
-                  </div>
-                </div>
+                </CardContent>
               </Card>
             </div>
 
-            <div className="flex justify-center">
-              <Button onClick={onCreateTeam} size="lg">
-                <Users className="w-4 h-4 mr-2" />
+            <div className="flex justify-center pt-4">
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={onCreateTeam}
+                leadingIcon={<Plus className="size-4" />}
+              >
                 Create Your First Team
               </Button>
             </div>

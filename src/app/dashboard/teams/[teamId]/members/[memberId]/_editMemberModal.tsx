@@ -1,10 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Modal } from '@/components/ui/Modal';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Save } from "lucide-react";
+import { Label } from "@/components/ui/Label";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { Save, AlertCircle } from "lucide-react";
 import type { ApiResponse } from "@/lib/types/api";
 
 interface MemberDetails {
@@ -116,7 +125,6 @@ export function EditMemberModal({
       await onUpdate();
       onClose();
     } catch (err) {
-      console.error('Error updating member:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setSaving(false);
@@ -140,7 +148,6 @@ export function EditMemberModal({
     setError(null);
   };
 
-  // Reset form when modal is opened
   useEffect(() => {
     if (isOpen && originalData) {
       resetForm();
@@ -148,76 +155,89 @@ export function EditMemberModal({
   }, [isOpen, originalData]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={handleCancel}
-      title="Edit Member Details"
-      size="md"
-    >
-      {loading ? (
-        <div className="py-8 text-center">Loading member details...</div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="text-red-500 text-sm mb-4 bg-red-50 p-3 rounded-md">
-              {error}
-            </div>
-          )}
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                First Name
-              </label>
-              <Input
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Enter first name"
-              />
-            </div>
+    <Dialog open={isOpen} onOpenChange={handleCancel}>
+      <DialogContent size="base">
+        <DialogHeader>
+          <DialogTitle>Edit Member Details</DialogTitle>
+          <DialogDescription>
+            Update the member's profile information.
+          </DialogDescription>
+        </DialogHeader>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Last Name
-              </label>
-              <Input
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Enter last name"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Job Title
-              </label>
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g., Senior Developer"
-              />
-            </div>
+        {loading ? (
+          <div className="py-8 text-center text-muted-foreground">
+            Loading member details...
           </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <Alert variant="danger">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  id="firstName"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="Enter first name"
+                  inputSize="base"
+                  withLabel
+                  label="First Name"
+                />
+              </div>
 
-          <div className="flex justify-end gap-4 pt-4 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={saving}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={saving || !hasChanges()}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              {saving ? 'Saving...' : 'Save Changes'}
-            </Button>
-          </div>
-        </form>
-      )}
-    </Modal>
+              <div className="space-y-2">
+                <Input
+                  id="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Enter last name"
+                  inputSize="base"
+                  withLabel
+                  label="Last Name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Input
+                  id="jobTitle"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g., Senior Developer"
+                  inputSize="base"
+                  withLabel
+                  label="Job Title"
+                />
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="neutral"
+                appearance="outline"
+                onClick={handleCancel}
+                disabled={saving}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={saving || !hasChanges()}
+                isLoading={saving}
+                leadingIcon={<Save className="h-4 w-4" />}
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,17 +1,48 @@
-"use client"
-
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
-
 import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/Button"
+
+type ActionConfig = {
+  label: string
+  onClick: () => void
+  isLoading?: boolean
+}
+
+interface DialogFooterConfig {
+  primaryAction: ActionConfig
+  secondaryAction?: ActionConfig
+  textAction?: ActionConfig
+}
+
+interface DialogConfigProps extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root> {
+  title?: string
+  hideClose?: boolean
+  size?: 'base' | 'lg' | 'xl'
+  footer?: 'one-action' | 'two-actions' | 'three-actions'
+  footerConfig?: DialogFooterConfig
+  className?: string
+  children: React.ReactNode
+}
+
+interface DialogContentProps extends 
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  size?: 'base' | 'lg' | 'xl'
+  hideClose?: boolean
+}
+
+const DEFAULT_FOOTER_CONFIG: DialogFooterConfig = {
+  primaryAction: {
+    label: 'Confirm',
+    onClick: () => {},
+    isLoading: false
+  }
+}
 
 const Dialog = DialogPrimitive.Root
-
 const DialogTrigger = DialogPrimitive.Trigger
-
 const DialogPortal = DialogPrimitive.Portal
-
 const DialogClose = DialogPrimitive.Close
 
 const DialogOverlay = React.forwardRef<
@@ -20,10 +51,7 @@ const DialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
-    className={cn(
-      "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className
-    )}
+    className={cn("dialog-overlay", className)}
     {...props}
   />
 ))
@@ -31,24 +59,26 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  DialogContentProps
+>(({ className, children, size = 'base', hideClose = false, ...props }, ref) => (
   <DialogPortal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
-        className
-      )}
-      {...props}
-    >
-      {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-        <X className="h-4 w-4" />
-        <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
-    </DialogPrimitive.Content>
+    <div className="dialog-container">
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn("dialog-content", className)}
+        data-size={size}
+        {...props}
+      >
+        {children}
+        {!hideClose && (
+          <DialogClose className="dialog-close">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </DialogClose>
+        )}
+      </DialogPrimitive.Content>
+    </div>
   </DialogPortal>
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
@@ -57,13 +87,7 @@ const DialogHeader = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn(
-      "flex flex-col space-y-1.5 text-center sm:text-left",
-      className
-    )}
-    {...props}
-  />
+  <div className={cn("dialog-header", className)} {...props} />
 )
 DialogHeader.displayName = "DialogHeader"
 
@@ -71,13 +95,7 @@ const DialogFooter = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
-      className
-    )}
-    {...props}
-  />
+  <div className={cn("dialog-footer", className)} {...props} />
 )
 DialogFooter.displayName = "DialogFooter"
 
@@ -87,10 +105,7 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn(
-      "text-lg font-semibold leading-none tracking-tight",
-      className
-    )}
+    className={cn("dialog-title", className)}
     {...props}
   />
 ))
@@ -102,21 +117,97 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("dialog-description", className)}
     {...props}
   />
 ))
 DialogDescription.displayName = DialogPrimitive.Description.displayName
 
+// Utility component for common dialog configurations
+const DialogWithConfig = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  DialogConfigProps
+>(({ 
+  children, 
+  title, 
+  hideClose = false, 
+  size = 'base', 
+  footer = 'one-action', 
+  footerConfig = DEFAULT_FOOTER_CONFIG, 
+  className, 
+  ...props 
+}, ref) => {
+  React.useEffect(() => {
+    if (props.open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [props.open]);
+
+  return (
+    <Dialog {...props}>
+      <DialogContent ref={ref} size={size} hideClose={hideClose} className={className}>
+        {title && (
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+          </DialogHeader>
+        )}
+        <div className="dialog-body">
+          {children}
+        </div>
+        <DialogFooter>
+          {footer === 'three-actions' && footerConfig.textAction && (
+            <Button
+              variant="neutral"
+              appearance="text"
+              onClick={footerConfig.textAction.onClick}
+              isLoading={footerConfig.textAction.isLoading}
+            >
+              {footerConfig.textAction.label}
+            </Button>
+          )}
+          {(footer === 'two-actions' || footer === 'three-actions') && 
+            footerConfig.secondaryAction && (
+              <Button
+                variant="neutral"
+                appearance="default"
+                onClick={footerConfig.secondaryAction.onClick}
+                isLoading={footerConfig.secondaryAction.isLoading}
+              >
+                {footerConfig.secondaryAction.label}
+              </Button>
+          )}
+          <Button
+            variant="primary"
+            onClick={footerConfig.primaryAction.onClick}
+            isLoading={footerConfig.primaryAction.isLoading}
+          >
+            {footerConfig.primaryAction.label}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+})
+DialogWithConfig.displayName = "DialogWithConfig"
+
+export type {
+  DialogConfigProps,
+  DialogContentProps,
+  DialogFooterConfig
+}
+
 export {
   Dialog,
-  DialogPortal,
-  DialogOverlay,
-  DialogClose,
   DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogFooter,
   DialogTitle,
   DialogDescription,
+  DialogWithConfig,
 }

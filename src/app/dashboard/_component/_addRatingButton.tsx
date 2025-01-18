@@ -5,6 +5,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Textarea } from "@/components/ui/Textarea";
@@ -18,7 +20,8 @@ import {
 import StarRating from "./_starRating";
 import type { InitiativeResponse } from "@/lib/types/api";
 import { Label } from "@/components/ui/Label";
-import { User } from "lucide-react";
+import { AlertCircle, User } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
 
 interface PerformanceRatingModalProps {
   isOpen: boolean;
@@ -38,7 +41,6 @@ export default function PerformanceRatingModal({
   isOpen,
   onClose,
   teamId,
-
   memberName,
   memberTitle,
   onSubmit,
@@ -116,28 +118,32 @@ export default function PerformanceRatingModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent size="base">
         <DialogHeader>
           <DialogTitle>Add Performance Rating</DialogTitle>
+          <DialogDescription>
+            Rate the performance of team members on specific initiatives.
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="text-red-500 text-sm bg-red-50 p-3 rounded-md">
-              {error}
-            </div>
+            <Alert variant="danger">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
           )}
 
           {/* Member Display */}
           <div className="space-y-2">
             <Label>Member</Label>
-            <div className="p-2 border rounded-md bg-muted">
+            <div className="p-2 border rounded-base bg-muted">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-muted-foreground" />
                 <span className="text-base">
                   {memberName}
                   {memberTitle && (
-                    <span className="text-gray-500 ml-1">- {memberTitle}</span>
+                    <span className="text-muted-foreground ml-1">- {memberTitle}</span>
                   )}
                 </span>
               </div>
@@ -152,12 +158,12 @@ export default function PerformanceRatingModal({
               onValueChange={setSelectedInitiativeId}
               disabled={loading}
             >
-              <SelectTrigger>
+              <SelectTrigger size="base">
                 <SelectValue placeholder="Select an initiative" />
               </SelectTrigger>
               <SelectContent>
                 {initiatives.map((initiative) => (
-                  <SelectItem key={initiative.id} value={initiative.id}>
+                  <SelectItem key={initiative.id} value={initiative.id} size="base">
                     {initiative.name}
                   </SelectItem>
                 ))}
@@ -181,27 +187,29 @@ export default function PerformanceRatingModal({
               onChange={(e) => setFeedback(e.target.value)}
               placeholder="Enter feedback..."
               rows={3}
+              inputSize="base"
             />
           </div>
-
-          {/* Actions */}
-          <div className="flex justify-end gap-2 pt-4 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleReset}
-              disabled={saving}
-            >
-              Reset
-            </Button>
-            <Button
-              type="submit"
-              disabled={saving || !selectedInitiativeId || rating === 0}
-            >
-              {saving ? "Saving..." : "Save Rating"}
-            </Button>
-          </div>
         </form>
+
+        <DialogFooter className="sm:justify-end">
+          <Button
+            variant="neutral"
+            appearance="outline"
+            onClick={handleReset}
+            disabled={saving}
+          >
+            Reset
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleSubmit}
+            disabled={saving || !selectedInitiativeId || rating === 0}
+            isLoading={saving}
+          >
+            {saving ? "Saving..." : "Save Rating"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

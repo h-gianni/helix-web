@@ -1,0 +1,17 @@
+/* tokens/themes/dark.css */
+[data-theme="dark"] {
+  /* Dark theme specific overrides */
+  /* --color-background: hsl(var(--color-neutral-900));
+  --color-foreground: hsl(var(--color-neutral-50));
+  
+  --color-surface: hsl(var(--color-neutral-800));
+  --color-surface-hover: hsl(var(--color-neutral-700));
+  
+  --color-border: hsl(var(--color-neutral-700));
+  --color-border-hover: hsl(var(--color-neutral-600));
+  
+  --color-primary: hsl(var(--color-primary-400));
+  --color-primary-hover: hsl(var(--color-primary-300));
+  
+  --shadow-color: 0 0% 100%; */
+}

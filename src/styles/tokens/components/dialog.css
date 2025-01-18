@@ -1,0 +1,115 @@
+/* dialog.css */
+:root {
+  /* Sizing */
+  --dialog-width-base: 480px;
+  --dialog-width-lg: 640px;
+  --dialog-width-xl: 840px;
+
+  /* Colors & Effects */
+  --dialog-overlay: var(--overlay);
+  
+  /* Animation */
+  --dialog-duration: var(--duration-normal);
+  --dialog-timing: var(--ease-out);
+}
+
+/* Container & Overlay */
+.dialog-container {
+  @apply fixed inset-0 flex items-center justify-center;
+  z-index: var(--dialog-z-index);
+}
+
+.dialog-overlay {
+  @apply fixed inset-0 backdrop-blur-sm;
+  background-color: var(--dialog-overlay);
+  z-index: var(--dialog-z-index);
+}
+
+/* Content */
+.dialog-content {
+  @apply fixed left-[50%] top-[50%] grid w-full translate-x-[-50%] translate-y-[-50%] 
+         bg-surface-0 dark:bg-surface-2 border border-neutral-200 dark:border-neutral-800 
+         shadow-md font-sans;
+  z-index: calc(var(--dialog-z-index) + 10);
+  max-width: var(--dialog-width-base);
+  padding: var(--space-lg);
+  gap: var(--space);
+  border-radius: var(--radius-lg);
+  transition-duration: var(--dialog-duration);
+  transition-timing-function: var(--dialog-timing);
+}
+
+/* Size variants */
+.dialog-content[data-size="lg"] {
+  max-width: var(--dialog-width-lg);
+}
+
+.dialog-content[data-size="xl"] {
+  max-width: var(--dialog-width-xl);
+}
+
+.dialog-body > div {
+  @apply space-y-4;
+}
+
+/* Typography & Structure */
+.dialog-header {
+  @apply flex flex-col space-y-1.5 text-center sm:text-left;
+}
+
+.dialog-title {
+  @apply text-heading-2;
+}
+
+.dialog-description {
+  @apply text-base;
+}
+
+.dialog-footer {
+  @apply flex flex-col-reverse sm:flex-row sm:justify-end
+         pt-5 mt-4 border-t border-neutral-200 dark:border-neutral-800;
+  gap: var(--space);
+}
+
+/* Close button */
+.dialog-close {
+  @apply absolute right-6 top-6 size-4 rounded-sm opacity-70 
+         transition-opacity hover:opacity-100 
+         focus:outline-none focus:ring-2 
+         focus:ring-primary-500 focus:ring-offset-2 
+         disabled:pointer-events-none
+         text-neutral-600 dark:text-neutral-400;
+}
+.dialog-close svg {
+  @apply size-4;
+}
+
+/* Animations */
+.dialog-content {
+  @apply data-[state=open]:animate-in data-[state=closed]:animate-out
+         data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
+         data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
+         data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%]
+         data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%];
+}
+
+.dialog-overlay {
+  @apply data-[state=open]:animate-in data-[state=closed]:animate-out
+         data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+  .dialog-content {
+    @apply h-full border-none rounded-none p-4;
+  }
+
+  .dialog-footer {
+    @apply fixed bottom-0 left-0 right-0 bg-surface-0 dark:bg-surface-2
+           p-4 border-t border-neutral-200 dark:border-neutral-800;
+  }
+
+  .dialog-close {
+    @apply right-4 top-4;
+  }
+}
