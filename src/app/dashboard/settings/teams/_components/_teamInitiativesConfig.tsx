@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Label } from "@/components/ui/Label";
 import { RotateCcw, Save, AlertCircle } from "lucide-react";
-import type { InitiativeResponse, TeamResponse } from "@/lib/types/api";
+import type {BusinessActivityResponse as InitiativeResponse, TeamResponse } from "@/lib/types/api";
 import { TeamInitiative } from "@/lib/types/intiative";
 
 interface TeamInitiativesConfigProps {

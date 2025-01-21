@@ -333,7 +333,7 @@ export const SizeVariants: Story = {
                   </DialogHeader>
                   <div>
                     <code>
-                      size="{size}"
+                      size={size}
                     </code>
                   </div>
                   <DialogFooter>

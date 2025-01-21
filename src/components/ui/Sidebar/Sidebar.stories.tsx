@@ -32,7 +32,6 @@ import {
 } from '@/components/ui/Popover'
 import {
   Settings,
-  User,
   Home,
   Users,
   Mail,
@@ -45,7 +44,6 @@ import {
   FileText,
   Calendar,
   ChevronDown,
-  PanelLeft,
   Sun,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -171,7 +169,6 @@ const NavMenuItem = ({
   label,
   isActive = false,
   subItems,
-  badge,
   action,
 }: {
   icon: React.ElementType
@@ -236,8 +233,8 @@ const NavMenuItem = ({
 
 export const Configurator: Story = {
   render: (args) => {
-    const { isMobile } = useSidebar()
-    const [selectedItem, setSelectedItem] = React.useState('dashboard')
+    // const { isMobile } = useSidebar()
+    const [selectedItem] = React.useState('dashboard')
 
     return (
       <>

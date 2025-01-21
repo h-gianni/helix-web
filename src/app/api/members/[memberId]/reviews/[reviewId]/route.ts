@@ -32,14 +32,14 @@ export async function PATCH(
     const review = await prisma.performanceReview.update({
       where: {
         id: params.reviewId,
-        memberId: params.memberId,
+        teamMemberId: params.memberId,
       },
       data: {
         content: content?.trim(),
         status: status as ReviewStatus,
       },
       include: {
-        member: true,
+        teamMember: true,
       },
     });
 
@@ -73,7 +73,7 @@ export async function DELETE(
     const review = await prisma.performanceReview.findUnique({
       where: {
         id: params.reviewId,
-        memberId: params.memberId,
+        teamMemberId: params.memberId,
       },
     });
 

@@ -35,13 +35,13 @@ interface DrawerProps {
 
 const Drawer = ({
   position = 'right',
-  size = 'base',
-  header = 'base',
-  withOverlay = true,
-  footer = 'none',
-  footerConfig,
-  title,
-  description,
+  // size = 'base',
+  // header = 'base',
+  // withOverlay = true,
+  // footer = 'none',
+  // footerConfig,
+  // title,
+  // description,
   children,
   ...props
 }: DrawerProps) => (

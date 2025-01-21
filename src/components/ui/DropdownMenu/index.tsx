@@ -9,11 +9,14 @@ interface DropdownMenuProps extends React.ComponentPropsWithoutRef<typeof Dropdo
   closeOnSelect?: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const DropdownMenu = React.forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Root>,
   DropdownMenuProps
->(({ closeOnSelect = true, ...props }, ref) => {
-  return <DropdownMenuPrimitive.Root {...props} />
+>(({ 
+  // closeOnSelect = true, 
+  ...props }, ref) => {
+  return <DropdownMenuPrimitive.Root  {...props}  />
 })
 DropdownMenu.displayName = "DropdownMenu"
 

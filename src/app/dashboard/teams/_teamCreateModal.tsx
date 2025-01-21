@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import type { BusinessFunctionResponse } from "@/lib/types/api";
+import type { BusinessActivityResponse as BusinessFunctionResponse } from "@/lib/types/api";
 
 interface TeamCreateModalProps {
   isOpen: boolean;

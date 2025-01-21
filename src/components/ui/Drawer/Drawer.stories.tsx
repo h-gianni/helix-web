@@ -2,8 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Drawer,
   DrawerContent,
-  DrawerTrigger,
-  DrawerClose,
+
 } from './index';
 import { Button } from '@/components/ui/Button';
 import { useState } from 'react';

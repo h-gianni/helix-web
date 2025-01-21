@@ -53,7 +53,7 @@ SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
 const Select = ({ 
   error, 
-  size = 'base', 
+  // size = 'base', 
   withLabel = false, 
   label, 
   helperText, 

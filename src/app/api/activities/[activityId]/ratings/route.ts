@@ -17,7 +17,7 @@ export async function GET(
       );
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.appUser.findUnique({
       where: { clerkId: userId },
     });
 
@@ -40,10 +40,10 @@ export async function GET(
       ...(teamId && { member: { teamId } }),
     };
 
-    const ratings = await prisma.rating.findMany({
+    const ratings = await prisma.memberRating.findMany({
       where: whereClause,
       include: {
-        member: {
+        teamMember: {
           include: {
             user: {
               select: {
@@ -97,7 +97,7 @@ export async function POST(
       );
     }
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.appUser.findUnique({
       where: { clerkId: userId },
     });
 
@@ -126,7 +126,7 @@ export async function POST(
     }
 
     // Check if activity exists
-    const activity = await prisma.activity.findUnique({
+    const activity = await prisma.businessActivity.findUnique({
       where: { id: params.activityId },
     });
 
@@ -138,14 +138,14 @@ export async function POST(
     }
 
     // Create rating
-    const rating = await prisma.rating.create({
+    const rating = await prisma.memberRating.create({
       data: {
         value,
-        memberId,
+        teamMemberId: memberId,
         activityId: params.activityId,
       },
       include: {
-        member: {
+        teamMember: {
           include: {
             user: {
               select: {

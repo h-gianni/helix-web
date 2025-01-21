@@ -1,5 +1,8 @@
 // lib/types/api.ts
-import { Priority, BusinessActivityStatus, TeamMemberStatus, ReviewStatus } from "@prisma/client";
+import { Priority, BusinessActivityStatus, TeamMemberStatus, ReviewStatus, Prisma } from "@prisma/client";
+
+// Define a type for JSON fields
+export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
 export type ApiResponse<T> =
   | {
@@ -23,7 +26,7 @@ export type TeamResponse = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date | null;
-  customFields?: any;
+  customFields?: JsonValue;
 };
 
 export type TeamMemberResponse = {
@@ -41,7 +44,7 @@ export type TeamMemberResponse = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
-  customFields?: any;
+  customFields?: JsonValue;
   user: {
     id: string;
     email: string;
@@ -51,7 +54,16 @@ export type TeamMemberResponse = {
 
 export type TeamDetailsResponse = TeamResponse & {
   members: TeamMemberResponse[];
+  
   businessActivities: BusinessActivityResponse[];
+  teamFunction?: {
+    id: string;
+    name: string;
+    description: string | null;
+    jobTitles: JobTitleResponse[];
+    createdAt: Date;
+    updatedAt: Date;
+  };
 };
 
 // BusinessActivity types
@@ -68,7 +80,7 @@ export type BusinessActivityResponse = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
-  customFields?: any;
+  customFields?: JsonValue;
   ratings?: RatingResponse[];
   _count?: {
     ratings: number;
@@ -105,7 +117,7 @@ export type TeamFunctionResponse = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
-  customFields?: any;
+  customFields?: JsonValue;
   jobTitles: JobTitleResponse[];
   _count?: {
     teams: number;
@@ -119,7 +131,7 @@ export type JobTitleResponse = {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date | null;
-  customFields?: any;
+  customFields?: JsonValue;
 };
 
 // Feedback and Review types
@@ -131,7 +143,7 @@ export type StructuredFeedbackResponse = {
   teamMemberId: string;
   createdAt: Date;
   updatedAt: Date;
-  customFields?: any;
+  customFields?: JsonValue;
   teamMember?: {
     id: string;
     userId: string;
@@ -149,7 +161,7 @@ export type PerformanceReviewResponse = {
   teamMemberId: string;
   createdAt: Date;
   updatedAt: Date;
-  customFields?: any;
+  customFields?: JsonValue;
   teamMember?: {
     id: string;
     userId: string;
@@ -210,6 +222,7 @@ export type CreateTeamFunctionInput = {
   name: string;
   description?: string;
   jobTitles?: string[];
+  customFields?: Prisma.InputJsonValue; 
 };
 
 export type UpdateTeamFunctionInput = {

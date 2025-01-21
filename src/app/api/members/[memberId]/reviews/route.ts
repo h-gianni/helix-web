@@ -25,7 +25,7 @@ export async function GET(
     const status = url.searchParams.get("status") as ReviewStatus | null;
 
     // Build where clause
-    const whereClause: any = {
+    const whereClause = {
       memberId: params.memberId,
       ...(year && { year: parseInt(year) }),
       ...(quarter && { quarter: parseInt(quarter) }),
@@ -35,7 +35,7 @@ export async function GET(
     const reviews = await prisma.performanceReview.findMany({
       where: whereClause,
       include: {
-        member: true,
+        teamMember: true,
       },
       orderBy: [
         { year: 'desc' },
@@ -89,7 +89,7 @@ export async function POST(
     // Check for existing review
     const existingReview = await prisma.performanceReview.findFirst({
       where: {
-        memberId: params.memberId,
+        teamMemberId: params.memberId,
         quarter,
         year,
       },
@@ -105,14 +105,14 @@ export async function POST(
     // Create review
     const review = await prisma.performanceReview.create({
       data: {
-        memberId: params.memberId,
+        teamMemberId: params.memberId,
         quarter,
         year,
         content,
         status: 'DRAFT',
       },
       include: {
-        member: true,
+        teamMember: true,
       },
     });
 

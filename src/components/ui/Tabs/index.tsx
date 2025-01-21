@@ -17,7 +17,9 @@ interface TabsProps extends React.ComponentPropsWithoutRef<typeof TabsPrimitive.
 const Tabs = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Root>,
   TabsProps
->(({ className, appearance = "base", width = "inline", size = "base", ...props }, ref) => (
+>(({ className, 
+  // appearance = "base", width = "inline", size = "base", 
+  ...props }, ref) => (
   <TabsPrimitive.Root
     ref={ref}
     className={cn(className)}

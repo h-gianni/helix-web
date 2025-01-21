@@ -19,10 +19,10 @@ export async function GET(
 
     const feedback = await prisma.structuredFeedback.findMany({
       where: {
-        memberId: params.memberId,
+        teamMemberId: params.memberId,
       },
       include: {
-        member: true,
+        teamMember: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -68,13 +68,13 @@ export async function POST(
     // Create feedback
     const feedback = await prisma.structuredFeedback.create({
       data: {
-        memberId: params.memberId,
+        teamMemberId: params.memberId,
         strengths,
         improvements,
         goals,
       },
       include: {
-        member: true,
+        teamMember: true,
       },
     });
 

@@ -22,7 +22,7 @@ export async function GET(
 
     const jobTitles = await prisma.jobTitle.findMany({
       where: { 
-        disciplineId: params.disciplineId,
+        teamFunctionId: params.disciplineId,
         deletedAt: null,
       },
       orderBy: {
@@ -66,7 +66,7 @@ export async function POST(
     }
 
     // Check if discipline exists
-    const discipline = await prisma.discipline.findUnique({
+    const discipline = await prisma.teamFunction.findUnique({
       where: { id: params.disciplineId },
     });
 
@@ -81,7 +81,7 @@ export async function POST(
     const jobTitle = await prisma.jobTitle.create({
       data: {
         name: name.trim(),
-        disciplineId: params.disciplineId,
+        teamFunctionId: params.disciplineId,
       },
     });
 

@@ -10,7 +10,7 @@ export async function syncUser(request: NextRequest) {
 
   try {
     // Check if user exists in our database
-    let user = await prisma.user.findUnique({
+    let user = await prisma.appUser.findUnique({
       where: { clerkId: userId },
     });
 
@@ -20,7 +20,7 @@ export async function syncUser(request: NextRequest) {
       const firstName = auth.sessionClaims?.firstName as string;
       const lastName = auth.sessionClaims?.lastName as string;
 
-      user = await prisma.user.create({
+      user = await prisma.appUser.create({
         data: {
           clerkId: userId,
           email: email || '',

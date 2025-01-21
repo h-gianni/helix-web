@@ -119,7 +119,7 @@ export default function TeamsPage() {
                 <CardContent className="p-4">
                   <h3 className="text-heading-4">{team.name}</h3>
                   <p className="text-p-small text-primary-600">
-                    {team.businessFunction?.name}
+                    {team.name}
                   </p>
                   <p className="text-p-small text-muted">
                     Created: {new Date(team.createdAt).toLocaleDateString()}

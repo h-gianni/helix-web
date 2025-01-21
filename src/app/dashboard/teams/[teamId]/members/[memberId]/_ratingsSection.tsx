@@ -154,9 +154,9 @@ export default function RatingsSection({
                           {new Date(rating.createdAt).toLocaleDateString()}
                         </span>
                       </div>
-                      {rating.feedback && (
+                      {rating.activity && (
                         <p className="text-p-small text-muted mt-2">
-                          {rating.feedback}
+                          {rating.activity.description}
                         </p>
                       )}
                     </div>

@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import {
-  TrendingUp,
+
   MoreVertical,
   ChevronRight,
   FileText,
@@ -68,7 +68,10 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
     onNavigate,
     ...props 
   }, ref) => {
-    const router = typeof window !== 'undefined' ? useRouter() : null;
+
+    const mainRouter = useRouter();
+
+    const router = typeof window !== 'undefined' ? mainRouter : null;
     const effectiveTeamId = teamId ?? member.teamId;
     const encodedTeamId = encodeURIComponent(effectiveTeamId);
     const encodedMemberId = encodeURIComponent(member.id);

@@ -24,7 +24,8 @@ type CombinedProps = CardProps & StoryProps;
 
 const meta: Meta<CombinedProps> = {
   title: 'Components/Card',
-  component: Card as any,
+  
+  component: Card as typeof Card,
   parameters: {
     layout: 'centered',
   },
