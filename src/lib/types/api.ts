@@ -1,5 +1,5 @@
 // lib/types/api.ts
-import { PrismaClient } from "@prisma/client";
+import { Priority, BusinessActivityStatus, TeamMemberStatus, ReviewStatus } from "@prisma/client";
 
 export type ApiResponse<T> =
   | {
@@ -18,11 +18,12 @@ export type TeamResponse = {
   id: string;
   name: string;
   description?: string | null;
-  businessFunctionId: string;
-  businessFunction: BusinessFunctionResponse;
+  teamFunctionId: string;
+  ownerId: string;
   createdAt: Date;
   updatedAt: Date;
-  ownerId: string;
+  deletedAt?: Date | null;
+  customFields?: any;
 };
 
 export type TeamMemberResponse = {
@@ -31,8 +32,16 @@ export type TeamMemberResponse = {
   teamId: string;
   title: string | null;
   isAdmin: boolean;
+  status: TeamMemberStatus;
+  firstName: string | null;
+  lastName: string | null;
+  photoUrl: string | null;
+  joinedDate: Date | null;
+  jobGradeId: string | null;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date | null;
+  customFields?: any;
   user: {
     id: string;
     email: string;
@@ -45,30 +54,43 @@ export type TeamDetailsResponse = TeamResponse & {
   businessActivities: BusinessActivityResponse[];
 };
 
-// BusinessActivity types (formerly Initiative)
+// BusinessActivity types
 export type BusinessActivityResponse = {
   id: string;
   name: string;
   description: string | null;
-  teamId: string | null;
+  category: string | null;
+  priority: Priority;
+  status: BusinessActivityStatus;
+  dueDate: Date | null;
+  teamId: string;
+  createdBy: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date | null;
+  customFields?: any;
   ratings?: RatingResponse[];
   _count?: {
     ratings: number;
   };
 };
 
-// Rating types (formerly Score)
+// Rating types
 export type RatingResponse = {
   id: string;
   value: number;
-  feedback: string | null;
-  memberId: string;
+  teamMemberId: string;
   activityId: string;
   createdAt: Date;
   updatedAt: Date;
-  member?: TeamMemberResponse;
+  teamMember?: {
+    id: string;
+    user: {
+      id: string;
+      email: string;
+      name: string | null;
+    };
+  };
   activity?: {
     id: string;
     name: string;
@@ -76,14 +98,15 @@ export type RatingResponse = {
   };
 };
 
-// BusinessFunction types (formerly Discipline)
-export type BusinessFunctionResponse = {
+export type TeamFunctionResponse = {
   id: string;
   name: string;
   description: string | null;
-  jobTitles: JobTitleResponse[];
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date | null;
+  customFields?: any;
+  jobTitles: JobTitleResponse[];
   _count?: {
     teams: number;
   };
@@ -92,9 +115,11 @@ export type BusinessFunctionResponse = {
 export type JobTitleResponse = {
   id: string;
   name: string;
-  businessFunctionId: string;
+  teamFunctionId: string;
   createdAt: Date;
   updatedAt: Date;
+  deletedAt: Date | null;
+  customFields?: any;
 };
 
 // Feedback and Review types
@@ -103,10 +128,11 @@ export type StructuredFeedbackResponse = {
   strengths: string[];
   improvements: string[];
   goals: string[];
-  memberId: string;
+  teamMemberId: string;
   createdAt: Date;
   updatedAt: Date;
-  member?: {
+  customFields?: any;
+  teamMember?: {
     id: string;
     userId: string;
     teamId: string;
@@ -118,11 +144,13 @@ export type PerformanceReviewResponse = {
   quarter: number;
   year: number;
   content: string;
-  status: 'DRAFT' | 'PUBLISHED' | 'ACKNOWLEDGED';
-  memberId: string;
+  status: ReviewStatus;
+  version: number;
+  teamMemberId: string;
   createdAt: Date;
   updatedAt: Date;
-  member?: {
+  customFields?: any;
+  teamMember?: {
     id: string;
     userId: string;
     teamId: string;
@@ -132,7 +160,7 @@ export type PerformanceReviewResponse = {
 // Input types
 export type CreateTeamInput = {
   name: string;
-  businessFunctionId: string;
+  teamFunctionId: string;
   description?: string;
 };
 
@@ -147,38 +175,44 @@ export type UpdateTeamMemberInput = {
   lastName?: string | null;
   title?: string | null;
   isAdmin?: boolean;
+  status?: TeamMemberStatus;
 };
 
 export type CreateBusinessActivityInput = {
   name: string;
   description?: string;
+  category?: string;
+  priority?: Priority;
+  dueDate?: Date;
   teamId: string;
 };
 
 export type UpdateBusinessActivityInput = {
   name?: string;
   description?: string | null;
+  category?: string | null;
+  priority?: Priority;
+  status?: BusinessActivityStatus;
+  dueDate?: Date | null;
 };
 
 export type CreateRatingInput = {
   value: number;
-  feedback?: string;
-  memberId: string;
+  teamMemberId: string;
   activityId: string;
 };
 
 export type UpdateRatingInput = {
   value?: number;
-  feedback?: string | null;
 };
 
-export type CreateBusinessFunctionInput = {
+export type CreateTeamFunctionInput = {
   name: string;
   description?: string;
   jobTitles?: string[];
 };
 
-export type UpdateBusinessFunctionInput = {
+export type UpdateTeamFunctionInput = {
   name?: string;
   description?: string | null;
 };
@@ -206,6 +240,6 @@ export type TeamBusinessActivitySummary = {
 };
 
 export type TransactionClient = Omit<
-  PrismaClient,
+  typeof PrismaClient,
   "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
 >;

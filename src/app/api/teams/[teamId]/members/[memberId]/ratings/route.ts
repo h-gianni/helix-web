@@ -2,22 +2,16 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import type { ApiResponse, ScoreResponse } from "@/lib/types/api";
-
-// async function getUserFromClerkId(clerkId: string) {
-//   return await prisma.user.findUnique({
-//     where: { clerkId },
-//   });
-// }
+import type { ApiResponse, RatingResponse } from "@/lib/types/api";
 
 async function checkTeamAccess(teamId: string, userId: string) {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.appUser.findUnique({
     where: { clerkId: userId },
   });
 
   if (!user) return false;
 
-  const team = await prisma.team.findFirst({
+  const team = await prisma.gTeam.findFirst({
     where: {
       id: teamId,
       ownerId: user.id,
@@ -26,7 +20,7 @@ async function checkTeamAccess(teamId: string, userId: string) {
 
   if (team) return true;
 
-  const member = await prisma.member.findFirst({
+  const member = await prisma.teamMember.findFirst({
     where: {
       teamId,
       userId: user.id,
@@ -36,22 +30,15 @@ async function checkTeamAccess(teamId: string, userId: string) {
   return !!member;
 }
 
-async function validateInitiative(teamId: string, initiativeId: string) {
-  console.log("Validating initiative:", { teamId, initiativeId }); // Debug log
-
-  const teamInitiative = await prisma.teamInitiative.findFirst({
+async function validateActivity(teamId: string, activityId: string) {
+  const businessActivity = await prisma.businessActivity.findFirst({
     where: {
-      AND: [{ teamId: teamId }, { initiativeId: initiativeId }],
-    },
-    include: {
-      initiative: true,
-      team: true,
+      id: activityId,
+      teamId: teamId,
     },
   });
 
-  console.log("Found teamInitiative:", teamInitiative); // Debug log
-
-  return !!teamInitiative;
+  return !!businessActivity;
 }
 
 export async function GET(
@@ -76,23 +63,29 @@ export async function GET(
     }
 
     const url = new URL(request.url);
-    const initiativeId = url.searchParams.get("initiativeId");
+    const activityId = url.searchParams.get("activityId");
     const limit = parseInt(url.searchParams.get("limit") || "10");
     const page = parseInt(url.searchParams.get("page") || "1");
     const skip = (page - 1) * limit;
 
     const where = {
-      memberId: params.memberId,
-      ...(initiativeId ? { initiativeId } : {}),
+      teamMemberId: params.memberId,
+      ...(activityId ? { activityId } : {}),
     };
 
     const [ratings, total] = await Promise.all([
-      prisma.score.findMany({
+      prisma.memberRating.findMany({
         where,
-        include: {
-          initiative: true,
-          member: {
-            include: {
+        select: {
+          id: true,
+          value: true,
+          teamMemberId: true,
+          activityId: true,
+          createdAt: true,
+          updatedAt: true,
+          teamMember: {
+            select: {
+              id: true,
               user: {
                 select: {
                   id: true,
@@ -102,6 +95,13 @@ export async function GET(
               },
             },
           },
+          activity: {
+            select: {
+              id: true,
+              name: true,
+              description: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",
@@ -109,21 +109,18 @@ export async function GET(
         skip,
         take: limit,
       }),
-      prisma.score.count({ where }),
+      prisma.memberRating.count({ where }),
     ]);
 
     const averageRating =
       ratings.length > 0
-        ? ratings.reduce(
-            (sum: number, rating: { value: number }) => sum + rating.value,
-            0
-          ) / ratings.length
+        ? ratings.reduce((sum, rating) => sum + rating.value, 0) / ratings.length
         : 0;
 
     return NextResponse.json({
       success: true,
       data: {
-        ratings: ratings as ScoreResponse[],
+        ratings: ratings as RatingResponse[],
         pagination: {
           total,
           pages: Math.ceil(total / limit),
@@ -167,32 +164,19 @@ export async function POST(
     }
 
     const body = await request.json();
-    const { initiativeId, rating, feedback } = body;
+    const { activityId, value } = body;
 
-    // Add debug logs
-    console.log("Received rating request:", {
-      teamId: params.teamId,
-      memberId: params.memberId,
-      initiativeId,
-      rating,
-      feedback,
-    });
+    // Validate activity association
+    const isValidActivity = await validateActivity(params.teamId, activityId);
 
-    // Validate initiative association
-    const isValidInitiative = await validateInitiative(
-      params.teamId,
-      initiativeId
-    );
-
-    if (!isValidInitiative) {
-      // Check if the initiative exists at all
-      const initiativeExists = await prisma.initiative.findUnique({
-        where: { id: initiativeId },
+    if (!isValidActivity) {
+      const activityExists = await prisma.businessActivity.findUnique({
+        where: { id: activityId },
       });
 
-      if (!initiativeExists) {
+      if (!activityExists) {
         return NextResponse.json<ApiResponse<never>>(
-          { success: false, error: "Initiative not found" },
+          { success: false, error: "Activity not found" },
           { status: 404 }
         );
       }
@@ -200,23 +184,29 @@ export async function POST(
       return NextResponse.json<ApiResponse<never>>(
         {
           success: false,
-          error: "Initiative is not associated with this team",
+          error: "Activity is not associated with this team",
         },
         { status: 400 }
       );
     }
 
     // Create the rating
-    const score = await prisma.score.create({
+    const rating = await prisma.memberRating.create({
       data: {
-        memberId: params.memberId,
-        initiativeId,
-        value: rating,
-        feedback: feedback?.trim() || null,
+        teamMemberId: params.memberId,
+        activityId,
+        value,
       },
-      include: {
-        member: {
-          include: {
+      select: {
+        id: true,
+        value: true,
+        teamMemberId: true,
+        activityId: true,
+        createdAt: true,
+        updatedAt: true,
+        teamMember: {
+          select: {
+            id: true,
             user: {
               select: {
                 id: true,
@@ -226,12 +216,18 @@ export async function POST(
             },
           },
         },
-        initiative: true,
+        activity: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+          },
+        },
       },
     });
 
-    return NextResponse.json<ApiResponse<ScoreResponse>>(
-      { success: true, data: score as ScoreResponse },
+    return NextResponse.json<ApiResponse<RatingResponse>>(
+      { success: true, data: rating as RatingResponse },
       { status: 201 }
     );
   } catch (error) {

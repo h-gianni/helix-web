@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import type { DisciplineResponse } from "@/lib/types/api";
+import type { BusinessFunctionResponse } from "@/lib/types/api";
 
 interface TeamCreateModalProps {
   isOpen: boolean;
@@ -33,7 +33,7 @@ export default function TeamCreateModal({
 }: TeamCreateModalProps) {
   const [teamName, setTeamName] = useState("");
   const [disciplineId, setDisciplineId] = useState("");
-  const [disciplines, setDisciplines] = useState<DisciplineResponse[]>([]);
+  const [disciplines, setDisciplines] = useState<BusinessFunctionResponse[]>([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,6 +72,9 @@ export default function TeamCreateModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+   
+    //return;
 
     try {
       setSaving(true);

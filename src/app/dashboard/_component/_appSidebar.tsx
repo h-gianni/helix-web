@@ -46,6 +46,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 import { useTeams } from '@/lib/context/teams-context';
+import {UserButton} from '@clerk/nextjs'
 
 interface Team {
   id: string;
@@ -107,10 +108,11 @@ const UserNav = () => {
                 <AvatarFallback>SC</AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start text-left">
-                <span className="text-sm font-medium">shadcn</span>
+                {/* <span className="text-sm font-medium">shadcn</span>
                 <span className="text-xs text-muted-foreground">
                   m@example.com
-                </span>
+                </span> */}
+                <UserButton />
               </div>
             </div>
             <ChevronRight className="h-4 w-4" />

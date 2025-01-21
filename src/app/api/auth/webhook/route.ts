@@ -49,6 +49,8 @@ export async function POST(request: Request) {
     if (event.type === "user.created" || event.type === "user.updated") {
       const { id, email_addresses, first_name, last_name, external_accounts } = event.data;
 
+      console.log("👤 Finding user with clerkId:", external_accounts);
+
       // Check if user signed in with Google
       const googleAccount = external_accounts?.find(
         (account) => account.provider === "google"

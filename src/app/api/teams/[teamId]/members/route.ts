@@ -5,7 +5,7 @@ import type { ApiResponse, TeamMemberResponse, AddTeamMemberInput } from "@/lib/
 
 // Helper to check if user is team admin
 async function isTeamAdmin(teamId: string, userId: string) {
-  const member = await prisma.member.findFirst({
+  const member = await prisma.teamMember.findFirst({
     where: {
       teamId,
       userId,
@@ -17,13 +17,13 @@ async function isTeamAdmin(teamId: string, userId: string) {
 
 // Helper to check if user is team owner
 async function isTeamOwner(clerkId: string, teamId: string) {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.appUser.findUnique({
     where: { clerkId },
   });
 
   if (!user) return false;
 
-  const team = await prisma.team.findFirst({
+  const team = await prisma.gTeam.findFirst({
     where: {
       id: teamId,
       ownerId: user.id,
@@ -35,12 +35,12 @@ async function isTeamOwner(clerkId: string, teamId: string) {
 
 // Helper to get or create user by email
 async function getOrCreateUser(email: string) {
-  let user = await prisma.user.findUnique({
+  let user = await prisma.appUser.findUnique({
     where: { email },
   });
 
   if (!user) {
-    user = await prisma.user.create({
+    user = await prisma.appUser.create({
       data: {
         email,
         clerkId: null, // This user doesn't have a Clerk account yet
@@ -71,7 +71,7 @@ export async function GET(
     
     // If not owner, check if they're a team member
     if (!isOwner) {
-      const user = await prisma.user.findUnique({
+      const user = await prisma.appUser.findUnique({
         where: { clerkId: userId },
       });
 
@@ -82,7 +82,7 @@ export async function GET(
         }, { status: 404 });
       }
 
-      const membership = await prisma.member.findFirst({
+      const membership = await prisma.teamMember.findFirst({
         where: {
           teamId: params.teamId,
           userId: user.id,
@@ -98,7 +98,7 @@ export async function GET(
     }
 
     // Get all team members
-    const members = await prisma.member.findMany({
+    const members = await prisma.teamMember.findMany({
       where: {
         teamId: params.teamId,
       },
@@ -173,7 +173,7 @@ export async function POST(
     const userToAdd = await getOrCreateUser(email.trim());
 
     // Check if user is already a member
-    const existingMember = await prisma.member.findFirst({
+    const existingMember = await prisma.teamMember.findFirst({
       where: {
         teamId: params.teamId,
         userId: userToAdd.id,
@@ -188,7 +188,7 @@ export async function POST(
     }
 
     // Add member
-    const member = await prisma.member.create({
+    const member = await prisma.teamMember.create({
       data: {
         teamId: params.teamId,
         userId: userToAdd.id,

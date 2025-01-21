@@ -4,8 +4,8 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { 
   ApiResponse, 
-  DisciplineResponse, 
-  CreateDisciplineInput 
+  BusinessFunctionResponse, 
+  CreateBusinessFunctionInput ,
 } from "@/lib/types/api";
 
 export async function GET() {
@@ -18,7 +18,7 @@ export async function GET() {
       );
     }
 
-    const disciplines = await prisma.discipline.findMany({
+    const disciplines = await prisma.teamFunction.findMany({
       include: {
         jobTitles: true,
         _count: {
@@ -35,7 +35,7 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json<ApiResponse<DisciplineResponse[]>>({
+    return NextResponse.json<ApiResponse<BusinessFunctionResponse[]>>({
       success: true,
       data: disciplines,
     });
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const body = await request.json() as CreateDisciplineInput;
+    const body = await request.json() as CreateBusinessFunctionInput;
     const { name, description, jobTitles } = body;
 
     if (!name?.trim()) {
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const discipline = await prisma.discipline.create({
+    const discipline = await prisma.teamFunction.create({
       data: {
         name: name.trim(),
         description: description?.trim() || null,
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json<ApiResponse<DisciplineResponse>>(
+    return NextResponse.json<ApiResponse<BusinessFunctionResponse>>(
       { success: true, data: discipline },
       { status: 201 }
     );

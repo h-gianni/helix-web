@@ -40,12 +40,12 @@ export async function GET(
     }
 
     // Get team and its members with ratings
-    const team = await prisma.team.findUnique({
+    const team = await prisma.gTeam.findUnique({
       where: { 
         id: params.teamId 
       },
       include: {
-        members: {
+        teamMembers: {
           include: {
             user: {
               select: {
@@ -64,7 +64,7 @@ export async function GET(
     });
 
     console.log('Team found:', team?.id);
-    console.log('Members found:', team?.members.length);
+    console.log('Members found:', team?.teamMembers.length);
 
     if (!team) {
       console.log('Team not found');
@@ -75,7 +75,7 @@ export async function GET(
     }
 
     // Map members to performance data
-    const performanceData: MemberPerformance[] = team.members.map((member: MemberWithRatings) => {
+    const performanceData: MemberPerformance[] = team.teamMembers.map((member: MemberWithRatings) => {
       console.log('Processing member:', member.user.email);
       console.log('Member ratings:', member.ratings.length);
 
