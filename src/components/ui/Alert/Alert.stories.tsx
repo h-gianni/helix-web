@@ -13,6 +13,7 @@ import {
   XOctagon,
   HelpCircle,
   CheckCircle,
+  CircleCheckBig,
 } from 'lucide-react';
 
 const iconMap = {
@@ -22,6 +23,7 @@ const iconMap = {
   OctagonX: XOctagon,
   CircleHelp: HelpCircle,
   CircleCheck: CheckCircle,
+  CircleCheckBig: CircleCheckBig,
 } as const;
 
 const meta = {
@@ -34,7 +36,7 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'primary', 'danger', 'warning'],
+      options: ['default', 'primary', 'danger', 'warning', 'success'],
       defaultValue: 'default',
       description: 'The visual style of the alert',
     },
@@ -76,7 +78,7 @@ export const Configurator: Story = {
     const IconComponent = iconMap[icon as keyof typeof iconMap];
     
     return (
-      <div className="w-[800px] bg-neutral-50 dark:bg-neutral-900 p-4 rounded">
+      <div className="w-[800px] p-4 rounded">
         <Alert 
           variant={variant} 
           size={size}
@@ -108,7 +110,7 @@ export const Configurator: Story = {
 
 export const WidthExamples: Story = {
   render: () => (
-    <div className="flex flex-col gap-4 w-[800px] bg-neutral-50 dark:bg-neutral-900 p-4 rounded">
+    <div className="flex flex-col gap-4 w-[800px] p-4 rounded">
       <Alert fullWidth={true}>
         <AlertIconContainer>
           <AlertCircle />
@@ -143,7 +145,7 @@ export const WidthExamples: Story = {
 export const VariantExamples: Story = {
   render: () => (
     <div className="flex flex-col gap-4 w-[800px]">
-      {(['default', 'primary', 'danger', 'warning'] as const).map((variant) => (
+      {(['default', 'primary', 'danger', 'warning', 'success'] as const).map((variant) => (
         <Alert key={variant} variant={variant} fullWidth={true}>
           <AlertIconContainer>
             <AlertCircle />

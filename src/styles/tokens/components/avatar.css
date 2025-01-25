@@ -2,26 +2,27 @@
 
 /* Base Avatar Styles */
 .avatar-base {
-  @apply relative flex shrink-0 overflow-hidden rounded-full 
-         ring-2 ring-white dark:ring-neutral-900
-         transition-all duration-150 ease-out;
+  @apply relative flex shrink-0 overflow-hidden rounded-full
+         ring-2 ring-surface-raised 
+         transition-all ease-out;
+  transition-duration: var(--duration-normal);
 }
 
 /* Avatar Sizes */
 .avatar-sm {
-  @apply h-7 w-7;
+  @apply size-7;
 }
 
 .avatar-md {
-  @apply h-10 w-10;
+  @apply size-10;
 }
 
 .avatar-lg {
-  @apply h-14 w-14;
+  @apply size-14;
 }
 
 .avatar-xl {
-  @apply h-20 w-20;
+  @apply size-20;
 }
 
 /* Avatar Image */
@@ -32,26 +33,26 @@
 /* Avatar Fallback */
 .avatar-fallback {
   @apply flex h-full w-full items-center justify-center rounded-full
-         bg-neutral-100 dark:bg-neutral-700
-         text-neutral-600 dark:text-neutral-300
+         bg-surface-sunken
+         text-text-weak
          font-medium;
 }
 
 /* Fallback Text Sizes */
 .avatar-fallback-sm {
-  @apply text-xs;
+  @apply text-xs font-medium;
 }
 
 .avatar-fallback-md {
-  @apply text-sm;
+  @apply text-sm font-medium;
 }
 
 .avatar-fallback-lg {
-  @apply text-base;
+  @apply text-base font-medium;
 }
 
 .avatar-fallback-xl {
-  @apply text-xl;
+  @apply text-xl font-medium;
 }
 
 /* Avatar Group */
@@ -60,28 +61,27 @@
 }
 
 .avatar-group .avatar-base {
-  @apply ring-2 ring-white dark:ring-neutral-900;
+  @apply ring-2 ring-surface-raised;
 }
 
-/* Avatar Status - if needed 
+/* Avatar Status */
 .avatar-status {
   @apply absolute bottom-0 right-0 h-1/4 w-1/4 
-         rounded-full ring-2 ring-white dark:ring-neutral-900;
+         rounded-full ring-2 ring-surface-raised;
 }
 
 .avatar-status-online {
-  @apply bg-success-500;
+  @apply bg-success;
 }
 
 .avatar-status-offline {
-  @apply bg-neutral-300 dark:bg-neutral-600;
+  @apply bg-text-disabled;
 }
 
 .avatar-status-busy {
-  @apply bg-danger-500;
+  @apply bg-danger;
 }
 
 .avatar-status-away {
-  @apply bg-warning-500;
+  @apply bg-warning;
 }
-*/

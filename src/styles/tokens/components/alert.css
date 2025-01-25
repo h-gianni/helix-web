@@ -2,53 +2,71 @@
 
 /* Base Alert Styles */
 .alert-base {
-  @apply relative rounded
-         flex items-start 
-         transition-all duration-150 ease-out
-         outline-none focus:ring-2 focus:ring-offset-2;
+  @apply relative rounded flex items-start outline-none shadow-sm;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+  transition-property: all;
 }
 
 /* Size Variants */
 .alert-base {
-  @apply px-4 py-3 gap-3;
+  @apply py-sm px-md gap-base;
 }
 
 .alert-sm {
-  @apply px-3 py-2.5 gap-2.5;
+  @apply py-xs px-sm gap-sm;
 }
 
 /* Alert Variants */
 .alert-default {
-  @apply bg-surface-0 dark:bg-surface-2
-         border border-neutral-200 dark:border-neutral-800
-         shadow-sm
-         focus:ring-neutral-200 dark:focus:ring-neutral-800;
+  @apply bg-surface border border-border-weak;
+
+  &:focus-visible {
+    @apply focus-ring;
+  }
 }
 
 .alert-primary {
-  @apply bg-primary-25 dark:bg-primary-500/10
-         border border-primary-100 dark:border-primary-800
-         shadow-sm
-         focus:ring-primary-200 dark:focus:ring-primary-800;
+  @apply bg-primary-weakest border border-border-primary;
+
+  &:focus-visible {
+    @apply outline-none ring-2 ring-offset-2;
+    ring-color: var(--ring-primary);
+    ring-offset-color: var(--background-surface);
+  }
 }
 
 .alert-danger {
-  @apply bg-danger-25 dark:bg-danger-500/10
-         border border-danger-100 dark:border-danger-800
-         shadow-sm
-         focus:ring-danger-200 dark:focus:ring-danger-800;
+  @apply bg-danger-weakest border border-border-danger;
+
+  &:focus-visible {
+    @apply focus-ring-danger;
+  }
 }
 
 .alert-warning {
-  @apply bg-warning-25 dark:bg-warning-500/10
-         border border-warning-100 dark:border-warning-800
-         shadow-sm
-         focus:ring-warning-200 dark:focus:ring-warning-800;
+  @apply bg-warning-weakest border border-border-warning;
+
+  &:focus-visible {
+    @apply outline-none ring-2 ring-offset-2;
+    ring-color: var(--ring-default);
+    ring-offset-color: var(--background-surface);
+  }
+}
+
+.alert-success {
+  @apply bg-success-weakest border border-border-success;
+
+  &:focus-visible {
+    @apply outline-none ring-2 ring-offset-2;
+    ring-color: var(--ring-default);
+    ring-offset-color: var(--background-surface);
+  }
 }
 
 /* Icon Container */
 .alert-icon {
-  @apply flex-shrink-0 mt-[2px];
+  @apply flex-shrink-0;
 }
 
 /* Icon sizes */
@@ -62,19 +80,23 @@
 
 /* Icon colors */
 .alert-icon-default {
-  @apply text-neutral-400 dark:text-neutral-400;
+  @apply text-text-weakest
 }
 
 .alert-icon-primary {
-  @apply text-primary-300 dark:text-primary-400;
+  @apply text-primary;
 }
 
 .alert-icon-danger {
-  @apply text-danger-300 dark:text-danger-400;
+  @apply text-danger;
 }
 
 .alert-icon-warning {
-  @apply text-warning-300 dark:text-warning-400;
+  @apply text-warning;
+}
+
+.alert-icon-success {
+  @apply text-success;
 }
 
 /* Content Container */
@@ -88,74 +110,75 @@
 
 /* Alert Title */
 .alert-title {
-  @apply font-semibold;
+  @apply text-heading-4;
 }
 
 /* Title sizes */
 .alert-title-base {
-  @apply text-base;
+  @apply text-heading-4 -mt-px;
 }
 
 .alert-title-sm {
-  @apply text-sm;
+  @apply text-heading-5 -mt-px;
 }
 
 /* Title colors */
 .alert-title-default {
-  @apply text-neutral-600 dark:text-neutral-200;
+  @apply text-text-strong;
 }
 
 .alert-title-primary {
-  @apply text-primary-600 dark:text-primary-300;
+  @apply text-primary-text;
 }
 
 .alert-title-danger {
-  @apply text-danger-600 dark:text-danger-300;
+  @apply text-danger-text;
 }
 
 .alert-title-warning {
-  @apply text-warning-600 dark:text-warning-300;
+  @apply text-warning-text;
+}
+
+.alert-title-success {
+  @apply text-success-text;
 }
 
 /* Alert Description */
-.alert-description {
-  @apply leading-normal;
-}
 
 /* Description sizes */
 .alert-description-base {
-  @apply text-base;
+  @apply text-body;
 }
 
 .alert-description-sm {
-  @apply text-sm;
+  @apply text-body-small;
 }
 
 /* Description colors */
 .alert-description-default {
-  @apply text-neutral-600 dark:text-neutral-400;
+  @apply text-text-weak;
 }
 
 .alert-description-primary {
-  @apply text-primary-600 dark:text-primary-400;
+  @apply text-primary-text;
 }
 
 .alert-description-danger {
-  @apply text-danger-600 dark:text-danger-400;
+  @apply text-danger-text;
 }
 
 .alert-description-warning {
-  @apply text-warning-600 dark:text-warning-400;
+  @apply text-warning-text;
 }
 
-/* Focus and Hover states */
-.alert-base:focus-visible {
-  @apply outline-none ring-2 ring-offset-2;
+.alert-description-success {
+  @apply text-success-text;
 }
 
 /* Animation */
 .alert-base {
-  @apply animate-in fade-in-0 duration-300;
+  @apply animate-in fade-in-0;
+  animation-duration: var(--duration-normal);
 }
 
 /* Print styles */

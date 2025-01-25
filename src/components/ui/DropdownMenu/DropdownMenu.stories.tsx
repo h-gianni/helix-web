@@ -1,5 +1,5 @@
 import * as React from "react";
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,14 +15,33 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
-} from './index';
-import { Button } from '@/components/ui/Button';
-import { 
-  User, Settings, LogOut, Mail, MessageSquare,
-  PlusCircle, Shield, CreditCard, Keyboard,
-  Bell, Cloud, GitBranch, Monitor, Moon, Sun,
-  Languages, Database, Users, UserPlus, LifeBuoy, X, Check, Columns
-} from 'lucide-react';
+} from "./index";
+import { Button } from "@/components/ui/Button";
+import {
+  User,
+  Settings,
+  LogOut,
+  Mail,
+  MessageSquare,
+  PlusCircle,
+  Shield,
+  CreditCard,
+  Keyboard,
+  Bell,
+  Cloud,
+  GitBranch,
+  Monitor,
+  Moon,
+  Sun,
+  Languages,
+  Database,
+  Users,
+  UserPlus,
+  LifeBuoy,
+  X,
+  Check,
+  Columns,
+} from "lucide-react";
 
 // Define the generator props type
 interface GeneratorProps {
@@ -64,7 +83,6 @@ const DropdownMenuGenerator: React.FC<GeneratorProps> = ({
 
   const renderRadioGroup = () => (
     <>
-      <DropdownMenuSeparator />
       <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
         <DropdownMenuRadioItem value="light">
           {withIcons && <Sun />}
@@ -84,6 +102,7 @@ const DropdownMenuGenerator: React.FC<GeneratorProps> = ({
 
   const renderSubmenus = () => (
     <>
+        <DropdownMenuSeparator />
       <DropdownMenuSub>
         <DropdownMenuSubTrigger>
           {withIcons && <Shield />}
@@ -108,10 +127,8 @@ const DropdownMenuGenerator: React.FC<GeneratorProps> = ({
   const renderSections = () => (
     <>
       {withGroupTitle && <DropdownMenuLabel>Account</DropdownMenuLabel>}
-      <DropdownMenuGroup>
-        {renderDefaultItems()}
-      </DropdownMenuGroup>
-      
+      <DropdownMenuGroup>{renderDefaultItems()}</DropdownMenuGroup>
+
       {withGroupTitle && (
         <>
           <DropdownMenuSeparator />
@@ -138,22 +155,26 @@ const DropdownMenuGenerator: React.FC<GeneratorProps> = ({
           renderSections()
         ) : (
           <>
-            {withGroupTitle && <DropdownMenuLabel>Menu Items</DropdownMenuLabel>}
+            {withGroupTitle && (
+              <DropdownMenuLabel>Menu Items</DropdownMenuLabel>
+            )}
             {renderDefaultItems()}
           </>
         )}
-        
+
         {withRadioSelection && renderRadioGroup()}
-        
+
         {withSubmenus && renderSubmenus()}
-        
+
         {withDestructiveSection && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem destructive>
               {withIcons && <LogOut />}
               Log out
-              {withShortcuts && <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>}
+              {withShortcuts && (
+                <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+              )}
             </DropdownMenuItem>
           </>
         )}
@@ -163,46 +184,46 @@ const DropdownMenuGenerator: React.FC<GeneratorProps> = ({
 };
 
 const meta = {
-  title: 'Components/DropdownMenu',
+  title: "Components/DropdownMenu",
   component: DropdownMenuGenerator,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     withIcons: {
-      control: 'boolean',
-      description: 'Include icons in menu items',
+      control: "boolean",
+      description: "Include icons in menu items",
       defaultValue: false,
     },
     withShortcuts: {
-      control: 'boolean',
-      description: 'Include keyboard shortcuts',
+      control: "boolean",
+      description: "Include keyboard shortcuts",
       defaultValue: false,
     },
     withGroupTitle: {
-      control: 'boolean',
-      description: 'Include group titles',
+      control: "boolean",
+      description: "Include group titles",
       defaultValue: false,
     },
     withSections: {
-      control: 'boolean',
-      description: 'Divide content into sections',
+      control: "boolean",
+      description: "Divide content into sections",
       defaultValue: false,
     },
     withRadioSelection: {
-      control: 'boolean',
-      description: 'Include radio selection group',
+      control: "boolean",
+      description: "Include radio selection group",
       defaultValue: false,
     },
     withSubmenus: {
-      control: 'boolean',
-      description: 'Include nested submenus',
+      control: "boolean",
+      description: "Include nested submenus",
       defaultValue: false,
     },
     withDestructiveSection: {
-      control: 'boolean',
-      description: 'Show destructive actions (like logout) in danger color',
+      control: "boolean",
+      description: "Show destructive actions (like logout) in danger color",
       defaultValue: false,
     },
   },
@@ -233,7 +254,6 @@ export const Basic: Story = {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuItem>
           Profile
           <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
@@ -321,7 +341,6 @@ export const WithSections: Story = {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Preferences</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <Languages />
@@ -338,7 +357,6 @@ export const WithSections: Story = {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <CreditCard />
@@ -366,12 +384,12 @@ export const WithCheckboxes: Story = {
       <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="primary">
-            Display Options {showStatusBar || showActivityBar || showPanel ? '(3)' : ''}
+            Display Options{" "}
+            {showStatusBar || showActivityBar || showPanel ? "(3)" : ""}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>Interface Options</DropdownMenuLabel>
-          <DropdownMenuSeparator />
           <DropdownMenuCheckboxItem
             checked={showStatusBar}
             onCheckedChange={setShowStatusBar}
@@ -399,9 +417,9 @@ export const WithCheckboxes: Story = {
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {
-              setShowStatusBar(true)
-              setShowActivityBar(true)
-              setShowPanel(true)
+              setShowStatusBar(true);
+              setShowActivityBar(true);
+              setShowPanel(true);
             }}
           >
             <Check />
@@ -409,9 +427,9 @@ export const WithCheckboxes: Story = {
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
-              setShowStatusBar(false)
-              setShowActivityBar(false)
-              setShowPanel(false)
+              setShowStatusBar(false);
+              setShowActivityBar(false);
+              setShowPanel(false);
             }}
           >
             <X />
@@ -419,7 +437,7 @@ export const WithCheckboxes: Story = {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-    )
+    );
   },
 };
 
@@ -435,7 +453,6 @@ export const WithRadioSelection: Story = {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuLabel>Theme Preference</DropdownMenuLabel>
-          <DropdownMenuSeparator />
           <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
             <DropdownMenuRadioItem value="light">
               <Sun />
@@ -525,7 +542,6 @@ export const ComplexExample: Story = {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <User />
@@ -546,7 +562,6 @@ export const ComplexExample: Story = {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuLabel>Preferences</DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuCheckboxItem
               checked={notifications}
               onCheckedChange={setNotifications}
@@ -565,7 +580,6 @@ export const ComplexExample: Story = {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuLabel>Theme</DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
               <DropdownMenuRadioItem value="light">
                 <Sun />

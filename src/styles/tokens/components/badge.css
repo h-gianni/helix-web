@@ -3,120 +3,112 @@
 /* Base Badge Styles */
 .badge-base {
   @apply inline-flex items-center rounded-full border 
-         font-normal transition-colors duration-150
-         focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+         font-normal
+         transition-all focus-visible:focus-ring;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
 }
 
 /* Size Variants */
 .badge-size-default {
-  @apply text-xs px-2 py-0.5;
+  @apply text-xs px-xs py-px;
 }
 
 .badge-size-lg {
-  @apply text-xs px-3 py-1;
+  @apply text-xs px-sm py-xxs;
 }
 
 /* Default Variant */
 .badge-default {
-  @apply bg-neutral-500 text-white border-transparent;
+  @apply text-text-inverse border-transparent bg-neutral-strong;
 }
 
 .badge-default-light {
-  @apply bg-neutral-200 text-neutral-700 border-transparent
-         dark:bg-neutral-700 dark:text-neutral-100;
+  @apply bg-neutral text-text border-transparent;
 }
 
 .badge-default-outline {
-  @apply bg-transparent border-neutral-300 text-neutral-700
-         dark:border-neutral-700 dark:text-neutral-100;
+  @apply bg-transparent border text-text border-border;
 }
 
 /* Primary Variant */
 .badge-primary {
-  @apply bg-primary-500 text-white border-transparent;
+  @apply bg-primary text-text-inverse border-transparent;
 }
 
 .badge-primary-light {
-  @apply bg-primary-50 text-primary-700 border-transparent
-         dark:bg-primary-500/10 dark:text-primary-400;
+  @apply bg-primary-weakest text-primary-text border-transparent;
 }
 
 .badge-primary-outline {
-  @apply bg-transparent border-primary-200 text-primary-700
-         dark:border-primary-700 dark:text-primary-400;
+  @apply bg-transparent border-primary text-primary-text;
 }
 
 /* Accent Variant */
 .badge-accent {
-  @apply bg-accent-500 text-white border-transparent;
+  @apply bg-accent text-text-inverse border-transparent;
 }
 
 .badge-accent-light {
-  @apply bg-accent-50 text-accent-700 border-transparent
-         dark:bg-accent-500/10 dark:text-accent-400;
+  @apply bg-accent-weakest text-accent-text border-transparent;
 }
 
 .badge-accent-outline {
-  @apply bg-transparent border-accent-200 text-accent-700
-         dark:border-accent-700 dark:text-accent-400;
+  @apply bg-transparent border-accent text-accent-text;
 }
 
 /* Danger Variant */
 .badge-danger {
-  @apply bg-danger-500 text-white border-transparent;
+  @apply bg-danger text-text-inverse border-transparent;
 }
 
 .badge-danger-light {
-  @apply bg-danger-50 text-danger-700 border-transparent
-         dark:bg-danger-500/10 dark:text-danger-400;
+  @apply bg-danger-weakest text-danger-text border-transparent;
 }
 
 .badge-danger-outline {
-  @apply bg-transparent border-danger-200 text-danger-700
-         dark:border-danger-700 dark:text-danger-400;
+  @apply bg-transparent border-danger text-danger-text;
 }
 
 /* Success Variant */
 .badge-success {
-  @apply bg-success-500 text-white border-transparent;
+  @apply bg-success text-text-inverse border-transparent;
 }
 
 .badge-success-light {
-  @apply bg-success-50 text-success-700 border-transparent
-         dark:bg-success-500/10 dark:text-success-400;
+  @apply bg-success-weakest text-success-text border-transparent;
 }
 
 .badge-success-outline {
-  @apply bg-transparent border-success-200 text-success-700
-         dark:border-success-700 dark:text-success-400;
+  @apply bg-transparent border-success text-success-text;
 }
 
 /* Warning Variant */
 .badge-warning {
-  @apply bg-warning-500 text-white border-transparent;
+  @apply bg-warning text-text-inverse border-transparent;
 }
 
 .badge-warning-light {
-  @apply bg-warning-50 text-warning-700 border-transparent
-         dark:bg-warning-500/10 dark:text-warning-400;
+  @apply bg-warning-weakest text-warning-text border-transparent;
 }
 
 .badge-warning-outline {
-  @apply bg-transparent border-warning-200 text-warning-700
-         dark:border-warning-700 dark:text-warning-400;
+  @apply bg-transparent border-warning text-warning-text;
 }
 
 /* Info Variant */
 .badge-info {
-  @apply bg-info-500 text-white border-transparent;
+  @apply bg-info text-text-inverse border-transparent;
 }
 
 .badge-info-light {
-  @apply bg-info-50 text-info-700 border-transparent
-         dark:bg-info-500/10 dark:text-info-400;
+  @apply bg-info-weakest text-info-text border-transparent;
 }
 
 .badge-info-outline {
-  @apply bg-transparent border-info-200 text-info-700
-         dark:border-info-700 dark:text-info-400;
+  @apply bg-transparent border-info text-info-text;
+}
+
+.badge-base svg {
+  @apply size-4;
 }

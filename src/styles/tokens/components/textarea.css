@@ -1,95 +1,75 @@
 /* textarea.css */
 
-/* Form Control */
 .form-control {
   @apply flex flex-col w-full;
 }
 
-/* Labeled Input Wrapper */
-.label-input-wrapper {
-  @apply space-y-0.5;
-}
+/* .label-input-wrapper {
+  @apply flex flex-col gap;
+ } */
 
-/* Base Textarea */
 .textarea {
-  @apply flex w-full resize-y font-sans rounded-base
-         bg-white dark:bg-neutral-950
-         text-neutral-600 dark:text-neutral-50
-         border transition-colors duration-150 ease-out;
-         border-color: var(--border-form);
-
-  /* States */
-  @apply hover:border-primary-500 dark:hover:border-primary-400
-         focus:outline-none focus:border-primary-500
-         focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
-         dark:focus:border-primary-400 dark:focus:ring-primary-400
-         dark:ring-offset-neutral-950
-         disabled:cursor-not-allowed disabled:opacity-50
-         disabled:bg-neutral-100 dark:disabled:bg-neutral-800;
-
-  /* Placeholder */
-  @apply placeholder:text-neutral-400 dark:placeholder:text-neutral-400;
+  @apply form-basics flex w-full resize-y
+         transition-colors
+         placeholder:text-text-muted;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
 }
 
-/* Size Variants */
 .textarea-sm {
-  @apply text-sm px-2 py-1.5 min-h-[5rem];
+  @apply text-sm px-xs py-xxs min-h-[var(--space-5xl)];
 }
 
 .textarea-base {
-  @apply text-base px-3 py-2 min-h-[6.25rem];
+  @apply text-base px-sm py-xs min-h-[var(--space-6xl)];
 }
 
 .textarea-lg {
-  @apply text-lg px-4 py-3 min-h-[7.5rem];
+  @apply text-lg px-sm py-xs min-h-[var(--space-7xl)];
 }
 
-/* Error State */
 .textarea-error {
-  @apply border-danger-500
-         hover:border-danger-600
-         focus:border-danger-500
-         focus:ring-danger-500
-         dark:border-danger-400
-         dark:hover:border-danger-300
-         dark:focus:border-danger-400
-         dark:focus:ring-danger-400;
+  @apply border-danger;
+
+  &:hover {
+    @apply border-danger;
+  }
+
+  &:focus {
+    @apply focus-ring-danger border-danger;
+  }
 }
 
-/* Footer Container */
 .textarea-footer {
-  @apply flex justify-between gap-8 mt-1.5;
+  @apply flex justify-between gap-2xl;
 }
 
-/* Helper Text */
 .textarea-helper {
-  @apply text-p-small text-neutral-500;
+  @apply text-body-small text-text-weakest;
 }
 
 .textarea-helper-error {
-  @apply text-danger-500 dark:text-danger-400;
+  @apply text-danger-text;
 }
 
-/* Character Counter */
 .textarea-counter {
-  @apply text-p-small text-neutral-500 whitespace-nowrap;
+  @apply text-sm whitespace-nowrap text-text-weakest;
 }
 
 .textarea-counter-error {
-  @apply text-danger-500 dark:text-danger-400;
+  @apply text-danger-text;
 }
 
 .textarea-counter-solo {
   @apply ml-auto;
 }
 
-/* Print styles */
 @media print {
   .textarea {
-    @apply border-neutral-300 bg-white text-neutral-900;
+    @apply form-basics;
   }
-  
+
   .textarea-error {
-    @apply border-danger-700 text-danger-700;
+    @apply border-danger text-danger-text;
   }
 }

@@ -2,179 +2,197 @@
 
 /* Base button styles */
 .button-base {
-  @apply inline-flex items-center justify-center gap-2.5
-    whitespace-nowrap
-    rounded
-    text-base font-medium capitalize
-    transition-colors duration-150 ease-out
-    cursor-pointer
+  @apply inline-flex items-center justify-center gap-sm
+    whitespace-nowrap rounded-base
+    text-base font-normal capitalize
+    transition-all cursor-pointer
     focus-visible:outline-none focus-visible:ring-2
-    focus-visible:ring-ring focus-visible:ring-offset-2
-    disabled:cursor-not-allowed
-    disabled:opacity-50;
+    focus-visible:ring-primary focus-visible:ring-offset-2
+    disabled:cursor-not-allowed disabled:opacity-50;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
 }
+/* Shape variants */
+.button-rounded { @apply rounded-full; }
+.button-squared { @apply rounded-none; }
 
 .button-base svg {
   @apply size-4 shrink-0;
 }
 
-/* Appearance variants */
-.button-default {
-  @apply bg-neutral-200 dark:bg-neutral-800
-    text-neutral-800 dark:text-neutral-100
-    hover:bg-neutral-300 dark:hover:bg-neutral-700
-    active:bg-neutral-300 dark:active:bg-neutral-600
-    disabled:bg-neutral-100 dark:disabled:bg-neutral-800;
+/* Strong appearance */
+.button-neutral {
+  @apply text-text-inverse;
+  background-color: var(--background-neutral-strong);
+}
+.button-neutral:hover {
+  background-color: var(--background-neutral-stronger);
+}
+.button-neutral:active {
+  background-color: var(--background-neutral-strongest);
 }
 
-.button-outline {
-  @apply border border-current
-    hover:text-white
-    hover:bg-neutral-50 dark:hover:bg-neutral-800
-    disabled:hover:bg-transparent;
+/* Subtle appearance */
+.button-neutral-subtle {
+  @apply bg-neutral-weakest text-text-strong;
 }
-
-.button-text {
-  @apply hover:bg-neutral-50 dark:hover:bg-neutral-800
-    active:bg-neutral-100 dark:active:bg-neutral-700;
+.button-neutral-subtle:hover {
+  background-color: var(--background-neutral-weaker);
 }
-
-.button-icon-only {
-  @apply p-0 flex items-center justify-center
-    aspect-square
-    bg-transparent
-    disabled:bg-neutral-50 dark:disabled:bg-neutral-800;
-}
-
-/* Size variants */
-.button-sm {
-  @apply h-8 min-w-8 px-3 text-sm;
-}
-
-.button-default-size {
-  @apply h-10 min-w-10 px-4 text-base !leading-null;
-}
-
-.button-lg {
-  @apply h-12 min-w-12 px-6 text-base;
-}
-
-/* Loading state */
-.button-loading {
-  @apply cursor-wait opacity-100;
+.button-neutral-subtle:active {
+  background-color: var(--background-neutral-weak);
 }
 
 /* Primary variant */
 .button-primary {
-  @apply bg-primary-500
-    text-white
-    hover:bg-primary-600
-    active:bg-primary-700
-    disabled:bg-primary-200;
+  @apply bg-primary text-text-inverse;
+}
+.button-primary:hover {
+  background-color: var(--background-primary-strong);
+}
+.button-primary:active {
+  background-color: var(--background-primary-stronger);
 }
 
-.button-primary-outline {
-  @apply border-primary-500
-    text-primary-500
-    hover:bg-primary-500
-    hover:text-white
-    dark:border-primary-400
-    dark:text-primary-400
-    dark:hover:bg-primary-400
-    dark:hover:text-black;
+.button-primary-subtle {
+  @apply bg-primary-weakest text-primary-text;
 }
-
-.button-primary-text,
-.button-primary-icon {
-  @apply bg-transparent
-    text-primary-500
-    hover:bg-primary-50
-    dark:text-primary-400
-    dark:hover:bg-primary-950/50;
+.button-primary-subtle:hover {
+  background-color: var(--background-primary-weaker);
+}
+.button-primary-subtle:active {
+  background-color: var(--background-primary-weak);
 }
 
 /* Warning variant */
 .button-warning {
-  @apply bg-warning-500
-    text-white
-    hover:bg-warning-600
-    active:bg-warning-700
-    disabled:bg-warning-200;
+  @apply bg-warning text-text-inverse;
+}
+.button-warning:hover {
+  background-color: var(--background-warning-strong);
+}
+.button-warning:active {
+  background-color: var(--background-warning-stronger);
 }
 
-.button-warning-outline {
-  @apply border-warning-500
-    text-warning-500
-    hover:bg-warning-500
-    hover:text-white
-    dark:border-warning-400
-    dark:text-warning-400
-    dark:hover:bg-warning-400
-    dark:hover:text-black;
+.button-warning-subtle {
+  @apply bg-warning-weakest text-warning-text;
 }
-
-.button-warning-text,
-.button-warning-icon {
-  @apply bg-transparent
-    text-warning-500
-    hover:bg-warning-50
-    dark:text-warning-400
-    dark:hover:bg-warning-950/50;
+.button-warning-subtle:hover {
+  background-color: var(--background-warning-weaker);
+}
+.button-warning-subtle:active {
+  background-color: var(--background-warning-weak);
 }
 
 /* Danger variant */
 .button-danger {
-  @apply bg-danger-500
-    text-white
-    hover:bg-danger-600
-    active:bg-danger-700
-    disabled:bg-danger-200;
+  @apply bg-danger text-text-inverse;
+}
+.button-danger:hover {
+  background-color: var(--background-danger-strong);
+}
+.button-danger:active {
+  background-color: var(--background-danger-stronger);
+}
+
+.button-danger-subtle {
+  @apply bg-danger-weakest text-danger-text;
+}
+.button-danger-subtle:hover {
+  background-color: var(--background-danger-weaker);
+}
+.button-danger-subtle:active {
+  background-color: var(--background-danger-weak);
+}
+
+/* Outline appearance */
+.button-outline {
+  @apply border border-current hover:text-text-inverse
+    hover:bg-surface-sunken disabled:hover:bg-transparent;
+}
+
+.button-primary-outline {
+  @apply border-primary text-primary-text
+    hover:bg-primary hover:text-text-inverse;
+}
+.button-primary-outline:active {
+  background-color: var(--background-primary-strong);
+}
+
+.button-warning-outline {
+  @apply border-warning text-warning-text
+    hover:bg-warning hover:text-text-inverse;
+}
+.button-warning-outline:active {
+  background-color: var(--background-warning-stronger);
 }
 
 .button-danger-outline {
-  @apply border-danger-500
-    text-danger-500
-    hover:bg-danger-500
-    hover:text-white
-    dark:border-danger-400
-    dark:text-danger-400
-    dark:hover:bg-danger-400
-    dark:hover:text-black;
+  @apply border-danger text-danger-text
+    hover:bg-danger hover:text-text-inverse;
+}
+.button-danger-outline:active {
+  background-color: var(--background-danger-stronger);
 }
 
-.button-danger-text,
-.button-danger-icon {
-  @apply bg-transparent
-    text-danger-500
-    hover:bg-danger-50
-    dark:text-danger-400
-    dark:hover:bg-danger-950/50;
-}
-
-/* Neutral variant */
 .button-neutral-outline {
-  @apply border-neutral-800 dark:border-neutral-200
-    text-neutral-800 dark:text-neutral-200
-    hover:bg-neutral-800 dark:hover:bg-neutral-200
-    hover:text-white dark:hover:text-black;
+  @apply border-text text-text
+    hover:bg-text hover:text-text-inverse;
+}
+.button-neutral-outline:active {
+  background-color: var(--background-neutral-stronger);
 }
 
-.button-neutral-text,
-.button-neutral-icon {
-  @apply bg-transparent
-    text-neutral-800 dark:text-neutral-200
-    hover:bg-neutral-200 dark:hover:bg-neutral-800;
+/* Text appearance */
+.button-text {
+  @apply hover:bg-surface-sunken active:bg-surface;
 }
 
-/* Icon-only sizes */
-.button-icon-sm {
-  @apply h-8 w-8 p-0;
+.button-primary-text {
+  @apply bg-transparent text-primary-text hover:bg-primary-weakest;
+}
+.button-primary-text:active {
+  background-color: var(--background-primary-weaker);
 }
 
-.button-icon-default {
-  @apply h-10 w-10 p-0;
+.button-warning-text {
+  @apply bg-transparent text-warning-text hover:bg-warning-weakest;
+}
+.button-warning-text:active {
+  background-color: var(--background-warning-weaker);
 }
 
-.button-icon-lg {
-  @apply h-12 w-12 p-0;
+.button-danger-text {
+  @apply bg-transparent text-danger-text hover:bg-danger-weakest;
 }
+.button-danger-text:active {
+  background-color: var(--background-danger-weaker);
+}
+
+.button-neutral-text {
+  @apply bg-transparent text-text hover:bg-surface-sunken;
+}
+.button-neutral-text:active {
+  background-color: var(--background-neutral-weaker);
+}
+
+/* Icon-only appearance */
+.button-icon-only {
+  @apply p-0 flex items-center justify-center
+    aspect-square bg-transparent
+    disabled:bg-surface-sunken;
+}
+
+/* Sizes */
+.button-sm { @apply h-8 min-w-8 px-sm text-sm; }
+.button-base-size { @apply h-10 min-w-10 px-md text-base leading-null; }
+.button-lg { @apply h-12 min-w-12 px-lg text-base; }
+
+/* Icon sizes */
+.button-icon-sm { @apply size-8 p-0; }
+.button-icon-base { @apply size-10 p-0; }
+.button-icon-lg { @apply size-12 p-0; }
+
+/* Loading state */
+.button-loading { @apply cursor-wait opacity-100; }

@@ -1,0 +1,79 @@
+/* star-rating.css */
+
+/* Container */
+.star-rating-container {
+  @apply flex items-center gap-xxs;
+ }
+ 
+ /* Star Button Base */
+ .star-button {
+  @apply relative rounded-pill p-xxs
+         transition-transform;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+ 
+  &:focus-visible {
+    @apply focus-ring;
+  }
+ }
+ 
+ /* Interactive States */
+ .star-button:not(:disabled) {
+  @apply scale-100 hover:scale-110;
+ }
+ 
+ .star-button:disabled {
+  @apply cursor-default opacity-50;
+ }
+ 
+ /* Star Sizes */
+ .star-sm {
+  @apply size-4;
+ }
+ 
+ .star-base {
+  @apply size-6;
+ }
+ 
+ .star-lg {
+  @apply size-8;
+ }
+ 
+ /* Star States */
+ .star-empty {
+  @apply fill-text-disabled text-text-disabled;
+ }
+ 
+ .star-filled {
+  @apply fill-warning text-warning;
+ }
+ 
+ /* Half Star Specific */
+ .star-base-layer {
+  @apply absolute inset-xxs
+         fill-text-disabled text-text-disabled;
+ }
+ 
+ .star-overlay {
+  @apply relative fill-warning text-warning;
+ }
+ 
+ /* Text Elements */
+ .star-value {
+  @apply ml-sm text-sm font-medium text-text;
+ }
+ 
+ .star-count {
+  @apply ml-0 text-sm text-text-weakest;
+ }
+ 
+ .star-no-ratings {
+  @apply text-sm text-text-weakest;
+ }
+ 
+ /* Transitions */
+ .star-transition {
+  @apply transition-colors;
+  transition-duration: var(--duration-fast);
+  transition-timing-function: var(--ease-out);
+ }

@@ -66,7 +66,7 @@ const RadioGroupItem = React.forwardRef<
         {...props}
       >
         <RadioGroupPrimitive.Indicator className="radio-indicator">
-          <Circle className="size-2.5 fill-current" />
+          <Circle className="size-3 fill-current" />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
     </div>

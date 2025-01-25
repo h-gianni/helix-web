@@ -1,52 +1,91 @@
+/* accordion.css */
+
+/* Define the animations */
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
 .accordionRoot {
-    @apply w-full min-w-[400px];
-  }
-  
-  .accordionRoot.sm .accordionTrigger {
-    @apply text-heading-5 py-2;
-  }
-  
-  .accordionRoot.base .accordionTrigger {
-    @apply text-heading-4 py-4;
-  }
-  
-  .accordionRoot.lg .accordionTrigger {
-    @apply text-heading-3 py-6;
-  }
-  
-  .accordionItem {
-    @apply border-b border-neutral-200;
-  }
-  
-  .accordionHeader {
-    @apply flex;
-  }
-  
-  .accordionTrigger {
-    @apply flex flex-1 items-center justify-between transition-all text-left;
-  }
-  
-  .accordionTrigger[data-state="open"] > svg {
-    @apply rotate-180;
-  }
-  
-  .chevronIcon {
-    @apply size-4 shrink-0 text-muted transition-transform duration-200;
-  }
-  
-  .accordionContent {
-    @apply overflow-hidden text-p-small;
-  }
-  
-  .accordionContent[data-state="closed"] {
-    @apply animate-accordion-up;
-  }
-  
-  .accordionContent[data-state="open"] {
-    @apply animate-accordion-down;
-  }
-  
-  .contentInner {
-    @apply pb-4 pt-0;
-  }
-  
+  @apply w-full min-w-[400px];
+}
+
+/* Size variants using typography tokens */
+.accordionRoot.sm .accordionTrigger {
+  @apply py-xs;
+}
+.accordionRoot.sm .accordionTrigger {
+  @apply text-heading-5;
+}
+
+.accordionRoot.base .accordionTrigger {
+  @apply py-sm;
+}
+.accordionRoot.base .accordionTrigger {
+  @apply text-heading-4;
+}
+
+.accordionRoot.lg .accordionTrigger {
+  @apply py-md;
+}
+.accordionRoot.lg .accordionTrigger {
+  @apply text-heading-3;
+}
+
+.accordionItem {
+  @apply border-b;
+}
+
+.accordionHeader {
+  @apply flex;
+}
+
+.accordionTrigger {
+  @apply flex flex-1 items-center justify-between 
+         text-left
+         transition-all;
+  transition-duration: var(--duration-normal);
+}
+
+.accordionTrigger[data-state="open"] > svg {
+  @apply rotate-180;
+}
+
+.chevronIcon {
+  @apply size-4 shrink-0 
+         text-text-weakest
+         transition-transform;
+  transition-duration: var(--duration-fast);
+}
+
+.accordionContent {
+  @apply overflow-hidden text-body text-text-weakest;
+}
+.accordionRoot.sm .accordionContent {
+  @apply text-body-small;
+}
+
+.accordionContent[data-state="closed"] {
+  animation: accordion-up var(--duration-normal) var(--ease-out);
+}
+
+.accordionContent[data-state="open"] {
+  animation: accordion-down var(--duration-normal) var(--ease-out);
+}
+
+.contentInner {
+  @apply pb-md pt-0;
+}

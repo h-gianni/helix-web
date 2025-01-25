@@ -1,0 +1,59 @@
+/* Command Root */
+/* .command-root {
+  @apply flex h-full w-full flex-col overflow-hidden bg-surface-elevated text-text;
+} */
+
+/* Command Dialog */
+/* .command-dialog {
+  @apply overflow-hidden p-0;
+} */
+
+/* Command Input */
+.command-input-wrapper {
+  @apply flex items-center px-xs pb-xs border-b border-border;
+}
+
+.command-input-icon {
+  @apply mr-2 shrink-0 h-base w-base opacity-disabled;
+}
+
+.command-input {
+  @apply flex w-full bg-transparent outline-none h-xl
+         placeholder:text-text-muted
+         disabled:cursor-not-allowed disabled:opacity-disabled;
+}
+
+/* Command List */
+.command-list {
+  @apply overflow-y-auto overflow-x-hidden min-w-64;
+}
+
+.command-empty {
+  @apply py-6 text-center text-body-small text-text;
+}
+
+.command-list .popcard-list-group-title:first-of-type {
+  @apply pt-xs;
+}
+
+/* Command Group & Items */
+/* .command-item svg {
+  @apply pointer-events-none shrink-0 h-base w-base;
+} */
+
+/* Dark Theme */
+[data-theme="dark"] {
+  .command-root {
+    @apply bg-surface-raised text-text;
+  }
+
+  .command-item[data-selected="true"] {
+    @apply bg-primary-stronger text-text-inverse;
+  }
+}
+
+@media print {
+  .command-root {
+    @apply print:hidden;
+  }
+}

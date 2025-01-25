@@ -37,7 +37,7 @@ const Checkbox = React.forwardRef<
 
   // Description element if provided
   const descriptionElement = description && (
-    <p className="text-xs text-muted-color">
+    <p className="checkbox-description">
       {description}
     </p>
   );

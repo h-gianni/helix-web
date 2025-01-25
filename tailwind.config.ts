@@ -1,11 +1,12 @@
+// tailwind.config.ts
 import type { Config } from "tailwindcss";
 import plugin from "tailwindcss/plugin";
 import type { PluginAPI } from "tailwindcss/types/config";
 
-type ThemeUtil = Pick<PluginAPI, 'theme'>;
+type ThemeUtil = Pick<PluginAPI, "theme">;
 
 const config: Config = {
-  darkMode: ["class", '[data-theme="dark"]'],
+  strongMode: ["class", '[data-theme="strong"]'],
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -13,470 +14,656 @@ const config: Config = {
     "./src/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: ["fs-hide", "fs-mask", "fs-exclude", "fs-unmask"],
   theme: {
     fontSize: {
-      'xxs': ['11px', { lineHeight: '1.5' }],
-      'xs': ['12px', { lineHeight: '1.5' }],
-      'sm': ['13px', { lineHeight: '1.5' }],
-      'base': ['15px', { lineHeight: '1.5' }],
-      'lg': ['17px', { lineHeight: '1.5' }],
-      'xl': ['21px', { lineHeight: '1.375' }],
-      '2xl': ['24px', { lineHeight: '1.375' }],
-      '3xl': ['27px', { lineHeight: '1.25' }],
-      '4xl': ['30px', { lineHeight: '1.25' }],
+      xxs: "var(--font-size-xxs)",
+      xs: "var(--font-size-xs)",
+      sm: "var(--font-size-sm)",
+      base: "var(--font-size-base)",
+      lg: "var(--font-size-lg)",
+      xl: "var(--font-size-xl)",
+      "2xl": "var(--font-size-2xl)",
+      "3xl": "var(--font-size-3xl)",
+      "4xl": "var(--font-size-4xl)",
     },
     lineHeight: {
-      'null': '0',
-      'none': '1',
-      'tight': '1.25',
-      'snug': '1.375',
-      'normal': '1.5',
-      'relaxed': '1.625',
-      'loose': '2',
+      null: "var(--line-height-none)",
+      none: "var(--line-height-none)",
+      tight: "var(--line-height-tight)",
+      snug: "var(--line-height-snug)",
+      normal: "var(--line-height-normal)",
+      relaxed: "var(--line-height-relaxed)",
+      loose: "var(--line-height-loose)",
     },
     fontWeight: {
-      'thin': '200',
-      'light': '300',
-      'normal': '400',
-      'medium': '500',
-      'semibold': '600',
-      'bold': '700',
-      'black': '900',
+      thin: "var(--font-weight-thin)",
+      light: "var(--font-weight-light)",
+      normal: "var(--font-weight-normal)",
+      medium: "var(--font-weight-medium)",
+      semibold: "var(--font-weight-semibold)",
+      bold: "var(--font-weight-bold)",
+      black: "var(--font-weight-black)",
     },
     letterSpacing: {
-      'tighter': '-0.05em',
-      'tight': '-0.025em',
-      'normal': '0',
-      'wide': '0.025em',
-      'wider': '0.05em',
-      'widest': '0.25em',
+      tighter: "var(--letter-spacing-tighter)",
+      tight: "var(--letter-spacing-tight)",
+      normal: "var(--letter-spacing-normal)",
+      wide: "var(--letter-spacing-wide)",
+      wider: "var(--letter-spacing-wider)",
+      widest: "var(--letter-spacing-widest)",
     },
     extend: {
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+        // Base colors
+        body: "var(--background-page)",
+        input: "var(--background-input)",
+        disabled: "var(--background-disabled)",
+        surface: {
+          DEFAULT: "var(--background-surface)",
+          raised: "var(--background-surface-raised)",
+          elevated: "var(--background-surface-elevated)",
+          sunken: "var(--background-surface-sunken)",
+          hollowed: "var(--background-surface-hollowed)",
         },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+
+        // Text colors
+        text: {
+          strongest: "var(--text-strongest)",
+          strong: "var(--text-strong)",
+          DEFAULT: "var(--text-base)",
+          weak: "var(--text-weak)",
+          weakest: "var(--text-weakest)",
+          muted: "var(--text-muted)",
+          disabled: "var(--text-disabled)",
+          inverse: "var(--text-inverse)",
+        },
+
+        // Interactive colors
+        neutral: {
+          DEFAULT: "var(--background-neutral-weakest)",
+          weakest: "var(--background-neutral-weakest)",
+          weaker: "var(--background-neutral-weaker)",
+          weak: "var(--background-neutral-weak)",
+          strong: "var(--background-neutral-strong)",
+          stronger: "var(--background-neutral-stronger)",
+          strongest: "var(--background-neutral-strongest)",
+          text: "var(--text-neutral)",
         },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-          25: "rgb(var(--primary-25))",
-          50: "rgb(var(--primary-50))",
-          100: "rgb(var(--primary-100))",
-          200: "rgb(var(--primary-200))",
-          300: "rgb(var(--primary-300))",
-          400: "rgb(var(--primary-400))",
-          500: "rgb(var(--primary-500))",
-          600: "rgb(var(--primary-600))",
-          700: "rgb(var(--primary-700))",
-          800: "rgb(var(--primary-800))",
-          900: "rgb(var(--primary-900))",
-          950: "rgb(var(--primary-950))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-          25: "rgb(var(--accent-25))",
-          50: "rgb(var(--accent-50))",
-          100: "rgb(var(--accent-100))",
-          200: "rgb(var(--accent-200))",
-          300: "rgb(var(--accent-300))",
-          400: "rgb(var(--accent-400))",
-          500: "rgb(var(--accent-500))",
-          600: "rgb(var(--accent-600))",
-          700: "rgb(var(--accent-700))",
-          800: "rgb(var(--accent-800))",
-          900: "rgb(var(--accent-900))",
-          950: "rgb(var(--accent-950))",
-        },
-        danger: {
-          DEFAULT: "hsl(var(--danger))",
-          foreground: "hsl(var(--danger-foreground))",
-          25: "rgb(var(--danger-25))",
-          50: "rgb(var(--danger-50))",
-          100: "rgb(var(--danger-100))",
-          200: "rgb(var(--danger-200))",
-          300: "rgb(var(--danger-300))",
-          400: "rgb(var(--danger-400))",
-          500: "rgb(var(--danger-500))",
-          600: "rgb(var(--danger-600))",
-          700: "rgb(var(--danger-700))",
-          800: "rgb(var(--danger-800))",
-          900: "rgb(var(--danger-900))",
-          950: "rgb(var(--danger-950))",
+          DEFAULT: "var(--background-primary)",
+          weakest: "var(--background-primary-weakest)",
+          weaker: "var(--background-primary-weaker)",
+          weak: "var(--background-primary-weak)",
+          strong: "var(--background-primary-strong)",
+          stronger: "var(--background-primary-stronger)",
+          strongest: "var(--background-primary-strongest)",
+          text: "var(--text-primary)",
         },
         warning: {
-          25: "rgb(var(--warning-25))",
-          50: "rgb(var(--warning-50))",
-          100: "rgb(var(--warning-100))",
-          200: "rgb(var(--warning-200))",
-          300: "rgb(var(--warning-300))",
-          400: "rgb(var(--warning-400))",
-          500: "rgb(var(--warning-500))",
-          600: "rgb(var(--warning-600))",
-          700: "rgb(var(--warning-700))",
-          800: "rgb(var(--warning-800))",
-          900: "rgb(var(--warning-900))",
-          950: "rgb(var(--warning-950))",
+          DEFAULT: "var(--background-warning)",
+          weakest: "var(--background-warning-weakest)",
+          weaker: "var(--background-warning-weaker)",
+          weak: "var(--background-warning-weak)",
+          strong: "var(--background-warning-strong)",
+          stronger: "var(--background-warning-stronger)",
+          strongest: "var(--background-warning-strongest)",
+          text: "var(--text-warning)",
+        },
+        danger: {
+          DEFAULT: "var(--background-danger)",
+          weakest: "var(--background-danger-weakest)",
+          weaker: "var(--background-danger-weaker)",
+          weak: "var(--background-danger-weak)",
+          strong: "var(--background-danger-strong)",
+          stronger: "var(--background-danger-stronger)",
+          strongest: "var(--background-danger-strongest)",
+          text: "var(--text-danger)",
         },
         success: {
-          25: "rgb(var(--success-25))",
-          50: "rgb(var(--success-50))",
-          100: "rgb(var(--success-100))",
-          200: "rgb(var(--success-200))",
-          300: "rgb(var(--success-300))",
-          400: "rgb(var(--success-400))",
-          500: "rgb(var(--success-500))",
-          600: "rgb(var(--success-600))",
-          700: "rgb(var(--success-700))",
-          800: "rgb(var(--success-800))",
-          900: "rgb(var(--success-900))",
-          950: "rgb(var(--success-950))",
+          DEFAULT: "var(--background-success)",
+          weakest: "var(--background-success-weakest)",
+          weaker: "var(--background-success-weaker)",
+          weak: "var(--background-success-weak)",
+          strong: "var(--background-success-strong)",
+          stronger: "var(--background-success-stronger)",
+          strongest: "var(--background-success-strongest)",
+          text: "var(--text-success)",
+        },
+        accent: {
+          DEFAULT: "var(--background-accent)",
+          weakest: "var(--background-accent-weakest)",
+          weaker: "var(--background-accent-weaker)",
+          weak: "var(--background-accent-weak)",
+          strong: "var(--background-accent-strong)",
+          stronger: "var(--background-accent-stronger)",
+          strongest: "var(--background-accent-strongest)",
+          text: "var(--text-accent)",
         },
         info: {
-          25: "rgb(var(--info-25))",
-          50: "rgb(var(--info-50))",
-          100: "rgb(var(--info-100))",
-          200: "rgb(var(--info-200))",
-          300: "rgb(var(--info-300))",
-          400: "rgb(var(--info-400))",
-          500: "rgb(var(--info-500))",
-          600: "rgb(var(--info-600))",
-          700: "rgb(var(--info-700))",
-          800: "rgb(var(--info-800))",
-          900: "rgb(var(--info-900))",
-          950: "rgb(var(--info-950))",
+          DEFAULT: "var(--background-info)",
+          weakest: "var(--background-info-weakest)",
+          weaker: "var(--background-info-weaker)",
+          weak: "var(--background-info-weak)",
+          strong: "var(--background-info-strong)",
+          stronger: "var(--background-info-stronger)",
+          strongest: "var(--background-info-strongest)",
+          text: "var(--text-info)",
         },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
-        },
-        surface: {
-          0: "var(--surface-0)",
-          1: "var(--surface-1)",
-          2: "var(--surface-2)",
-        },
-        text: {
-          primary: "var(--text-primary)",
-          secondary: "var(--text-secondary)",
-          tertiary: "var(--text-tertiary)",
-          disabled: "var(--text-disabled)",
+
+        // Border colors
+        border: {
+          DEFAULT: "var(--border-default)",
+          strong: "var(--border-strong)",
+          strongest: "var(--border-strongest)",
+          weak: "var(--border-weak)",
+          weakest: "var(--border-weakest)",
+
+          primary: "var(--border-primary)",
+          primaryHover: "var(--border-primary-hover)",
+          warning: "var(--border-warning)",
+          warningHover: "var(--border-warning-hover)",
+          danger: "var(--border-danger)",
+          dangerHover: "var(--border-danger-hover)",
+          success: "var(--border-success)",
+          successHover: "var(--border-success-hover)",
+          accent: "var(--border-accent)",
+          accentHover: "var(--border-accent-hover)",
+          info: "var(--border-info)",
+          infoHover: "var(--border-info-hover)",
         },
       },
       spacing: {
-        'xxs': '0.25rem',
-        'xs': '0.5rem',
-        'sm': '0.75rem',
-        'md': '1.25rem',
-        'lg': '1.5rem',
-        'xl': '2rem',
-        '2xl': '2.5rem',
-        '3xl': '3rem',
-        '4xl': '4rem',
+        xxs: "var(--space-xxs)",
+        xs: "var(--space-xs)",
+        sm: "var(--space-sm)",
+        base: "var(--space-base)",
+        md: "var(--space-md)",
+        lg: "var(--space-lg)",
+        xl: "var(--space-xl)",
+        "2xl": "var(--space-2xl)",
+        "3xl": "var(--space-3xl)",
+        "4xl": "var(--space-4xl)",
       },
       borderRadius: {
-        'sm': '0.125rem',
-        'base': '0.25rem',
-        'md': '0.375rem',
-        'lg': '0.5rem',
-        'xl': '0.75rem',
-        'pill': '9999px',
-      },
-      fontFamily: {
-        sans: ['"Roboto Flex"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'],
-        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
+        sm: "var(--radius-sm)",
+        base: "var(--radius-base)",
+        md: "var(--radius-md)",
+        lg: "var(--radius-lg)",
+        xl: "var(--radius-xl)",
+        pill: "var(--radius-pill)",
       },
       boxShadow: {
-        sm: "0px 0.7px 0.6px hsl(0deg 0% 67% / 0.49), 0px 0.9px 0.7px -2.2px hsl(0deg 0% 67% / 0.35), 0px 2.3px 1.9px -4.5px hsl(0deg 0% 67% / 0.2)",
-        DEFAULT: "0px 0.7px 0.6px hsl(0deg 0% 67% / 0.41), 0px 1px 0.8px -1.1px hsl(0deg 0% 67% / 0.34), 0px 2.2px 1.8px -2.2px hsl(0deg 0% 67% / 0.27), 0px 5.5px 4.5px -3.4px hsl(0deg 0% 67% / 0.19), 0px 11.7px 9.7px -4.5px hsl(0deg 0% 67% / 0.12)",
-        md: "0px 0.7px 0.6px hsl(0deg 0% 67% / 0.38), 0px 1.1px 0.9px -0.5px hsl(0deg 0% 67% / 0.35), 0px 1.9px 1.6px -1px hsl(0deg 0% 67% / 0.32), 0px 3.4px 2.8px -1.5px hsl(0deg 0% 67% / 0.28), 0px 6.1px 5px -2px hsl(0deg 0% 67% / 0.25), 0px 10.4px 8.6px -2.5px hsl(0deg 0% 67% / 0.21), 0px 16.7px 13.8px -3px hsl(0deg 0% 67% / 0.18)",
-        lg: "rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px",
-        "2xl": "rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset, rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px",
+        sm: "var(--shadow-sm)",
+        DEFAULT: "var(--shadow-base)",
+        md: "var(--shadow-md)",
+        lg: "var(--shadow-lg)",
+        "2xl": "var(--shadow-2xl)",
       },
-      keyframes: {
-        "fade-in": {
-          from: { opacity: "0" },
-          to: { opacity: "1" },
-        },
-        "fade-out": {
-          from: { opacity: "1" },
-          to: { opacity: "0" },
-        },
-        "slide-in-from-top": {
-          from: { transform: "translateY(-100%)" },
-          to: { transform: "translateY(0)" },
-        },
-        "slide-in-from-right": {
-          from: { transform: "translateX(100%)" },
-          to: { transform: "translateX(0)" },
-        },
-        "slide-in-from-bottom": {
-          from: { transform: "translateY(100%)" },
-          to: { transform: "translateY(0)" },
-        },
-        "slide-in-from-left": {
-          from: { transform: "translateX(-100%)" },
-          to: { transform: "translateX(0)" },
-        },
-        "slide-out-to-top": {
-          from: { transform: "translateY(0)" },
-          to: { transform: "translateY(-100%)" },
-        },
-        "slide-out-to-right": {
-          from: { transform: "translateX(0)" },
-          to: { transform: "translateX(100%)" },
-        },
-        "slide-out-to-bottom": {
-          from: { transform: "translateY(0)" },
-          to: { transform: "translateY(100%)" },
-        },
-        "slide-out-to-left": {
-          from: { transform: "translateX(0)" },
-          to: { transform: "translateX(-100%)" },
-        },
-        "zoom-in": {
-          from: { opacity: "0", transform: "scale(0.95)" },
-          to: { opacity: "1", transform: "scale(1)" },
-        },
-        "zoom-out": {
-          from: { opacity: "1", transform: "scale(1)" },
-          to: { opacity: "0", transform: "scale(0.95)" },
-        },
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-        "collapsible-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-collapsible-content-height)" },
-        },
-        "collapsible-up": {
-          from: { height: "var(--radix-collapsible-content-height)" },
-          to: { height: "0" },
-        },
+      fontFamily: {
+        sans: "var(--font-family-sans)",
+        mono: "var(--font-family-mono)",
       },
-      animation: {
-        "fade-in": "fade-in 0.25s ease-in-out",
-        "fade-out": "fade-out 0.25s ease-in-out",
-        "slide-in-from-top": "slide-in-from-top 0.25s ease-in-out",
-        "slide-in-from-right": "slide-in-from-right 0.25s ease-in-out",
-        "slide-in-from-bottom": "slide-in-from-bottom 0.25s ease-in-out",
-        "slide-in-from-left": "slide-in-from-left 0.25s ease-in-out",
-        "slide-out-to-top": "slide-out-to-top 0.25s ease-in-out",
-        "slide-out-to-right": "slide-out-to-right 0.25s ease-in-out",
-        "slide-out-to-bottom": "slide-out-to-bottom 0.25s ease-in-out",
-        "slide-out-to-left": "slide-out-to-left 0.25s ease-in-out",
-        "zoom-in": "zoom-in 0.25s ease-in-out",
-        "zoom-out": "zoom-out 0.25s ease-in-out",
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-        "collapsible-down": "collapsible-down 0.2s ease-out",
-        "collapsible-up": "collapsible-up 0.2s ease-out",
-      },
-      textStyles: {
-        // Display styles
-        'display-1': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.4xl[0]'),
-          lineHeight: theme('fontSize.4xl[1].lineHeight'),
-          fontWeight: theme('fontWeight.bold'),
-          letterSpacing: theme('letterSpacing.tight'),
-          color: 'rgb(var(--neutral-800))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-50))'
-          },
-        }),
-        'display-2': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.3xl[0]'),
-          lineHeight: theme('fontSize.3xl[1].lineHeight'),
-          fontWeight: theme('fontWeight.bold'),
-          letterSpacing: theme('letterSpacing.tight'),
-          color: 'rgb(var(--neutral-800))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-50))'
-          },
-        }),
-        'heading-1': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.2xl[0]'),
-          lineHeight: theme('fontSize.2xl[1].lineHeight'),
-          fontWeight: theme('fontWeight.semibold'),
-          letterSpacing: theme('letterSpacing.tight'),
-          color: 'rgb(var(--neutral-800))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-50))'
-          },
-        }),
-        'heading-2': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.xl[0]'),
-          lineHeight: theme('fontSize.xl[1].lineHeight'),
-          fontWeight: theme('fontWeight.semibold'),
-          letterSpacing: theme('letterSpacing.tight'),
-          color: 'rgb(var(--neutral-800))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-50))'
-          },
-        }),
-        'heading-3': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.lg[0]'),
-          lineHeight: theme('fontSize.lg[1].lineHeight'),
-          fontWeight: theme('fontWeight.semibold'),
-          letterSpacing: theme('letterSpacing.tight'),
-          color: 'rgb(var(--neutral-800))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-50))'
-          },
-        }),
-        'heading-4': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.base[0]'),
-          lineHeight: theme('fontSize.base[1].lineHeight'),
-          fontWeight: theme('fontWeight.semibold'),
-          letterSpacing: theme('letterSpacing.normal'),
-          color: 'rgb(var(--neutral-800))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-50))'
-          },
-        }),
-        'heading-5': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.sm[0]'),
-          lineHeight: theme('fontSize.sm[1].lineHeight'),
-          fontWeight: theme('fontWeight.semibold'),
-          letterSpacing: theme('letterSpacing.normal'),
-          color: 'rgb(var(--neutral-800))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-50))'
-          },
-        }),
-        'p': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.base[0]'),
-          lineHeight: theme('fontSize.base[1].lineHeight'),
-          fontWeight: theme('fontWeight.normal'),
-          letterSpacing: theme('letterSpacing.normal'),
-          color: 'rgb(var(--neutral-600))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-50))'
-          },
-        }),
-        'p-small': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.sm[0]'),
-          lineHeight: theme('lineHeight.tight'),
-          fontWeight: theme('fontWeight.normal'),
-          letterSpacing: theme('letterSpacing.normal'),
-          color: 'rgb(var(--neutral-600))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-50))'
-          },
-        }),
-        'link': ({ theme }: ThemeUtil) => ({
-          textDecorationLine: 'underline',
-          textUnderlineOffset: '0.2em',
-          fontWeight: theme('fontWeight.medium'),
-          transition: 'all 150ms cubic-bezier(0.4, 0, 0.2, 1)',
-          color: 'rgb(var(--primary-600))',
-          '.dark &': {
-            color: 'rgb(var(--primary-400))'
-          },
-        }),
-        'code': ({ theme }: ThemeUtil) => ({
-          fontFamily: theme('fontFamily.mono'),
-          fontSize: theme('fontSize.sm[0]'),
-          lineHeight: theme('fontSize.sm[1].lineHeight'),
-          padding: '0.2em 0.4em',
-          borderRadius: theme('borderRadius.sm'),
-          backgroundColor: 'rgb(var(--neutral-100))',
-          color: 'rgb(var(--neutral-900))',
-          '.dark &': {
-            backgroundColor: 'rgb(var(--neutral-800))',
-            color: 'rgb(var(--neutral-100))'
-          },
-        }),
-        'label': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.sm[0]'),
-          lineHeight: theme('fontSize.sm[1].lineHeight'),
-          fontWeight: theme('fontWeight.medium'),
-          letterSpacing: theme('letterSpacing.wide'),
-          color: 'rgb(var(--neutral-700))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-300))'
-          },
-        }),
-        'caption': ({ theme }: ThemeUtil) => ({
-          fontSize: theme('fontSize.xs[0]'),
-          lineHeight: theme('fontSize.xs[1].lineHeight'),
-          color: 'rgb(var(--neutral-600))',
-          '.dark &': {
-            color: 'rgb(var(--neutral-400))'
-          },
-        }),
+      opacity: {
+        disabled: "var(--disabled-opacity)",
       },
     },
   },
   plugins: [
     require("tailwindcss-animate"),
-    require('tailwind-scrollbar'),
+    require("tailwind-scrollbar"),
+
+    // Typography styles plugin
+    plugin(({ addComponents }) => {
+      const styles = {
+        // Display styles
+        ".text-display-1": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-4xl)",
+          lineHeight: "var(--line-height-tight)",
+          fontWeight: "var(--font-weight-bold)",
+          letterSpacing: "var(--letter-spacing-tight)",
+        },
+        ".text-display-2": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-3xl)",
+          lineHeight: "var(--line-height-tight)",
+          fontWeight: "var(--font-weight-bold)",
+          letterSpacing: "var(--letter-spacing-tight)",
+        },
+
+        // Heading styles
+        ".text-heading-1": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-2xl)",
+          lineHeight: "var(--line-height-tight)",
+          fontWeight: "var(--font-weight-semibold)",
+          letterSpacing: "var(--letter-spacing-tight)",
+        },
+        ".text-heading-2": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-xl)",
+          lineHeight: "var(--line-height-snug)",
+          fontWeight: "var(--font-weight-semibold)",
+          letterSpacing: "var(--letter-spacing-tight)",
+        },
+        ".text-heading-3": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-lg)",
+          lineHeight: "var(--line-height-normal)",
+          fontWeight: "var(--font-weight-semibold)",
+          letterSpacing: "var(--letter-spacing-tight)",
+        },
+        ".text-heading-4": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-base)",
+          lineHeight: "var(--line-height-normal)",
+          fontWeight: "var(--font-weight-semibold)",
+          letterSpacing: "var(--letter-spacing-normal)",
+        },
+        ".text-heading-5": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-sm)",
+          lineHeight: "var(--line-height-normal)",
+          fontWeight: "var(--font-weight-semibold)",
+          letterSpacing: "var(--letter-spacing-normal)",
+        },
+        ".text-heading-6": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-xs)",
+          lineHeight: "var(--line-height-none)",
+          fontWeight: "var(--font-weight-medium)",
+          letterSpacing: "var(--letter-spacing-normal)",
+        },
+
+        // Body styles
+        ".text-body-large": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-lg)",
+          lineHeight: "var(--line-height-normal)",
+          fontWeight: "var(--font-weight-normal)",
+          letterSpacing: "var(--letter-spacing-normal)",
+        },
+        ".text-body": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-base)",
+          lineHeight: "var(--line-height-normal)",
+          fontWeight: "var(--font-weight-normal)",
+          letterSpacing: "var(--letter-spacing-normal)",
+        },
+        ".text-body-small": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-sm)",
+          lineHeight: "var(--line-height-tight)",
+          fontWeight: "var(--font-weight-normal)",
+          letterSpacing: "var(--letter-spacing-normal)",
+        },
+
+        // UI Element styles
+        ".text-label": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-sm)",
+          lineHeight: "var(--line-height-normal)",
+          fontWeight: "var(--font-weight-medium)",
+          letterSpacing: "var(--letter-spacing-wide)",
+        },
+        ".text-caption": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-xs)",
+          lineHeight: "var(--line-height-normal)",
+          fontWeight: "var(--font-weight-normal)",
+          letterSpacing: "var(--letter-spacing-normal)",
+        },
+        ".text-overline": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-xs)",
+          lineHeight: "var(--line-height-normal)",
+          fontWeight: "var(--font-weight-medium)",
+          letterSpacing: "var(--letter-spacing-wider)",
+          textTransform: "uppercase",
+        },
+        ".text-code": {
+          fontFamily: "var(--font-family-mono)",
+          fontSize: "var(--font-size-sm)",
+          lineHeight: "var(--line-height-normal)",
+          fontWeight: "var(--font-weight-normal)",
+          letterSpacing: "var(--letter-spacing-normal)",
+        },
+
+        // Interactive styles
+        ".text-link": {
+          textDecorationLine: "underline",
+          textUnderlineOffset: "0.2em",
+          fontWeight: "var(--font-weight-medium)",
+          transition: "all 150ms var(--ease-in-out)",
+        },
+        ".text-button": {
+          fontFamily: "var(--font-family-sans)",
+          fontSize: "var(--font-size-sm)",
+          lineHeight: "var(--line-height-normal)",
+          fontWeight: "var(--font-weight-medium)",
+          letterSpacing: "var(--letter-spacing-wide)",
+        },
+
+        // Shared Form styles
+        ".form-basics": {
+          backgroundColor: "var(--background-input)",
+          color: "var(--text-base)",
+          borderColor: "var(--border-default)",
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderRadius: "var(--radius-base)",
+          transitionProperty: "all",
+          transitionTimingFunction: "var(--ease-out)",
+          transitionDuration: "var(--duration-normal)",
+          "&:hover": {
+            borderColor: "var(--border-strongest)",
+          },
+          "&:focus": {
+            borderColor: "var(--border-primary-hover)",
+            outline: "none",
+            ringWidth: "2px",
+            ringOffsetWidth: "2px",
+            ringColor: "var(--ring-primary)",
+            ringOffsetColor: "var(--background-surface)",
+          },
+          "&:disabled": {
+            cursor: "not-allowed",
+            opacity: "var(--disabled-opacity)",
+            backgroundColor: "var(--background-disabled)",
+          },
+        },
+        ".form-element-shared": {
+          position: "relative",
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+          cursor: "pointer",
+        },
+
+        ".form-element-sm": {
+          height: "var(--space-xl)", // 32px
+          fontSize: "var(--font-size-sm)",
+          padding: "0 var(--space-sm)",
+        },
+
+        ".form-element-base": {
+          height: "var(--space-2xl)", // 40px
+          fontSize: "var(--font-size-base)",
+          padding: "0 var(--space-sm)",
+        },
+
+        ".form-element-lg": {
+          height: "var(--space-3xl)", // 48px
+          fontSize: "var(--font-size-lg)",
+          padding: "0 var(--space-sm)",
+        },
+
+        ".form-element-error": {
+          borderColor: "var(--border-danger)",
+          "&:hover": {
+            borderColor: "var(--border-danger-hover)",
+          },
+          "&:focus": {
+            borderColor: "var(--border-danger-hover)",
+            ringColor: "var(--ring-danger)",
+          },
+        },
+
+        ".form-layout-icon": {
+          position: "absolute",
+          display: "flex",
+          alignItems: "center",
+          height: "100%",
+          pointerEvents: "none",
+          color: "var(--text-weakest)",
+          zIndex: "1",
+          "&[data-size=sm]": {
+            left: "var(--space-xs)",
+          },
+          "&[data-size=base]": {
+            left: "var(--space-sm)",
+          },
+          "&[data-size=lg]": {
+            left: "var(--space-base)",
+          },
+          "&[data-error=true]": {
+            color: "var(--text-danger)",
+          },
+          "&[data-disabled=true]": {
+            opacity: "var(--disabled-opacity)",
+          },
+          "& svg": {
+            "&[data-size=sm]": {
+              width: "var(--space-sm)",
+              height: "var(--space-sm)",
+            },
+            "&[data-size=base]": {
+              width: "var(--space-base)",
+              height: "var(--space-base)",
+            },
+            "&[data-size=lg]": {
+              width: "var(--space-md)",
+              height: "var(--space-md)",
+            },
+          },
+        },
+
+        // Form Layout styles
+        ".form-layout": {
+          display: "flex",
+          flexDirection: "column",
+          width: "100%",
+        },
+
+        ".form-layout-label": {
+          display: "flex",
+          flexDirection: "column",
+          gap: "var(--space-xxs)",
+        },
+
+        ".form-layout-field": {
+          position: "relative",
+          width: "100%",
+        },
+
+        ".form-layout-helper": {
+          marginTop: "var(--space-xs)",
+          fontSize: "var(--font-size-sm)",
+          color: "var(--text-weakest)",
+          "&[data-error=true]": {
+            color: "var(--text-danger)",
+          },
+        },
+
+        // Modals styles
+        ".overlay-basics": {
+          position: "fixed",
+          inset: "0",
+          backgroundColor: "rgb(var(--color-neutral-300) / 0.5)",
+          backdropFilter: "blur(var(--overlay-blur))",
+          zIndex: "var(--z-modal)",
+        },
+        ".dialog-basics": {
+          position: "fixed",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "100%",
+          display: "grid",
+          gap: "var(--space-md)",
+          backgroundColor: "var(--background-surface)",
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderRadius: "var(--radius-lg)",
+          boxShadow: "var(--shadow-md)",
+          padding: "var(--space-lg)",
+          transitionProperty: "all",
+          transitionDuration: "var(--duration-normal)",
+          transitionTimingFunction: "var(--ease-out)",
+          zIndex: "var(--z-modal)",
+        },
+
+        // pop styles (calendar, command, dropdownmenu. ...)
+        ".popcard-basics": {
+          overflow: "hidden",
+          borderRadius: "var(--radius-base)",
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderColor: "var(--border-default)",
+          backgroundColor: "var(--background-surface-raised)",
+          color: "var(--text-base)",
+          padding: "var(--space-xxs)",
+          boxShadow: "var(--shadow-base)",
+          zIndex: "var(--z-dropdown)",
+          animationDuration: "var(--duration-normal)",
+          animationTimingFunction: "var(--ease-out)",
+        },
+
+        // menu list inside components with popcard: Command, DropdownMenu, MenuBar)
+        ".popcard-list-group": {
+          overflow: "hidden",
+          // padding: "var(--space-xxs)",
+          color: "var(--text-base)",
+        },
+        ".popcard-list-group-title": {
+          fontSize: "var(--font-size-xs)",
+          fontWeight: "var(--font-weight-medium)",
+          padding: "var(--space-xs)",
+          paddingTop: "var(--space-xxs)",
+          color: "var(--text-muted)",
+        },
+        ".popcard-list-separator": {
+          marginLeft: "-0.25rem",
+          marginRight: "-0.25rem",
+          marginTop: "var(--space-xxs)",
+          marginBottom: "var(--space-xxs)",
+          height: "1px",
+          backgroundColor: "var(--border-weak)",
+        },
+        ".popcard-list-item": {
+          position: "relative",
+          display: "flex",
+          cursor: "default",
+          userSelect: "none",
+          alignItems: "center",
+          gap: "var(--space-sm)",
+          borderRadius: "var(--radius-sm)",
+          padding: "0.375rem 0.5rem",
+          outline: "none",
+          color: "var(--text-weak)",
+          fontSize: "var(--font-size-sm)",
+          lineHeight: "var(--line-height-tight)",
+          "&[data-disabled=true]": {
+            pointerEvents: "none",
+            opacity: "var(--disabled-opacity)",
+          },
+          "&[data-selected=true]": {
+            backgroundColor: "var(--background-surface-sunken)",
+            color: "var(--text-primary-strongest)",
+          },
+          // ":focus, :hover": {
+          //   backgroundColor: "var(--background-surface-sunken)",
+          // },
+        },
+        ".popcard-list-shortcut": {
+          marginLeft: "auto",
+          fontSize: "var(--font-size-xs)",
+          letterSpacing: "var(--letter-spacing-widest)",
+          color: "var(--text-muted)",
+        },
+        ".popcard-list-indicator": {
+          position: "absolute",
+          left: "0.5rem",
+          display: "flex",
+          height: "0.875rem",
+          width: "0.875rem",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        ".popcard-checkbox-item, .popcard-radio-item": {
+          position: "relative",
+          paddingLeft: "var(--space-xl)",
+          // ":focus, :hover": {
+          //   backgroundColor: "var(--background-surface-sunken)",
+          // },
+        },
+        ".popcard-item-destructive": {
+          color: "var(--text-danger)",
+          ":hover": {
+            backgroundColor: "var(--background-danger-weakest)",
+          },
+        },
+
+        // Icons
+        svg: {
+          width: "1rem",
+          height: "1rem",
+        },
+        ".icon-chevron-right": {
+          marginLeft: "auto",
+          width: "1rem",
+          color: "var(--text-weakest)",
+        },
+        ".icon-checked": {
+          width: "1rem",
+          height: "1rem",
+          color: "var(--background-primary)",
+        },
+        ".icon-circle-selected": {
+          width: "0.5rem",
+          height: "0.5rem",
+          color: "var(--background-primary)",
+          fill: "var(--background-primary)",
+        },
+      };
+      addComponents(styles);
+    }),
+
     // Animation utilities plugin
     plugin(({ addUtilities }) => {
       addUtilities({
-        '.animate-in': {
-          'animation-duration': 'var(--duration-normal)',
-          'animation-timing-function': 'var(--ease-out)',
-          'animation-fill-mode': 'forwards',
+        ".animate-in": {
+          "animation-duration": "var(--duration-normal)",
+          "animation-timing-function": "var(--ease-out)",
+          "animation-fill-mode": "forwards",
         },
-        '.animate-out': {
-          'animation-duration': 'var(--duration-normal)',
-          'animation-timing-function': 'var(--ease-in)',
-          'animation-fill-mode': 'forwards',
-        },
-        '[data-state="open"] .animate-in, .data-[state=open]:animate-in': {
-          'animation-name': 'enter',
-        },
-        '[data-state="closed"] .animate-out, .data-[state=closed]:animate-out': {
-          'animation-name': 'exit',
+        ".animate-out": {
+          "animation-duration": "var(--duration-normal)",
+          "animation-timing-function": "var(--ease-in)",
+          "animation-fill-mode": "forwards",
         },
       });
     }),
-    // Accessibility - Reduced Motion plugin
+
+    // Focus and accessibility utilities
     plugin(({ addUtilities }) => {
       addUtilities({
-        '@media (prefers-reduced-motion: reduce)': {
-          '.animate-in, .animate-out': {
-            'animation': 'none !important',
-          },
-          '.transition-transform, .transition-opacity, .transition-all': {
-            'transition': 'none !important',
-          },
+        ".focus-ring": {
+          "@apply outline-none ring-2 ring-offset-2": {},
+          "ring-color": "var(--ring-primary)",
+          "ring-offset-color": "var(--background-surface)",
+        },
+        ".focus-ring-danger": {
+          "@apply outline-none ring-2 ring-offset-2": {},
+          "ring-color": "var(--ring-danger)",
+          "ring-offset-color": "var(--background-surface)",
         },
       });
     }),
-    // Text styles plugin
-    plugin(({ addComponents, theme }) => {
-      const styles = Object.entries(theme('textStyles') as Record<string, any>).reduce((acc, [key, value]) => {
-        acc[`.text-${key}`] = typeof value === 'function' ? value({ theme }) : value;
-        return acc;
-      }, {} as Record<string, any>);
-      addComponents(styles);
+
+    // Reduced motion preferences
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        "@media (prefers-reduced-motion: reduce)": {
+          ".animate-in, .animate-out": {
+            animation: "none !important",
+          },
+          ".transition": {
+            transition: "none !important",
+          },
+        },
+      });
     }),
   ],
 };

@@ -9,9 +9,7 @@
 /* Rest of globals.css content */
 @layer base {
   body {
-    font-family: var(--font-sans);
-    background-color: var(--background) !important;
-    color: var(--text-base);
+    @apply bg-body font-sans text-base;
     /* font-family: var(--font-roboto-flex), system-ui, -apple-system, sans-serif; */
   }
 
@@ -45,15 +43,15 @@
 
   ul.list-disc,
   ul.list-none {
-    @apply list-inside text-p space-y-1;
+    @apply list-inside text-base space-y-1;
   }
-
+  
   ul.list-disc.list-small {
-    @apply text-p-small space-y-0;
+    @apply text-sm font-normal space-y-0;
   }
 
   ul.list-disc.list-small li {
-    @apply text-p-small space-y-0;
+    @apply text-sm font-normal space-y-0;
   }
 
   /* Nav styles */
@@ -146,3 +144,22 @@
     }
 } */
 }
+
+/* Fullstory compatibility */
+@layer utilities {
+  .fs-hide {
+    visibility: hidden;
+  }
+  .fs-mask {
+    background-color: var(--background-surface);
+    color: transparent !important;
+  }
+  .fs-exclude {
+    display: none !important;
+  }
+  .fs-unmask {
+    visibility: visible !important;
+    background-color: transparent !important;
+  }
+}
+

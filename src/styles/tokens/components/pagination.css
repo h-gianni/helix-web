@@ -1,0 +1,42 @@
+/* pagination.css */
+
+/* Pagination Root Navigation */
+.pagination-root {
+  @apply mx-auto flex w-full justify-center;
+ }
+ 
+ /* Pagination Content List */
+ .pagination-content {
+  @apply flex flex-row items-center gap-xxs;
+ }
+ 
+ /* Previous/Next Links */
+ .pagination-previous {
+  @apply flex items-center gap-xxs pl-sm;
+ }
+ 
+ .pagination-next {
+  @apply flex items-center gap-xxs pr-sm;
+ }
+ 
+ /* Pagination Icons */
+ .pagination-icon {
+  @apply size-4;
+ }
+ 
+ /* Ellipsis */
+ .pagination-ellipsis {
+  @apply flex items-center justify-center h-9 w-9 text-text-weakest;
+ }
+ 
+ /* Screen Reader Only Text */
+ .pagination-sr-only {
+  @apply sr-only;
+ }
+ 
+ /* Print Styles */
+ @media print {
+  .pagination-root {
+    @apply hidden;
+  }
+ }

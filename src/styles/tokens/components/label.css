@@ -2,58 +2,53 @@
 
 /* Base Label */
 .label-base {
-  @apply text-sm font-medium leading-none 
-         text-neutral-700 dark:text-neutral-300
-         select-none cursor-default
-         transition-colors duration-150 ease-out;
-}
-
-/* When used with checkbox, use normal font weight */
-.checkbox-base + .label-base,
-*:has(> .checkbox-base) .label-base,
-.radio-group-base + .label-base,
-*:has(> .radio-group-base) .label-base {
-  @apply text-p cursor-pointer;
-}
-
-/* Required State */
-.label-base[data-required="true"]::after {
+  @apply text-body-small select-none cursor-default whitespace-nowrap
+         text-text transition-all;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+ }
+ 
+ /* When used with checkbox or radio, use normal font weight */
+ .checkbox-base + .label-base,
+ *:has(> .checkbox-base) .label-base,
+ .radio-group-base + .label-base,
+ *:has(> .radio-group-base) .label-base {
+  @apply text-body text-text-weak cursor-pointer;
+ }
+ 
+ /* Required State */
+ .label-base[data-required="true"]::after {
+  @apply ml-xxs text-primary;
   content: "*";
-  @apply ml-1 text-primary-500 dark:text-primary-400;
-}
-
-/* Error State */
-.label-base[data-error="true"]::after {
-  @apply text-danger-500 dark:text-danger-400;
-}
-
-/* Error Overrides Required State */
-.label-base[data-required="true"][data-error="true"]::after {
-  @apply text-danger-500 dark:text-danger-400;
-}
-
-/* Disabled State */
-.label-base[data-disabled="true"] {
-  @apply opacity-50 cursor-not-allowed;
-}
-
-/* Focus State - When associated input is focused */
-.label-base[data-focused="true"] {
-  @apply text-primary-600 dark:text-primary-400;
-}
-
-/* Label Spacing */
-/* .label-base:not(:only-child) {
-  @apply mb-1;
-} */
-
-/* Print styles */
-@media print {
+ }
+ 
+ /* Error State */
+ .label-base[data-error="true"]::after {
+  @apply text-danger-text;
+ }
+ 
+ /* Error Overrides Required State */
+ .label-base[data-required="true"][data-error="true"]::after {
+  @apply text-danger-text;
+ }
+ 
+ /* Disabled State */
+ .label-base[data-disabled="true"] {
+  @apply cursor-not-allowed opacity-disabled;
+ }
+ 
+ /* Focus State - When associated input is focused */
+ .label-base[data-focused="true"] {
+  @apply text-primary;
+ }
+ 
+ /* Print styles */
+ @media print {
   .label-base {
-    @apply text-neutral-700;
+    @apply text-text;
   }
   
   .label-base[data-required="true"]::after {
-    @apply text-danger-700;
+    @apply text-danger-text;
   }
-}
+ }

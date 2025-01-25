@@ -2,50 +2,48 @@
 
 /* Base Breadcrumb Nav */
 .breadcrumb-nav {
-  @apply w-full text-neutral-500 dark:text-neutral-400;
+  @apply w-full text-text;
 }
 
 /* Breadcrumb List */
 .breadcrumb-list {
-  @apply flex flex-wrap items-center gap-2.5 
-         break-words text-sm text-neutral-500 dark:text-neutral-400;
+  @apply flex flex-wrap items-center gap-sm 
+         break-words text-sm text-text-weakest;
 }
 
 /* Breadcrumb Item */
 .breadcrumb-item {
-  @apply inline-flex items-center gap-1.5;
+  @apply inline-flex items-center gap-xs;
 }
 
 /* Breadcrumb Link */
 .breadcrumb-link {
-  @apply text-neutral-900 dark:text-neutral-100
-         transition-colors duration-150
-         hover:text-primary-600 dark:hover:text-primary-400
-         focus:outline-none focus:ring-2
-         focus:ring-primary-500 focus:ring-offset-2;
+  @apply text-text hover:text-primary
+         transition-all focus-visible:focus-ring;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
 }
 
 /* Breadcrumb Current Page */
 .breadcrumb-page {
-  @apply font-normal text-neutral-500 dark:text-neutral-400;
+  @apply font-normal text-text-weakest;
 }
 
 /* Breadcrumb Separator */
 .breadcrumb-separator {
-  @apply text-neutral-400 dark:text-neutral-600;
+  @apply text-text-disabled;
 }
 
 .breadcrumb-separator svg {
-  @apply w-3.5 h-3.5;
+  @apply size-3.5;
 }
 
 /* Breadcrumb Ellipsis */
 .breadcrumb-ellipsis {
-  @apply flex items-center justify-center
-         h-9 w-9
-         text-neutral-500 dark:text-neutral-400;
+  @apply flex items-center justify-center size-2xl
+         text-text-weakest;
 }
 
 .breadcrumb-ellipsis svg {
-  @apply h-4 w-4;
+  @apply size-4;
 }

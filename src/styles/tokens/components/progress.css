@@ -1,0 +1,25 @@
+/* progress.css */
+
+/* Progress Root */
+.progress-root {
+  @apply relative h-2 w-full overflow-hidden rounded-full bg-primary-weakest;
+ }
+ 
+ /* Progress Indicator */
+ .progress-indicator {
+  @apply h-full w-full flex-1 bg-primary;
+  transition-property: width, background-color;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+ }
+ 
+ /* Print Styles */
+ @media print {
+  .progress-root {
+    @apply border border-border bg-transparent;
+  }
+ 
+  .progress-indicator {
+    @apply bg-text;
+  }
+ }

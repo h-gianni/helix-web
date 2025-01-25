@@ -62,49 +62,49 @@ export const AllVariants: Story = {
   render: () => (
     <div className="space-y-4">
       <div className="grid grid-cols-[auto_1fr] gap-8 items-start">
-        <div className="text-base text-neutral-500">Default</div>
+        <div className="text-body-small">Default</div>
         <div className="flex flex-wrap gap-2">
           <Badge variant="default" appearance="default">Default</Badge>
           <Badge variant="default" appearance="light">Light</Badge>
           <Badge variant="default" appearance="outline">Outline</Badge>
         </div>
 
-        <div className="text-base text-neutral-500">Primary</div>
+        <div className="text-body-small">Primary</div>
         <div className="flex flex-wrap gap-2">
           <Badge variant="primary" appearance="default">Default</Badge>
           <Badge variant="primary" appearance="light">Light</Badge>
           <Badge variant="primary" appearance="outline">Outline</Badge>
         </div>
 
-        <div className="text-base text-neutral-500">Accent</div>
+        <div className="text-body-small">Accent</div>
         <div className="flex flex-wrap gap-2">
           <Badge variant="accent" appearance="default">Default</Badge>
           <Badge variant="accent" appearance="light">Light</Badge>
           <Badge variant="accent" appearance="outline">Outline</Badge>
         </div>
 
-        <div className="text-base text-neutral-500">Danger</div>
+        <div className="text-body-small">Danger</div>
         <div className="flex flex-wrap gap-2">
           <Badge variant="danger" appearance="default">Default</Badge>
           <Badge variant="danger" appearance="light">Light</Badge>
           <Badge variant="danger" appearance="outline">Outline</Badge>
         </div>
 
-        <div className="text-base text-neutral-500">Success</div>
+        <div className="text-body-small">Success</div>
         <div className="flex flex-wrap gap-2">
           <Badge variant="success" appearance="default">Default</Badge>
           <Badge variant="success" appearance="light">Light</Badge>
           <Badge variant="success" appearance="outline">Outline</Badge>
         </div>
 
-        <div className="text-base text-neutral-500">Warning</div>
+        <div className="text-body-small">Warning</div>
         <div className="flex flex-wrap gap-2">
           <Badge variant="warning" appearance="default">Default</Badge>
           <Badge variant="warning" appearance="light">Light</Badge>
           <Badge variant="warning" appearance="outline">Outline</Badge>
         </div>
 
-        <div className="text-base text-neutral-500">Info</div>
+        <div className="text-body-small">Info</div>
         <div className="flex flex-wrap gap-2">
           <Badge variant="info" appearance="default">Default</Badge>
           <Badge variant="info" appearance="light">Light</Badge>

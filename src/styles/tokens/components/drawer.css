@@ -1,57 +1,27 @@
 /* drawer.css */
 :root {
-  /* Sizing */
-  --drawer-height-sm: 180px;
-  --drawer-height-base: 260px;
-  --drawer-height-lg: 340px;
-  --drawer-height-xl: 460px;
+  --drawer-height-sm: 11.25rem;   /* 180px */
+  --drawer-height-base: 16.25rem; /* 260px */
+  --drawer-height-lg: 21.25rem;  /* 340px */
+  --drawer-height-xl: 28.75rem;  /* 460px */
 
-  --drawer-width-sm: 280px;
-  --drawer-width-base: 400px;
-  --drawer-width-lg: 520px;
-  --drawer-width-xl: 640px;
-
-  /* Colors & Effects */
-  --drawer-overlay: var(--overlay);
-  --drawer-bg: var(--surface-0);
-  --drawer-bg-dark: var(--surface-2);
-  --drawer-border: var(--border);
-  --drawer-border-dark: var(--neutral-800);
-
-  /* Typography */
-  --drawer-title-color: var(--neutral-900);
-  --drawer-title-color-dark: var(--neutral-100);
-  --drawer-description-color: var(--neutral-500);
-  --drawer-description-color-dark: var(--neutral-400);
-
-  /* Animation */
-  --drawer-duration: var(--duration-normal);
-  --drawer-timing: var(--ease-out);
-
-  /* Spacing */
-  --drawer-padding: var(--space-lg);
-  --drawer-gap: var(--space);
-  --drawer-footer-gap: var(--space);
+  --drawer-width-sm: 17.5rem;    /* 280px */
+  --drawer-width-base: 25rem;    /* 400px */
+  --drawer-width-lg: 32.5rem;    /* 520px */
+  --drawer-width-xl: 40rem;      /* 640px */
 }
 
 /* Base Drawer */
 .drawer-overlay {
-  @apply fixed inset-0 z-50 backdrop-blur-sm;
-  background-color: var(--drawer-overlay);
+  @apply overlay-basics;
 }
 
 .drawer-content {
-  @apply fixed z-50 flex flex-col shadow-md;
-  background-color: var(--drawer-bg);
-  border-color: var(--drawer-border);
-  transition-duration: var(--drawer-duration);
-  transition-timing-function: var(--drawer-timing);
-}
-
-/* Dark mode overrides */
-:is(.dark .drawer-content) {
-  background-color: var(--drawer-bg-dark);
-  border-color: var(--drawer-border-dark);
+  @apply fixed flex flex-col 
+         bg-surface border border-border shadow-md;
+  z-index: var(--z-modal);
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
 }
 
 /* Position Variants with Vaul's [data-vaul-drawer-direction] */
@@ -116,67 +86,41 @@
 
 /* Drawer Components */
 .drawer-header {
-  @apply relative flex flex-col border-b;
-  padding: var(--drawer-padding);
-  gap: var(--drawer-gap);
-  border-color: var(--drawer-border);
-}
-
-:is(.dark .drawer-header) {
-  border-color: var(--drawer-border-dark);
+  @apply relative flex flex-col gap-md p-lg
+         border-b border-border;
 }
 
 .drawer-close {
-  @apply absolute right-6 top-6 rounded-sm opacity-70 
-         transition-opacity hover:opacity-100 
-         focus:outline-none focus:ring-2 
-         focus:ring-primary-500 focus:ring-offset-2 
-         disabled:pointer-events-none
-         text-neutral-600 dark:text-neutral-400;
+  @apply absolute right-lg top-lg
+         rounded-sm text-text-weakest opacity-70
+         transition-all hover:opacity-100
+         focus-visible:focus-ring
+         disabled:pointer-events-none disabled:opacity-50;
 }
+
 .drawer-close svg {
   @apply size-4;
 }
 
 .drawer-title {
-  @apply text-heading-2;
-}
-
-:is(.dark .drawer-title) {
-  color: var(--drawer-title-color-dark);
+  @apply text-heading-2 text-text;
 }
 
 .drawer-description {
-  @apply text-base;
-}
-
-:is(.dark .drawer-description) {
-  color: var(--drawer-description-color-dark);
+  @apply text-body text-text-weak;
 }
 
 .drawer-body {
-  @apply flex-1 overflow-auto;
-  padding: var(--drawer-padding);
+  @apply flex-1 overflow-auto p-lg;
 }
 
 .drawer-footer {
-  @apply flex items-center justify-end border-t;
-  padding: var(--drawer-padding);
-  gap: var(--drawer-footer-gap);
-  border-color: var(--drawer-border);
-}
-
-:is(.dark .drawer-footer) {
-  border-color: var(--drawer-border-dark);
+  @apply flex items-center justify-end gap-md p-lg
+         border-t border-border;
 }
 
 .drawer-handle {
-  @apply mx-auto mt-2 h-1 w-8 rounded-full;
-  background-color: var(--drawer-border);
-}
-
-:is(.dark .drawer-handle) {
-  background-color: var(--drawer-border-dark);
+  @apply mx-auto mt-2 h-1 w-8 rounded-full bg-border;
 }
 
 /* Overlay animations */

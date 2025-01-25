@@ -92,18 +92,18 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
     };
 
     return (
-      <div ref={ref} className={cn("w-full", className)} {...props}>
+      <div ref={ref} className={cn("members-table-container", className)} {...props}>
         <Table size="sm">
           <TableHeader>
             <TableRow>
-              {showAvatar && <TableHead className="sr-only">Avatar</TableHead>}
-              <TableHead className="w-[20%]">Name</TableHead>
-              <TableHead className="w-[15%]">Team</TableHead>
-              <TableHead className="w-[15%]">Job Title</TableHead>
-              <TableHead className="w-[15%]">Seniority</TableHead>
-              <TableHead className="w-[15%]">Performance</TableHead>
+              {showAvatar && <TableHead className="members-table-sr-only">Avatar</TableHead>}
+              <TableHead className="members-table-col-name">Name</TableHead>
+              <TableHead className="members-table-col-team">Team</TableHead>
+              <TableHead className="members-table-col-title">Job Title</TableHead>
+              <TableHead className="members-table-col-seniority">Seniority</TableHead>
+              <TableHead className="members-table-col-performance">Performance</TableHead>
               <TableHead>Ratings</TableHead>
-              {showActions && <TableHead className="sr-only">Actions</TableHead>}
+              {showActions && <TableHead className="members-table-sr-only">Actions</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -134,29 +134,29 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
                   <TableCell>
                     <span
                       onClick={() => handleNavigation(detailsPath)}
-                      className="font-semibold cursor-pointer hover:underline"
+                      className="members-table-name-link"
                     >
                       {member.name}
                     </span>
                   </TableCell>
                   <TableCell>{teamName}</TableCell>
                   <TableCell>{member.title || "No title"}</TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell className="members-table-cell-nowrap">
                     Seniority grade
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
-                    <div className="flex items-center gap-2">
+                  <TableCell className="members-table-cell-nowrap">
+                    <div className="members-table-performance-container">
                       {category.Icon && (
                         <category.Icon
-                          className={`size-4 ${category.className}`}
+                          className={cn("members-table-performance-icon", category.className)}
                         />
                       )}
-                      <span className={`${category.className}`}>
+                      <span className={category.className}>
                         {category.label}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell className="members-table-cell-nowrap">
                     <StarRating
                       value={member.averageRating}
                       disabled={true}
@@ -171,7 +171,7 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
                           <Button
                             appearance="icon-only"
                             aria-label="Member actions"
-                            leadingIcon={<MoreVertical />}
+                            leadingIcon={<MoreVertical className="members-table-action-icon" />}
                             size="sm"
                             variant="neutral"
                           />
@@ -180,23 +180,23 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
                           <DropdownMenuItem
                             onClick={() => handleNavigation(detailsPath)}
                           >
-                            <ChevronRight className="mr-2 size-4" />
+                            <ChevronRight className="members-table-action-icon" />
                             View Details
                           </DropdownMenuItem>
                           {onGenerateReview && (
                             <DropdownMenuItem
                               onClick={() => onGenerateReview(member)}
                             >
-                              <FileText className="mr-2 size-4" />
+                              <FileText className="members-table-action-icon" />
                               Generate Performance Review
                             </DropdownMenuItem>
                           )}
                           {onDelete && (
                             <DropdownMenuItem
                               onClick={() => onDelete(member)}
-                              className="text-danger-500 focus:text-danger-500"
+                              className="members-table-delete-action"
                             >
-                              <Trash2 className="mr-2 size-4" />
+                              <Trash2 className="members-table-action-icon" />
                               Delete
                             </DropdownMenuItem>
                           )}

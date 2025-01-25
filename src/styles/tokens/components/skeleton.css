@@ -2,71 +2,73 @@
 
 /* Base Skeleton */
 .skeleton-base {
-  @apply rounded-md animate-pulse
-         bg-neutral-200 dark:bg-neutral-800;
-}
-
-/* Sizes */
-.skeleton-xs {
-  @apply h-3;
-}
-
-.skeleton-sm {
-  @apply h-4;
-}
-
-.skeleton-md {
-  @apply h-5;
-}
-
-.skeleton-lg {
-  @apply h-6;
-}
-
-.skeleton-xl {
-  @apply h-8;
-}
-
-/* Shimmer Variant */
-.skeleton-shimmer {
+  @apply rounded-md animate-pulse bg-surface-sunken;
+ }
+ 
+ /* Sizes */
+ .skeleton-xs {
+  @apply h-md;
+ }
+ 
+ .skeleton-sm {
+  @apply h-md;
+ }
+ 
+ .skeleton-md {
+  @apply h-lg;
+ }
+ 
+ .skeleton-lg {
+  @apply h-xl;
+ }
+ 
+ .skeleton-xl {
+  @apply h-2xl;
+ }
+ 
+ /* Shimmer Variant */
+ .skeleton-shimmer {
   @apply relative overflow-hidden;
-}
-
-.skeleton-shimmer::before {
-  @apply absolute inset-0 -translate-x-full
-         bg-gradient-to-r from-transparent
-         via-white/5 to-transparent dark:via-white/10;
+ }
+ 
+ .skeleton-shimmer::before {
+  @apply absolute inset-0 -translate-x-full;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--background-surface) 5%, transparent),
+    transparent
+  );
   animation: shimmer 2s infinite;
   content: '';
-}
-
-/* Avatar Skeleton */
-.skeleton-avatar {
+ }
+ 
+ /* Avatar Skeleton */
+ .skeleton-avatar {
   @apply rounded-full;
-}
-
-/* Card Skeleton */
-.skeleton-card {
-  @apply p-4 space-y-2 rounded-lg
-         border border-neutral-200 dark:border-neutral-800;
-}
-
-/* Table Skeleton */
-.skeleton-table {
-  @apply space-y-4;
-}
-
-.skeleton-table-row {
-  @apply space-x-4;
-}
-
-/* Group */
-.skeleton-group {
-  @apply space-y-4;
-}
-
-@keyframes shimmer {
+ }
+ 
+ /* Card Skeleton */
+ .skeleton-card {
+  @apply rounded-lg p-md border border-border-weakest gap-sm;
+ }
+ 
+ /* Table Skeleton */
+ .skeleton-table {
+  @apply flex flex-col gap-md;
+ }
+ 
+ .skeleton-table-row {
+  @apply flex gap-md;
+ }
+ 
+ /* Group */
+ .skeleton-group {
+  @apply flex flex-col gap-md;
+ }
+ 
+ @keyframes shimmer {
   100% {
     transform: translateX(100%);
   }
-}
+ }

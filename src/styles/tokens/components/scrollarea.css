@@ -1,0 +1,47 @@
+/* scroll-area.css */
+
+/* ScrollArea Root */
+.scroll-area-root {
+  @apply relative overflow-hidden;
+ }
+ 
+ /* ScrollArea Viewport */
+ .scroll-area-viewport {
+  @apply h-full w-full;
+  border-radius: inherit;
+ }
+ 
+ /* ScrollBar Base */
+ .scroll-area-scrollbar {
+  @apply flex touch-none select-none;
+  transition-property: background-color;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+ }
+ 
+ /* ScrollBar Orientations */ 
+ .scroll-area-scrollbar-vertical {
+  @apply h-full w-2.5 p-[1px] border-l border-transparent;
+ }
+ 
+ .scroll-area-scrollbar-horizontal {
+  @apply w-full h-2.5 p-[1px] border-t border-transparent flex flex-col;
+ }
+ 
+ /* ScrollBar Thumb */
+ .scroll-area-thumb {
+  @apply relative flex-1 rounded-full bg-border-weakest
+         hover:bg-border
+         active:bg-border-strong;
+ }
+ 
+ /* Print Styles */
+ @media print {
+  .scroll-area-root {
+    @apply overflow-visible;
+  }
+ 
+  .scroll-area-scrollbar {
+    @apply hidden;
+  }
+ }

@@ -2,122 +2,130 @@
 
 /* Table Container */
 .table-container {
-  @apply relative w-full overflow-auto;
-
-  /* Scrollbar Styling */
-  @apply scrollbar-thin scrollbar-thumb-neutral-200 dark:scrollbar-thumb-neutral-700
-         scrollbar-track-transparent;
+  @apply relative w-full overflow-auto rounded-t
+         scrollbar-thin;
+  scrollbar-color: var(--border-default) transparent;
 
   /* Fixed Header Shadow on Scroll */
   &::after {
-    @apply absolute top-0 left-0 right-0 h-px
-           bg-gradient-to-b from-neutral-200/50 dark:from-neutral-800/50
-           opacity-0 transition-opacity duration-150;
-    content: '';
+    @apply absolute top-0 left-0 right-0 h-px opacity-0
+           transition-opacity;
+    background: linear-gradient(
+      to bottom,
+      var(--border-weakest) 50%,
+      transparent
+    );
+    transition-duration: var(--duration-normal);
+    transition-timing-function: var(--ease-out);
+    content: "";
   }
 
-  &[data-scrolled=true]::after {
+  &[data-scrolled="true"]::after {
     @apply opacity-100;
   }
 }
 
 /* Base Table */
 .table-base {
-  @apply w-full caption-bottom border-collapse font-sans text-p;
-
-  /* Cell Focus Ring */
-  @apply [--table-cell-ring-offset:transparent]
-         [--table-cell-ring-color:theme(colors.primary.500)];
+  @apply w-full caption-bottom border-collapse;
 }
 
 /* Size Variants */
 .table-base[data-size="base"] {
   .table-cell {
-    @apply p-4 text-p;
+    @apply py-sm px-base text-body text-text-weakest;
   }
 
   .table-head {
-    @apply h-10 px-4;
+    @apply h-2xl px-base;
   }
 }
 
 .table-base[data-size="sm"] {
   .table-cell {
-    @apply p-2 text-p-small;
+    @apply py-xs px-sm text-body-small;
   }
 
   .table-head {
-    @apply h-8 px-2;
+    @apply h-2xl px-sm;
   }
 }
 
 /* Zebra Striping */
 .table-zebra tbody tr:nth-child(even) {
-  @apply bg-neutral-50 dark:bg-neutral-800;
+  @apply bg-surface-elevated hover:bg-surface-sunken;
 }
 
 /* Table Header */
 .table-header {
   @apply sticky top-0 z-10 
-         border-b border-neutral-200 dark:border-neutral-800
-         bg-neutral-50/95 dark:bg-neutral-800/95
-         backdrop-blur-sm backdrop-saturate-150
-         text-xs text-neutral-500 dark:text-neutral-400
-         shadow-sm;
+         backdrop-blur-sm backdrop-saturate-150 
+         text-xs text-text-weakest
+         border-b border-border shadow-sm;
+  background-color: color-mix(
+    in srgb,
+    var(--background-surface-sunken) 95%,
+    transparent
+  );
 }
 
 /* Table Body */
 .table-body {
-  @apply bg-white dark:bg-neutral-900 
-         divide-y divide-neutral-200 dark:divide-neutral-800
+  @apply bg-surface divide-y divide-neutral-weakest
          [&_tr:last-child]:border-0;
 }
 
 /* Table Footer */
 .table-footer {
-  @apply border-t border-neutral-200 dark:border-neutral-800
-         bg-neutral-100 dark:bg-neutral-800
-         font-semibold
+  @apply bg-surface-sunken
+         border-t border-border
          [&>tr]:last:border-b-0;
 }
+
 .table-footer td.table-cell {
-  @apply !font-semibold;
+  @apply !text-heading-4;
 }
 
 /* Table Head Cell */
 .table-head {
-  @apply text-left align-middle
-         font-medium text-neutral-500 dark:text-neutral-400
-         whitespace-nowrap
-         transition-colors duration-150;
+  @apply text-left align-middle text-heading-6 
+         whitespace-nowrap text-text-weakest
+         transition-colors;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
 
   /* Checkbox Column */
-  &:has([role=checkbox]) {
+  &:has([role="checkbox"]) {
     @apply w-[calc(1rem+2rem)] pr-0 pl-4;
   }
 
   /* Sort Button */
-  &:has(button:not([role=checkbox])) {
+  &:has(button:not([role="checkbox"])) {
     @apply p-0;
 
-    & > button:not([role=checkbox]) {
-      @apply px-4 py-2 w-full 
-             flex items-center justify-between gap-2
-             font-medium text-neutral-500 dark:text-neutral-400
-             hover:text-neutral-900 dark:hover:text-neutral-100
-             hover:bg-neutral-100 dark:hover:bg-neutral-800
-             transition-colors duration-150;
+    & > button:not([role="checkbox"]) {
+      @apply w-full flex items-center justify-between 
+             px-sm py-xs text-heading-6 text-text-weakest
+             gap-sm transition-all;
+      transition-duration: var(--duration-normal);
+      transition-timing-function: var(--ease-out);
+
+      &:hover {
+        @apply text-text bg-surface-elevated;
+      }
 
       /* Sort Icon */
       & > svg {
         @apply size-4 opacity-0 transition-opacity;
+        transition-duration: var(--duration-normal);
+        transition-timing-function: var(--ease-out);
       }
 
-      &[data-sort-direction=asc] > svg {
+      &[data-sort-direction="asc"] > svg {
         @apply opacity-100 rotate-0;
       }
 
-      &[data-sort-direction=desc] > svg {
+      &[data-sort-direction="desc"] > svg {
         @apply opacity-100 rotate-180;
       }
 
@@ -130,75 +138,84 @@
 
 /* Table Cell */
 .table-cell {
-  @apply align-middle
-         max-w-[20rem] overflow-hidden text-ellipsis
-         transition-colors duration-150;
+  @apply align-middle max-w-[20rem] overflow-hidden text-ellipsis
+  text-body text-text
+         transition-colors;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
 
   /* Checkbox Column */
-  &:has([role=checkbox]) {
-    @apply w-[calc(1rem+2rem)] pr-0 pl-4;
+  &:has([role="checkbox"]) {
+    @apply w-[calc(1rem+2rem)] pr-0 pl-sm;
   }
 
   /* Actions Column */
   &:has(.table-action-trigger) {
-    @apply w-10 pr-2 text-right;
+    @apply w-10 pr-xs text-right;
+  }
 
   /* Status Indicator */
   &:has([data-status]) {
     @apply relative pl-8;
 
     & > [data-status] {
-      @apply absolute left-4 top-1/2 -translate-y-1/2
+      @apply absolute left-4 top-1/2 -translate-y-1/2 
              size-2 rounded-full;
     }
   }
-}
 
   /* Focus State */
   &:focus-within {
     @apply relative;
 
     &::after {
-      @apply absolute inset-0 rounded-sm
-             ring-2 ring-offset-2
-             ring-[var(--table-cell-ring-color)]
-             ring-offset-[var(--table-cell-ring-offset)];
-      content: '';
+      @apply absolute inset-0 rounded-sm;
+      content: "";
+      box-shadow: 0 0 0 2px var(--ring-primary),
+        0 0 0 4px var(--background-surface);
     }
   }
 }
 
 /* Table Row */
 .table-row {
-  @apply border-b border-neutral-200 dark:border-neutral-800
-         transition-colors duration-150 ease-out
-         hover:bg-neutral-50 dark:hover:bg-neutral-800/50
-         data-[state=selected]:bg-primary-50 dark:data-[state=selected]:bg-primary-900/10
-         focus-within:outline-none focus-within:bg-neutral-50 dark:focus-within:bg-neutral-800/50;
+  @apply transition-colors;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+
+  &:hover {
+    @apply bg-surface-sunken;
+  }
+
+  &[data-state="selected"] {
+    @apply bg-primary-weakest;
+  }
+
+  &:focus-within {
+    @apply outline-none bg-surface-sunken;
+  }
 
   /* Interactive Row */
-  &[data-interactive=true] {
+  &[data-interactive="true"] {
     @apply cursor-pointer;
   }
 
   /* Disabled Row */
-  &[data-disabled=true] {
-    @apply opacity-50 pointer-events-none;
+  &[data-disabled="true"] {
+    @apply pointer-events-none opacity-50;
   }
 }
 
 /* Table Caption */
 .table-caption {
-  @apply mt-4 mb-2 text-sm
-         text-neutral-500 dark:text-neutral-400
-         text-left;
+  @apply mt-base mb-sm text-caption text-left text-text-weakest;
 }
 
 /* Table Empty State */
 .table-empty {
-  @apply p-8 text-center;
+  @apply p-2xl text-center;
 }
 
-.table-head button {
-  @apply -ml-4;
-}
+/* .table-head button {
+  @apply -ml-md;
+} */
