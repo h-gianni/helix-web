@@ -10,14 +10,14 @@ import type {
 
 // Helper to get user from clerkId
 async function getUserFromClerkId(clerkId: string) {
-  return await prisma.user.findUnique({
+  return await prisma.appUser.findUnique({
     where: { clerkId },
   });
 }
 
 // Helper to check if user is team owner
 async function isTeamOwner(teamId: string, userId: string) {
-  const team = await prisma.team.findFirst({
+  const team = await prisma.gTeam.findFirst({
     where: {
       id: teamId,
       ownerId: userId,
@@ -29,7 +29,7 @@ async function isTeamOwner(teamId: string, userId: string) {
 
 // Helper to check if user is a team admin
 async function isTeamAdmin(teamId: string, userId: string) {
-  const member = await prisma.member.findFirst({
+  const member = await prisma.teamMember.findFirst({
     where: {
       teamId,
       userId,
@@ -41,7 +41,7 @@ async function isTeamAdmin(teamId: string, userId: string) {
 
 // Helper to verify if a member exists within a team
 async function verifyMember(memberId: string, teamId: string) {
-  return await prisma.member.findFirst({
+  return await prisma.teamMember.findFirst({
     where: { id: memberId, teamId },
     include: {
       team: true,
@@ -94,7 +94,7 @@ export async function GET(
       }
     }
 
-    const member = await prisma.member.findFirst({
+    const member = await prisma.teamMember.findFirst({
       where: {
         id: params.memberId,
         teamId: params.teamId,
@@ -113,9 +113,14 @@ export async function GET(
             name: true,
           },
         },
-        goals: {
+        feedback: {
+          select: {
+            id: true,
+            goals: true,
+            createdAt: true,
+          },
           orderBy: {
-            year: "desc",
+            createdAt: "desc",
           },
         },
       },
@@ -217,7 +222,7 @@ export async function PATCH(
     ) {
       // Only check admin count if not the owner and removing admin status
       if (!isOwner && !newIsAdmin && existingMember.isAdmin) {
-        const adminCount = await prisma.member.count({
+        const adminCount = await prisma.teamMember.count({
           where: {
             teamId: params.teamId,
             isAdmin: true,
@@ -237,7 +242,7 @@ export async function PATCH(
       }
     }
 
-    const member = await prisma.member.update({
+    const member = await prisma.teamMember.update({
       where: { id: params.memberId },
       data: {
         firstName: firstName?.trim() ?? existingMember.firstName,
@@ -331,7 +336,7 @@ export async function DELETE(
     // If trying to delete an admin, ensure there's at least one other admin
     // (unless the requester is the owner)
     if (!isOwner && member.isAdmin) {
-      const adminCount = await prisma.member.count({
+      const adminCount = await prisma.teamMember.count({
         where: {
           teamId: params.teamId,
           isAdmin: true,
@@ -351,10 +356,10 @@ export async function DELETE(
 
     // Delete all related records in a transaction
     await prisma.$transaction(async (tx: TransactionClient) => {
-      await tx.goal.deleteMany({ where: { memberId: params.memberId } });
-      await tx.score.deleteMany({ where: { memberId: params.memberId } });
-      await tx.report.deleteMany({ where: { memberId: params.memberId } });
-      await tx.member.delete({ where: { id: params.memberId } });
+      await tx.structuredFeedback.deleteMany({ where: { teamMemberId: params.memberId } });
+      await tx.memberRating.deleteMany({ where: { teamMemberId: params.memberId } });
+      await tx.performanceReview.deleteMany({ where: { teamMemberId: params.memberId } });
+      await tx.teamMember.delete({ where: { id: params.memberId } });
     });
 
     return NextResponse.json<ApiResponse<void>>({

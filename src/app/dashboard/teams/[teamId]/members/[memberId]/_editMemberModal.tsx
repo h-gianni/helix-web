@@ -160,7 +160,7 @@ export function EditMemberModal({
         <DialogHeader>
           <DialogTitle>Edit Member Details</DialogTitle>
           <DialogDescription>
-            Update the member's profile information.
+            Update the members profile information.
           </DialogDescription>
         </DialogHeader>
 

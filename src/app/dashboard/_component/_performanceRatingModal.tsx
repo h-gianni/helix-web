@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/Label";
 import { User, Users } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import type {
-  InitiativeResponse,
+  BusinessActivityResponse,
   TeamResponse,
   TeamMemberResponse,
 } from "@/lib/types/api";
@@ -56,7 +56,7 @@ export default function PerformanceRatingModal({
   const [selectedTeamId, setSelectedTeamId] = useState<string>(initialTeamId || "");
   const [members, setMembers] = useState<TeamMemberResponse[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState<string>(initialMemberId || "");
-  const [initiatives, setInitiatives] = useState<InitiativeResponse[]>([]);
+  const [initiatives, setInitiatives] = useState<BusinessActivityResponse[]>([]);
   const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>("");
@@ -109,7 +109,7 @@ export default function PerformanceRatingModal({
   const fetchInitiatives = async (teamId: string) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/teams/${teamId}/initiatives`);
+      const response = await fetch(`/api/initiatives/${teamId}`);
       const data = await response.json();
       if (data.success) {
         const teamInitiatives = data.data.map((ti: TeamInitiative) => ti.initiative);

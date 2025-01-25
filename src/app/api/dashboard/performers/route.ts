@@ -35,7 +35,7 @@ interface MemberWithScores {
     id: string;
     name: string;
   };
-  scores: {
+  ratings: {
     value: number;
   }[];
 }
@@ -51,11 +51,11 @@ export async function GET() {
     }
 
     // Get user's accessible teams
-    const user = await prisma.user.findUnique({
+    const user = await prisma.appUser.findUnique({
       where: { clerkId: userId },
       include: {
         teams: true,     // Teams owned
-        members: {       // Teams where user is a member
+        teamMembers: {       // Teams where user is a member
           include: {
             team: true,
           },
@@ -73,11 +73,11 @@ export async function GET() {
     // Collect all team IDs user has access to
     const teamIds = new Set([
       ...user.teams.map((team: TeamWithId) => team.id),
-      ...user.members.map((member: MemberWithTeam) => member.teamId)
+      ...user.teamMembers.map((member: MemberWithTeam) => member.teamId)
     ]);
 
     // Get all members from these teams with their scores
-    const membersWithScores = await prisma.member.findMany({
+    const membersWithScores = await prisma.teamMember.findMany({
       where: {
         teamId: {
           in: Array.from(teamIds)
@@ -96,7 +96,7 @@ export async function GET() {
             name: true,
           },
         },
-        scores: {
+        ratings: {
           select: {
             value: true,
           },
@@ -106,9 +106,9 @@ export async function GET() {
 
     // Transform data into performers format
     const performers: Performer[] = membersWithScores.map((member: MemberWithScores) => {
-      const totalScores = member.scores.length;
+      const totalScores = member.ratings.length;
       const averageRating = totalScores > 0
-        ? member.scores.reduce(
+        ? member.ratings.reduce(
             (sum: number, score: { value: number }) => sum + score.value,
             0
           ) / totalScores

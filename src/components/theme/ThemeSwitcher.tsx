@@ -18,7 +18,7 @@ export function ThemeSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <Button variant="neutral" appearance={'icon-only'}  size="sm">
           {theme === 'dark' ? (
             <Moon className="h-4 w-4" />
           ) : theme === 'light' ? (

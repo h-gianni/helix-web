@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { Plus, RotateCcw, AlertCircle } from "lucide-react";
 import StarRating from "@/components/ui/StarRating";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import type { ScoreResponse } from "@/lib/types/api";
+import type { RatingResponse as  ScoreResponse } from "@/lib/types/api";
 
 interface RatingsSectionProps {
   teamId: string;
@@ -137,9 +137,9 @@ export default function RatingsSection({
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between">
                     <div className="space-y-2">
-                      {rating.initiative && (
+                      {rating.activity && (
                         <h3 className="text-heading-4">
-                          {rating.initiative.name}
+                          {rating.activity.name}
                         </h3>
                       )}
                       <div className="flex items-center gap-2">
@@ -154,9 +154,9 @@ export default function RatingsSection({
                           {new Date(rating.createdAt).toLocaleDateString()}
                         </span>
                       </div>
-                      {rating.feedback && (
+                      {rating.activity && (
                         <p className="text-p-small text-muted mt-2">
-                          {rating.feedback}
+                          {rating.activity.description}
                         </p>
                       )}
                     </div>

@@ -69,7 +69,7 @@ export default function TeamEditModal({
         <DialogHeader>
           <DialogTitle>Edit Team Details</DialogTitle>
           <DialogDescription>
-            Make changes to your team's information.
+            Make changes to your teams information.
           </DialogDescription>
         </DialogHeader>
         

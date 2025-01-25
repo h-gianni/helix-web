@@ -4,8 +4,8 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { 
   ApiResponse, 
-  ActivityResponse,
-  UpdateActivityInput 
+  BusinessActivityResponse as  ActivityResponse,
+  UpdateBusinessActivityInput as UpdateActivityInput 
 } from "@/lib/types/api";
 
 export async function GET(
@@ -21,7 +21,7 @@ export async function GET(
       );
     }
 
-    const activity = await prisma.activity.findUnique({
+    const activity = await prisma.businessActivity.findUnique({
       where: { 
         id: params.activityId,
         deletedAt: null,
@@ -78,7 +78,7 @@ export async function PATCH(
       );
     }
 
-    const activity = await prisma.activity.update({
+    const activity = await prisma.businessActivity.update({
       where: { id: params.activityId },
       data: {
         name: name.trim(),
@@ -120,7 +120,7 @@ export async function DELETE(
     }
 
     // Check if activity has any ratings
-    const activity = await prisma.activity.findUnique({
+    const activity = await prisma.businessActivity.findUnique({
       where: { id: params.activityId },
       include: {
         _count: {
@@ -140,13 +140,13 @@ export async function DELETE(
 
     if (activity._count.ratings > 0) {
       // Soft delete if activity has ratings
-      await prisma.activity.update({
+      await prisma.businessActivity.update({
         where: { id: params.activityId },
         data: { deletedAt: new Date() },
       });
     } else {
       // Hard delete if no ratings exist
-      await prisma.activity.delete({
+      await prisma.businessActivity.delete({
         where: { id: params.activityId },
       });
     }

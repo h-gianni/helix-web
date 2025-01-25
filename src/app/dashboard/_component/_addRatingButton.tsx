@@ -17,8 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import StarRating from "./_starRating";
-import type { InitiativeResponse } from "@/lib/types/api";
+import StarRating from "@/components/ui/StarRating";
+import type { BusinessActivityResponse } from "@/lib/types/api";
 import { Label } from "@/components/ui/Label";
 import { AlertCircle, User } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
@@ -45,7 +45,7 @@ export default function PerformanceRatingModal({
   memberTitle,
   onSubmit,
 }: PerformanceRatingModalProps) {
-  const [initiatives, setInitiatives] = useState<InitiativeResponse[]>([]);
+  const [initiatives, setInitiatives] = useState<BusinessActivityResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);

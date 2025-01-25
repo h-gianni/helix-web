@@ -4,8 +4,8 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { 
   ApiResponse, 
-  DisciplineResponse,
-  UpdateDisciplineInput 
+  TeamFunctionResponse as  DisciplineResponse,
+  UpdateTeamFunctionInput as UpdateDisciplineInput 
 } from "@/lib/types/api";
 
 export async function GET(
@@ -21,7 +21,7 @@ export async function GET(
       );
     }
 
-    const discipline = await prisma.discipline.findUnique({
+    const discipline = await prisma.teamFunction.findUnique({
       where: { 
         id: params.disciplineId,
         deletedAt: null,
@@ -79,7 +79,7 @@ export async function PATCH(
       );
     }
 
-    const discipline = await prisma.discipline.update({
+    const discipline = await prisma.teamFunction.update({
       where: { id: params.disciplineId },
       data: {
         name: name.trim(),
@@ -122,7 +122,7 @@ export async function DELETE(
     }
 
     // Soft delete by setting deletedAt
-    await prisma.discipline.update({
+    await prisma.teamFunction.update({
       where: { id: params.disciplineId },
       data: { deletedAt: new Date() },
     });

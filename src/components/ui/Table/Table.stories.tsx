@@ -170,7 +170,7 @@ export const WithSelection: Story = {
     };
     
     const isAllSelected = selectedRows.length === invoices.length;
-    const isIndeterminate = selectedRows.length > 0 && selectedRows.length < invoices.length;
+    // const isIndeterminate = selectedRows.length > 0 && selectedRows.length < invoices.length;
     
     return (
       <Table>

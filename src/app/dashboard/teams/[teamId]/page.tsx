@@ -163,6 +163,7 @@ export default function TeamDetailsPage({
     title?: string;
   }) => {
     try {
+      console.log('Adding member:', data);
       const response = await fetch(`/api/teams/${data.teamId}/members`, {
         method: "POST",
         headers: {

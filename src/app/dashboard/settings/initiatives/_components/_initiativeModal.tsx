@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Label } from "@/components/ui/Label";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Save, AlertCircle } from "lucide-react";
-import type { InitiativeResponse } from "@/lib/types/api";
+import type { BusinessActivityResponse as InitiativeResponse } from "@/lib/types/api";
 
 interface InitiativeModalProps {
   isOpen: boolean;

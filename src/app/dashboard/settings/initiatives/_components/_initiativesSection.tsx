@@ -28,7 +28,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from "@/components/ui/AlertDialog";
-import type { ApiResponse, InitiativeResponse } from "@/lib/types/api";
+import type { ApiResponse, BusinessActivityResponse as InitiativeResponse } from "@/lib/types/api";
 
 interface InitiativesSectionProps {
   onUpdate: () => void;
@@ -191,7 +191,7 @@ export function InitiativesSection({ onUpdate }: InitiativesSectionProps) {
                   <TableCell className="text-muted-foreground">
                     {initiative.description || "No description"}
                   </TableCell>
-                  <TableCell>{initiative._count?.scores || 0}</TableCell>
+                  <TableCell>{initiative._count?.ratings || 0}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Button

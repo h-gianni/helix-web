@@ -10,7 +10,7 @@ interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
 const Table = React.forwardRef<HTMLTableElement, TableProps>(({
   className,
   size = 'base',
-  showHeader = true,
+  // showHeader = true,
   zebra = false,
   ...props
 }, ref) => (

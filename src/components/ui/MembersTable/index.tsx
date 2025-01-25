@@ -18,7 +18,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import {
-  TrendingUp,
   MoreVertical,
   ChevronRight,
   FileText,
@@ -74,7 +73,7 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
     onDelete,
     onGenerateReview,
     onNavigate,
-    performanceCategories,
+    // performanceCategories,
     getPerformanceCategory,
     ...props
   }, ref) => {

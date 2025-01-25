@@ -4,20 +4,21 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type {
   ApiResponse,
-  InitiativeResponse,
-  CreateInitiativeInput,
+  BusinessActivityResponse as InitiativeResponse,
+  CreateBusinessActivityInput as CreateInitiativeInput,
+  JsonValue,
 } from "@/lib/types/api";
 
 // Helper to check team access
 async function checkTeamAccess(teamId: string, userId: string) {
-  const user = await prisma.user.findUnique({
+  const user = await prisma.appUser.findUnique({
     where: { clerkId: userId },
   });
 
   if (!user) return false;
 
   // Check if user is team owner
-  const team = await prisma.team.findFirst({
+  const team = await prisma.gTeam.findFirst({
     where: {
       id: teamId,
       ownerId: user.id,
@@ -27,7 +28,7 @@ async function checkTeamAccess(teamId: string, userId: string) {
   if (team) return true;
 
   // If not owner, check if they're a member
-  const member = await prisma.member.findFirst({
+  const member = await prisma.teamMember.findFirst({
     where: {
       teamId,
       userId: user.id,
@@ -51,13 +52,23 @@ export async function GET(request: Request) {
     const teamId = url.searchParams.get("teamId");
 
     // Modify query to include null teamId or matching teamId
-    const initiatives = await prisma.initiative.findMany({
-      where: teamId
-        ? {
-            OR: [{ teamId }, { teamId: null }],
-          }
-        : {},
-      include: {
+    const initiatives = await prisma.businessActivity.findMany({
+      where: teamId ? { teamId } : {},  
+       
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        category: true,
+        priority: true,
+        status: true,
+        dueDate: true,
+        teamId: true,
+        createdBy: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
+        customFields: true,
         team: {
           select: {
             id: true,
@@ -70,9 +81,14 @@ export async function GET(request: Request) {
       },
     });
 
+    const initiativeResponses: InitiativeResponse[] = initiatives.map((initiative) => ({
+      ...initiative,
+      customFields: initiative.customFields as JsonValue | undefined,
+    }));
+    
     return NextResponse.json<ApiResponse<InitiativeResponse[]>>({
       success: true,
-      data: initiatives,
+      data: initiativeResponses,
     });
   } catch (error) {
     console.error("Error fetching initiatives:", error);
@@ -114,13 +130,29 @@ export async function POST(request: Request) {
       }
     }
 
-    const initiative = await prisma.initiative.create({
+    const initiative = await prisma.businessActivity.create({
       data: {
         name: name.trim(),
         description: description?.trim() || null,
         teamId,
+        createdBy: userId,
+        status: "ACTIVE",
+        priority: "MEDIUM"
       },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        category: true,
+        priority: true,
+        status: true,
+        dueDate: true,
+        teamId: true,
+        createdBy: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
+        customFields: true,
         team: {
           select: {
             id: true,
@@ -129,9 +161,13 @@ export async function POST(request: Request) {
         },
       },
     });
+    const initiativeResponse: InitiativeResponse = {
+      ...initiative,
+      customFields: initiative.customFields as JsonValue | undefined,
+    };
 
     return NextResponse.json<ApiResponse<InitiativeResponse>>(
-      { success: true, data: initiative },
+      { success: true, data: initiativeResponse },
       { status: 201 }
     );
   } catch (error) {

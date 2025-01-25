@@ -29,6 +29,9 @@ export default function TeamsPage() {
   }, [fetchTeams]);
 
   const handleCreateTeam = async (name: string, disciplineId: string) => {
+    console.log("Creating team with name:", name);
+    console.log("Creating team with disciplineId:", disciplineId);
+   // return;
     try {
       const response = await fetch("/api/teams", {
         method: "POST",
@@ -37,7 +40,7 @@ export default function TeamsPage() {
         },
         body: JSON.stringify({ 
           name,
-          disciplineId  // Add disciplineId to the request
+          businessFunctionId: disciplineId  // Add disciplineId to the request
         }),
       });
 
@@ -116,7 +119,7 @@ export default function TeamsPage() {
                 <CardContent className="p-4">
                   <h3 className="text-heading-4">{team.name}</h3>
                   <p className="text-p-small text-primary-600">
-                    {team.discipline.name}
+                    {team.name}
                   </p>
                   <p className="text-p-small text-muted">
                     Created: {new Date(team.createdAt).toLocaleDateString()}
