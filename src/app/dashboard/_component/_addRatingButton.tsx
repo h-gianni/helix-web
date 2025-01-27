@@ -1,4 +1,5 @@
-// app/dashboard/_components/_performanceRatingModal.tsx
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -49,7 +50,6 @@ export default function PerformanceRatingModal({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-
   const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>("");
@@ -59,17 +59,10 @@ export default function PerformanceRatingModal({
       try {
         setLoading(true);
         setError(null);
-
         const response = await fetch(`/api/initiatives?teamId=${teamId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch initiatives");
-        }
-
+        if (!response.ok) throw new Error("Failed to fetch initiatives");
         const data = await response.json();
-        if (!data.success) {
-          throw new Error(data.error || "Failed to fetch initiatives");
-        }
-
+        if (!data.success) throw new Error(data.error || "Failed to fetch initiatives");
         setInitiatives(data.data);
       } catch (err) {
         console.error("Error fetching initiatives:", err);
@@ -89,13 +82,11 @@ export default function PerformanceRatingModal({
     try {
       setSaving(true);
       setError(null);
-
       await onSubmit({
         initiativeId: selectedInitiativeId,
         rating,
         feedback: feedback.trim() || undefined,
       });
-
       handleReset();
       onClose();
     } catch (err) {
@@ -111,14 +102,9 @@ export default function PerformanceRatingModal({
     setFeedback("");
   };
 
-  const handleClose = () => {
-    handleReset();
-    onClose();
-  };
-
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent size="base">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Performance Rating</DialogTitle>
           <DialogDescription>
@@ -129,41 +115,39 @@ export default function PerformanceRatingModal({
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
             <Alert variant="danger">
-              <AlertCircle className="h-4 w-4" />
+              <AlertCircle className="size-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
-          {/* Member Display */}
           <div className="space-y-2">
             <Label>Member</Label>
-            <div className="p-2 border rounded-base bg-muted">
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-muted-foreground" />
-                <span className="text-base">
-                  {memberName}
-                  {memberTitle && (
-                    <span className="text-muted-foreground ml-1">- {memberTitle}</span>
-                  )}
-                </span>
-              </div>
+            <div className="flex items-center gap-2 p-3 rounded-md border bg-muted">
+              <User className="size-4 text-muted-foreground" />
+              <span>
+                {memberName}
+                {memberTitle && (
+                  <span className="text-muted-foreground ml-1">
+                    - {memberTitle}
+                  </span>
+                )}
+              </span>
             </div>
           </div>
 
-          {/* Initiative Selection */}
           <div className="space-y-2">
-            <Label>Select Initiative</Label>
+            <Label>Initiative</Label>
             <Select
               value={selectedInitiativeId}
               onValueChange={setSelectedInitiativeId}
               disabled={loading}
             >
-              <SelectTrigger size="base">
-                <SelectValue placeholder="Select an initiative" />
+              <SelectTrigger>
+                <SelectValue placeholder={loading ? "Loading initiatives..." : "Select an initiative"} />
               </SelectTrigger>
               <SelectContent>
                 {initiatives.map((initiative) => (
-                  <SelectItem key={initiative.id} value={initiative.id} size="base">
+                  <SelectItem key={initiative.id} value={initiative.id}>
                     {initiative.name}
                   </SelectItem>
                 ))}
@@ -171,31 +155,34 @@ export default function PerformanceRatingModal({
             </Select>
           </div>
 
-          {/* Rating */}
           <div className="space-y-2">
             <Label>Rating</Label>
             <div className="flex justify-center py-2">
-              <StarRating value={rating} onChange={setRating} size="lg" />
+              <StarRating 
+                value={rating} 
+                onChange={setRating} 
+                size="lg"
+                showValue 
+              />
             </div>
           </div>
 
-          {/* Feedback */}
-          <div className="space-y-2">
-            <Label>Feedback (Optional)</Label>
-            <Textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Enter feedback..."
-              rows={3}
-              inputSize="base"
-            />
-          </div>
+          <Textarea
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            placeholder="Enter feedback..."
+            rows={3}
+            withLabel
+            label="Feedback (Optional)"
+            showCount
+            maxLength={1000}
+          />
         </form>
 
-        <DialogFooter className="sm:justify-end">
+        <DialogFooter>
           <Button
             variant="neutral"
-            appearance="outline"
+            appearance="subtle"
             onClick={handleReset}
             disabled={saving}
           >
@@ -207,7 +194,7 @@ export default function PerformanceRatingModal({
             disabled={saving || !selectedInitiativeId || rating === 0}
             isLoading={saving}
           >
-            {saving ? "Saving..." : "Save Rating"}
+            Save Rating
           </Button>
         </DialogFooter>
       </DialogContent>

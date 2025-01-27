@@ -1,0 +1,117 @@
+/* card.css */
+
+/* Base Card */
+.card-base {
+  @apply rounded-lg border border-neutral-weakest bg-surface text-foreground
+         outline-none transition-all space-y-xs px-lg py-md;
+  /* border-color: var(--border-weakest); */
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+}
+.card-sm {
+  @apply space-y-xxs;
+}
+
+/* Card Shadows */
+.card-shadow-sm {
+  @apply shadow-sm;
+}
+.card-shadow-base {
+  @apply shadow;
+}
+.card-shadow-lg {
+  @apply shadow-lg;
+}
+.card-shadow-xl {
+  @apply shadow-2xl;
+}
+
+/* Card Variants */
+.card-no-border {
+  @apply border-none;
+}
+.card-no-background {
+  @apply bg-transparent;
+}
+.card-interactive {
+  &:hover {
+    @apply border-base;
+  }
+  &:active {
+    @apply bg-surface-sunken;
+  }
+}
+.card-clickable {
+  @apply cursor-pointer;
+  &:hover {
+    @apply border-base;
+  }
+  &:active {
+    @apply bg-surface-sunken;
+  }
+  &:focus-visible {
+    @apply focus-ring;
+  }
+}
+
+/* Content Alignment */
+.card-content-center {
+  @apply text-center;
+}
+
+/* Card Header */
+.card-header {
+  @apply flex flex-col gap-xxs;
+}
+
+/* Card Title Colour */
+.card-title-sm, .card-title-base, .card-title-lg, .card-title-xl {
+  @apply text-strongest;
+}
+
+/* Card Title Sizes */
+.card-title-sm {
+  @apply text-heading-4;
+}
+
+.card-title-base {
+  @apply text-heading-3;
+}
+
+.card-title-lg {
+  @apply text-heading-2;
+}
+
+.card-title-xl {
+  @apply text-heading-1;
+}
+
+/* Card Description */
+.card-description {
+  @apply text-body -mt-xxs pb-xs;
+}
+.card-sm .card-description {
+  @apply text-body-small text-weakest;
+}
+.card-xl .card-description {
+  @apply  mt-0 pb-xs;
+}
+
+/* Card Content */
+.card-content {
+  @apply text-body pb-md;
+}
+
+.card-sm .card-content {
+  @apply text-body-small;
+}
+
+/* Card Footer */
+.card-footer {
+  @apply flex flex-col-reverse sm:flex-row sm:justify-end pt-lg mt-lg border-t border-weakest gap-sm;
+}
+
+/* Card Header with Actions */
+.card-header-actions {
+  @apply flex flex-col gap-xs;
+}

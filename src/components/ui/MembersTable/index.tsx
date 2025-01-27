@@ -123,7 +123,7 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
                 <TableRow key={member.id}>
                   {showAvatar && (
                     <TableCell>
-                      <Avatar size="md">
+                      <Avatar size="sm">
                         <AvatarFallback>
                           {member.name.charAt(0).toUpperCase()}
                         </AvatarFallback>

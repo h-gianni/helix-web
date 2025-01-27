@@ -52,6 +52,55 @@ interface SelectGroupElement extends React.ReactElement<any> {
   };
 }
 
+interface SelectContentProps {
+  children: React.ReactNode;
+  className?: string;
+  position?: "item-aligned" | "popper";
+}
+
+interface SelectGroupProps {
+  children: React.ReactNode;
+}
+
+const findIconByValue = (value: string, children: React.ReactNode): React.ReactNode => {
+  let icon: React.ReactNode = null;
+  
+  const processSelectItem = (child: React.ReactElement<SelectItemProps>): void => {
+    if (child.type === SelectItem && child.props.value === value) {
+      icon = child.props.withIcon;
+    }
+  };
+
+  const processChildren = (child: React.ReactElement<SelectContentProps>): void => {
+    if (child.type === SelectContent && child.props.children) {
+      React.Children.forEach(child.props.children, (contentChild) => {
+        if (!React.isValidElement(contentChild)) return;
+
+        if (contentChild.type === SelectItem) {
+          processSelectItem(contentChild as React.ReactElement<SelectItemProps>);
+        } else if (contentChild.type === SelectGroup) {
+          const groupChild = contentChild as React.ReactElement<SelectGroupProps>;
+          if (groupChild.props.children) {
+            React.Children.forEach(groupChild.props.children, (groupItem) => {
+              if (React.isValidElement(groupItem) && groupItem.type === SelectItem) {
+                processSelectItem(groupItem as React.ReactElement<SelectItemProps>);
+              }
+            });
+          }
+        }
+      });
+    }
+  };
+
+  React.Children.forEach(children, (child) => {
+    if (React.isValidElement(child)) {
+      processChildren(child as React.ReactElement<SelectContentProps>);
+    }
+  });
+
+  return icon;
+};
+
 const Select = ({
   error,
   size = "base",
@@ -67,40 +116,22 @@ const Select = ({
   ...props
 }: SelectProps) => {
   const [focused, setFocused] = React.useState(false);
-  const [selectedIcon, setSelectedIcon] = React.useState<React.ReactNode>(null);
+  const [selectedIcon, setSelectedIcon] = React.useState<React.ReactNode>(() => 
+    props.value ? findIconByValue(props.value, children) : null
+  );
   const selectId = React.useId();
+
+  React.useEffect(() => {
+    if (props.value) {
+      setSelectedIcon(findIconByValue(props.value, children));
+    }
+  }, [props.value, children]);
 
   const handleValueChange = (value: string) => {
     if (props.onValueChange) {
       props.onValueChange(value);
     }
-
-    // Find the selected item's icon
-    React.Children.forEach(children, (child) => {
-      if (React.isValidElement(child) && child.type === SelectContent) {
-        const contentElement = child as SelectContentElement;
-        React.Children.forEach(contentElement.props.children, (contentChild) => {
-          if (React.isValidElement(contentChild)) {
-            if (contentChild.type === SelectItem) {
-              const itemElement = contentChild as SelectItemElement;
-              if (itemElement.props.value === value) {
-                setSelectedIcon(itemElement.props.withIcon);
-              }
-            } else if (contentChild.type === SelectGroup) {
-              const groupElement = contentChild as SelectGroupElement;
-              React.Children.forEach(groupElement.props.children, (groupChild) => {
-                if (React.isValidElement(groupChild) && groupChild.type === SelectItem) {
-                  const itemElement = groupChild as SelectItemElement;
-                  if (itemElement.props.value === value) {
-                    setSelectedIcon(itemElement.props.withIcon);
-                  }
-                }
-              });
-            }
-          }
-        });
-      }
-    });
+    setSelectedIcon(findIconByValue(value, children));
   };
 
   const renderContent = (
@@ -135,6 +166,7 @@ const Select = ({
               const contentChild = child as React.ReactElement<any>;
               return React.cloneElement(contentChild, {
                 ...contentChild.props,
+                className: cn("select-content", `select-content-${size}`, contentChild.props.className),
                 children: React.Children.map(
                   contentChild.props.children,
                   (groupChild) => {
@@ -155,6 +187,7 @@ const Select = ({
                                 itemChild as React.ReactElement<SelectItemProps>;
                               return React.cloneElement(itemElement, {
                                 ...itemElement.props,
+                                size,
                                 withIcon: withIcons
                                   ? itemElement.props.withIcon
                                   : undefined,
@@ -235,7 +268,7 @@ const SelectTrigger = React.forwardRef<
       {...props}
     >
       {withIcon && (
-        <div className="select-icon" data-size={size} data-error={error}>
+        <div className="form-layout-icon" data-size={size} data-error={error}>
           {icon || <CircleHelp />}
         </div>
       )}
@@ -278,12 +311,24 @@ const SelectItem = React.forwardRef<
     className={cn("select-item", `select-item-${size}`, className)}
     {...props}
   >
-    <span>
-      {withIcon && <span className="select-icon">{withIcon}</span>}
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-    </span>
-    <SelectPrimitive.ItemIndicator>
-      <Check className="select-icon text-primary" />
+    <div className="flex items-center min-w-0 gap-2">
+      {withIcon && (
+        <span className="form-layout-icon" data-size={size}>
+          {withIcon}
+        </span>
+      )}
+      <SelectPrimitive.ItemText asChild>
+        <span 
+          className="select-item-text"
+          data-with-icon={!!withIcon}
+          data-size={size}
+        >
+          {children}
+        </span>
+      </SelectPrimitive.ItemText>
+    </div>
+    <SelectPrimitive.ItemIndicator className={cn("select-indicator", `select-indicator-${size}`)}>
+      <Check className="form-layout-icon" data-size={size} />
     </SelectPrimitive.ItemIndicator>
   </SelectPrimitive.Item>
 ));

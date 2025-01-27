@@ -4,7 +4,7 @@
   /* ==========================================================================
      Background Colors
      ========================================================================== */
-  
+
   /* Base Backgrounds */
   --background-page: rgb(var(--color-neutral-25));
   --background-input: rgb(var(--color-white));
@@ -15,7 +15,7 @@
   --background-surface: rgb(var(--color-white));
   --background-surface-sunken: rgb(var(--color-neutral-50));
   --background-surface-hollowed: rgb(var(--color-neutral-100));
-  
+
   /* Backgrounds */
   --background-neutral: rgb(var(--color-neutral-700));
   --background-neutral-strong: rgb(var(--color-neutral-800));
@@ -74,23 +74,22 @@
   --background-info-weakest: rgb(var(--color-info-50));
 
   /* Overlay Backgrounds */
-  --background-overlay: rgb(var(--color-neutral-300) / 0.5);
-  --background-overlay-hover: rgb(var(--color-neutral-400) / 0.6);
+  --background-overlay: rgb(var(--color-neutral-300) / 0.75);
+  --background-overlay-hover: rgb(var(--color-neutral-400) / 0.85);
   --background-scrim: rgb(var(--color-neutral-950) / 0.8);
-  
+
   /* ==========================================================================
      Text Colors
      ========================================================================== */
-  
+
   /* Base Text */
   --text-strongest: rgb(var(--color-neutral-900));
   --text-strong: rgb(var(--color-neutral-800));
   --text-base: rgb(var(--color-neutral-700));
   --text-weak: rgb(var(--color-neutral-600));
   --text-weakest: rgb(var(--color-neutral-500));
-  --text-disabled: rgb(var(--color-neutral-400));
-  --text-muted: rgb(var(--color-neutral-300));
-  
+  --text-muted: rgb(var(--color-neutral-400));
+
   /* Status Text */
   --text-primary: rgb(var(--color-primary-600));
   --text-accent: rgb(var(--color-accent-600));
@@ -98,81 +97,99 @@
   --text-warning: rgb(var(--color-warning-600));
   --text-danger: rgb(var(--color-danger-600));
   --text-info: rgb(var(--color-info-600));
-  
+
   /* Inverse Text */
   --text-inverse: rgb(var(--color-white));
-  
+
   /* ==========================================================================
      Border Colors
      ========================================================================== */
-  
+
   /* Borders */
-  --border-strongest: rgb(var(--color-neutral-300));
-  --border-strong: rgb(var(--color-neutral-200));
-  --border-default: rgb(var(--color-neutral-100));
-  --border-weak: rgb(var(--color-neutral-50));
-  --border-weakest: rgb(var(--color-neutral-25));
-  
-  --border-primary: rgb(var(--color-primary-100));
-  --border-primary-hover: rgb(var(--color-primary-200));
-  
-  --border-success: rgb(var(--color-success-100));
-  --border-success-hover: rgb(var(--color-success-200));
+  --border-strongest: rgb(var(--color-neutral-400));
+  --border-strong: rgb(var(--color-neutral-300));
+  --border-base: rgb(var(--color-neutral-200));
+  --border-weak: rgb(var(--color-neutral-100));
+  --border-weakest: rgb(var(--color-neutral-50));
 
-  --border-warning: rgb(var(--color-warning-100));
-  --border-warning-hover: rgb(var(--color-warning-200));
+  --border-primary-strongest: rgb(var(--color-primary-600));
+  --border-primary-strong: rgb(var(--color-primary-500));
+  --border-primary: rgb(var(--color-primary-400));
+  --border-primary-weak: rgb(var(--color-primary-200));
+  --border-primary-weakest: rgb(var(--color-primary-100));
 
-  --border-danger: rgb(var(--color-danger-100));
-  --border-danger-hover: rgb(var(--color-danger-200));
-  
-  --border-accent: rgb(var(--color-accent-100));
-  --border-accent-hover: rgb(var(--color-accent-200));
+  --border-success-strongest: rgb(var(--color-success-600));
+  --border-success-strong: rgb(var(--color-success-500));
+  --border-success: rgb(var(--color-success-400));
+  --border-success-weak: rgb(var(--color-success-200));
+  --border-success-weakest: rgb(var(--color-success-100));
 
-  --border-info: rgb(var(--color-info-100));
-  --border-info-hover: rgb(var(--color-info-200));
-  
+  --border-warning-strongest: rgb(var(--color-warning-600));
+  --border-warning-strong: rgb(var(--color-warning-500));
+  --border-warning: rgb(var(--color-warning-400));
+  --border-warning-weak: rgb(var(--color-warning-200));
+  --border-warning-weakest: rgb(var(--color-warning-100));
+
+  --border-danger-strongest: rgb(var(--color-danger-600));
+  --border-danger-strong: rgb(var(--color-danger-500));
+  --border-danger: rgb(var(--color-danger-400));
+  --border-danger-weak: rgb(var(--color-danger-200));
+  --border-danger-weakest: rgb(var(--color-danger-100));
+
+  --border-accent-strongest: rgb(var(--color-accent-600));
+  --border-accent-strong: rgb(var(--color-accent-500));
+  --border-accent: rgb(var(--color-accent-400));
+  --border-accent-weak: rgb(var(--color-accent-200));
+  --border-accent-weakest: rgb(var(--color-accent-100));
+
+  --border-info-strongest: rgb(var(--color-info-600));
+  --border-info-strong: rgb(var(--color-info-500));
+  --border-info: rgb(var(--color-info-400));
+  --border-info-weak: rgb(var(--color-info-200));
+  --border-info-weakest: rgb(var(--color-info-100));
+
   /* Focus Rings */
   --ring-default: rgb(var(--color-neutral-400));
   --ring-primary: rgb(var(--color-primary-500));
   --ring-danger: rgb(var(--color-danger-500));
-  
+
   /* ==========================================================================
      Component Specific
      ========================================================================== */
-  
+
   /* Cards */
   --card-background: var(--background-surface);
   --card-border: var(--border-subtle);
   --card-shadow: var(--shadow-sm);
-  
+
   /* Popovers */
   --popover-background: var(--background-surface);
   --popover-border: var(--border-subtle);
   --popover-shadow: var(--shadow);
-  
+
   /* Navigation */
   --nav-background: var(--background-surface);
   --nav-border: var(--border-subtle);
   --nav-shadow: var(--shadow-sm);
   --nav-item-hover: var(--background-secondary);
   --nav-item-active: var(--background-primary-subtle);
-  
+
   /* Tooltips */
   --tooltip-background: rgb(var(--color-neutral-900));
   --tooltip-text: rgb(var(--color-white));
-  
+
   /* ==========================================================================
      States
      ========================================================================== */
-  
+
   /* Selection */
   --selection-background: rgb(var(--color-primary-100));
   --selection-text: var(--text-base);
-  
+
   /* Focus */
   --focus-ring: 0 0 0 var(--ring-width) var(--ring-primary);
   --focus-ring-offset: var(--ring-offset);
-  
+
   /* Disabled */
   --disabled-opacity: 0.5;
 }
@@ -184,22 +201,22 @@
   --background-surface: rgb(var(--color-neutral-900));
   --background-surface-raised: rgb(var(--color-neutral-800));
   --background-surface-sunken: rgb(var(--color-neutral-950));
-  
+
   /* Text Colors */
   --text-base: rgb(var(--color-neutral-50));
   --text-secondary: rgb(var(--color-neutral-300));
   --text-tertiary: rgb(var(--color-neutral-500));
-  --text-disabled: rgb(var(--color-neutral-600));
-  
+  --text-muted: rgb(var(--color-neutral-600));
+
   /* Border Colors */
   --border-default: rgb(var(--color-neutral-700));
   --border-strong: rgb(var(--color-neutral-600));
   --border-subtle: rgb(var(--color-neutral-800));
-  
+
   /* Component Specific */
   --card-shadow: none;
   --nav-shadow: none;
-  
+
   /* Interactive States */
   --selection-background: rgb(var(--color-primary-900));
   --selection-text: rgb(var(--color-primary-50));

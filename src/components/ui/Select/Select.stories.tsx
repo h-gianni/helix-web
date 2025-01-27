@@ -121,7 +121,7 @@ export const Default: Story = {
     withLabel: true,
   },
   render: (args) => {
-    const [value, setValue] = useState('apple');
+    const [value, setValue] = useState('');
     
     return (
       <Select 
@@ -129,10 +129,7 @@ export const Default: Story = {
         value={value} 
         onValueChange={setValue}
       >
-        <SelectTrigger 
-          withIcon={args.withIcons}
-          icon={args.withIcons ? fruits[value]?.icon : undefined}
-        >
+        <SelectTrigger withIcon={args.withIcons}>
           <SelectValue placeholder="Select a fruit" />
         </SelectTrigger>
         <SelectContent>
@@ -153,7 +150,6 @@ export const Default: Story = {
   },
 };
 
-// In StandaloneSelects story
 export const StandaloneSelects: Story = {
   render: (args) => {
     const [values, setValues] = useState<Record<string, string>>({});
@@ -173,10 +169,7 @@ export const StandaloneSelects: Story = {
             value={values[config.id] || ''}
             onValueChange={(value) => setValues(prev => ({ ...prev, [config.id]: value }))}
           >
-            <SelectTrigger 
-              withIcon={args.withIcons}
-              icon={args.withIcons && values[config.id] ? fruits[values[config.id]]?.icon : undefined}
-            >
+            <SelectTrigger withIcon={args.withIcons}>
               <SelectValue placeholder="Select an option" />
             </SelectTrigger>
             <SelectContent>
@@ -199,7 +192,6 @@ export const StandaloneSelects: Story = {
   },
 };
 
-// In Sizes story
 export const Sizes: Story = {
   render: (args) => {
     const [values, setValues] = useState<Record<string, string>>({});
@@ -215,10 +207,7 @@ export const Sizes: Story = {
             value={values[size] || ''}
             onValueChange={(value) => setValues(prev => ({ ...prev, [size]: value }))}
           >
-            <SelectTrigger 
-              withIcon={args.withIcons}
-              icon={args.withIcons && values[size] ? fruits[values[size]]?.icon : undefined}
-            >
+            <SelectTrigger withIcon={args.withIcons}>
               <SelectValue placeholder="Select an option" />
             </SelectTrigger>
             <SelectContent>
@@ -241,7 +230,6 @@ export const Sizes: Story = {
   },
 };
 
-// In WithHelperText story
 export const WithHelperText: Story = {
   render: (args) => {
     const [values, setValues] = useState<Record<string, string>>({
@@ -264,10 +252,7 @@ export const WithHelperText: Story = {
             value={values[config.id]}
             onValueChange={(value) => setValues(prev => ({ ...prev, [config.id]: value }))}
           >
-            <SelectTrigger 
-              withIcon={args.withIcons}
-              icon={args.withIcons && values[config.id] ? fruits[values[config.id]]?.icon : undefined}
-            >
+            <SelectTrigger withIcon={args.withIcons}>
               <SelectValue placeholder="Select an option" />
             </SelectTrigger>
             <SelectContent>
@@ -304,11 +289,6 @@ export const WithGroups: Story = {
     };
     
     const [value, setValue] = useState('');
-    
-    const selectedIcon = value 
-      ? [...Object.values(items.fruits), ...Object.values(items.apps)]
-          .find((_, index) => Object.keys({...items.fruits, ...items.apps})[index] === value)?.icon
-      : undefined;
 
     return (
       <Select 
@@ -318,7 +298,7 @@ export const WithGroups: Story = {
         label="Grouped items"
         helperText="Select from different categories"
       >
-        <SelectTrigger withIcon={args.withIcons} icon={args.withIcons ? selectedIcon : undefined}>
+        <SelectTrigger withIcon={args.withIcons}>
           <SelectValue placeholder="Select an option" />
         </SelectTrigger>
         <SelectContent>
@@ -369,10 +349,7 @@ export const FormExample: Story = {
           helperText="Select your preferred t-shirt size"
           width="full"
         >
-          <SelectTrigger 
-            withIcon={args.withIcons}
-            icon={args.withIcons && size ? sizes[size]?.icon : undefined}
-          >
+          <SelectTrigger withIcon={args.withIcons}>
             <SelectValue placeholder="Select a size" />
           </SelectTrigger>
           <SelectContent>
@@ -398,10 +375,7 @@ export const FormExample: Story = {
           label="Color preference"
           width="full"
         >
-          <SelectTrigger 
-            withIcon={args.withIcons}
-            icon={args.withIcons && color ? colors[color]?.icon : undefined}
-          >
+          <SelectTrigger withIcon={args.withIcons}>
             <SelectValue placeholder="Select a color" />
           </SelectTrigger>
           <SelectContent>

@@ -1,4 +1,5 @@
-// app/dashboard/_component/_performersByCategory.tsx
+"use client";
+
 import React from "react";
 import { useRouter } from "next/navigation";
 import { MemberPerformance, PerformanceCategory } from '@/app/dashboard/types/member';
@@ -41,7 +42,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Top Performers",
     minRating: 4.6,
     maxRating: 5,
-    className: "text-success-500 bg-success-50",
+    className: "text-success bg-success-weakest",
     Icon: Gem,
     description: "Outstanding performance across all initiatives",
   },
@@ -49,7 +50,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Strong Performers",
     minRating: 4,
     maxRating: 4.5,
-    className: "text-success-500 bg-success-50",
+    className: "text-success bg-success-weakest",
     Icon: Sparkles,
     description: "Consistently exceeding expectations",
   },
@@ -57,7 +58,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Solid Performers",
     minRating: 3,
     maxRating: 3.9,
-    className: "text-info-500 bg-info-50",
+    className: "text-info bg-info-weakest",
     Icon: Sparkle,
     description: "Meeting expectations consistently",
   },
@@ -65,7 +66,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Weak Performers",
     minRating: 2.1,
     maxRating: 2.9,
-    className: "text-warning-500 bg-warning-50",
+    className: "text-warning bg-warning-weakest",
     Icon: Footprints,
     description: "Need support to improve performance",
   },
@@ -73,7 +74,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Poor Performers",
     minRating: 1,
     maxRating: 2,
-    className: "text-danger-500 bg-danger-50",
+    className: "text-danger bg-danger-weakest",
     Icon: LifeBuoy,
     description: "Requires immediate attention and support",
   },
@@ -81,13 +82,12 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Not Rated",
     minRating: 0,
     maxRating: 0,
-    className: "text-neutral-500 bg-neutral-50",
+    className: "text-text bg-neutral",
     Icon: MinusCircle,
     description: "Members awaiting their first performance rating",
   },
 ];
 
-// ViewSwitcher component
 export const ViewSwitcher = ({ 
   viewType, 
   onViewChange 
@@ -106,8 +106,8 @@ export const ViewSwitcher = ({
       value={viewType} 
       onValueChange={onViewChange}
     >
-      <SelectTrigger icon={icons[viewType]}>
-        <SelectValue />
+      <SelectTrigger icon={icons[viewType]} className="w-40">
+        <SelectValue placeholder="Select view" />
       </SelectTrigger>
       <SelectContent>
         <SelectItem 
@@ -137,7 +137,6 @@ export function PerformersByCategory({
 }: PerformersByCategoryProps) {
   const router = useRouter();
 
-  // Filter performers for this specific category
   const categoryPerformers = performers
     .filter((performer) => {
       if (category.label === "Not Rated") {
@@ -157,13 +156,13 @@ export function PerformersByCategory({
     });
 
   const EmptyState = () => (
-    <div className="flex flex-col items-center justify-center space-y-2">
-      <div className={`p-2 rounded-full bg-surface-1 ${category.className}`}>
+    <div className="flex flex-col items-center justify-center py-base">
+      <div className={`p-3 rounded-full ${category.className} mb-4`}>
         <category.Icon className="size-6" />
       </div>
-      <div className="text-center space-y-1">
-        <h3 className="text-heading-3">No {category.label}</h3>
-        <p className="text-p-small text-muted max-w-[360px]">
+      <div className="text-center space-y-xxs">
+        <h3 className="text-heading-3 text-text-strongest">No {category.label}</h3>
+        <p className="text-body-small text-text-weakest max-w-copy mx-auto">
           {category.label === "Not Rated"
             ? "All team members have received at least one rating."
             : category.label === "Poor Performers" ||
@@ -177,8 +176,8 @@ export function PerformersByCategory({
 
   if (categoryPerformers.length === 0) {
     return (
-      <Card size="default" background={true} border={true}>
-        <CardContent>
+      <Card>
+        <CardContent className="p-0">
           <EmptyState />
         </CardContent>
       </Card>
@@ -186,17 +185,19 @@ export function PerformersByCategory({
   }
 
   return (
-    <Card size="default" background={true} border={true}>
+    <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <category.Icon className={`size-5 ${category.className}`} />
-          {category.label}
-          {category.description && (
-            <span className="text-p-small text-muted">
-              - {category.description}
-            </span>
-          )}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <category.Icon className={`size-5 ${category.className}`} />
+            <span>{category.label}</span>
+            {category.description && (
+              <span className="text-body-small text-text-weakest">
+                - {category.description}
+              </span>
+            )}
+          </CardTitle>
+        </div>
       </CardHeader>
       <CardContent>
         <TeamPerformanceView

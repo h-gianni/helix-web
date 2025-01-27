@@ -1,17 +1,18 @@
 // .storybook/preview.tsx
-import * as React from 'react';
+import React from 'react';
 import type { Preview } from "@storybook/react";
 import { withThemeByDataAttribute } from '@storybook/addon-themes';
 
-// Import only the CSS files that exist in your project structure
-import '../src/app/globals.css';
-import '../src/styles/tokens/components/index.css';
-
+// Import tokens first (these define your custom properties)
 import '../src/styles/tokens/foundations.css';
 import '../src/styles/tokens/semantic.css';
 import '../src/styles/tokens/typography.css';
 
-type Story = React.ComponentType;
+// Then globals which contains Tailwind directives
+import '../src/styles/globals.css';
+
+// Then component styles
+import '../src/styles/components/index.css';
 
 const preview: Preview = {
   parameters: {
@@ -20,31 +21,6 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
-    },
-    docs: {
-      story: {
-        inline: true,
-      },
-    },
-    themes: {
-      default: 'light',
-      list: [
-        { name: 'light', dataTheme: 'light' },
-        { name: 'dark', dataTheme: 'dark' }
-      ],
-    },
-    backgrounds: {
-      default: 'light',
-      values: [
-        {
-          name: 'light',
-          value: '#f9f9f9',
-        },
-        {
-          name: 'dark',
-          value: '#272727',
-        },
-      ],
     },
   },
   decorators: [
@@ -56,9 +32,9 @@ const preview: Preview = {
       defaultTheme: 'light',
       attributeName: 'data-theme',
     }),
-    (StoryFn: Story) => (
+    (Story) => (
       <div className="p-4 font-sans" style={{ backgroundColor: 'var(--background-page)' }}>
-        <StoryFn />
+        <Story />
       </div>
     ),
   ],

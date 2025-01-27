@@ -1,26 +1,15 @@
 "use client";
 
-import React, { useEffect, useState, useCallback, MouseEvent } from "react";
-import { useParams, useRouter } from "next/navigation";
-import AddMemberModal from "./_addMemberModal";
-import { MemberPerformance } from "@/app/dashboard/types/member";
+import React, { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/Dialog";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -41,17 +30,13 @@ import {
   ArrowLeft,
   EllipsisVertical,
 } from "lucide-react";
+import AddMemberModal from "./_addMemberModal";
 import { TeamPerformanceSummary } from "./_teamPerformanceSummary";
 import EmptyTeamView from "./_emptyTeamView";
 import TeamEditModal from "./_teamEditModal";
-import { Label } from "@/components/ui/Label";
 import type { ApiResponse, TeamDetailsResponse } from "@/lib/types/api";
 import { useTeams } from "@/lib/context/teams-context";
-
-interface PageParams {
-  teamId: string;
-  [key: string]: string;
-}
+import { MemberPerformance } from "@/app/dashboard/types/member";
 
 export default function TeamDetailsPage({
   params,
@@ -61,13 +46,9 @@ export default function TeamDetailsPage({
   const router = useRouter();
   const { fetchTeams } = useTeams();
   const [team, setTeam] = useState<TeamDetailsResponse | null>(null);
-  const [performanceData, setPerformanceData] = useState<{
-    members: MemberPerformance[];
-  }>({ members: [] });
+  const [performanceData, setPerformanceData] = useState<{ members: MemberPerformance[] }>({ members: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [addMemberEmail, setAddMemberEmail] = useState("");
-  const [addMemberTitle, setAddMemberTitle] = useState("");
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -83,100 +64,65 @@ export default function TeamDetailsPage({
     try {
       const response = await fetch(`/api/teams/${params.teamId}/performance`);
       const data = await response.json();
-      if (data.success) {
-        setPerformanceData(data.data);
-      }
+      if (data.success) setPerformanceData(data.data);
     } catch (error) {
       console.error("Error fetching performance data:", error);
     }
   };
 
-  const fetchTeamDetails = useCallback(
-    async (showRefreshIndicator = true) => {
-      if (!params.teamId) {
-        setError("Team ID is missing");
-        return;
-      }
+  const fetchTeamDetails = useCallback(async (showRefreshIndicator = true) => {
+    if (!params.teamId) {
+      setError("Team ID is missing");
+      return;
+    }
 
-      try {
-        if (showRefreshIndicator) {
-          setIsRefreshing(true);
-        }
-        setError(null);
+    try {
+      if (showRefreshIndicator) setIsRefreshing(true);
+      setError(null);
 
-        const response = await fetch(
-          `/api/teams/${params.teamId}?t=${new Date().getTime()}`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
+      const response = await fetch(`/api/teams/${params.teamId}?t=${Date.now()}`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-        const data: ApiResponse<TeamDetailsResponse> = await response.json();
+      const data: ApiResponse<TeamDetailsResponse> = await response.json();
+      if (!data.success) throw new Error(data.error || "Failed to fetch team details");
 
-        if (!data.success) {
-          throw new Error(data.error || "Failed to fetch team details");
-        }
+      setTeam(data.data || null);
+      fetchTeamPerformance();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false);
+    }
+  }, [params.teamId]);
 
-        setTeam(data.data || null);
-        fetchTeamPerformance();
-      } catch (err) {
-        console.error("Error fetching team details:", err);
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-        setIsRefreshing(false);
-      }
-    },
-    [params.teamId]
-  );
-
-  const handleSaveTeamDetails = async (
-    name: string,
-    description: string | null
-  ) => {
+  const handleSaveTeamDetails = async (name: string, description: string | null) => {
     try {
       const response = await fetch(`/api/teams/${params.teamId}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, description }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update team");
-      }
+      if (!response.ok) throw new Error("Failed to update team");
 
       const data = await response.json();
-      if (data.success) {
-        await fetchTeamDetails();
-      }
+      if (data.success) await fetchTeamDetails();
     } catch (error) {
       console.error("Error updating team:", error);
       throw error;
     }
   };
 
-  const handleAddMember = async (data: {
-    teamId: string;
-    email: string;
-    title?: string;
-  }) => {
+  const handleAddMember = async (data: { teamId: string; email: string; title?: string; }) => {
     try {
-      console.log('Adding member:', data);
       const response = await fetch(`/api/teams/${data.teamId}/members`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: data.email,
-          title: data.title,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: data.email, title: data.title }),
       });
 
       const responseData = await response.json();
-
       if (!response.ok || !responseData.success) {
         throw new Error(responseData.error || "Failed to add member");
       }
@@ -188,45 +134,32 @@ export default function TeamDetailsPage({
     }
   };
 
-  const handleDeleteTeam = async (e: MouseEvent<HTMLButtonElement>) => {
+  const handleDeleteTeam = async () => {
     try {
       const response = await fetch(`/api/teams/${params.teamId}`, {
         method: "DELETE",
       });
       const data = await response.json();
+      if (!data.success) throw new Error(data.error || "Failed to delete team");
 
-      if (!data.success) {
-        throw new Error(data.error || "Failed to delete team");
-      }
-
-      await fetchTeams(); // Fetch updated teams list before redirecting
-      router.push("/dashboard/teams"); // Redirect after successful deletion and data refresh
+      await fetchTeams();
+      router.push("/dashboard/teams");
     } catch (error) {
       console.error("Error deleting team:", error);
-      // Handle error appropriately
     }
   };
 
-  // Initial fetch on mount
   useEffect(() => {
     fetchTeamDetails(false);
   }, [fetchTeamDetails]);
 
-  // Refresh on window focus
   useEffect(() => {
-    const handleFocus = () => {
-      fetchTeamDetails(false);
-    };
-
+    const handleFocus = () => fetchTeamDetails(false);
     window.addEventListener("focus", handleFocus);
-    return () => {
-      window.removeEventListener("focus", handleFocus);
-    };
+    return () => window.removeEventListener("focus", handleFocus);
   }, [fetchTeamDetails]);
 
-  if (loading) {
-    return <div className="p-4">Loading team details...</div>;
-  }
+  if (loading) return <div className="p-4">Loading team details...</div>;
 
   if (error) {
     return (
@@ -238,7 +171,7 @@ export default function TeamDetailsPage({
         <Button
           variant="primary"
           onClick={() => router.back()}
-          leadingIcon={<RotateCcw className="size-4" />}
+          leadingIcon={<ArrowLeft className="size-4" />}
         >
           Go Back
         </Button>
@@ -256,7 +189,7 @@ export default function TeamDetailsPage({
         <Button
           variant="primary"
           onClick={() => router.back()}
-          leadingIcon={<RotateCcw className="size-4" />}
+          leadingIcon={<ArrowLeft className="size-4" />}
         >
           Go Back
         </Button>
@@ -268,7 +201,6 @@ export default function TeamDetailsPage({
     <>
       <PageBreadcrumbs items={breadcrumbItems} />
       
-      {/* Header */}
       <div className="mb-6">
         <div className="flex items-center justify-between">
           <div className="flex gap-4">
@@ -280,22 +212,16 @@ export default function TeamDetailsPage({
               leadingIcon={<ArrowLeft className="size-4" />}
             />
             <div>
-              <h1 className="text-display-1">{team.name}</h1>
+              <h1 className="text-2xl font-semibold">{team.name}</h1>
               {team.description && (
-                <p className="text-p-small mt-1">{team.description}</p>
+                <p className="text-muted-foreground mt-1">{team.description}</p>
               )}
-              <p className="text-p-small mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Created: {new Date(team.createdAt).toLocaleDateString()}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <AddMemberModal
-              isOpen={isAddMemberDialogOpen}
-              onClose={() => setIsAddMemberDialogOpen(false)}
-              teamId={params.teamId}
-              onSubmit={handleAddMember}
-            />
             <Button
               variant="primary"
               onClick={() => setIsAddMemberDialogOpen(true)}
@@ -309,7 +235,6 @@ export default function TeamDetailsPage({
                 <Button
                   variant="neutral"
                   appearance="icon-only"
-                  size="default"
                   leadingIcon={<EllipsisVertical className="size-4" />}
                 />
               </DropdownMenuTrigger>
@@ -319,7 +244,7 @@ export default function TeamDetailsPage({
                   Edit Team
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  destructive
+                  className="text-danger-600"
                   onClick={() => setIsDeleteDialogOpen(true)}
                 >
                   <Trash2 className="size-4 mr-2" />
@@ -331,11 +256,7 @@ export default function TeamDetailsPage({
         </div>
       </div>
   
-      {/* Content */}
-      {!team.members ||
-      team.members.length === 0 ||
-      !performanceData.members ||
-      performanceData.members.length === 0 ? (
+      {!team.members?.length || !performanceData.members?.length ? (
         <EmptyTeamView onAddMember={() => setIsAddMemberDialogOpen(true)} />
       ) : (
         <TeamPerformanceSummary
@@ -347,7 +268,13 @@ export default function TeamDetailsPage({
         />
       )}
   
-      {/* Team Edit Modal */}
+      <AddMemberModal
+        isOpen={isAddMemberDialogOpen}
+        onClose={() => setIsAddMemberDialogOpen(false)}
+        teamId={params.teamId}
+        onSubmit={handleAddMember}
+      />
+
       <TeamEditModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
@@ -356,12 +283,11 @@ export default function TeamDetailsPage({
         onSave={handleSaveTeamDetails}
       />
   
-      {/* Delete Team Dialog */}
       <AlertDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
       >
-        <AlertDialogContent variant="danger" withIcon>
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Team</AlertDialogTitle>
             <AlertDialogDescription>
@@ -371,10 +297,8 @@ export default function TeamDetailsPage({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteTeam} variant="danger">
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="danger" onClick={handleDeleteTeam}>
               Delete Team
             </AlertDialogAction>
           </AlertDialogFooter>

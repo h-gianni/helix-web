@@ -50,6 +50,14 @@
   --letter-spacing-wide: 0.025em;
   --letter-spacing-wider: 0.05em;
   --letter-spacing-widest: 0.25em;
+
+  /* ==========================================================================
+     Max Width
+     ========================================================================== */
+  --max-width-copy-xxs: 30ch;
+  --max-width-copy-xs: 40ch;
+  --max-width-copy-sm: 50ch;
+  --max-width-copy-base: 65ch;
+  --max-width-copy-lg: 75ch;
+  --max-width-copy-xl: 85ch;
 }
-
-

@@ -1,0 +1,76 @@
+/* Base dropdown content */
+.dropdown-content,
+.dropdown-sub-content {
+  @apply popcard-basics min-w-48 overflow-visible;
+}
+
+/* Animation states */
+.dropdown-content,
+.dropdown-sub-content {
+  @apply data-[state=open]:animate-in data-[state=closed]:animate-out
+         data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
+         data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
+         data-[side=bottom]:slide-in-from-top-2
+         data-[side=left]:slide-in-from-right-2
+         data-[side=right]:slide-in-from-left-2
+         data-[side=top]:slide-in-from-bottom-2;
+}
+
+/* Dropdown items */
+.dropdown-item {
+  @apply popcard-list-item hover:bg-surface-sunken;
+}
+
+/* .popcard-item-destructive {
+  @apply text-danger;
+} */
+
+/* .dropdown-item-inset {
+  @apply pl-2xl;
+} */
+
+/* Checkbox and Radio items */
+.dropdown-checkbox,
+.dropdown-radio {
+  @apply popcard-list-item popcard-radio-item hover:bg-surface-sunken;
+}
+
+/* .dropdown-checkbox-indicator,
+.dropdown-radio-indicator {
+  @apply absolute left-sm flex items-center justify-center;
+} */
+
+/* .dropdown-checkbox-indicator {
+  @apply size-md;
+} */
+
+/* .dropdown-radio-indicator {
+  @apply size-sm;
+} */
+
+/* Icons */
+/* .dropdown-item svg {
+  @apply size-base shrink-0 pointer-events-none;
+} */
+
+/* .dropdown-checkbox-icon {
+  @apply size-base text-primary;
+} */
+
+/* .dropdown-radio-icon {
+  @apply size-xs fill-current text-primary;
+} */
+
+/* Print styles */
+@media print {
+  .dropdown-content,
+  .dropdown-sub-content {
+    @apply shadow-none border print:break-inside-avoid;
+  }
+}
+
+
+
+
+
+

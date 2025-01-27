@@ -1,0 +1,114 @@
+/* badge.css */
+
+/* Base Badge Styles */
+.badge-base {
+  @apply inline-flex items-center rounded-full border 
+         font-normal
+         transition-all focus-visible:focus-ring;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+}
+
+/* Size Variants */
+.badge-size-default {
+  @apply text-xs px-xs py-px;
+}
+
+.badge-size-lg {
+  @apply text-xs px-sm py-xxs;
+}
+
+/* Default Variant */
+.badge-default {
+  @apply text-inverse border-transparent bg-neutral-strong;
+}
+
+.badge-default-light {
+  @apply bg-neutral text-foreground border-transparent;
+}
+
+.badge-default-outline {
+  @apply bg-transparent border text-foreground border-base;
+}
+
+/* Primary Variant */
+.badge-primary {
+  @apply bg-primary text-inverse border-transparent;
+}
+
+.badge-primary-light {
+  @apply bg-primary-weakest text-primary border-transparent;
+}
+
+.badge-primary-outline {
+  @apply bg-transparent border-primary text-primary;
+}
+
+/* Accent Variant */
+.badge-accent {
+  @apply bg-accent text-inverse border-transparent;
+}
+
+.badge-accent-light {
+  @apply bg-accent-weakest text-accent border-transparent;
+}
+
+.badge-accent-outline {
+  @apply bg-transparent border-accent text-accent;
+}
+
+/* Danger Variant */
+.badge-danger {
+  @apply bg-danger text-inverse border-transparent;
+}
+
+.badge-danger-light {
+  @apply bg-danger-weakest text-danger border-transparent;
+}
+
+.badge-danger-outline {
+  @apply bg-transparent border-danger text-danger;
+}
+
+/* Success Variant */
+.badge-success {
+  @apply bg-success text-inverse border-transparent;
+}
+
+.badge-success-light {
+  @apply bg-success-weakest text-success border-transparent;
+}
+
+.badge-success-outline {
+  @apply bg-transparent border-success text-success;
+}
+
+/* Warning Variant */
+.badge-warning {
+  @apply bg-warning text-inverse border-transparent;
+}
+
+.badge-warning-light {
+  @apply bg-warning-weakest text-warning border-transparent;
+}
+
+.badge-warning-outline {
+  @apply bg-transparent border-warning text-warning;
+}
+
+/* Info Variant */
+.badge-info {
+  @apply bg-info text-inverse border-transparent;
+}
+
+.badge-info-light {
+  @apply bg-info-weakest text-info border-transparent;
+}
+
+.badge-info-outline {
+  @apply bg-transparent border-info text-info;
+}
+
+.badge-base svg {
+  @apply size-4;
+}

@@ -1,4 +1,5 @@
-// components/PageBreadcrumbs.tsx
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import {
@@ -25,24 +26,19 @@ interface PageBreadcrumbsProps {
 
 export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
   return (
-    <div className="flex justify-between items-center gap-8 pb-2.5 border-b">
-      <div className="flex bg-background items-center gap-1">
+    <div className="flex justify-between items-center gap-8 py-4 border-b border-base">
+      <div className="flex items-center gap-1">
         <SidebarTrigger />
-        <Breadcrumb className="border-l border-neutral-300 px-4">
+        <Breadcrumb className="border-l border-base px-4">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link href="/dashboard" className="flex items-center gap-2">
-                  {/* <Home className="size-4" /> */}
-                  <span>Dashboard</span>
-                </Link>
+                <Link href="/dashboard">Dashboard</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
-
             {items.map((item, index) => {
               const isLast = index === items.length - 1;
-
               return (
                 <React.Fragment key={item.label}>
                   <BreadcrumbItem>
@@ -61,16 +57,19 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="flex gap-4 justify-end">
+      <div className="flex items-center gap-4">
         <Button
-          appearance="icon-only"
-          aria-label="Add item"
-          leadingIcon={<Bell />}
-          size="sm"
           variant="neutral"
+          appearance="icon-only"
+          size="sm"
+          leadingIcon={<Bell className="size-4" />}
+          aria-label="Notifications"
         />
         <Avatar size="sm">
-          <AvatarImage alt="@shadcn" src="https://github.com/shadcn.png" />
+          <AvatarImage 
+            src="https://github.com/shadcn.png" 
+            alt="User avatar" 
+          />
           <AvatarFallback>GF</AvatarFallback>
         </Avatar>
       </div>
