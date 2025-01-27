@@ -92,7 +92,7 @@ model TeamFunction {
   jobTitles   JobTitle[]
   teams       GTeam[]
 
-  @@map("team_functions")
+  @@map("team_functions") 
   @@index([deletedAt])
 }
 
