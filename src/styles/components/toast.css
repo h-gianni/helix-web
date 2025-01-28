@@ -94,13 +94,13 @@
   @apply text-heading-5;
   
   & + div {
-    @apply text-body-small;
+    @apply text-copy-small;
   }
  }
  
  /* Toast Description */
  .toast-description {
-  @apply text-body-small opacity-75;
+  @apply text-copy-small opacity-75;
  }
  
  /* Print Styles */

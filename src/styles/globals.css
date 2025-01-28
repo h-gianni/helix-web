@@ -110,7 +110,7 @@
   }
 
   /* Body styles */
-  .text-body-large {
+  .text-copy-large {
     font-family: var(--font-family-sans);
     font-size: var(--font-size-lg);
     line-height: var(--line-height-normal);
@@ -118,7 +118,7 @@
     letter-spacing: var(--letter-spacing-normal);
   }
 
-  .text-body {
+  .text-copy {
     font-family: var(--font-family-sans);
     font-size: var(--font-size-base);
     line-height: var(--line-height-normal);
@@ -126,7 +126,7 @@
     letter-spacing: var(--letter-spacing-normal);
   }
 
-  .text-body-small {
+  .text-copy-small {
     font-family: var(--font-family-sans);
     font-size: var(--font-size-sm);
     line-height: var(--line-height-tight);
@@ -361,27 +361,27 @@
      ========================================================================== */
 
   /* Neutral Backgrounds */
-  .text-neutral {
-    color: var(--background-neutral);
+  /* .text-foreground {
+    color: var(--text-foreground);
   }
-  .text-neutral-weakest {
-    color: var(--background-neutral-weakest);
+  .text-weakest {
+    color: var(--text-weakest);
   }
-  .text-neutral-weaker {
-    color: var(--background-neutral-weaker);
+  .text-weaker {
+    color: var(--text-weaker);
   }
-  .text-neutral-weak {
-    color: var(--background-neutral-weak);
+  .text-weak {
+    color: var(--text-weak);
   }
-  .text-neutral-strong {
-    color: var(--background-neutral-strong);
+  .text-strong {
+    color: var(--text-strong);
   }
-  .text-neutral-stronger {
-    color: var(--background-neutral-stronger);
+  .text-stronger {
+    color: var(--text-stronger);
   }
-  .text-neutral-strongest {
-    color: var(--background-neutral-strongest);
-  }
+  .text-strongest {
+    color: var(--text-strongest);
+  } */
 
   /* Primary Backgrounds */
   .text-primary {
@@ -722,7 +722,7 @@
   .form-basics {
     background-color: var(--background-input);
     color: var(--text-base);
-    border-color: var(--border-default);
+    border-color: var(--border-base);
     border-width: 1px;
     border-style: solid;
     border-radius: var(--radius-base);

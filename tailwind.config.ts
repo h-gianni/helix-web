@@ -62,7 +62,7 @@ const config: Config = {
         // Text colors (no prefix for utility `text-{value}`)
         strongest: "var(--text-strongest)",
         strong: "var(--text-strong)",
-        foreground: "var(--text-base)",
+        foreground: "var(--text-foreground)",
         weak: "var(--text-weak)",
         weakest: "var(--text-weakest)",
         muted: "var(--text-muted)",

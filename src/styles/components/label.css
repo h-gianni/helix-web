@@ -2,7 +2,7 @@
 
 /* Base Label */
 .label-base {
-  @apply text-body-small select-none cursor-default whitespace-nowrap
+  @apply text-copy-small select-none cursor-default whitespace-nowrap
          text-foreground transition-all;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
@@ -13,7 +13,7 @@
  *:has(> .checkbox-base) .label-base,
  .radio-group-base + .label-base,
  *:has(> .radio-group-base) .label-base {
-  @apply text-body text-weak cursor-pointer;
+  @apply text-copy text-weak cursor-pointer;
  }
  
  /* Required State */

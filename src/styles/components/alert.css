@@ -147,11 +147,11 @@
 
 /* Description sizes */
 .alert-description-base {
-  @apply text-body;
+  @apply text-copy;
 }
 
 .alert-description-sm {
-  @apply text-body-small;
+  @apply text-copy-small;
 }
 
 /* Description colors */

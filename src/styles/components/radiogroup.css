@@ -154,7 +154,7 @@
 }
 
 .radio-description {
-  @apply text-body-small text-weakest;
+  @apply text-copy-small text-weakest;
 }
 
 @media print {

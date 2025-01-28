@@ -29,7 +29,7 @@
 }
 
 .command-empty {
-  @apply py-6 text-center text-body-small text-foreground;
+  @apply py-6 text-center text-copy-small text-foreground;
 }
 
 .command-list .popcard-list-group-title:first-of-type {

@@ -107,7 +107,7 @@
 }
 
 .drawer-description {
-  @apply text-body text-weak;
+  @apply text-copy text-weak;
 }
 
 .drawer-body {

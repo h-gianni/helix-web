@@ -88,10 +88,10 @@
 
 /* Card Description */
 .card-description {
-  @apply text-body -mt-xxs pb-xs;
+  @apply text-copy -mt-xxs pb-xs;
 }
 .card-sm .card-description {
-  @apply text-body-small text-weakest;
+  @apply text-copy-small text-weakest;
 }
 .card-xl .card-description {
   @apply  mt-0 pb-xs;
@@ -99,11 +99,11 @@
 
 /* Card Content */
 .card-content {
-  @apply text-body pb-md;
+  @apply text-copy pb-md;
 }
 
 .card-sm .card-content {
-  @apply text-body-small;
+  @apply text-copy-small;
 }
 
 /* Card Footer */

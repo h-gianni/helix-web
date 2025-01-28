@@ -74,11 +74,11 @@
 }
 
 .input-helper {
-  @apply text-body-small text-weakest;
+  @apply text-copy-small text-weakest;
 }
 
 .input-helper-error {
-  @apply text-body-small text-danger;
+  @apply text-copy-small text-danger;
 }
 
 @media print {

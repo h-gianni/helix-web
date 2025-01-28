@@ -74,8 +74,8 @@
   --background-info-weakest: rgb(var(--color-info-50));
 
   /* Overlay Backgrounds */
-  --background-overlay: rgb(var(--color-neutral-300) / 0.75);
-  --background-overlay-hover: rgb(var(--color-neutral-400) / 0.85);
+  --background-overlay: rgb(var(--color-neutral-300) / 0.80);
+  --background-overlay-hover: rgb(var(--color-neutral-400) / 0.90);
   --background-scrim: rgb(var(--color-neutral-950) / 0.8);
 
   /* ==========================================================================
@@ -85,7 +85,7 @@
   /* Base Text */
   --text-strongest: rgb(var(--color-neutral-900));
   --text-strong: rgb(var(--color-neutral-800));
-  --text-base: rgb(var(--color-neutral-700));
+  --text-foreground: rgb(var(--color-neutral-700));
   --text-weak: rgb(var(--color-neutral-600));
   --text-weakest: rgb(var(--color-neutral-500));
   --text-muted: rgb(var(--color-neutral-400));

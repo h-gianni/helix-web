@@ -33,7 +33,7 @@
 /* Size Variants */
 .table-base[data-size="base"] {
   .table-cell {
-    @apply py-sm px-base text-body text-weakest;
+    @apply py-sm px-base text-copy text-weakest;
   }
 
   .table-head {
@@ -43,7 +43,7 @@
 
 .table-base[data-size="sm"] {
   .table-cell {
-    @apply py-xs px-sm text-body-small;
+    @apply py-xs px-sm text-copy-small;
   }
 
   .table-head {
@@ -139,7 +139,7 @@
 /* Table Cell */
 .table-cell {
   @apply align-middle max-w-[20rem] overflow-hidden text-ellipsis
-  text-body text-foreground
+  text-copy text-foreground
          transition-colors;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);

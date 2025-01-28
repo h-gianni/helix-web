@@ -73,10 +73,10 @@
 }
 
 .accordionContent {
-  @apply overflow-hidden text-body text-weakest;
+  @apply overflow-hidden text-copy text-weakest;
 }
 .accordionRoot.sm .accordionContent {
-  @apply text-body-small;
+  @apply text-copy-small;
 }
 
 .accordionContent[data-state="closed"] {

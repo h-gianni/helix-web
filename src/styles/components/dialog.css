@@ -46,13 +46,12 @@
 }
 
 .dialog-description {
-  @apply text-body;
+  @apply text-copy text-weak;
 }
 
 .dialog-footer {
   @apply flex flex-col-reverse sm:flex-row sm:justify-end
-         gap-md pt-lg mt-lg
-         border-t border-base;
+         gap-md pt-lg mt-lg;
 }
 
 /* Close button */

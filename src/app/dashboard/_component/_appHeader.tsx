@@ -26,7 +26,7 @@ interface PageBreadcrumbsProps {
 
 export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
   return (
-    <div className="flex justify-between items-center gap-8 py-4 border-b border-base">
+    <div className="flex justify-between items-center gap-8 pb-base">
       <div className="flex items-center gap-1">
         <SidebarTrigger />
         <Breadcrumb className="border-l border-base px-4">
