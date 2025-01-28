@@ -2,7 +2,7 @@
 
 /* Root and trigger styles remain specific to menubar */
 .menubar-root {
-  @apply flex h-9 items-center gap-xxs rounded border border-base 
+  @apply flex h-9 items-center gap-xxs rounded border border-neutral-base 
          bg-surface p-xxs text-weak;
  }
  

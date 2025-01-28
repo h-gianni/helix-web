@@ -278,7 +278,7 @@
 /* Print styles */
 @media print {
   .select-trigger {
-    @apply bg-surface text-foreground border-base;
+    @apply bg-surface text-foreground border-neutral-base;
   }
   
   .select-trigger-error {

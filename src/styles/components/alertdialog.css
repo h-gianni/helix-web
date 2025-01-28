@@ -87,6 +87,6 @@
   .alert-dialog-footer {
     @apply fixed bottom-0 left-0 right-0 
            bg-surface p-md
-           border-t border-weakest;
+           border-t border-neutral-weakest;
   }
 }

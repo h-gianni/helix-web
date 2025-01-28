@@ -24,11 +24,11 @@
 }
 
 .badge-default-light {
-  @apply bg-neutral text-foreground border-transparent;
+  @apply bg-neutral-weakest text-foreground border-transparent;
 }
 
 .badge-default-outline {
-  @apply bg-transparent border text-foreground border-base;
+  @apply bg-transparent text-foreground border border-neutral-base;
 }
 
 /* Primary Variant */

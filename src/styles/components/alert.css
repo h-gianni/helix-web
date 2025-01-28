@@ -19,7 +19,7 @@
 
 /* Alert Variants */
 .alert-default {
-  @apply bg-surface border border-weak;
+  @apply bg-surface border border-neutral-weakest;
 
   &:focus-visible {
     @apply focus-ring;
@@ -27,7 +27,7 @@
 }
 
 .alert-primary {
-  @apply bg-primary-weakest border border-primary;
+  @apply bg-primary-weakest border border-primary-weakest;
 
   &:focus-visible {
     @apply outline-none ring-2 ring-offset-2;
@@ -37,7 +37,7 @@
 }
 
 .alert-danger {
-  @apply bg-danger-weakest border border-danger;
+  @apply bg-danger-weakest border border-danger-weakest;
 
   &:focus-visible {
     @apply focus-ring-danger;
@@ -45,7 +45,7 @@
 }
 
 .alert-warning {
-  @apply bg-warning-weakest border border-warning;
+  @apply bg-warning-weakest border border-warning-weakest;
 
   &:focus-visible {
     @apply outline-none ring-2 ring-offset-2;
@@ -55,7 +55,7 @@
 }
 
 .alert-success {
-  @apply bg-success-weakest border border-success;
+  @apply bg-success-weakest border border-success-weakest;
 
   &:focus-visible {
     @apply outline-none ring-2 ring-offset-2;
@@ -80,7 +80,7 @@
 
 /* Icon colors */
 .alert-icon-default {
-  @apply text-weakest
+  @apply text-weak;
 }
 
 .alert-icon-primary {

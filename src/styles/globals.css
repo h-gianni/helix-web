@@ -43,118 +43,189 @@
      Typography
      ========================================================================== */
 
+  .text-display-1,
+  .text-display-2,
+  .text-heading-1,
+  .text-heading-2,
+  .text-heading-3,
+  .text-heading-4,
+  .text-heading-5,
+  .text-heading-6 {
+    @apply font-sans;
+  }
+  .text-display-1,
+  .text-display-2,
+  .text-heading-1 {
+    @apply leading-tight;
+  }
+  .text-heading-3,
+  .text-heading-4,
+  .text-heading-5 {
+    @apply leading-normal;
+  }
+  .text-display-1,
+  .text-display-2,
+  .text-heading-1,
+  .text-heading-2,
+  .text-heading-3 {
+    @apply tracking-tight;
+  }
+  .text-heading-4,
+  .text-heading-5,
+  .text-heading-6 {
+    @apply tracking-normal;
+  }
+  .text-display-1,
+  .text-display-2 {
+    @apply font-bold;
+  }
+  .text-heading-1,
+  .text-heading-2,
+  .text-heading-3,
+  .text-heading-4,
+  .text-heading-5,
+  .text-heading-6 {
+    @apply font-semibold;
+  }
+  .text-display-1,
+  .text-display-2,
+  .text-heading-1,
+  .text-heading-2,
+  .text-heading-3,
+  .text-heading-4,
+  .text-heading-5,
+  .text-heading-6 {
+    @apply text-strongest;
+  }
+
   /* Display styles */
   .text-display-1 {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-4xl);
-    line-height: var(--line-height-tight);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: var(--letter-spacing-tight);
   }
 
   .text-display-2 {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-3xl);
-    line-height: var(--line-height-tight);
-    font-weight: var(--font-weight-bold);
-    letter-spacing: var(--letter-spacing-tight);
   }
 
   /* Heading styles */
   .text-heading-1 {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-2xl);
-    line-height: var(--line-height-tight);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--letter-spacing-tight);
   }
 
   .text-heading-2 {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-xl);
     line-height: var(--line-height-snug);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--letter-spacing-tight);
   }
 
   .text-heading-3 {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-lg);
-    line-height: var(--line-height-normal);
-    font-weight: var(--font-weight-semibold);
     letter-spacing: var(--letter-spacing-tight);
   }
 
   .text-heading-4 {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-base);
-    line-height: var(--line-height-normal);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--letter-spacing-normal);
   }
 
   .text-heading-5 {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-sm);
-    line-height: var(--line-height-normal);
-    font-weight: var(--font-weight-semibold);
-    letter-spacing: var(--letter-spacing-normal);
   }
 
   .text-heading-6 {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-xs);
     line-height: var(--line-height-none);
     font-weight: var(--font-weight-medium);
-    letter-spacing: var(--letter-spacing-normal);
   }
 
   /* Body styles */
+  .text-copy-large,
+  .text-copy,
+  .text-copy-small,
+  .text-helper,
+  .text-label,
+  .text-caption,
+  .text-footnote,
+  .text-overline,
+  .text-button {
+    @apply font-sans;
+  }
+  .text-copy-large,
+  .text-copy,
+  .text-copy-small,
+  .text-helper,
+  .text-caption,
+  .text-footnote,
+  .text-button,
+  .text-code {
+    @apply leading-normal;
+  }
+  .text-copy-large,
+  .text-copy,
+  .text-label,
+  .text-caption,
+  .text-footnote,
+  .text-overline,
+  .text-button,
+  .text-code {
+    @apply tracking-normal;
+  }
+  .text-copy-large,
+  .text-copy,
+  .text-copy-small,
+  .text-helper,
+  .text-caption,
+  .text-footnote,
+  .text-code {
+    @apply font-normal;
+  }
+  .text-copy-large,
+  .text-copy,
+  .text-copy-small,
+  .text-overline {
+    @apply text-foreground;
+  }
+  .text-helper,
+  .text-caption,
+  .text-footnote {
+    @apply text-weakest;
+  }
+
   .text-copy-large {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-lg);
-    line-height: var(--line-height-normal);
-    font-weight: var(--font-weight-normal);
-    letter-spacing: var(--letter-spacing-normal);
   }
 
   .text-copy {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-base);
-    line-height: var(--line-height-normal);
-    font-weight: var(--font-weight-normal);
-    letter-spacing: var(--letter-spacing-normal);
   }
 
   .text-copy-small {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-sm);
     line-height: var(--line-height-tight);
-    font-weight: var(--font-weight-normal);
-    letter-spacing: var(--letter-spacing-normal);
+  }
+
+  .text-helper {
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-tight);
   }
 
   /* UI Element styles */
   .text-label {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-sm);
-    line-height: var(--line-height-normal);
     font-weight: var(--font-weight-medium);
     letter-spacing: var(--letter-spacing-wide);
   }
 
   .text-caption {
-    font-family: var(--font-family-sans);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-tight);
+  }
+
+  .text-footnote {
     font-size: var(--font-size-xs);
-    line-height: var(--line-height-normal);
-    font-weight: var(--font-weight-normal);
-    letter-spacing: var(--letter-spacing-normal);
+    line-height: var(--line-height-tight);
   }
 
   .text-overline {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-xs);
-    line-height: var(--line-height-normal);
     font-weight: var(--font-weight-medium);
     letter-spacing: var(--letter-spacing-wider);
     text-transform: uppercase;
@@ -163,9 +234,6 @@
   .text-code {
     font-family: var(--font-family-mono);
     font-size: var(--font-size-sm);
-    line-height: var(--line-height-normal);
-    font-weight: var(--font-weight-normal);
-    letter-spacing: var(--letter-spacing-normal);
   }
 
   /* Interactive styles */
@@ -177,9 +245,7 @@
   }
 
   .text-button {
-    font-family: var(--font-family-sans);
     font-size: var(--font-size-sm);
-    line-height: var(--line-height-normal);
     font-weight: var(--font-weight-medium);
     letter-spacing: var(--letter-spacing-wide);
   }
@@ -187,6 +253,11 @@
   /* ==========================================================================
      Backgrounds + Fills
      ========================================================================== */
+
+  /* Default Hover Background */
+  .bg-base-hover {
+    @apply hover:bg-surface-sunken;
+  }
 
   /* Neutral Backgrounds */
   .bg-neutral,
@@ -525,31 +596,10 @@
      Borders + Rings + Divides
      ========================================================================== */
 
-  /* General Border Styles */
-  .border-strongest,
-  .divide-strongest {
-    border-color: var(--border-strongest);
-  }
-  .border-strong,
-  .divide-strong {
-    border-color: var(--border-strong);
-  }
-  .border-base,
-  .divide-base {
-    border-color: var(--border-base);
-  }
-  .border-weak,
-  .divide-weak {
-    border-color: var(--border-weak);
-  }
-  .border-weakest,
-  .divide-weakest {
-    border-color: var(--border-weakest);
-  }
-
+  /* General Border Styles: DON NOT USE BORDER-BASE (conflict with TEXT-BASE (as with strongest, etc..) */
   /* Neutral Border Styles */
   .border-neutral-base,
-  .divide-neutral {
+  .divide-neutral-base {
     border-color: var(--border-base);
   }
   .border-neutral-strongest,
@@ -734,7 +784,7 @@
     border-color: var(--border-strongest);
   }
   .form-basics:focus {
-    border-color: var(--border-primary-hover);
+    border-color: var(--border-primary);
     outline: none;
     --tw-ring-width: 2px;
     --tw-ring-offset-width: 2px;
@@ -780,10 +830,10 @@
     border-color: var(--border-danger);
   }
   .form-element-error:hover {
-    border-color: var(--border-danger-hover);
+    border-color: var(--border-danger-strong);
   }
   .form-element-error:focus {
-    border-color: var(--border-danger-hover);
+    border-color: var(--border-danger-strong);
     --tw-ring-color: var(--ring-danger);
   }
 
@@ -858,15 +908,8 @@
 
   /* Popcard Basics */
   .popcard-basics {
-    overflow: hidden;
-    border-radius: var(--radius-base);
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--border-default);
-    background-color: var(--background-surface-raised);
-    color: var(--text-base);
-    padding: var(--space-xxs);
-    box-shadow: var(--shadow-base);
+    @apply overflow-hidden border rounded-base bg-surface-raised text-foreground p-xxs shadow;
+    border-color: var(--border-base);
     z-index: var(--z-dropdown);
     animation-duration: var(--duration-normal);
     animation-timing-function: var(--ease-out);
@@ -920,7 +963,7 @@
   }
   .popcard-list-item:focus,
   .popcard-list-item:hover {
-    background-color: var(--background-surface-sunken);
+    @apply bg-base-hover;
   }
 
   /* Popcard List Shortcut */
@@ -952,7 +995,7 @@
   .popcard-checkbox-item:hover,
   .popcard-radio-item:focus,
   .popcard-radio-item:hover {
-    background-color: var(--background-surface-sunken);
+    @apply bg-base-hover;
   }
 
   /* Destructive Item */

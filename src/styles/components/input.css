@@ -74,7 +74,7 @@
 }
 
 .input-helper {
-  @apply text-copy-small text-weakest;
+  @apply text-helper;
 }
 
 .input-helper-error {
@@ -83,7 +83,7 @@
 
 @media print {
   .input {
-    @apply border-base bg-input text-foreground;
+    @apply border-neutral-base bg-input text-foreground;
   }
   
   .input-error {

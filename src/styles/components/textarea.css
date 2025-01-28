@@ -17,15 +17,15 @@
 }
 
 .textarea-sm {
-  @apply text-sm px-xs py-xxs min-h-[var(--space-5xl)];
+  @apply text-copy-small px-xs py-xxs min-h-[var(--space-5xl)];
 }
 
 .textarea-base {
-  @apply text-base px-sm py-xs min-h-[var(--space-6xl)];
+  @apply text-copy px-sm py-xs min-h-[var(--space-6xl)];
 }
 
 .textarea-lg {
-  @apply text-lg px-sm py-xs min-h-[var(--space-7xl)];
+  @apply text-copy-large px-sm py-xs min-h-[var(--space-7xl)];
 }
 
 .textarea-error {
@@ -45,7 +45,7 @@
 }
 
 .textarea-helper {
-  @apply text-copy-small text-weakest;
+  @apply text-helper;
 }
 
 .textarea-helper-error {
@@ -53,7 +53,7 @@
 }
 
 .textarea-counter {
-  @apply text-sm whitespace-nowrap text-weakest;
+  @apply text-caption whitespace-nowrap;
 }
 
 .textarea-counter-error {

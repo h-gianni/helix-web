@@ -10,15 +10,15 @@
  
  /* Variants */
  .separator-default {
-  @apply bg-neutral;
+  background-color: var(--border-weak);
  }
  
  .separator-muted {
-  @apply bg-neutral;
+  background-color: var(--border-weakest);
  }
  
  .separator-accent {
-  @apply bg-primary;
+  background-color: var(--border-primary);
  }
  
  /* Orientations */
@@ -36,11 +36,11 @@
  }
  
  .separator-dashed.separator-horizontal {
-  @apply border-b border-dashed border-base;
+  @apply border-b border-dashed border-neutral-base;
  }
  
  .separator-dashed.separator-vertical {
-  @apply border-r border-dashed border-base;
+  @apply border-r border-dashed border-neutral-base;
  }
  
  /* Dotted Variant */
@@ -49,11 +49,11 @@
  }
  
  .separator-dotted.separator-horizontal {
-  @apply border-b border-dotted border-base;
+  @apply border-b border-dotted border-neutral-base;
  }
  
  .separator-dotted.separator-vertical {
-  @apply border-r border-dotted border-base;
+  @apply border-r border-dotted border-neutral-base;
  }
  
  /* Gradient Variants */
@@ -62,11 +62,11 @@
  }
  
  .separator-gradient.separator-horizontal {
-  background: linear-gradient(to right, transparent, var(--border-default) 50%, transparent);
+  background: linear-gradient(to right, transparent, var(--border-base) 50%, transparent);
  }
  
  .separator-gradient.separator-vertical {
-  background: linear-gradient(to bottom, transparent, var(--border-default) 50%, transparent);
+  background: linear-gradient(to bottom, transparent, var(--border-base) 50%, transparent);
  }
  
  /* With Text */
@@ -92,11 +92,11 @@
  }
  
  .separator-with-text-gradient::before {
-  background: linear-gradient(to right, transparent, var(--border-default));
+  background: linear-gradient(to right, transparent, var(--border-base));
  }
  
  .separator-with-text-gradient::after {
-  background: linear-gradient(to right, var(--border-default), transparent);
+  background: linear-gradient(to right, var(--border-base), transparent);
  }
  
  /* Sizes */
@@ -149,11 +149,11 @@
  
  /* Double Line */
  .separator-double.separator-horizontal {
-  @apply h-[3px] bg-none border-t border-b border-base;
+  @apply h-[3px] bg-none border-t border-b border-neutral-base;
  }
  
  .separator-double.separator-vertical {
-  @apply w-[3px] bg-none border-l border-r border-base;
+  @apply w-[3px] bg-none border-l border-r border-neutral-base;
  }
  
  @keyframes shimmer {

@@ -115,13 +115,8 @@ const buttonVariants = cva(["button-base"], {
     },
     {
       variant: "neutral",
-      appearance: ["text"],
+      appearance: ["text", "icon-only"],
       className: "button-neutral-text",
-    },
-    {
-      variant: "neutral",
-      appearance: ["icon-only"],
-      className: "button-neutral-icon",
     },
     // Icon sizes
     {

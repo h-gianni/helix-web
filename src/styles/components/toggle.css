@@ -2,11 +2,11 @@
 
 /* Toggle Base */
 .toggle-base {
-  @apply inline-flex items-center justify-center rounded-md text-sm font-medium
-    hover:bg-surface-sunken hover:text-weak
+  @apply inline-flex items-center justify-center rounded-md text-copy-small text-weak font-medium
+    hover:bg-surface-sunken hover:text-foreground
     focus-visible:outline-none focus-visible:focus-ring
     disabled:pointer-events-none disabled:opacity-50
-    data-[state=on]:bg-neutral data-[state=on]:text-foreground
+    data-[state=on]:bg-surface-hollowed data-[state=on]:text-strong
     ;
   transition-property: background-color, color, border-color;
   transition-duration: var(--duration-normal);
@@ -24,7 +24,7 @@
  }
  
  .toggle-outline {
-  @apply border border-weakest bg-transparent
+  @apply border border-neutral-weak bg-transparent
     hover:bg-neutral-weakest hover:text-foreground;
  }
  

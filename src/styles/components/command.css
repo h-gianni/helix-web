@@ -10,7 +10,7 @@
 
 /* Command Input */
 .command-input-wrapper {
-  @apply flex items-center px-xs pb-xs border-b border-base;
+  @apply flex items-center px-xs pb-xs border-b border-neutral-weak;
 }
 
 .command-input-icon {

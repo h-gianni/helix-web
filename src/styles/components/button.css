@@ -13,8 +13,12 @@
   transition-timing-function: var(--ease-out);
 }
 /* Shape variants */
-.button-rounded { @apply rounded-full; }
-.button-squared { @apply rounded-none; }
+.button-rounded {
+  @apply rounded-full;
+}
+.button-squared {
+  @apply rounded-none;
+}
 
 .button-base svg {
   @apply size-4 shrink-0;
@@ -22,159 +26,116 @@
 
 /* Strong appearance */
 .button-neutral {
-  @apply text-inverse;
-  background-color: var(--background-neutral-strong);
-}
-.button-neutral:hover {
-  background-color: var(--background-neutral-stronger);
-}
-.button-neutral:active {
-  background-color: var(--background-neutral-strongest);
+  @apply bg-neutral-strong text-inverse
+  hover:bg-neutral-stronger
+  active:bg-neutral-strongest;
 }
 
 /* Subtle appearance */
 .button-neutral-subtle {
-  @apply bg-neutral-weakest text-strong;
-}
-.button-neutral-subtle:hover {
-  background-color: var(--background-neutral-weaker);
-}
-.button-neutral-subtle:active {
-  background-color: var(--background-neutral-weak);
+  @apply bg-neutral-weakest text-strong
+  hover:bg-neutral-weaker
+  active:bg-neutral-weak;
 }
 
 /* Primary variant */
 .button-primary {
-  @apply bg-primary text-inverse;
-}
-.button-primary:hover {
-  background-color: var(--background-primary-strong);
-}
-.button-primary:active {
-  background-color: var(--background-primary-stronger);
+  @apply bg-primary text-inverse
+  hover:bg-primary-strong
+  active:bg-primary-stronger;
 }
 
 .button-primary-subtle {
-  @apply bg-primary-weakest text-primary;
-}
-.button-primary-subtle:hover {
-  background-color: var(--background-primary-weaker);
-}
-.button-primary-subtle:active {
-  background-color: var(--background-primary-weak);
+  @apply bg-primary-weakest text-primary
+  hover:bg-primary-weaker
+  active:bg-primary-weak;
 }
 
 /* Warning variant */
 .button-warning {
-  @apply bg-warning text-inverse;
-}
-.button-warning:hover {
-  background-color: var(--background-warning-strong);
-}
-.button-warning:active {
-  background-color: var(--background-warning-stronger);
+  @apply bg-warning text-inverse
+  hover:bg-warning-strong
+  active:bg-warning-stronger;
 }
 
 .button-warning-subtle {
-  @apply bg-warning-weakest text-warning;
-}
-.button-warning-subtle:hover {
-  background-color: var(--background-warning-weaker);
-}
-.button-warning-subtle:active {
-  background-color: var(--background-warning-weak);
+  @apply bg-warning-weakest text-warning
+  hover:bg-warning-weaker
+  active:bg-warning-weak;
 }
 
 /* Danger variant */
 .button-danger {
-  @apply bg-danger text-inverse;
-}
-.button-danger:hover {
-  background-color: var(--background-danger-strong);
-}
-.button-danger:active {
-  background-color: var(--background-danger-stronger);
+  @apply bg-danger text-inverse
+  hover:bg-danger-strong
+  active:bg-danger-stronger;
 }
 
 .button-danger-subtle {
-  @apply bg-danger-weakest text-danger;
-}
-.button-danger-subtle:hover {
-  background-color: var(--background-danger-weaker);
-}
-.button-danger-subtle:active {
-  background-color: var(--background-danger-weak);
+  @apply bg-danger-weakest text-danger
+  hover:bg-danger-weaker
+  active:bg-danger-weak;
 }
 
 /* Outline appearance */
 .button-outline {
-  @apply border border-current hover:text-inverse
-    hover:bg-neutral-strongest disabled:hover:bg-disabled;
+  @apply border border-current 
+    hover:bg-neutral-strongest hover:text-inverse
+    disabled:hover:bg-disabled;
+}
+
+.button-neutral-outline {
+  @apply border-neutral-strongest text-foreground
+    hover:bg-neutral hover:text-inverse
+    active:bg-neutral-stronger;
 }
 
 .button-primary-outline {
   @apply border-primary text-primary
-    hover:bg-primary hover:text-inverse;
-}
-.button-primary-outline:active {
-  background-color: var(--background-primary-strong);
+    hover:bg-primary hover:text-inverse
+    active:bg-primary-strong;
 }
 
 .button-warning-outline {
   @apply border-warning text-warning
-    hover:bg-warning hover:text-inverse;
-}
-.button-warning-outline:active {
-  background-color: var(--background-warning-stronger);
+    hover:bg-warning hover:text-inverse
+    active:bg-warning-strong;
 }
 
 .button-danger-outline {
   @apply border-danger text-danger
-    hover:bg-danger hover:text-inverse;
-}
-.button-danger-outline:active {
-  background-color: var(--background-danger-stronger);
-}
-
-.button-neutral-outline {
-  @apply border-base text-foreground
-    hover:bg-neutral hover:text-inverse;
-}
-.button-neutral-outline:active {
-  background-color: var(--background-neutral-stronger);
+    hover:bg-danger hover:text-inverse
+    active:bg-danger-strong;
 }
 
 /* Text appearance */
-.button-text {
+.button-neutral-text {
   @apply hover:bg-surface-sunken active:bg-surface;
 }
 
 .button-primary-text {
-  @apply bg-transparent text-primary hover:bg-primary-weakest;
-}
-.button-primary-text:active {
-  background-color: var(--background-primary-weaker);
+  @apply bg-transparent text-primary 
+  hover:bg-primary-weakest
+  active:bg-primary-weaker;
 }
 
 .button-warning-text {
-  @apply bg-transparent text-warning hover:bg-warning-weakest;
-}
-.button-warning-text:active {
-  background-color: var(--background-warning-weaker);
+  @apply bg-transparent text-warning 
+  hover:bg-warning-weakest
+  active:bg-warning-weaker;
 }
 
 .button-danger-text {
-  @apply bg-transparent text-danger hover:bg-danger-weakest;
-}
-.button-danger-text:active {
-  background-color: var(--background-danger-weaker);
+  @apply bg-transparent text-danger 
+  hover:bg-danger-weakest
+  active:bg-danger-weaker;
 }
 
 .button-neutral-text {
   @apply bg-transparent text-foreground hover:bg-surface-sunken;
 }
 .button-neutral-text:active {
-  background-color: var(--background-neutral-weaker);
+  @apply bg-neutral-weaker;
 }
 
 /* Icon-only appearance */
@@ -185,14 +146,28 @@
 }
 
 /* Sizes */
-.button-sm { @apply h-8 min-w-8 px-sm text-sm; }
-.button-base-size { @apply h-10 min-w-10 px-md text-base leading-null; }
-.button-lg { @apply h-12 min-w-12 px-lg text-base; }
+.button-sm {
+  @apply h-8 min-w-8 px-sm text-sm;
+}
+.button-base-size {
+  @apply h-10 min-w-10 px-md text-base leading-null;
+}
+.button-lg {
+  @apply h-12 min-w-12 px-lg text-base;
+}
 
 /* Icon sizes */
-.button-icon-sm { @apply size-8 p-0; }
-.button-icon-base { @apply size-10 p-0; }
-.button-icon-lg { @apply size-12 p-0; }
+.button-icon-sm {
+  @apply size-8 p-0;
+}
+.button-icon-base {
+  @apply size-10 p-0;
+}
+.button-icon-lg {
+  @apply size-12 p-0;
+}
 
 /* Loading state */
-.button-loading { @apply cursor-wait opacity-100; }
+.button-loading {
+  @apply cursor-wait opacity-100;
+}

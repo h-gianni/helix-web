@@ -21,7 +21,7 @@
 
 
 .accordionRoot {
-  @apply w-full min-w-[400px];
+  @apply w-full;
 }
 
 /* Size variants using typography tokens */
@@ -67,13 +67,12 @@
 
 .chevronIcon {
   @apply size-4 shrink-0 
-         text-weakest
          transition-transform;
   transition-duration: var(--duration-fast);
 }
 
 .accordionContent {
-  @apply overflow-hidden text-copy text-weakest;
+  @apply overflow-hidden text-copy;
 }
 .accordionRoot.sm .accordionContent {
   @apply text-copy-small;

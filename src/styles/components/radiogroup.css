@@ -21,15 +21,15 @@
 }
 
 .radio-group-compact {
-  @apply flex overflow-hidden rounded-lg border border-base;
+  @apply flex overflow-hidden rounded-lg border border-neutral-base;
 }
 
 .radio-group-compact-vertical {
-  @apply flex-col [&>*+*]:border-t [&>*+*]:border-base;
+  @apply flex-col [&>*+*]:border-t [&>*+*]:border-neutral-base;
 }
 
 .radio-group-compact-horizontal {
-  @apply h-full [&>*+*]:border-l [&>*+*]:border-base;
+  @apply h-full [&>*+*]:border-l [&>*+*]:border-neutral-base;
 }
 
 .radio-group-error {
@@ -110,7 +110,7 @@
 }
 
 .radio-label-wrapper-blocks {
-  @apply rounded-lg border border-base;
+  @apply rounded-lg border border-neutral-base;
 
   &[data-state="checked"] {
     @apply border-primary;
@@ -159,11 +159,11 @@
 
 @media print {
   .radio-base {
-    @apply bg-input text-foreground border-base print:border;
+    @apply bg-input text-foreground border-neutral-base print:border;
   }
   
   .radio-group-compact,
   .radio-label-wrapper-blocks {
-    @apply border-base print:border;
+    @apply border-neutral-base print:border;
   }
 }

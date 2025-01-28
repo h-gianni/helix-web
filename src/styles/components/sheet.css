@@ -36,7 +36,7 @@
 /* Sheet Content Sides */
 .sheet-content-top {
   @apply inset-x-0 top-0;
-  border-bottom: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-base);
   
   @apply data-[state=closed]:slide-out-to-top
          data-[state=open]:slide-in-from-top;
@@ -44,7 +44,7 @@
 
 .sheet-content-bottom {
   @apply inset-x-0 bottom-0;
-  border-top: 1px solid var(--border-default);
+  border-top: 1px solid var(--border-base);
   
   @apply data-[state=closed]:slide-out-to-bottom
          data-[state=open]:slide-in-from-bottom;
@@ -52,7 +52,7 @@
 
 .sheet-content-left {
   @apply inset-y-0 left-0 h-full w-3/4 sm:max-w-sm;
-  border-right: 1px solid var(--border-default);
+  border-right: 1px solid var(--border-base);
   
   @apply data-[state=closed]:slide-out-to-left
          data-[state=open]:slide-in-from-left;
@@ -60,7 +60,7 @@
 
 .sheet-content-right {
   @apply inset-y-0 right-0 h-full w-3/4 sm:max-w-sm;
-  border-left: 1px solid var(--border-default);
+  border-left: 1px solid var(--border-base);
   
   @apply data-[state=closed]:slide-out-to-right
          data-[state=open]:slide-in-from-right;

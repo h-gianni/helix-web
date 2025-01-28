@@ -28,6 +28,6 @@
  /* Print Styles */
  @media print {
   .switch-root {
-    @apply shadow-none border border-base;
+    @apply shadow-none border border-neutral-base;
   }
  }
