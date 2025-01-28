@@ -9,7 +9,7 @@ import '../src/styles/tokens/semantic.css';
 import '../src/styles/tokens/typography.css';
 
 // Then globals which contains Tailwind directives
-import '../src/styles/globals.css';
+// import '../src/styles/globals.css';
 
 // Then component styles
 import '../src/styles/components/index.css';
