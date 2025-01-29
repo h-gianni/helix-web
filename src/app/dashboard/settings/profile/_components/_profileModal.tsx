@@ -1,17 +1,9 @@
 // app/dashboard/settings/_profileModal.tsx
 import { useState, useEffect } from 'react';
 import { useUser } from "@clerk/nextjs";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/Dialog";
+import { DialogWithConfig } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Save, AlertCircle } from "lucide-react";
 
@@ -46,15 +38,17 @@ export function ProfileModal({
     setError(null);
   }, [profile, isOpen]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const hasChanges = () => 
+    firstName !== profile.firstName ||
+    lastName !== profile.lastName ||
+    title !== (profile.title || '');
+
+  const handleSubmit = async () => {
     try {
       setSaving(true);
       setError(null);
 
       if (user) {
-        // Update metadata first
         await user.update({
           unsafeMetadata: {
             ...user.unsafeMetadata,
@@ -62,12 +56,9 @@ export function ProfileModal({
           },
         });
 
-        // Update name using the API route
         const response = await fetch('/api/user/profile', {
           method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             firstName: firstName.trim(),
             lastName: lastName.trim(),
@@ -83,107 +74,79 @@ export function ProfileModal({
         onClose();
       }
     } catch (err) {
-      console.error('Error updating profile:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setSaving(false);
     }
   };
 
-  const hasChanges = () => {
-    return (
-      firstName !== profile.firstName ||
-      lastName !== profile.lastName ||
-      title !== (profile.title || '')
-    );
-  };
-
   const handleClose = () => {
-    if (hasChanges()) {
-      const message = 'You have unsaved changes. Are you sure you want to close?';
-      if (!window.confirm(message)) return;
+    if (hasChanges() && !confirm('You have unsaved changes. Are you sure you want to close?')) {
+      return;
     }
     onClose();
   };
 
+  const footerConfig = {
+    primaryAction: {
+      label: 'Save Changes',
+      onClick: handleSubmit,
+      isLoading: saving,
+      disabled: !hasChanges(),
+    },
+    secondaryAction: {
+      label: 'Cancel',
+      onClick: handleClose,
+      disabled: saving
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent size="base">
-        <DialogHeader>
-          <DialogTitle>Edit Profile</DialogTitle>
-          <DialogDescription>
-            Update your personal information and job title.
-          </DialogDescription>
-        </DialogHeader>
+    <DialogWithConfig 
+      open={isOpen}
+      onOpenChange={handleClose}
+      title="Edit Profile"
+      size="base"
+      footer="two-actions"
+      footerConfig={footerConfig}
+    >
+      <div className="space-y-6">
+        {error && (
+          <Alert variant="danger">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <Alert variant="danger">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Input
-                id="firstName"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Enter first name"
-                inputSize="base"
-                withLabel
-                label="First Name"
-              />
-            </div>
+        <div className="space-y-4">
+          <Input
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="Enter first name"
+            inputSize="base"
+            withLabel
+            label="First Name"
+          />
 
-            <div className="space-y-2">
-              <Input
-                id="lastName"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Enter last name"
-                inputSize="base"
-                withLabel
-                label="Last Name"
-              />
-            </div>
+          <Input
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Enter last name"
+            inputSize="base"
+            withLabel
+            label="Last Name"
+          />
 
-            <div className="space-y-2">
-              <Input
-                id="jobTitle"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g., Senior Developer"
-                inputSize="base"
-                withLabel
-                label="Job Title"
-              />
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="neutral"
-              appearance="outline"
-              onClick={handleClose}
-              disabled={saving}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={saving || !hasChanges()}
-              isLoading={saving}
-              leadingIcon={<Save className="h-4 w-4" />}
-            >
-              Save Changes
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          <Input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g., Senior Developer"
+            inputSize="base"
+            withLabel
+            label="Job Title"
+          />
+        </div>
+      </div>
+    </DialogWithConfig>
   );
 }

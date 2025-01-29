@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto_Flex } from "next/font/google";
-import "./globals.css";
+import "../styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { TeamsProvider } from "@/lib/context/teams-context";

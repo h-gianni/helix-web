@@ -46,9 +46,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       setCharCount(String(value || '').length);
     }, [value]);
 
-    // The base textarea element with counter and helper text
+    // The base textarea element
     const textareaElement = (
-      <div className="w-full">
+      <div className="textarea-wrapper">
         <textarea
           id={textareaId}
           className={cn(
@@ -75,31 +75,33 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           aria-describedby={helperText ? `${textareaId}-helper` : undefined}
           {...props}
         />
-        {(helperText || showCount) && (
-          <div className="textarea-footer">
-            {helperText && (
-              <p 
-                id={`${textareaId}-helper`}
-                className={cn(
-                  "textarea-helper",
-                  error && "textarea-helper-error"
-                )}
-              >
-                {helperText}
-              </p>
+      </div>
+    );
+
+    // Footer element with helper text and character count
+    const textareaFooter = (helperText || showCount) && (
+      <div className="textarea-footer">
+        {helperText && (
+          <p 
+            id={`${textareaId}-helper`}
+            className={cn(
+              "textarea-helper",
+              error && "textarea-helper-error"
             )}
-            {showCount && (
-              <div 
-                className={cn(
-                  "textarea-counter",
-                  error && "textarea-counter-error",
-                  !helperText && "textarea-counter-solo"
-                )}
-              >
-                {charCount}
-                {maxLength && ` / ${maxLength}`}
-              </div>
+          >
+            {helperText}
+          </p>
+        )}
+        {showCount && (
+          <div 
+            className={cn(
+              "textarea-counter",
+              error && "textarea-counter-error",
+              !helperText && "textarea-counter-solo"
             )}
+          >
+            {charCount}
+            {maxLength && ` / ${maxLength}`}
           </div>
         )}
       </div>
@@ -110,6 +112,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
       return (
         <div className="form-control">
           {textareaElement}
+          {textareaFooter}
         </div>
       );
     }
@@ -127,6 +130,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           {label}
         </Label>
         {textareaElement}
+        {textareaFooter}
       </div>
     );
   }

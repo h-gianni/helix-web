@@ -52,6 +52,8 @@ export async function GET() {
       },
     });
 
+    console.log("Fetched business functions:", businessFunctions);
+
     return NextResponse.json<ApiResponse<TeamFunctionResponse[]>>({
       success: true,
       data: businessFunctions as TeamFunctionResponse[],

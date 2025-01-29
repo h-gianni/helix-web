@@ -1,36 +1,37 @@
 import * as React from "react";
-import type { Meta, StoryObj } from '@storybook/react';
-import { RadioGroup, RadioGroupItem } from './index';
+import type { Meta, StoryObj } from "@storybook/react";
+import { RadioGroup, RadioGroupItem } from "./index";
+import { Label } from "@/components/ui/Label";
 import { cn } from "@/lib/utils";
 
 const meta = {
-  title: 'Components/RadioGroup',
+  title: "Components/RadioGroup",
   component: RadioGroup,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     error: {
-      control: 'boolean',
-      description: 'Sets the error state of the radio group'
+      control: "boolean",
+      description: "Sets the error state of the radio group",
     },
     disabled: {
-      control: 'boolean',
-      description: 'Disables the entire radio group'
+      control: "boolean",
+      description: "Disables the entire radio group",
     },
     orientation: {
-      control: 'radio',
-      options: ['vertical', 'horizontal'],
-      description: 'Layout orientation of the radio group',
-      defaultValue: 'vertical'
+      control: "radio",
+      options: ["vertical", "horizontal"],
+      description: "Layout orientation of the radio group",
+      defaultValue: "vertical",
     },
     variant: {
-      control: 'radio',
-      options: ['default', 'blocks', 'compact'],
-      description: 'Visual style variant of the radio group',
-      defaultValue: 'default'
-    }
+      control: "radio",
+      options: ["default", "blocks", "compact"],
+      description: "Visual style variant of the radio group",
+      defaultValue: "default",
+    },
   },
 } satisfies Meta<typeof RadioGroup>;
 
@@ -41,74 +42,77 @@ const options = [
   {
     value: "option-1",
     label: "Default option",
-    description: "Perfect for individuals and small projects"
+    description: "Perfect for individuals and small projects",
   },
   {
     value: "option-2",
     label: "Alternative choice",
-    description: "Advanced features for professionals"
+    description: "Advanced features for professionals",
   },
   {
     value: "option-3",
     label: "Third selection",
-    description: "Custom solutions for large organizations"
-  }
+    description: "Custom solutions for large organizations",
+  },
 ];
 
 // Default example with all controls
 export const Default: Story = {
   args: {
-    variant: 'default',
-    orientation: 'vertical',
+    variant: "default",
+    orientation: "vertical",
     error: false,
     disabled: false,
   },
   render: (args) => {
     const getContainerStyles = () => {
-      if (args.orientation === 'horizontal') {
-        if (args.variant === 'default') {
-          return 'w-auto';
+      if (args.orientation === "horizontal") {
+        if (args.variant === "default") {
+          return "w-auto";
         }
-        return 'w-auto min-w-[800px]';
+        return "w-auto min-w-[800px]";
       }
-      return 'w-[320px]';
+      return "w-[320px]";
     };
 
     const getRadioGroupStyles = () => {
-      if (args.orientation === 'horizontal') {
+      if (args.orientation === "horizontal") {
         switch (args.variant) {
-          case 'default':
-            return 'flex flex-row gap-[var(--space-lg)]';
-          case 'blocks':
-            return 'grid grid-flow-col gap-[var(--space)]';
-          case 'compact':
-            return 'flex flex-row divide-x divide-[var(--border)] border border-[var(--border)] rounded-[var(--radius-lg)]';
+          case "default":
+            return "flex flex-row gap-[var(--space-lg)]";
+          case "blocks":
+            return "grid grid-flow-col gap-[var(--space)]";
+          case "compact":
+            return "flex flex-row divide-x divide-[var(--border)] border border-[var(--border)] rounded-[var(--radius-lg)]";
           default:
-            return '';
+            return "";
         }
       }
-      return '';
+      return "";
     };
 
     const getItemStyles = () => {
-      if (args.orientation === 'horizontal' && (args.variant === 'blocks' || args.variant === 'compact')) {
-        return 'flex-1';
+      if (
+        args.orientation === "horizontal" &&
+        (args.variant === "blocks" || args.variant === "compact")
+      ) {
+        return "flex-1";
       }
-      return '';
+      return "";
     };
 
     return (
       <div className={getContainerStyles()}>
-        <RadioGroup 
+        <RadioGroup
           defaultValue="option-1"
           className={getRadioGroupStyles()}
           {...args}
         >
-          {options.map((option) => (
-            args.variant === 'default' ? (
-              <RadioGroupItem 
+          {options.map((option) =>
+            args.variant === "default" ? (
+              <RadioGroupItem
                 key={option.value}
-                value={option.value} 
+                value={option.value}
                 id={`default-${option.value}`}
                 aria-invalid={args.error}
                 label={option.label}
@@ -123,16 +127,17 @@ export const Default: Story = {
                   description={option.description}
                   aria-invalid={args.error}
                   className={cn(
-                    args.variant === 'compact' && args.orientation === 'horizontal' && [
-                      'rounded-none border-0',
-                      'first:rounded-l-[var(--radius-lg)]',
-                      'last:rounded-r-[var(--radius-lg)]'
-                    ]
+                    args.variant === "compact" &&
+                      args.orientation === "horizontal" && [
+                        "rounded-none border-0",
+                        "first:rounded-l-[var(--radius-lg)]",
+                        "last:rounded-r-[var(--radius-lg)]",
+                      ]
                   )}
                 />
               </div>
             )
-          ))}
+          )}
         </RadioGroup>
       </div>
     );
@@ -249,56 +254,56 @@ const pricingPlans = [
     title: "Startup",
     price: "$29",
     period: "per month",
-    features: ["Up to 5 users", "Basic support", "10GB storage"]
+    features: ["Up to 5 users", "Basic support", "10GB storage"],
   },
   {
     id: "business",
     title: "Business",
     price: "$99",
     period: "per month",
-    features: ["Up to 20 users", "Priority support", "50GB storage"]
+    features: ["Up to 20 users", "Priority support", "50GB storage"],
   },
   {
     id: "enterprise",
     title: "Enterprise",
     price: "Custom",
     period: "pricing",
-    features: ["Unlimited users", "24/7 support", "Custom storage"]
-  }
+    features: ["Unlimited users", "24/7 support", "Custom storage"],
+  },
 ];
 
 export const WithPricing: Story = {
   args: {
-    variant: 'blocks',
-    orientation: 'vertical',
+    variant: "blocks",
+    orientation: "vertical",
     error: false,
     disabled: false,
   },
   render: (args) => {
     const getContainerStyles = () => {
-      if (args.orientation === 'horizontal') {
-        return 'w-auto min-w-[900px]';
+      if (args.orientation === "horizontal") {
+        return "w-auto min-w-[900px]";
       }
-      return 'w-[400px]';
+      return "w-[400px]";
     };
 
     const getRadioGroupStyles = () => {
-      if (args.orientation === 'horizontal') {
+      if (args.orientation === "horizontal") {
         switch (args.variant) {
-          case 'blocks':
-            return 'grid grid-flow-col gap-[var(--space)]';
-          case 'compact':
-            return 'flex flex-row divide-x divide-[var(--border)] border border-[var(--border)] rounded-[var(--radius-lg)]';
+          case "blocks":
+            return "grid grid-flow-col gap-[var(--space)]";
+          case "compact":
+            return "flex flex-row divide-x divide-[var(--border)] border border-[var(--border)] rounded-[var(--radius-lg)]";
           default:
-            return '';
+            return "";
         }
       }
-      return '';
+      return "";
     };
 
     return (
       <div className={getContainerStyles()}>
-        <RadioGroup 
+        <RadioGroup
           defaultValue="startup"
           className={getRadioGroupStyles()}
           {...args}
@@ -311,30 +316,40 @@ export const WithPricing: Story = {
                 id={`pricing-${plan.id}`}
                 aria-invalid={args.error}
                 className={cn(
-                  args.variant === 'compact' && args.orientation === 'horizontal' && [
-                    'rounded-none border-0',
-                    'first:rounded-l-[var(--radius-lg)]',
-                    'last:rounded-r-[var(--radius-lg)]'
-                  ]
+                  args.variant === "compact" &&
+                    args.orientation === "horizontal" && [
+                      "rounded-none border-0",
+                      "first:rounded-l-[var(--radius-lg)]",
+                      "last:rounded-r-[var(--radius-lg)]",
+                    ]
                 )}
                 label={
-                  <div className="flex justify-between items-start mt-0.5">
-                    <span>{plan.title}</span>
-                    <div className="text-[var(--text-primary)]">
-                      <span className="text-lg font-semibold">{plan.price}</span>
-                      <span className="text-sm font-normal text-[var(--text-muted)]"> {plan.period}</span>
+                  <div className="flex gap-md justify-between items-start mt-0.5">
+                    <div className="flex flex-col">
+                      <div>{plan.title}</div>
+                      <ul className="mt-2 list-disc list-small text-text-lightest">
+                        {plan.features.map((feature, index) => (
+                          <li
+                            key={index}
+                          >
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="flex flex-col justify-end">
+                      <span className="text-lg font-semibold leading-none text-right text-primary">
+                        {plan.price}
+                      </span>
+                      <span className="text-sm font-normal text-right text-text-lightest">
+                        {" "}
+                        {plan.period}
+                      </span>
                     </div>
                   </div>
                 }
-              >
-                <ul className="mt-2 list-disc list-small">
-                  {plan.features.map((feature, index) => (
-                    <li key={index} className="text-sm text-[var(--text-muted)]">
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-              </RadioGroupItem>
+              ></RadioGroupItem>
             </div>
           ))}
         </RadioGroup>
@@ -363,9 +378,9 @@ export const HorizontalLayout: Story = {
 
       <div className="space-y-4">
         <h3 className="text-heading-4">Blocks Horizontal</h3>
-        <RadioGroup 
-          defaultValue="option-1" 
-          variant="blocks" 
+        <RadioGroup
+          defaultValue="option-1"
+          variant="blocks"
           orientation="horizontal"
           className="grid grid-flow-col gap-[var(--space)]"
         >
@@ -384,9 +399,9 @@ export const HorizontalLayout: Story = {
 
       <div className="space-y-4">
         <h3 className="text-heading-4">Compact Horizontal</h3>
-        <RadioGroup 
-          defaultValue="option-1" 
-          variant="compact" 
+        <RadioGroup
+          defaultValue="option-1"
+          variant="compact"
           orientation="horizontal"
         >
           {options.map((option) => (

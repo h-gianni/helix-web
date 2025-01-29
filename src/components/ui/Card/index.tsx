@@ -2,9 +2,9 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cn } from "@/lib/utils";
 
-export type CardSize = "sm" | "default" | "lg" | "xl";
-export type CardShadow = "none" | "sm" | "default" | "lg" | "xl";
-export type CardContentAlignment = "default" | "center";
+export type CardSize = "sm" | "base" | "lg" | "xl";
+export type CardShadow = "none" | "sm" | "base" | "lg" | "xl";
+export type CardContentAlignment = "base" | "center";
 
 type BaseProps = {
   asChild?: boolean;
@@ -34,7 +34,7 @@ type CardContextType = {
   size: CardSize;
 };
 
-const CardContext = React.createContext<CardContextType>({ size: "default" });
+const CardContext = React.createContext<CardContextType>({ size: "base" });
 
 const useCardContext = () => {
   const context = React.useContext(CardContext);
@@ -47,7 +47,7 @@ const useCardContext = () => {
 const Card = React.forwardRef<HTMLElement, CardProps>((props, ref) => {
   const {
     className,
-    size = "default",
+    size = "base",
     shadow = "none",
     border = true,
     background = true,
@@ -55,7 +55,7 @@ const Card = React.forwardRef<HTMLElement, CardProps>((props, ref) => {
     clickable = false,
     onClick,
     asChild = false,
-    contentAlignment = "default",
+    contentAlignment = "base",
     ...rest
   } = props;
 

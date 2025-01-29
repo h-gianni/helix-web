@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -17,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/Select";
 import { Label } from "@/components/ui/Label";
-import { User, Users } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import type {
   BusinessActivityResponse,
@@ -88,7 +89,7 @@ export default function PerformanceRatingModal({
         }
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError("Failed to fetch teams");
     }
   };
@@ -101,7 +102,7 @@ export default function PerformanceRatingModal({
         setMembers(data.data);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError("Failed to fetch team members");
     }
   };
@@ -116,7 +117,7 @@ export default function PerformanceRatingModal({
         setInitiatives(teamInitiatives);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError("Failed to fetch initiatives");
     } finally {
       setLoading(false);
@@ -128,7 +129,6 @@ export default function PerformanceRatingModal({
     try {
       setSaving(true);
       setError(null);
-
       await onSubmit({
         teamId: selectedTeamId,
         memberId: selectedMemberId,
@@ -136,7 +136,6 @@ export default function PerformanceRatingModal({
         rating,
         feedback: feedback.trim() || undefined,
       });
-
       handleReset();
       onClose();
     } catch (err) {
@@ -154,15 +153,9 @@ export default function PerformanceRatingModal({
     setFeedback("");
   };
 
-  const getSelectedMemberName = () => {
-    if (initialMemberName) return initialMemberName;
-    const member = members.find((m) => m.id === selectedMemberId);
-    return member?.user.name || member?.user.email || "";
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent size="base">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Performance Rating</DialogTitle>
           <DialogDescription>
@@ -170,139 +163,109 @@ export default function PerformanceRatingModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4">
           {error && (
             <Alert variant="danger">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
-          {/* Team Selection */}
           {!initialTeamId && teams.length > 1 && (
-            <div>
-              <Select 
-                value={selectedTeamId} 
-                onValueChange={setSelectedTeamId}
-                width="full"
-                withLabel
-                label="Select Team"
-              >
-                <SelectTrigger size="base">
-                  <SelectValue placeholder="Select a team" />
-                </SelectTrigger>
-                <SelectContent>
-                  {teams.map((team) => (
-                    <SelectItem 
-                      key={team.id} 
-                      value={team.id} 
-                      size="base"
-                    >
-                      {team.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* Member Selection */}
-          {!initialMemberId && selectedTeamId && (
-            <div>
-              <Select 
-                value={selectedMemberId} 
-                onValueChange={setSelectedMemberId}
-                width="full"
-                withLabel
-                label="Select Member"
-              >
-                <SelectTrigger size="base">
-                  <SelectValue placeholder="Select a member" />
-                </SelectTrigger>
-                <SelectContent>
-                  {members.map((member) => (
-                    <SelectItem 
-                      key={member.id} 
-                      value={member.id} 
-                      size="base"
-                    >
-                      {member.user.name || member.user.email}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* Initiative Selection */}
-          <div>
-            <Select
-              value={selectedInitiativeId}
-              onValueChange={setSelectedInitiativeId}
+            <Select 
+              value={selectedTeamId} 
+              onValueChange={setSelectedTeamId}
               width="full"
               withLabel
-              label="Select Initiative"
+              label="Select Team"
             >
-              <SelectTrigger 
-                size="base"
-                disabled={loading || !selectedTeamId || !selectedMemberId}
-              >
-                <SelectValue
-                  placeholder={
-                    loading
-                      ? "Loading initiatives..."
-                      : !selectedTeamId || !selectedMemberId
-                      ? "Select team and member first"
-                      : "Select an initiative"
-                  }
-                />
+              <SelectTrigger>
+                <SelectValue placeholder="Select a team" />
               </SelectTrigger>
               <SelectContent>
-                {initiatives.length === 0 ? (
-                  <div className="p-2 text-sm text-muted-foreground">
-                    {loading ? "Loading..." : "No initiatives available for this team"}
-                  </div>
-                ) : (
-                  initiatives.map((initiative) => (
-                    <SelectItem 
-                      key={initiative.id} 
-                      value={initiative.id} 
-                      size="base"
-                    >
-                      {initiative.name}
-                    </SelectItem>
-                  ))
-                )}
+                {teams.map((team) => (
+                  <SelectItem key={team.id} value={team.id}>
+                    {team.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
-          </div>
+          )}
 
-          {/* Rating */}
+          {!initialMemberId && selectedTeamId && (
+            <Select 
+              value={selectedMemberId} 
+              onValueChange={setSelectedMemberId}
+              width="full"
+              withLabel
+              label="Select Member"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a member" />
+              </SelectTrigger>
+              <SelectContent>
+                {members.map((member) => (
+                  <SelectItem key={member.id} value={member.id}>
+                    {member.user.name || member.user.email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+
+          <Select
+            value={selectedInitiativeId}
+            onValueChange={setSelectedInitiativeId}
+            width="full"
+            withLabel
+            label="Select Initiative"
+          >
+            <SelectTrigger disabled={loading || !selectedTeamId || !selectedMemberId}>
+              <SelectValue
+                placeholder={
+                  loading
+                    ? "Loading initiatives..."
+                    : !selectedTeamId || !selectedMemberId
+                    ? "Select team and member first"
+                    : "Select an initiative"
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {initiatives.length === 0 ? (
+                <div className="p-2 text-sm text-muted-foreground">
+                  {loading ? "Loading..." : "No initiatives available for this team"}
+                </div>
+              ) : (
+                initiatives.map((initiative) => (
+                  <SelectItem key={initiative.id} value={initiative.id}>
+                    {initiative.name}
+                  </SelectItem>
+                ))
+              )}
+            </SelectContent>
+          </Select>
+
           <div className="space-y-2">
             <Label>Rating</Label>
-            <div>
             <StarRating 
-      value={rating} 
-      onChange={setRating} 
-      size="lg"
-      showValue={true}
-    />
-            </div>
-          </div>
-
-          {/* Feedback */}
-          <div>
-            <Textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Enter feedback..."
-              rows={3}
-              inputSize="base"
-              showCount
-              maxLength={1000}
-              withLabel
-              label="Feedback (Optional)"
+              value={rating} 
+              onChange={setRating} 
+              size="lg"
+              showValue={true}
             />
           </div>
+
+          <Textarea
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            placeholder="Enter feedback..."
+            rows={3}
+            inputSize="base"
+            showCount
+            maxLength={1000}
+            withLabel
+            label="Feedback (Optional)"
+          />
         </form>
 
         <DialogFooter>

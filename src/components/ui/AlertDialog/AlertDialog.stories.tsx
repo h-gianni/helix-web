@@ -9,28 +9,28 @@ import {
   AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
-  type AlertDialogContentProps,
+  type AlertDialogContentProps
 } from './index';
 import { Button } from '@/components/ui/Button';
+
+type DialogVariant = 'neutral' | 'primary' | 'warning' | 'danger';
+
+const VARIANTS: DialogVariant[] = ['neutral', 'primary', 'warning', 'danger'];
 
 const meta = {
   title: 'Components/AlertDialog',
   component: AlertDialogContent,
-  parameters: {
-    layout: 'centered',
-  },
+  parameters: { layout: 'centered' },
   tags: ['autodocs'],
   argTypes: {
     variant: {
       control: 'select',
-      options: ['primary', 'danger', 'warning', 'neutral'],
-      defaultValue: 'primary',
-      description: 'The visual style of the alert dialog',
+      options: VARIANTS,
+      defaultValue: 'neutral' as DialogVariant,
     },
     withIcon: {
       control: 'boolean',
       defaultValue: true,
-      description: 'Whether to show the variant-specific icon',
     },
   },
 } satisfies Meta<typeof AlertDialogContent>;
@@ -38,134 +38,79 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof AlertDialogContent>;
 
-// Base example of an alert dialog with configurable icon and variant
 export const Default: Story = {
   render: (args) => (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant={args.variant === 'neutral' ? 'neutral' : args.variant}>Launch Alert Dialog</Button>
+        <Button variant={args.variant as DialogVariant}>Open Dialog</Button>
       </AlertDialogTrigger>
       <AlertDialogContent {...args}>
         <AlertDialogHeader>
           <AlertDialogTitle>Alert Dialog Title</AlertDialogTitle>
           <AlertDialogDescription>
-            This is a customizable alert dialog. You can change the variant and toggle the icon
-            using the controls below.
+            Configurable alert dialog with variant and icon options.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant={args.variant}>
-            Continue
-          </AlertDialogAction>
+          <AlertDialogAction variant={args.variant as DialogVariant}>Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   ),
   args: {
     withIcon: true,
-    variant: 'primary',
+    variant: 'neutral' as DialogVariant,
   },
 };
 
-// Example showcasing different variants
+const DIALOG_CONFIGS = [
+  {
+    variant: 'neutral' as DialogVariant,
+    title: 'Help Information',
+    description: 'Manage your workspace settings and preferences.',
+    action: 'Learn More'
+  },
+  {
+    variant: 'primary' as DialogVariant,
+    title: 'New Update Available',
+    description: 'A new version is available. Update now?',
+    action: 'Update Now'
+  },
+  {
+    variant: 'warning' as DialogVariant,
+    title: 'System Resources Low',
+    description: 'Your system is running low on storage.',
+    action: 'View Details'
+  },
+  {
+    variant: 'danger' as DialogVariant,
+    title: 'Delete Project',
+    description: 'This will permanently delete all project data.',
+    action: 'Delete'
+  }
+] as const;
+
 export const VariantExamples: Story = {
   render: () => (
     <div className="flex flex-col gap-4">
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="primary">Launch Alert Dialog</Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent variant="primary">
-          <AlertDialogHeader>
-            <AlertDialogTitle>New Update Available</AlertDialogTitle>
-            <AlertDialogDescription>
-              A new version of the application is available. Would you like to update now?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Later</AlertDialogCancel>
-            <AlertDialogAction variant="primary">Update Now</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="danger">Launch Alert Dialog</Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent variant="danger">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Project</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete the project and all associated data.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction variant="danger">Delete</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="warning">Launch Alert Dialog</Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent variant="warning">
-          <AlertDialogHeader>
-            <AlertDialogTitle>System Resources Low</AlertDialogTitle>
-            <AlertDialogDescription>
-              Your system is running low on storage. Consider freeing up some space.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Ignore</AlertDialogCancel>
-            <AlertDialogAction variant="warning">View Details</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="neutral">Launch Alert Dialog</Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent variant="neutral">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Help Information</AlertDialogTitle>
-            <AlertDialogDescription>
-              This feature allows you to manage your workspace settings and preferences.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Close</AlertDialogCancel>
-            <AlertDialogAction variant="neutral">Learn More</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {DIALOG_CONFIGS.map(({ variant, title, description, action }) => (
+        <AlertDialog key={variant}>
+          <AlertDialogTrigger asChild>
+            <Button variant={variant}>Open {variant} Dialog</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent variant={variant}>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{title}</AlertDialogTitle>
+              <AlertDialogDescription>{description}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction variant={variant}>{action}</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ))}
     </div>
-  ),
-};
-
-// Example without icon
-export const WithoutIcon: Story = {
-  render: () => (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="primary">Launch Alert Dialog</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent withIcon={false} variant="primary">
-        <AlertDialogHeader>
-          <AlertDialogTitle>Simple Alert</AlertDialogTitle>
-          <AlertDialogDescription>
-            This is a simple alert dialog without an icon.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="primary">Continue</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
   ),
 };

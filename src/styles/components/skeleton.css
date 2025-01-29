@@ -1,0 +1,74 @@
+/* skeleton.css */
+
+/* Base Skeleton */
+.skeleton-base {
+  @apply rounded-md animate-pulse bg-surface-sunken;
+ }
+ 
+ /* Sizes */
+ .skeleton-xs {
+  @apply h-md;
+ }
+ 
+ .skeleton-sm {
+  @apply h-md;
+ }
+ 
+ .skeleton-md {
+  @apply h-lg;
+ }
+ 
+ .skeleton-lg {
+  @apply h-xl;
+ }
+ 
+ .skeleton-xl {
+  @apply h-2xl;
+ }
+ 
+ /* Shimmer Variant */
+ .skeleton-shimmer {
+  @apply relative overflow-hidden;
+ }
+ 
+ .skeleton-shimmer::before {
+  @apply absolute inset-0 -translate-x-full;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--background-surface) 5%, transparent),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+  content: '';
+ }
+ 
+ /* Avatar Skeleton */
+ .skeleton-avatar {
+  @apply rounded-full;
+ }
+ 
+ /* Card Skeleton */
+ .skeleton-card {
+  @apply rounded-lg p-md border border-weakest gap-sm;
+ }
+ 
+ /* Table Skeleton */
+ .skeleton-table {
+  @apply flex flex-col gap-md;
+ }
+ 
+ .skeleton-table-row {
+  @apply flex gap-md;
+ }
+ 
+ /* Group */
+ .skeleton-group {
+  @apply flex flex-col gap-md;
+ }
+ 
+ @keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+ }

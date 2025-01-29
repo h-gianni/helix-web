@@ -1,178 +1,220 @@
-/* tokens/foundations.css */
+/* src/styles/foundations.css */
+
 :root {
-   /* ==========================================================================
-      Primary Colors - cobalt blue
+  /* ==========================================================================
+      Color System
       ========================================================================== */
-   --primary-25: 239 243 255; /* #EFF3FF */
-   --primary-50: 223 230 254; /* #DFE6FE */
-   --primary-100: 191 206 254; /* #BFCEFE */
-   --primary-200: 158 183 254; /* #9EB7FE */
-   --primary-300: 121 159 253; /* #799FFD */
-   --primary-400: 78 136 253; /* #4E88FD */
-   --primary-500: 48 113 228; /* #3071E4 - Base */
-   --primary-600: 40 95 191; /* #285FBF */
-   --primary-700: 32 76 152; /* #204C98 */
-   --primary-800: 24 58 116; /* #183A74 */
-   --primary-900: 16 39 77; /* #10274D */
-   --primary-950: 11 26 52; /* #0B1A34 */
- 
-   /* ==========================================================================
-      Accent Colors - blue_violet
+
+  /* Base Colors */
+  --color-white: 255 255 255; /* #FFFFFF */
+  --color-black: 0 0 0; /* #000000 */
+
+  /* Neutral Colors */
+  --color-neutral-25: 249 249 249; /* #F9F9F9 */
+  --color-neutral-50: 231 231 231; /* #E7E7E7 */
+  --color-neutral-100: 208 208 208; /* #D0D0D0 */
+  --color-neutral-200: 184 184 184; /* #B8B8B8 */
+  --color-neutral-300: 161 161 161; /* #A1A1A1 */
+  --color-neutral-400: 141 141 141; /* #8D8D8D */
+  --color-neutral-500: 118 118 118; /* #767676 */
+  --color-neutral-600: 97 97 97; /* #616161 */
+  --color-neutral-700: 79 79 79; /* #4F4F4F */
+  --color-neutral-800: 59 59 59; /* #3B3B3B */
+  --color-neutral-900: 39 39 39; /* #272727 */
+  --color-neutral-950: 28 28 28; /* #1C1C1C */
+
+  /* Primary Colors - Cobalt Blue */
+  --color-primary-25: 239 243 255; /* #EFF3FF */
+  --color-primary-50: 223 230 254; /* #DFE6FE */
+  --color-primary-100: 191 206 254; /* #BFCEFE */
+  --color-primary-200: 158 183 254; /* #9EB7FE */
+  --color-primary-300: 121 159 253; /* #799FFD */
+  --color-primary-400: 78 136 253; /* #4E88FD */
+  --color-primary-500: 48 113 228; /* #3071E4 */
+  --color-primary-600: 40 95 191; /* #285FBF */
+  --color-primary-700: 32 76 152; /* #204C98 */
+  --color-primary-800: 24 58 116; /* #183A74 */
+  --color-primary-900: 16 39 77; /* #10274D */
+  --color-primary-950: 11 26 52; /* #0B1A34 */
+
+  /* Accent Colors - Blue Violet */
+  --color-accent-25: 250 248 255; /* #FAF8FF */
+  --color-accent-50: 234 227 254; /* #EAE3FE */
+  --color-accent-100: 213 200 254; /* #D5C8FE */
+  --color-accent-200: 194 172 254; /* #C2ACFE */
+  --color-accent-300: 175 144 253; /* #AF90FD */
+  --color-accent-400: 157 114 253; /* #9D72FD */
+  --color-accent-500: 140 80 253; /* #8C50FD */
+  --color-accent-600: 121 49 236; /* #7931EC */
+  --color-accent-700: 97 40 189; /* #6128BD */
+  --color-accent-800: 73 30 141; /* #491E8D */
+  --color-accent-900: 53 22 103; /* #351667 */
+  --color-accent-950: 26 11 52; /* #1A0B34 */
+
+  /* Status Colors */
+  /* Success - Emerald Green */
+  --color-success-25: 240 252 245; /* #F0FCF5 */
+  --color-success-50: 196 241 216; /* #C4F1D8 */
+  --color-success-100: 119 228 174; /* #77E4AE */
+  --color-success-200: 76 207 147; /* #4CCF93 */
+  --color-success-300: 66 182 129; /* #42B681 */
+  --color-success-400: 58 157 112; /* #3A9D70 */
+  --color-success-500: 49 133 95; /* #31855F */
+  --color-success-600: 40 110 78; /* #286E4E */
+  --color-success-700: 32 88 62; /* #20583E */
+  --color-success-800: 25 67 48; /* #194330 */
+  --color-success-900: 17 47 33; /* #112F21 */
+  --color-success-950: 10 27 19; /* #0A1B13 */
+
+  /* Warning - Gamboge */
+  --color-warning-25: 255 248 241; /* #FFF8F1 */
+  --color-warning-50: 254 226 197; /* #FEE2C5 */
+  --color-warning-100: 253 197 124; /* #FDC57C */
+  --color-warning-200: 241 172 51; /* #F1AC33 */
+  --color-warning-300: 213 151 45; /* #D5972D */
+  --color-warning-400: 182 129 38; /* #B68126 */
+  --color-warning-500: 155 110 32; /* #9B6E20 */
+  --color-warning-600: 126 90 26; /* #7E5A1A */
+  --color-warning-700: 100 71 21; /* #644715 */
+  --color-warning-800: 77 55 16; /* #4D3710 */
+  --color-warning-900: 63 45 13; /* #3F2D0D */
+  --color-warning-950: 36 26 8; /* #241A08 */
+
+  /* Danger - Amaranth */
+  --color-danger-25: 255 247 248; /* #FFF7F8 */
+  --color-danger-50: 254 224 225; /* #FEE0E1 */
+  --color-danger-100: 254 192 195; /* #FEC0C3 */
+  --color-danger-200: 254 158 164; /* #FE9EA4 */
+  --color-danger-300: 253 120 130; /* #FD7882 */
+  --color-danger-400: 253 72 89; /* #FD4859 */
+  --color-danger-500: 225 47 68; /* #E12F44 */
+  --color-danger-600: 184 39 55; /* #B82737 */
+  --color-danger-700: 146 31 44; /* #921F2C */
+  --color-danger-800: 116 24 35; /* #741823 */
+  --color-danger-900: 77 16 23; /* #4D1017 */
+  --color-danger-950: 52 11 15; /* #340B0F */
+
+  /* Info - Cerulean */
+  --color-info-25: 245 250 253; /* #F5FAFD */
+  --color-info-50: 214 234 245; /* #D6EAF5 */
+  --color-info-100: 171 213 236; /* #ABD5EC */
+  --color-info-200: 119 194 228; /* #77C2E4 */
+  --color-info-300: 77 173 211; /* #4DADD3 */
+  --color-info-400: 67 149 183; /* #4395B7 */
+  --color-info-500: 57 127 155; /* #397F9B */
+  --color-info-600: 47 105 128; /* #2F6980 */
+  --color-info-700: 37 84 102; /* #255466 */
+  --color-info-800: 28 64 78; /* #1C404E */
+  --color-info-900: 20 44 54; /* #142C36 */
+  --color-info-950: 12 26 32; /* #0C1A20 */
+
+  /* ==========================================================================
+      Spacing System
       ========================================================================== */
-   --accent-25: 250 248 255; /* #faf8ff */
-   --accent-50: 234 227 254; /* #EAE3FE */
-   --accent-100: 213 200 254; /* #D5C8FE */
-   --accent-200: 194 172 254; /* #C2ACFE */
-   --accent-300: 175 144 253; /* #AF90FD */
-   --accent-400: 157 114 253; /* #9D72FD */
-   --accent-500: 140 80 253; /* #8C50FD - Base */
-   --accent-600: 121 49 236; /* #7931EC */
-   --accent-700: 97 40 189; /* #6128BD */
-   --accent-800: 73 30 141; /* #491E8D */
-   --accent-900: 53 22 103; /* #351667 */
-   --accent-950: 26 11 52; /* #1A0B34 */
- 
-   /* ==========================================================================
-      Neutral Colors - Gray
-      ========================================================================== */
-   --white: 255 255 255; /* #FFFFFF */
-   --neutral-25: 249 249 249; /* #f9f9f9 */
-   --neutral-50: 231 231 231; /* #E7E7E7 */
-   --neutral-100: 208 208 208; /* #D0D0D0 */
-   --neutral-200: 184 184 184; /* #B8B8B8 */
-   --neutral-300: 161 161 161; /* #A1A1A1 */
-   --neutral-400: 141 141 141; /* #8D8D8D */
-   --neutral-500: 118 118 118; /* #767676 - Base */
-   --neutral-600: 97 97 97; /* #616161 */
-   --neutral-700: 79 79 79; /* #4F4F4F */
-   --neutral-800: 59 59 59; /* #3B3B3B */
-   --neutral-900: 39 39 39; /* #272727 */
-   --neutral-950: 28 28 28; /* #1C1C1C */
-   --black: 0 0 0; /* #000000 */
- 
-   /* ==========================================================================
-      Danger Colors - Amaranth
-      ========================================================================== */
-   --danger-25: 255 247 248; /* #fff7f8 */
-   --danger-50: 254 224 225; /* #FEE0E1 */
-   --danger-100: 254 192 195; /* #FEC0C3 */
-   --danger-200: 254 158 164; /* #FE9EA4 */
-   --danger-300: 253 120 130; /* #FD7882 */
-   --danger-400: 253 72 89; /* #FD4859 */
-   --danger-500: 225 47 68; /* #E12F44 - Base */
-   --danger-600: 184 39 55; /* #B82737 */
-   --danger-700: 146 31 44; /* #921F2C */
-   --danger-800: 116 24 35; /* #741823 */
-   --danger-900: 77 16 23; /* #4D1017 */
-   --danger-950: 52 11 15; /* #340B0F */
- 
-   /* ==========================================================================
-      Warning Colors - gamboge
-      ========================================================================== */
-   --warning-25: 255 248 241; /* #fff8f1 */
-   --warning-50: 254 226 197; /* #FEE2C5 */
-   --warning-100: 253 197 124; /* #FDC57C */
-   --warning-200: 241 172 51; /* #F1AC33 */
-   --warning-300: 213 151 45; /* #D5972D */
-   --warning-400: 182 129 38; /* #B68126 */
-   --warning-500: 155 110 32; /* #9B6E20 - Base */
-   --warning-600: 126 90 26; /* #7E5A1A */
-   --warning-700: 100 71 21; /* #644715 */
-   --warning-800: 77 55 16; /* #4D3710 */
-   --warning-900: 63 45 13; /* #3F2D0D */
-   --warning-950: 36 26 8; /* #241A08 */
- 
-   /* ==========================================================================
-      Success Colors - emerald green
-      ========================================================================== */
-   --success-25: 240 252 245; /* #f0fcf5 */
-   --success-50: 196 241 216; /* #c4f1d8 */
-   --success-100: 119 228 174; /* #77e4ae */
-   --success-200: 76 207 147; /* #4ccf93 */
-   --success-300: 66 182 129; /* #42b681 */
-   --success-400: 58 157 112; /* #3a9d70 */
-   --success-500: 49 133 95; /* #31855f - Base */
-   --success-600: 40 110 78; /* #286e4e */
-   --success-700: 32 88 62; /* #20583e */
-   --success-800: 25 67 48; /* #194330 */
-   --success-900: 17 47 33; /* #112f21 */
-   --success-950: 10 27 19; /* #0a1b13 */
- 
-   /* ==========================================================================
-      Info Colors - cerulean
-      ========================================================================== */
-   --info-25: 245 250 253; /* #f5fafd */
-   --info-50: 214 234 245; /* #d6eaf5 */
-   --info-100: 171 213 236; /* #abd5ec */
-   --info-200: 119 194 228; /* #77c2e4 */
-   --info-300: 77 173 211; /* #4dadd3 */
-   --info-400: 67 149 183; /* #4395b7 */
-   --info-500: 57 127 155; /* #397f9b - Base */
-   --info-600: 47 105 128; /* #2f6980 */
-   --info-700: 37 84 102; /* #255466 */
-   --info-800: 28 64 78; /* #1c404e */
-   --info-900: 20 44 54; /* #142c36 */
-   --info-950: 12 26 32; /* #0c1a20 */
- 
-   /* ==========================================================================
+  --space-xxs: 0.25rem; /*  4px */
+  --space-xs: 0.5rem; /*  8px */
+  --space-sm: 0.75rem; /* 12px */
+  --space-base: 1rem; /* 16px */
+  --space-md: 1.25rem; /* 20px */
+  --space-lg: 1.5rem; /* 24px */
+  --space-xl: 2rem; /* 32px */
+  --space-2xl: 2.5rem; /* 40px */
+  --space-3xl: 3rem; /* 48px */
+  --space-4xl: 4rem; /* 64px */
+
+  /* ==========================================================================
       Border Radius
       ========================================================================== */
-   --radius-sm: 0.125rem;
-   --radius-base: 0.25rem;
-   --radius-md: 0.375rem;
-   --radius-lg: 0.5rem;
-   --radius-xl: 0.75rem;
-   --radius-pill: 9999px;
- 
-   /* ==========================================================================
-      Spacing
+  --radius-sm: 0.125rem; /*  2px */
+  --radius-base: 0.25rem; /*  4px */
+  --radius-md: 0.375rem; /*  6px */
+  --radius-lg: 0.5rem; /*  8px */
+  --radius-xl: 0.75rem; /* 12px */
+  --radius-pill: 9999px;
+
+  /* ==========================================================================
+      Shadows
       ========================================================================== */
-   --space-xxs: 0.25rem;
-   --space-xs: 0.5rem;
-   --space-sm: 0.75rem;
-   --space: 1rem;
-   --space-md: 1.25rem;
-   --space-lg: 1.5rem;
-   --space-xl: 2rem;
-   --space-2xl: 2.5rem;
-   --space-3xl: 3rem;
-   --space-4xl: 4rem;
- 
-   /* ==========================================================================
-      Sizes
-      ========================================================================== */
-   --size-xxs: 1rem;
-   --size-xs: 1.5rem;
-   --size-sm: 2rem;
-   --size-base: 2.5rem;
-   --size-lg: 3rem;
-   --size-xl: 3.5rem;
-   --size-2xl: 4rem;
- 
-   /* ==========================================================================
+  --shadow-sm: 0px 0.7px 0.6px hsl(0deg 0% 67% / 0.49),
+    0px 0.9px 0.7px -2.2px hsl(0deg 0% 67% / 0.35),
+    0px 2.3px 1.9px -4.5px hsl(0deg 0% 67% / 0.2);
+
+  --shadow-base: 0px 0.7px 0.6px hsl(0deg 0% 67% / 0.41),
+    0px 1px 0.8px -1.1px hsl(0deg 0% 67% / 0.34),
+    0px 2.2px 1.8px -2.2px hsl(0deg 0% 67% / 0.27),
+    0px 5.5px 4.5px -3.4px hsl(0deg 0% 67% / 0.19),
+    0px 11.7px 9.7px -4.5px hsl(0deg 0% 67% / 0.12);
+
+  --shadow-md: 0px 0.7px 0.6px hsl(0deg 0% 67% / 0.38),
+    0px 1.1px 0.9px -0.5px hsl(0deg 0% 67% / 0.35),
+    0px 1.9px 1.6px -1px hsl(0deg 0% 67% / 0.32),
+    0px 3.4px 2.8px -1.5px hsl(0deg 0% 67% / 0.28),
+    0px 6.1px 5px -2px hsl(0deg 0% 67% / 0.25),
+    0px 10.4px 8.6px -2.5px hsl(0deg 0% 67% / 0.21),
+    0px 16.7px 13.8px -3px hsl(0deg 0% 67% / 0.18);
+
+  --shadow-lg: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px,
+    rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
+
+  --shadow-2xl: rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
+    rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+
+  /* ==========================================================================
       Animation
       ========================================================================== */
-   --duration-instant: 50ms;
-   --duration-fast: 150ms;
-   --duration-normal: 250ms;
-   --duration-slow: 350ms;
- 
-   --ease-in: cubic-bezier(0.4, 0, 1, 1);
-   --ease-out: cubic-bezier(0, 0, 0.2, 1);
-   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
- 
-   /* ==========================================================================
+  --duration-instant: 50ms;
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ==========================================================================
+      Z-index
+      ========================================================================== */
+  --z-negative: -1;
+  --z-base: 0;
+  --z-raised: 1;
+  --z-sticky: 100;
+  --z-overlay: 200;
+  --z-dropdown: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-toast: 600;
+  --z-tooltip: 700;
+
+  /* ==========================================================================
+      Layout
+      ========================================================================== */
+  --header-height: 4rem;
+  --sidebar-width: 16rem;
+  --container-width: 80rem;
+
+  /* ==========================================================================
       Other
       ========================================================================== */
-   --overlay-blur: 4px;
-   --disabled-opacity: 0.5;
- 
-   /* ==========================================================================
+  --overlay-blur: 4px;
+  --disabled-opacity: 0.5;
+
+  /* ==========================================================================
       Dialog
       ========================================================================== */
-   --dialog-width: 32rem;
-   --dialog-z-index: 999;
-   --dialog-enter-duration: var(--duration-normal);
-   --dialog-exit-duration: var(--duration-fast);
-   --dialog-timing: var(--ease-out);
- }
+  --dialog-width: 32rem;
+  --dialog-z-index: 999;
+  --dialog-enter-duration: var(--duration-normal);
+  --dialog-exit-duration: var(--duration-fast);
+  --dialog-timing: var(--ease-out);
+}
+
+/* Dark theme color adjustments */
+[data-theme="dark"] {
+  /* You can override specific foundation values for dark theme if needed */
+  /* Example:
+   --shadow-sm: 0px 1px 2px rgba(0, 0, 0, 0.4);
+   */
+}
+
+
