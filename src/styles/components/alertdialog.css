@@ -38,7 +38,7 @@
 }
 
 .alert-dialog-icon-neutral {
-  @apply text-weakest;
+  @apply text-weak;
 }
 
 /* Typography & Structure */
@@ -47,7 +47,7 @@
 }
 
 .alert-dialog-title {
-  @apply -mt-[2px] text-heading-3 text-strongest;
+  @apply -mt-[2px] text-heading-3 text-strong;
 }
 
 .alert-dialog-description {
@@ -87,6 +87,6 @@
   .alert-dialog-footer {
     @apply fixed bottom-0 left-0 right-0 
            bg-surface p-md
-           border-t border-neutral-weakest;
+           border-t border-neutral-weak;
   }
 }

@@ -2,7 +2,7 @@
 
 /* Progress Root */
 .progress-root {
-  @apply relative h-2 w-full overflow-hidden rounded-full bg-primary-weakest;
+  @apply relative h-2 w-full overflow-hidden rounded-full bg-primary-weak;
  }
  
  /* Progress Indicator */

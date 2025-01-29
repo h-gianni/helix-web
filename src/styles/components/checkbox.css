@@ -37,7 +37,7 @@
 
 /* Description */
 .checkbox-description {
-  @apply text-copy-small text-weakest;
+  @apply text-copy-small text-weak;
 }
 
 /* Label Wrapper */

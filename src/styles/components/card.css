@@ -2,7 +2,7 @@
 
 /* Base Card */
 .card-base {
-  @apply rounded-lg border border-neutral-weakest bg-surface text-foreground
+  @apply rounded-lg border border-neutral-weak bg-surface text-foreground
          outline-none transition-all space-y-xs px-lg py-md;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
@@ -102,7 +102,7 @@
 
 /* Card Footer */
 .card-footer {
-  @apply flex flex-col-reverse sm:flex-row sm:justify-end pt-lg mt-lg border-t border-neutral-weakest gap-sm;
+  @apply flex flex-col-reverse sm:flex-row sm:justify-end pt-lg mt-lg border-t border-neutral-weak gap-sm;
 }
 
 /* Card Header with Actions */

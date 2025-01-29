@@ -48,7 +48,7 @@
   }
 
   .command-item[data-selected="true"] {
-    @apply bg-primary-stronger text-inverse;
+    @apply bg-primary-strong text-inverse;
   }
 }
 

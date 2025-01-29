@@ -30,7 +30,7 @@
   
   &[data-active],
   &[data-state=open] {
-    @apply bg-primary-weakest;
+    @apply bg-primary-weak;
   }
 }
 

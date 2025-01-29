@@ -24,31 +24,59 @@
   @apply size-4 shrink-0;
 }
 
-/* Strong appearance */
+.button-outline {
+  @apply border border-current 
+    disabled:hover:bg-disabled;
+}
+
+/* Neutral appearance */
 .button-neutral {
   @apply bg-neutral-strong text-inverse
   hover:bg-neutral-stronger
   active:bg-neutral-strongest;
 }
 
-/* Subtle appearance */
 .button-neutral-subtle {
-  @apply bg-neutral-weakest text-strong
-  hover:bg-neutral-weaker
+  @apply bg-neutral-weakest text-neutral
+  hover:bg-neutral-weaker hover:text-strong
   active:bg-neutral-weak;
+}
+
+.button-neutral-outline {
+  @apply border-neutral-base text-neutral
+    hover:bg-neutral-weakest hover:text-strong
+    active:bg-neutral-weaker;
+}
+
+.button-neutral-text {
+  @apply bg-transparent text-neutral 
+  hover:bg-neutral-weakest
+  active:bg-neutral-weaker;
 }
 
 /* Primary variant */
 .button-primary {
-  @apply bg-primary text-inverse
-  hover:bg-primary-strong
-  active:bg-primary-stronger;
+  @apply bg-primary-strong text-inverse
+  hover:bg-primary-stronger
+  active:bg-primary-strongest;
 }
 
 .button-primary-subtle {
   @apply bg-primary-weakest text-primary
-  hover:bg-primary-weaker
+  hover:bg-primary-weaker hover:text-primary-strong
   active:bg-primary-weak;
+}
+
+.button-primary-outline {
+  @apply border-primary-weak text-primary
+    hover:bg-primary-weakest hover:text-primary-strong
+    active:bg-primary-weaker;
+}
+
+.button-primary-text {
+  @apply bg-transparent text-primary 
+  hover:bg-primary-weakest
+  active:bg-primary-weaker;
 }
 
 /* Warning variant */
@@ -60,8 +88,20 @@
 
 .button-warning-subtle {
   @apply bg-warning-weakest text-warning
-  hover:bg-warning-weaker
+  hover:bg-warning-weaker hover:text-warning-strong
   active:bg-warning-weak;
+}
+
+.button-warning-outline {
+  @apply border-warning-weak text-warning
+    hover:bg-warning-weaker hover:text-warning-strong
+    active:bg-warning-weakest;
+}
+
+.button-warning-text {
+  @apply bg-transparent text-warning 
+  hover:bg-warning-weakest
+  active:bg-warning-weaker;
 }
 
 /* Danger variant */
@@ -73,69 +113,20 @@
 
 .button-danger-subtle {
   @apply bg-danger-weakest text-danger
-  hover:bg-danger-weaker
+  hover:bg-danger-weaker hover:text-danger-strong
   active:bg-danger-weak;
 }
 
-/* Outline appearance */
-.button-outline {
-  @apply border border-current 
-    hover:bg-neutral-strongest hover:text-inverse
-    disabled:hover:bg-disabled;
-}
-
-.button-neutral-outline {
-  @apply border-neutral-strongest text-foreground
-    hover:bg-neutral hover:text-inverse
-    active:bg-neutral-stronger;
-}
-
-.button-primary-outline {
-  @apply border-primary text-primary
-    hover:bg-primary hover:text-inverse
-    active:bg-primary-strong;
-}
-
-.button-warning-outline {
-  @apply border-warning text-warning
-    hover:bg-warning hover:text-inverse
-    active:bg-warning-strong;
-}
-
 .button-danger-outline {
-  @apply border-danger text-danger
-    hover:bg-danger hover:text-inverse
-    active:bg-danger-strong;
-}
-
-/* Text appearance */
-.button-neutral-text {
-  @apply hover:bg-surface-sunken active:bg-surface;
-}
-
-.button-primary-text {
-  @apply bg-transparent text-primary 
-  hover:bg-primary-weakest
-  active:bg-primary-weaker;
-}
-
-.button-warning-text {
-  @apply bg-transparent text-warning 
-  hover:bg-warning-weakest
-  active:bg-warning-weaker;
+  @apply border-danger-weak text-danger
+    hover:bg-danger-weaker hover:text-danger-strong
+    active:bg-danger-weakest;
 }
 
 .button-danger-text {
   @apply bg-transparent text-danger 
   hover:bg-danger-weakest
   active:bg-danger-weaker;
-}
-
-.button-neutral-text {
-  @apply bg-transparent text-foreground hover:bg-surface-sunken;
-}
-.button-neutral-text:active {
-  @apply bg-neutral-weaker;
 }
 
 /* Icon-only appearance */

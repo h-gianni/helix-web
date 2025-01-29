@@ -50,7 +50,7 @@
  
  /* Card Skeleton */
  .skeleton-card {
-  @apply rounded-lg p-md border border-neutral-weakest gap-sm;
+  @apply rounded-lg p-md border border-neutral-weak gap-sm;
  }
  
  /* Table Skeleton */

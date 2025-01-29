@@ -14,7 +14,7 @@
  }
  
  .separator-muted {
-  background-color: var(--border-weakest);
+  background-color: var(--border-weak);
  }
  
  .separator-accent {

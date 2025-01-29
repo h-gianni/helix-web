@@ -117,7 +117,7 @@
 /* Sheet Description */
 .sheet-description {
   @apply text-sm;
-  color: var(--text-weakest);
+  color: var(--text-weak);
 }
 
 /* Print Styles */

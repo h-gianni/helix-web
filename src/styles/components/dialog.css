@@ -58,7 +58,7 @@
 .dialog-close {
   @apply absolute right-lg top-lg 
          size-4 rounded-sm
-         text-weakest opacity-70
+         text-weak opacity-70
          transition-all hover:opacity-100
          focus-visible:focus-ring
          disabled:pointer-events-none disabled:opacity-50;

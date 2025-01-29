@@ -12,7 +12,7 @@
            transition-opacity;
     background: linear-gradient(
       to bottom,
-      var(--border-weakest) 50%,
+      var(--border-weak) 50%,
       transparent
     );
     transition-duration: var(--duration-normal);
@@ -33,7 +33,7 @@
 /* Size Variants */
 .table-base[data-size="base"] {
   .table-cell {
-    @apply py-sm px-base text-copy text-weakest;
+    @apply py-sm px-base text-copy text-weak;
   }
 
   .table-head {
@@ -60,7 +60,7 @@
 .table-header {
   @apply sticky top-0 z-10 
          backdrop-blur-sm backdrop-saturate-150 
-         text-xs text-weakest
+         text-xs text-weak
          border-b border-neutral-base shadow-sm;
   background-color: color-mix(
     in srgb,
@@ -71,7 +71,7 @@
 
 /* Table Body */
 .table-body {
-  @apply bg-surface divide-y divide-neutral-weakest
+  @apply bg-surface divide-y divide-neutral-weak
          [&_tr:last-child]:border-0;
 }
 
@@ -89,7 +89,7 @@
 /* Table Head Cell */
 .table-head {
   @apply text-left align-middle text-heading-6 
-         whitespace-nowrap text-weakest
+         whitespace-nowrap text-weak
          transition-colors;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
@@ -105,7 +105,7 @@
 
     & > button:not([role="checkbox"]) {
       @apply w-full flex items-center justify-between 
-             px-sm py-xs text-heading-6 text-weakest
+             px-sm py-xs text-heading-6 text-weak
              gap-sm transition-all;
       transition-duration: var(--duration-normal);
       transition-timing-function: var(--ease-out);
@@ -188,7 +188,7 @@
   }
 
   &[data-state="selected"] {
-    @apply bg-primary-weakest;
+    @apply bg-primary-weak;
   }
 
   &:focus-within {
@@ -208,7 +208,7 @@
 
 /* Table Caption */
 .table-caption {
-  @apply mt-base mb-sm text-caption text-left text-weakest;
+  @apply mt-base mb-sm text-caption text-left text-weak;
 }
 
 /* Table Empty State */

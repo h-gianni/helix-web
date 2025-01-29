@@ -105,7 +105,7 @@
   }
 
   &[data-state="checked"] {
-    @apply bg-primary-weakest;
+    @apply bg-primary-weak;
   }
 }
 
@@ -154,7 +154,7 @@
 }
 
 .radio-description {
-  @apply text-copy-small text-weakest;
+  @apply text-copy-small text-weak;
 }
 
 @media print {

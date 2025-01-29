@@ -25,7 +25,7 @@
  
  .toggle-outline {
   @apply border border-neutral-weak bg-transparent
-    hover:bg-neutral-weakest hover:text-foreground;
+    hover:bg-neutral-weak hover:text-foreground;
  }
  
  /* Sizes */

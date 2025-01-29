@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -14,7 +12,7 @@ import { Input } from "@/components/ui/Input";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { AlertCircle } from "lucide-react";
 import {
-  Select,
+  SelectField,
   SelectContent,
   SelectItem,
   SelectTrigger,
@@ -64,12 +62,6 @@ export default function TeamCreateModal({
     }
   }, [isOpen]);
 
-  const resetForm = () => {
-    setTeamName("");
-    setDisciplineId("");
-    setError(null);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -79,7 +71,8 @@ export default function TeamCreateModal({
         throw new Error("Please select a discipline");
       }
       await onCreateTeam(teamName.trim(), disciplineId);
-      resetForm();
+      setTeamName("");
+      setDisciplineId("");
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -88,18 +81,13 @@ export default function TeamCreateModal({
     }
   };
 
-  const handleClose = () => {
-    resetForm();
-    onClose();
-  };
-
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Team</DialogTitle>
           <DialogDescription>
-            Create a new team by selecting its discipline and providing a name.
+            Create a new team by selecting its function and providing a name.
           </DialogDescription>
         </DialogHeader>
 
@@ -111,45 +99,49 @@ export default function TeamCreateModal({
             </Alert>
           )}
 
-          <Select 
-            value={disciplineId} 
-            onValueChange={setDisciplineId}
-            disabled={loading}
-            withLabel
-            label="Discipline"
-          >
-            <SelectTrigger>
-              <SelectValue 
-                placeholder={loading ? "Loading disciplines..." : "Select a discipline"} 
-              />
-            </SelectTrigger>
-            <SelectContent>
-              {disciplines.map((discipline) => (
-                <SelectItem 
-                  key={discipline.id} 
-                  value={discipline.id}
-                >
-                  {discipline.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="space-y-4">
+            <SelectField
+              value={disciplineId}
+              onValueChange={setDisciplineId}
+              disabled={loading}
+              width="full"
+              label="Team function"
+              withLabel
+              error={!!error && !disciplineId}
+            >
+              <SelectTrigger>
+                <SelectValue 
+                  placeholder={loading ? "Loading function..." : "Select a function"} 
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {disciplines.map((discipline) => (
+                  <SelectItem
+                    key={discipline.id}
+                    value={discipline.id}
+                  >
+                    {discipline.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectField>
 
-          <Input
-            value={teamName}
-            onChange={(e) => setTeamName(e.target.value)}
-            placeholder="Enter team name"
-            required
-            withLabel
-            label="Team Name"
-            error={!!error}
-          />
+            <Input
+              value={teamName}
+              onChange={(e) => setTeamName(e.target.value)}
+              placeholder="Enter team name"
+              required
+              label="Team Name"
+              withLabel
+              error={!!error && !teamName.trim()}
+            />
+          </div>
 
           <DialogFooter>
             <Button
               variant="neutral"
               appearance="subtle"
-              onClick={handleClose}
+              onClick={onClose}
               disabled={saving}
             >
               Cancel

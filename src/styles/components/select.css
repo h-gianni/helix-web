@@ -52,7 +52,7 @@
 
 /* Value text */
 [data-placeholder] {
-  @apply text-weakest;
+  @apply text-weak;
 }
 
  .select-value {
@@ -188,7 +188,7 @@
 
 /* Scroll Buttons */
 .select-scroll-button {
-  @apply flex cursor-default items-center justify-center py-xxs text-weakest;
+  @apply flex cursor-default items-center justify-center py-xxs text-weak;
 }
 
 /* Select Label */
@@ -268,7 +268,7 @@
 
 /* Helper Text */
 .select-helper {
-  @apply mt-xs text-sm text-weakest;
+  @apply mt-xs text-sm text-weak;
 }
 
 .select-helper-error {

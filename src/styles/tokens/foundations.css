@@ -9,104 +9,64 @@
   --color-white: 255 255 255; /* #FFFFFF */
   --color-black: 0 0 0; /* #000000 */
 
-  /* Neutral Colors */
-  --color-neutral-25: 249 249 249; /* #F9F9F9 */
-  --color-neutral-50: 231 231 231; /* #E7E7E7 */
-  --color-neutral-100: 208 208 208; /* #D0D0D0 */
-  --color-neutral-200: 184 184 184; /* #B8B8B8 */
-  --color-neutral-300: 161 161 161; /* #A1A1A1 */
-  --color-neutral-400: 141 141 141; /* #8D8D8D */
-  --color-neutral-500: 118 118 118; /* #767676 */
-  --color-neutral-600: 97 97 97; /* #616161 */
-  --color-neutral-700: 79 79 79; /* #4F4F4F */
-  --color-neutral-800: 59 59 59; /* #3B3B3B */
-  --color-neutral-900: 39 39 39; /* #272727 */
-  --color-neutral-950: 28 28 28; /* #1C1C1C */
+  --color-strongest: 19 25 29; /* #E7E7E7 / primarily for strong text */
+  --color-stronger: 43 57 68; /* #D0D0D0 / primarily for base text */
+  --color-strong: 81 106 127; /* #B8B8B8 / primarily for light text */
+  --color-medium: 109 139 162; /* #B8B8B8 / primarily for muted text */
+  --color-inverted: 255 255 255; /* #B8B8B8 / primarily for white text */
+  --color-weak: 187 201 212; /* #8D8D8D / primarily for strong strokes */
+  --color-weaker: 206 216 224; /* #767676 / primarily for base strokes */
+  --color-weakest: 226 232 236; /* #616161 / primarily for light strokes */
+  --color-muted: 245 247 249; /* #4F4F4F / primarily for fills and hover bg */
+  --color-background: 245 247 249; /* #3B3B3B */
 
-  /* Primary Colors - Cobalt Blue */
-  --color-primary-25: 239 243 255; /* #EFF3FF */
-  --color-primary-50: 223 230 254; /* #DFE6FE */
-  --color-primary-100: 191 206 254; /* #BFCEFE */
-  --color-primary-200: 158 183 254; /* #9EB7FE */
-  --color-primary-300: 121 159 253; /* #799FFD */
-  --color-primary-400: 78 136 253; /* #4E88FD */
-  --color-primary-500: 48 113 228; /* #3071E4 */
-  --color-primary-600: 40 95 191; /* #285FBF */
-  --color-primary-700: 32 76 152; /* #204C98 */
-  --color-primary-800: 24 58 116; /* #183A74 */
-  --color-primary-900: 16 39 77; /* #10274D */
-  --color-primary-950: 11 26 52; /* #0B1A34 */
+  --color-primary-strongest: 0 90 185; /* #005AB9 */
+  --color-primary-stronger: 0 106 218; /* #006ADA */
+  --color-primary-strong: 1 125 255; /* #017DFF */
+  --color-primary-medium: 46 148 255; /* #2E94FF BASE */
+  --color-primary-weak: 91 171 255; /* #5BABFF */
+  --color-primary-weaker: 143 198 255; /* #8FC6FF */
+  --color-primary-weakest: 203 228 255; /* #CBE4FF */
 
-  /* Accent Colors - Blue Violet */
-  --color-accent-25: 250 248 255; /* #FAF8FF */
-  --color-accent-50: 234 227 254; /* #EAE3FE */
-  --color-accent-100: 213 200 254; /* #D5C8FE */
-  --color-accent-200: 194 172 254; /* #C2ACFE */
-  --color-accent-300: 175 144 253; /* #AF90FD */
-  --color-accent-400: 157 114 253; /* #9D72FD */
-  --color-accent-500: 140 80 253; /* #8C50FD */
-  --color-accent-600: 121 49 236; /* #7931EC */
-  --color-accent-700: 97 40 189; /* #6128BD */
-  --color-accent-800: 73 30 141; /* #491E8D */
-  --color-accent-900: 53 22 103; /* #351667 */
-  --color-accent-950: 26 11 52; /* #1A0B34 */
+  --color-warning-strongest: 185 104 0; /* #B96800 */
+  --color-warning-stronger: 218 122 0; /* #DA7A00 */
+  --color-warning-strong: 255 143 1; /* #FF8F01 */
+  --color-warning-medium: 255 163 46; /* #FFA32E */
+  --color-warning-weak: 255 183 91; /* #FFB75B */
+  --color-warning-weaker: 255 206 143; /* #FFCE8F */
+  --color-warning-weakest: 255 232 203; /* #FFE8CB */
 
-  /* Status Colors */
-  /* Success - Emerald Green */
-  --color-success-25: 240 252 245; /* #F0FCF5 */
-  --color-success-50: 196 241 216; /* #C4F1D8 */
-  --color-success-100: 119 228 174; /* #77E4AE */
-  --color-success-200: 76 207 147; /* #4CCF93 */
-  --color-success-300: 66 182 129; /* #42B681 */
-  --color-success-400: 58 157 112; /* #3A9D70 */
-  --color-success-500: 49 133 95; /* #31855F */
-  --color-success-600: 40 110 78; /* #286E4E */
-  --color-success-700: 32 88 62; /* #20583E */
-  --color-success-800: 25 67 48; /* #194330 */
-  --color-success-900: 17 47 33; /* #112F21 */
-  --color-success-950: 10 27 19; /* #0A1B13 */
+  --color-danger-strongest: 185 38 0; /* #B92600 */
+  --color-danger-stronger: 218 45 0; /* #DA2D00 */
+  --color-danger-strong: 255 54 1; /* #FF3601 */
+  --color-danger-medium: 255 90 46; /* #FF5A2E */
+  --color-danger-weak: 255 126 91; /* #FF7E5B */
+  --color-danger-weaker: 255 167 143; /* #FFA78F */
+  --color-danger-weakest: 255 214 203; /* #FFD6CB */
 
-  /* Warning - Gamboge */
-  --color-warning-25: 255 248 241; /* #FFF8F1 */
-  --color-warning-50: 254 226 197; /* #FEE2C5 */
-  --color-warning-100: 253 197 124; /* #FDC57C */
-  --color-warning-200: 241 172 51; /* #F1AC33 */
-  --color-warning-300: 213 151 45; /* #D5972D */
-  --color-warning-400: 182 129 38; /* #B68126 */
-  --color-warning-500: 155 110 32; /* #9B6E20 */
-  --color-warning-600: 126 90 26; /* #7E5A1A */
-  --color-warning-700: 100 71 21; /* #644715 */
-  --color-warning-800: 77 55 16; /* #4D3710 */
-  --color-warning-900: 63 45 13; /* #3F2D0D */
-  --color-warning-950: 36 26 8; /* #241A08 */
+  --color-success-strongest: 17 20 77; /* #11144d */
+  --color-success-stronger: 29 34 130; /* #1d2282 */
+  --color-success-strong: 41 49 186; /* #2931ba */
+  --color-success-medium: 55 66 250; /* #3641f6 */
+  --color-success-weak: 128 132 251; /* #8084fb */
+  --color-success-weaker: 160 163 252; /* #a0a3fc */
+  --color-success-weakest: 192 193 252; /* #c0c1fc */
 
-  /* Danger - Amaranth */
-  --color-danger-25: 255 247 248; /* #FFF7F8 */
-  --color-danger-50: 254 224 225; /* #FEE0E1 */
-  --color-danger-100: 254 192 195; /* #FEC0C3 */
-  --color-danger-200: 254 158 164; /* #FE9EA4 */
-  --color-danger-300: 253 120 130; /* #FD7882 */
-  --color-danger-400: 253 72 89; /* #FD4859 */
-  --color-danger-500: 225 47 68; /* #E12F44 */
-  --color-danger-600: 184 39 55; /* #B82737 */
-  --color-danger-700: 146 31 44; /* #921F2C */
-  --color-danger-800: 116 24 35; /* #741823 */
-  --color-danger-900: 77 16 23; /* #4D1017 */
-  --color-danger-950: 52 11 15; /* #340B0F */
+  --color-accent-strongest: 145 0 185; /* #11144d */
+  --color-accent-stronger: 170 0 218; /* #1d2282 */
+  --color-accent-strong: 199 1 255; /* #2931ba */
+  --color-accent-medium: 209 46 255; /* #3641f6 */
+  --color-accent-weak: 219 91 255; /* #8084fb */
+  --color-accent-weaker: 230 143 255; /* #a0a3fc */
+  --color-accent-weakest: 243 203 255; /* #c0c1fc */
 
-  /* Info - Cerulean */
-  --color-info-25: 245 250 253; /* #F5FAFD */
-  --color-info-50: 214 234 245; /* #D6EAF5 */
-  --color-info-100: 171 213 236; /* #ABD5EC */
-  --color-info-200: 119 194 228; /* #77C2E4 */
-  --color-info-300: 77 173 211; /* #4DADD3 */
-  --color-info-400: 67 149 183; /* #4395B7 */
-  --color-info-500: 57 127 155; /* #397F9B */
-  --color-info-600: 47 105 128; /* #2F6980 */
-  --color-info-700: 37 84 102; /* #255466 */
-  --color-info-800: 28 64 78; /* #1C404E */
-  --color-info-900: 20 44 54; /* #142C36 */
-  --color-info-950: 12 26 32; /* #0C1A20 */
+  --color-info-strongest: 22 111 128; /* #11144d */
+  --color-info-stronger: 26 134 154; /* #1d2282 */
+  --color-info-strong: 31 162 185; /* #2931ba */
+  --color-info-medium: 41 193 219; /* #3641f6 */
+  --color-info-weak: 79 204 225; /* #8084fb */
+  --color-info-weaker: 123 217 233; /* #a0a3fc */
+  --color-info-weakest: 175 232 242; /* #c0c1fc */
 
   /* ==========================================================================
       Spacing System
@@ -216,5 +176,3 @@
    --shadow-sm: 0px 1px 2px rgba(0, 0, 0, 0.4);
    */
 }
-
-

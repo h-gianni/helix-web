@@ -161,7 +161,7 @@ export function PerformersByCategory({
         <category.Icon className="size-6" />
       </div>
       <div className="text-center space-y-xxs">
-        <h3 className="text-heading-3 text-text-strongest">No {category.label}</h3>
+        <h3 className="text-heading-3 text-text-strong">No {category.label}</h3>
         <p className="text-body-small text-text-weakest max-w-copy mx-auto">
           {category.label === "Not Rated"
             ? "All team members have received at least one rating."

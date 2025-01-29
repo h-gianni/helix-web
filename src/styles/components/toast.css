@@ -12,7 +12,7 @@
  .toast-root {
   @apply pointer-events-auto relative flex w-full items-center 
          justify-between rounded-md overflow-hidden pr-md
-         gap-sm py-md pl-md border border-neutral-weakest shadow-lg;
+         gap-sm py-md pl-md border border-neutral-weak shadow-lg;
   transition-property: all;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
@@ -66,7 +66,7 @@
  
  /* Toast Close Button */
  .toast-close {
-  @apply absolute right-1 top-1 rounded-md p-xs text-weakest opacity-0
+  @apply absolute right-1 top-1 rounded-md p-xs text-weak opacity-0
          hover:text-foreground
          focus:opacity-100 focus:outline-none focus:focus-ring
          group-hover:opacity-100;

@@ -11,7 +11,7 @@
          px-sm py-xxs text-sm font-medium outline-none;
   
   /* &:focus, &[data-state=open] {
-    @apply bg-primary-weakest text-primary;
+    @apply bg-primary-weak text-primary;
   } */
  }
  

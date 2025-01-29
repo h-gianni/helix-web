@@ -19,7 +19,7 @@
 
 /* Alert Variants */
 .alert-default {
-  @apply bg-surface border border-neutral-weakest;
+  @apply bg-surface border border-neutral-weak;
 
   &:focus-visible {
     @apply focus-ring;
@@ -27,7 +27,7 @@
 }
 
 .alert-primary {
-  @apply bg-primary-weakest border border-primary-weakest;
+  @apply bg-primary-weak border border-primary-weak;
 
   &:focus-visible {
     @apply outline-none ring-2 ring-offset-2;
@@ -37,7 +37,7 @@
 }
 
 .alert-danger {
-  @apply bg-danger-weakest border border-danger-weakest;
+  @apply bg-danger-weak border border-danger-weak;
 
   &:focus-visible {
     @apply focus-ring-danger;
@@ -45,7 +45,7 @@
 }
 
 .alert-warning {
-  @apply bg-warning-weakest border border-warning-weakest;
+  @apply bg-warning-weak border border-warning-weak;
 
   &:focus-visible {
     @apply outline-none ring-2 ring-offset-2;
@@ -55,7 +55,7 @@
 }
 
 .alert-success {
-  @apply bg-success-weakest border border-success-weakest;
+  @apply bg-success-weak border border-success-weak;
 
   &:focus-visible {
     @apply outline-none ring-2 ring-offset-2;

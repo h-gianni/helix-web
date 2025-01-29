@@ -20,7 +20,7 @@
 
 /* Default Variant */
 .badge-default {
-  @apply text-inverse border-transparent bg-neutral-strong;
+  @apply text-inverse border-transparent bg-neutral;
 }
 
 .badge-default-light {
