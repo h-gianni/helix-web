@@ -36,14 +36,8 @@
   active:bg-neutral-strongest;
 }
 
-.button-neutral-subtle {
-  @apply bg-neutral-weakest text-neutral
-  hover:bg-neutral-weaker hover:text-strong
-  active:bg-neutral-weak;
-}
-
 .button-neutral-outline {
-  @apply border-neutral-base text-neutral
+  @apply border-neutral-strong text-neutral
     hover:bg-neutral-weakest hover:text-strong
     active:bg-neutral-weaker;
 }
@@ -61,14 +55,8 @@
   active:bg-primary-strongest;
 }
 
-.button-primary-subtle {
-  @apply bg-primary-weakest text-primary
-  hover:bg-primary-weaker hover:text-primary-strong
-  active:bg-primary-weak;
-}
-
 .button-primary-outline {
-  @apply border-primary-weak text-primary
+  @apply border-primary-strong text-primary
     hover:bg-primary-weakest hover:text-primary-strong
     active:bg-primary-weaker;
 }
@@ -86,16 +74,10 @@
   active:bg-warning-stronger;
 }
 
-.button-warning-subtle {
-  @apply bg-warning-weakest text-warning
-  hover:bg-warning-weaker hover:text-warning-strong
-  active:bg-warning-weak;
-}
-
 .button-warning-outline {
-  @apply border-warning-weak text-warning
-    hover:bg-warning-weaker hover:text-warning-strong
-    active:bg-warning-weakest;
+  @apply border-warning-strong text-warning
+    hover:bg-warning-weakest hover:text-warning-strong
+    active:bg-warning-weaker;
 }
 
 .button-warning-text {
@@ -111,16 +93,10 @@
   active:bg-danger-stronger;
 }
 
-.button-danger-subtle {
-  @apply bg-danger-weakest text-danger
-  hover:bg-danger-weaker hover:text-danger-strong
-  active:bg-danger-weak;
-}
-
 .button-danger-outline {
-  @apply border-danger-weak text-danger
-    hover:bg-danger-weaker hover:text-danger-strong
-    active:bg-danger-weakest;
+  @apply border-danger-strong text-danger
+    hover:bg-danger-weakest hover:text-danger-strong
+    active:bg-danger-weaker;
 }
 
 .button-danger-text {

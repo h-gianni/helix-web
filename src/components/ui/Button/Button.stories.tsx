@@ -22,7 +22,7 @@ const meta = {
     },
     appearance: {
       control: 'select',
-      options: ['strong', 'subtle', 'outline', 'text', 'icon-only'],
+      options: ['strong', 'outline', 'text', 'icon-only'],
       description: 'Visual style of the button',
     },
     size: {
@@ -69,7 +69,7 @@ export const AllVariants: Story = {
         <div key={variant} className="space-y-[var(--space-base)]">
           <h3 className="text-sm font-medium capitalize">{variant}</h3>
           <div className="grid grid-cols-4 gap-[var(--space-base)]">
-            {(['strong', 'subtle', 'outline', 'text'] as const).map(appearance => (
+            {(['strong', 'outline', 'text'] as const).map(appearance => (
               <Button 
                 key={`${variant}-${appearance}`}
                 variant={variant}

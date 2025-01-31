@@ -83,7 +83,7 @@
 
   /* Base Text */
   --text-strong: rgb(var(--color-strongest));
-  --text-neutral: rgb(var(--color-stronger));
+  --text-foreground: rgb(var(--color-stronger));
   --text-weak: rgb(var(--color-strong));
   --text-muted: rgb(var(--color-text-medium));
 

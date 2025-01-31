@@ -433,8 +433,8 @@
      ========================================================================== */
 
   /* Neutral Backgrounds */
-  .text-neutral {
-    color: var(--text-neutral);
+  .text-neutral, .text-foreground {
+    color: var(--text-foreground);
   }
   .text-weak {
     color: var(--text-weak);

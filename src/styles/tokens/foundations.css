@@ -20,53 +20,53 @@
   --color-muted: 245 247 249; /* #4F4F4F / primarily for fills and hover bg */
   --color-background: 245 247 249; /* #3B3B3B */
 
-  --color-primary-strongest: 0 90 185; /* #005AB9 */
-  --color-primary-stronger: 0 106 218; /* #006ADA */
-  --color-primary-strong: 1 125 255; /* #017DFF */
-  --color-primary-medium: 46 148 255; /* #2E94FF BASE */
-  --color-primary-weak: 91 171 255; /* #5BABFF */
-  --color-primary-weaker: 143 198 255; /* #8FC6FF */
-  --color-primary-weakest: 203 228 255; /* #CBE4FF */
+  --color-primary-strongest: 0 71 146; /* #005AB9 */
+  --color-primary-stronger: 0 86 176; /* #006ADA */
+  --color-primary-strong: 0 104 212; /* #017DFF */
+  --color-primary-medium: 1 125 255; /* #2E94FF BASE */
+  --color-primary-weak: 96 173 255; /* #60ADFF */
+  --color-primary-weaker: 156 204 255; /* #9CCCFF */
+  --color-primary-weakest: 226 240 255; /* #E2F0FF */
 
-  --color-warning-strongest: 185 104 0; /* #B96800 */
-  --color-warning-stronger: 218 122 0; /* #DA7A00 */
-  --color-warning-strong: 255 143 1; /* #FF8F01 */
-  --color-warning-medium: 255 163 46; /* #FFA32E */
-  --color-warning-weak: 255 183 91; /* #FFB75B */
-  --color-warning-weaker: 255 206 143; /* #FFCE8F */
-  --color-warning-weakest: 255 232 203; /* #FFE8CB */
+  --color-warning-strongest: 146 85 0; /* #925500 */
+  --color-warning-stronger: 176 103 0; /* #B06700 */
+  --color-warning-strong: 212 124 0; /* #D47C00 */
+  --color-warning-medium: 255 149 0; /* #FF9500 BASE */
+  --color-warning-weak: 255 188 94; /* #FFBC5E */
+  --color-warning-weaker: 255 213 153; /* #FFD599 */
+  --color-warning-weakest: 255 242 222; /* #FFF2DE */
 
-  --color-danger-strongest: 185 38 0; /* #B92600 */
-  --color-danger-stronger: 218 45 0; /* #DA2D00 */
-  --color-danger-strong: 255 54 1; /* #FF3601 */
-  --color-danger-medium: 255 90 46; /* #FF5A2E */
-  --color-danger-weak: 255 126 91; /* #FF7E5B */
-  --color-danger-weaker: 255 167 143; /* #FFA78F */
-  --color-danger-weakest: 255 214 203; /* #FFD6CB */
+  --color-danger-strongest: 173 9 0; /* #AD0900 */
+  --color-danger-stronger: 208 11 0; /* #D00B00 */
+  --color-danger-strong: 251 13 0; /* #FB0D00 */
+  --color-danger-medium: 255 59 48; /* #FF3B30 BASE */
+  --color-danger-weak: 255 108 100; /* #FF6C64 */
+  --color-danger-weaker: 255 165 160; /* #FFA5A0 */
+  --color-danger-weakest: 255 232 231; /* #FFE8E7 */
 
-  --color-success-strongest: 17 20 77; /* #11144d */
-  --color-success-stronger: 29 34 130; /* #1d2282 */
-  --color-success-strong: 41 49 186; /* #2931ba */
-  --color-success-medium: 55 66 250; /* #3641f6 */
-  --color-success-weak: 128 132 251; /* #8084fb */
-  --color-success-weaker: 160 163 252; /* #a0a3fc */
-  --color-success-weakest: 192 193 252; /* #c0c1fc */
+  --color-success-strongest: 30 114 51; /* #1E7233 */
+  --color-success-stronger: 36 137 61; /* #24893D */
+  --color-success-strong: 43 165 74; /* #2BA54A */
+  --color-success-medium: 52 199 89; /* #34C759 BASE */
+  --color-success-weak: 122 220 147; /* #7ADC93 */
+  --color-success-weaker: 168 232 184; /* #A8E8B8 */
+  --color-success-weakest: 222 246 228; /* #DEF6E4 */
 
-  --color-accent-strongest: 145 0 185; /* #11144d */
-  --color-accent-stronger: 170 0 218; /* #1d2282 */
-  --color-accent-strong: 199 1 255; /* #2931ba */
-  --color-accent-medium: 209 46 255; /* #3641f6 */
-  --color-accent-weak: 219 91 255; /* #8084fb */
-  --color-accent-weaker: 230 143 255; /* #a0a3fc */
-  --color-accent-weakest: 243 203 255; /* #c0c1fc */
+  --color-accent-strongest: 106 27 146; /* #6A1B92 */
+  --color-accent-stronger: 128 33 176; /* #8021B0 */
+  --color-accent-strong: 154 40 212; /* #9A28D4 */
+  --color-accent-medium: 175 82 222; /* #AF52DE BASE */
+  --color-accent-weak: 195 125 230; /* #C37DE6 */
+  --color-accent-weaker: 218 176 240; /* #DAB0F0 */
+  --color-accent-weakest: 246 235 251; /* #F6EBFB */
 
-  --color-info-strongest: 22 111 128; /* #11144d */
-  --color-info-stronger: 26 134 154; /* #1d2282 */
-  --color-info-strong: 31 162 185; /* #2931ba */
-  --color-info-medium: 41 193 219; /* #3641f6 */
-  --color-info-weak: 79 204 225; /* #8084fb */
-  --color-info-weaker: 123 217 233; /* #a0a3fc */
-  --color-info-weakest: 175 232 242; /* #c0c1fc */
+  --color-info-strongest: 93 76 54; /* #5D4C36 */
+  --color-info-stronger: 112 91 65; /* #705B41 */
+  --color-info-strong: 135 110 78; /* #876E4E */
+  --color-info-medium: 162 132 94; /* #A2845E BASE */
+  --color-info-weak: 197 178 154; /* #C5B29A */
+  --color-info-weaker: 219 207 192; /* #DBCFC0 */
+  --color-info-weakest: 244 241 236; /* #F4F1EC */
 
   /* ==========================================================================
       Spacing System

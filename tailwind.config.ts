@@ -114,6 +114,9 @@ const config: Config = {
         lg: "var(--shadow-lg)",
         "2xl": "var(--shadow-2xl)",
       },
+      fontSize: {
+        base: '14px', // Set the base font size to 14px
+      },
       fontFamily: {
         sans: "var(--font-family-sans)",
         mono: "var(--font-family-mono)",

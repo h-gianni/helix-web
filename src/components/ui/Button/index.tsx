@@ -14,7 +14,6 @@ const buttonVariants = cva(["button-base"], {
     },
     appearance: {
       strong: "button-default",
-      subtle: "button-subtle",
       outline: "button-outline",
       text: "button-text",
       "icon-only": "button-icon-only",
@@ -42,11 +41,6 @@ const buttonVariants = cva(["button-base"], {
     },
     {
       variant: "primary",
-      appearance: "subtle",
-      className: "button-primary-subtle",
-    },
-    {
-      variant: "primary",
       appearance: "outline",
       className: "button-primary-outline",
     },
@@ -60,11 +54,6 @@ const buttonVariants = cva(["button-base"], {
       variant: "warning",
       appearance: ["strong", "icon-only"],
       className: "button-warning",
-    },
-    {
-      variant: "warning",
-      appearance: "subtle",
-      className: "button-warning-subtle",
     },
     {
       variant: "warning",
@@ -84,11 +73,6 @@ const buttonVariants = cva(["button-base"], {
     },
     {
       variant: "danger",
-      appearance: "subtle",
-      className: "button-danger-subtle",
-    },
-    {
-      variant: "danger",
       appearance: "outline",
       className: "button-danger-outline",
     },
@@ -102,11 +86,6 @@ const buttonVariants = cva(["button-base"], {
       variant: "neutral",
       appearance: "strong",
       className: "button-neutral",
-    },
-    {
-      variant: "neutral",
-      appearance: "subtle",
-      className: "button-neutral-subtle",
     },
     {
       variant: "neutral",

@@ -1,0 +1,55 @@
+flowchart TD
+    %% Primary Entities
+    TF[TeamFunction] --> |affects| JT[JobTitle]
+    TF --> |affects| GT[GTeam]
+    
+    %% Team and Member Management
+    GT --> |contains| TM[TeamMember]
+    JT --> |defines| TM
+    JG[JobGrade] --> |assigns to| TM
+    
+    %% Business Activities
+    GT --> |has| BA[BusinessActivity]
+    BA --> |rated in| MR[MemberRating]
+    
+    %% Performance Tracking
+    TM --> |receives| MR
+    TM --> |receives| SF[StructuredFeedback]
+    TM --> |receives| MC[MemberComment]
+    TM --> |generates| PR[PerformanceReview]
+    
+    %% Audit Trail
+    subgraph Audit System
+        AL[AuditLog]
+    end
+    
+    TF & GT & TM & BA & MR & SF & MC & PR --> AL
+    
+    %% Data Dependencies
+    subgraph Critical Dependencies
+        MR --> PR
+        SF --> PR
+        MC --> PR
+    end
+    
+    %% Change Impact Analysis
+    subgraph Impact Analysis
+        TF_C[TeamFunction Changes]
+        GT_C[Team Changes]
+        TM_C[Member Changes]
+    end
+    
+    TF --> TF_C
+    GT --> GT_C
+    TM --> TM_C
+    
+    %% Styling
+    classDef primary fill:#99ccff,stroke:#333,stroke-width:2px,color:#000000
+    classDef secondary fill:#99ff99,stroke:#333,stroke-width:1px,color:#000000
+    classDef audit fill:#ffcc99,stroke:#333,stroke-width:1px,color:#000000
+    classDef impact fill:#ff9999,stroke:#333,stroke-width:1px,color:#000000
+    
+    class TF,GT,TM primary
+    class JT,BA,MR,SF,MC,PR secondary
+    class AL audit
+    class TF_C,GT_C,TM_C impact
