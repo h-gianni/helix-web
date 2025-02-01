@@ -45,7 +45,7 @@ export const Examples = {
     return (
       <div className="flex flex-col items-start space-y-sm">
         <Button
-          appearance="subtle"
+          appearance="outline"
           size="base"
           leadingIcon={<Bell className="size-4" />}
           onClick={() => {
@@ -60,7 +60,7 @@ export const Examples = {
 
         <Button
           variant="danger"
-          appearance="subtle"
+          appearance="outline"
           leadingIcon={<AlertCircle className="size-4" />}
           onClick={() => {
             toast({
@@ -75,7 +75,7 @@ export const Examples = {
 
         <Button
           variant="primary"
-          appearance="subtle"
+          appearance="outline"
           size="base"
           leadingIcon={<CheckCircle2 className="size-4" />}
           onClick={() => {
@@ -91,7 +91,7 @@ export const Examples = {
 
         <Button
           variant="neutral"
-          appearance="subtle"
+          appearance="outline"
           size="base"
           leadingIcon={<Download className="size-4" />}
           onClick={() => {
@@ -107,7 +107,7 @@ export const Examples = {
 
         <Button
           variant="neutral"
-          appearance="subtle"
+          appearance="outline"
           size="base"
           leadingIcon={<RefreshCcw className="size-4" />}
           onClick={() => {

@@ -53,7 +53,7 @@ type Story = StoryObj<typeof Toggle>;
 export const Basic: Story = {
   render: () => (
     <Toggle>
-      <Star className="size-4" />
+      <Star />
     </Toggle>
   ),
 };
@@ -64,10 +64,10 @@ export const Variants: Story = {
     <div className="flex flex-col gap-xs">
       <div className="flex gap-xs">
         <Toggle variant="default">
-          <Star className="size-4" />
+          <Star />
         </Toggle>
         <Toggle variant="outline">
-          <Star className="size-4" />
+          <Star />
         </Toggle>
       </div>
       <div className="flex gap-xs">
@@ -86,7 +86,7 @@ export const Sizes: Story = {
         <Star className="size-3" />
       </Toggle>
       <Toggle size="default">
-        <Star className="size-4" />
+        <Star />
       </Toggle>
       <Toggle size="lg">
         <Star className="size-5" />
@@ -100,26 +100,26 @@ export const TextEditor: Story = {
   render: () => (
     <div className="flex gap-xs rounded-md p-sm">
       <Toggle variant="outline" size="sm" aria-label="Toggle bold">
-        <Bold className="size-4" />
+        <Bold />
       </Toggle>
       <Toggle variant="outline" size="sm" aria-label="Toggle italic">
-        <Italic className="size-4" />
+        <Italic />
       </Toggle>
       <Toggle variant="outline" size="sm" aria-label="Toggle underline">
-        <Underline className="size-4" />
+        <Underline />
       </Toggle>
       <div className="mx-1 w-px bg-neutral" />
       <Toggle variant="outline" size="sm" aria-label="Toggle align left">
-        <AlignLeft className="size-4" />
+        <AlignLeft />
       </Toggle>
       <Toggle variant="outline" size="sm" aria-label="Toggle align center">
-        <AlignCenter className="size-4" />
+        <AlignCenter />
       </Toggle>
       <Toggle variant="outline" size="sm" aria-label="Toggle align right">
-        <AlignRight className="size-4" />
+        <AlignRight />
       </Toggle>
       <Toggle variant="outline" size="sm" aria-label="Toggle justify">
-        <AlignJustify className="size-4" />
+        <AlignJustify />
       </Toggle>
     </div>
   ),
@@ -141,12 +141,12 @@ export const WithState: Story = {
             variant="outline"
           >
             {notifications ? (
-              <Bell className="size-4" />
+              <Bell />
             ) : (
-              <BellOff className="size-4" />
+              <BellOff />
             )}
           </Toggle>
-          <span className="text-body-small text-text-lightest">
+          <span className="text-copy-small text-weak">
             Notifications: {notifications ? 'On' : 'Off'}
           </span>
         </div>
@@ -158,12 +158,12 @@ export const WithState: Story = {
             variant="outline"
           >
             {darkMode ? (
-              <Moon className="size-4" />
+              <Moon />
             ) : (
-              <Sun className="size-4" />
+              <Sun />
             )}
           </Toggle>
-          <span className="text-body-small text-text-lightest">
+          <span className="text-copy-small text-weak">
             Theme: {darkMode ? 'Dark' : 'Light'}
           </span>
         </div>
@@ -175,12 +175,12 @@ export const WithState: Story = {
             variant="outline"
           >
             {mic ? (
-              <Mic className="size-4" />
+              <Mic />
             ) : (
-              <MicOff className="size-4" />
+              <MicOff />
             )}
           </Toggle>
-          <span className="text-body-small text-text-lightest">
+          <span className="text-copy-small text-weak">
             Microphone: {mic ? 'On' : 'Off'}
           </span>
         </div>
@@ -218,7 +218,7 @@ export const Favorites: Story = {
               key={item.id}
               className="flex items-center justify-between bg-surface rounded-md border px-sm py-xs"
             >
-              <span className='text-body'>{item.title}</span>
+              <span className='text-copy'>{item.title}</span>
               <Toggle
                 pressed={favorites.includes(item.id)}
                 onPressedChange={() => toggleFavorite(item.id)}
@@ -227,7 +227,7 @@ export const Favorites: Story = {
                 <Heart
                   className={cn(
                     "size-4",
-                    favorites.includes(item.id) && "fill-current text-danger-text"
+                    favorites.includes(item.id) && "fill-current text-danger"
                   )}
                 />
               </Toggle>

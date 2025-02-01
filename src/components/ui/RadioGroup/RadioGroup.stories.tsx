@@ -79,11 +79,11 @@ export const Default: Story = {
       if (args.orientation === "horizontal") {
         switch (args.variant) {
           case "default":
-            return "flex flex-row gap-[var(--space-lg)]";
+            return "radio-group-base";
           case "blocks":
-            return "grid grid-flow-col gap-[var(--space)]";
+            return "radio-group-blocks-horizontal";
           case "compact":
-            return "flex flex-row divide-x divide-[var(--border)] border border-[var(--border)] rounded-[var(--radius-lg)]";
+            return "radio-group-compact-horizontal";
           default:
             return "";
         }
@@ -96,7 +96,7 @@ export const Default: Story = {
         args.orientation === "horizontal" &&
         (args.variant === "blocks" || args.variant === "compact")
       ) {
-        return "flex-1";
+        return "";
       }
       return "";
     };
@@ -129,9 +129,7 @@ export const Default: Story = {
                   className={cn(
                     args.variant === "compact" &&
                       args.orientation === "horizontal" && [
-                        "rounded-none border-0",
-                        "first:rounded-l-[var(--radius-lg)]",
-                        "last:rounded-r-[var(--radius-lg)]",
+                        "radio-label-wrapper-compact-horizontal",
                       ]
                   )}
                 />
@@ -291,9 +289,9 @@ export const WithPricing: Story = {
       if (args.orientation === "horizontal") {
         switch (args.variant) {
           case "blocks":
-            return "grid grid-flow-col gap-[var(--space)]";
+            return "radio-group-blocks-horizontal";
           case "compact":
-            return "flex flex-row divide-x divide-[var(--border)] border border-[var(--border)] rounded-[var(--radius-lg)]";
+            return "radio-group-compact-horizontal";
           default:
             return "";
         }
@@ -309,7 +307,7 @@ export const WithPricing: Story = {
           {...args}
         >
           {pricingPlans.map((plan) => (
-            <div key={plan.id} className="flex-1">
+            <div key={plan.id} className="">
               <RadioGroupItem
                 variant={args.variant}
                 value={plan.id}
@@ -318,16 +316,14 @@ export const WithPricing: Story = {
                 className={cn(
                   args.variant === "compact" &&
                     args.orientation === "horizontal" && [
-                      "rounded-none border-0",
-                      "first:rounded-l-[var(--radius-lg)]",
-                      "last:rounded-r-[var(--radius-lg)]",
+                      "radio-label-wrapper-compact-horizontal",
                     ]
                 )}
                 label={
                   <div className="flex gap-md justify-between items-start mt-0.5">
                     <div className="flex flex-col">
                       <div>{plan.title}</div>
-                      <ul className="mt-2 list-disc list-small text-text-lightest">
+                      <ul className="mt-2 list-disc list-small text-foreground">
                         {plan.features.map((feature, index) => (
                           <li
                             key={index}
@@ -342,7 +338,7 @@ export const WithPricing: Story = {
                       <span className="text-lg font-semibold leading-none text-right text-primary">
                         {plan.price}
                       </span>
-                      <span className="text-sm font-normal text-right text-text-lightest">
+                      <span className="text-sm font-normal text-right text-weak">
                         {" "}
                         {plan.period}
                       </span>
@@ -377,12 +373,12 @@ export const HorizontalLayout: Story = {
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-heading-4">Blocks Horizontal</h3>
+        <h3 className="text-heading-3">Blocks Horizontal</h3>
         <RadioGroup
           defaultValue="option-1"
           variant="blocks"
           orientation="horizontal"
-          className="grid grid-flow-col gap-[var(--space)]"
+          className="radio-group-blocks-horizontal"
         >
           {options.map((option) => (
             <RadioGroupItem
@@ -398,7 +394,7 @@ export const HorizontalLayout: Story = {
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-heading-4">Compact Horizontal</h3>
+        <h3 className="text-heading-3">Compact Horizontal</h3>
         <RadioGroup
           defaultValue="option-1"
           variant="compact"

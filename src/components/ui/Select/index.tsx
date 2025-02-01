@@ -124,6 +124,15 @@ const SelectField: React.FC<SelectFieldProps> = ({
   
   const content = (
     <div className="form-layout-field">
+    {helperText && (
+      <p
+        id={helperId}
+        className="form-layout-helper"
+        data-error={error}
+      >
+        {helperText}
+      </p>
+    )}
       <div className="select-container" data-width={width}>
         <Select
           disabled={disabled}
@@ -149,15 +158,6 @@ const SelectField: React.FC<SelectFieldProps> = ({
           })}
         </Select>
       </div>
-      {helperText && (
-        <p
-          id={helperId}
-          className="form-layout-helper"
-          data-error={error}
-        >
-          {helperText}
-        </p>
-      )}
     </div>
   );
 

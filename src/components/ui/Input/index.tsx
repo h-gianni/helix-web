@@ -36,6 +36,16 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const inputId = id || generatedId;
 
     const inputElement = (
+      <div>
+        {helperText && (
+        <p
+          id={`${inputId}-helper`}
+          className="form-layout-helper"
+          data-error={error}
+        >
+          {helperText}
+        </p>
+      )}
       <div className="form-layout-field">
         {leadingIcon && (
           <div
@@ -72,16 +82,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           {...props}
         />
-        {helperText && (
-          <p
-            id={`${inputId}-helper`}
-            className="form-layout-helper"
-            data-error={error}
-          >
-            {helperText}
-          </p>
-        )}
       </div>
+
+        </div>
     );
 
     if (!withLabel || !label) return inputElement;

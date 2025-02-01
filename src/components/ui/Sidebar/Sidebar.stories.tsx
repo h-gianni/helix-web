@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import * as React from 'react'
+import type { Meta, StoryObj } from "@storybook/react";
+import * as React from "react";
 import {
   Sidebar,
   SidebarHeader,
@@ -17,19 +17,19 @@ import {
   SidebarInset,
   SidebarTrigger,
   useSidebar,
-} from '@/components/ui/Sidebar'
+} from "@/components/ui/Sidebar";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/Collapsible";
-import { Button } from '@/components/ui/Button'
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/Avatar'
+import { Button } from "@/components/ui/Button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/Popover'
+} from "@/components/ui/Popover";
 import {
   Settings,
   Home,
@@ -45,47 +45,53 @@ import {
   Calendar,
   ChevronDown,
   Sun,
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { ThemeSwitcher } from '@/components/theme/ThemeSwitcher'
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 
 const StoryWrapper = ({ children }: { children: React.ReactNode }) => (
   <div className="h-[600px]">
     <SidebarProvider>{children}</SidebarProvider>
   </div>
-)
-StoryWrapper.displayName = 'StoryWrapper'
+);
+StoryWrapper.displayName = "StoryWrapper";
 
 const meta: Meta<typeof Sidebar> = {
-  title: 'Components/Sidebar',
+  title: "Components/Sidebar",
   component: Sidebar,
   parameters: {
-    layout: 'fullscreen',
+    layout: "fullscreen",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   args: {
-    variant: 'sidebar',
-    collapsible: 'offcanvas',
+    variant: "sidebar",
+    collapsible: "offcanvas",
   },
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['sidebar', 'floating', 'inset'],
-      description: 'Controls the sidebar presentation style',
-      defaultValue: 'sidebar',
+      control: "select",
+      options: ["sidebar", "floating", "inset"],
+      description: "Controls the sidebar presentation style",
+      defaultValue: "sidebar",
     },
     collapsible: {
-      control: 'select',
-      options: ['offcanvas', 'icon', 'none'],
-      description: 'Controls how the sidebar collapses',
-      defaultValue: 'offcanvas',
+      control: "select",
+      options: ["offcanvas", "icon", "none"],
+      description: "Controls how the sidebar collapses",
+      defaultValue: "offcanvas",
     },
   },
-  decorators: [(Story) => <StoryWrapper><Story /></StoryWrapper>],
-}
+  decorators: [
+    (Story) => (
+      <StoryWrapper>
+        <Story />
+      </StoryWrapper>
+    ),
+  ],
+};
 
-export default meta
-type Story = StoryObj<typeof Sidebar>
+export default meta;
+type Story = StoryObj<typeof Sidebar>;
 
 const UserNav = () => {
   return (
@@ -98,12 +104,17 @@ const UserNav = () => {
           <div className="flex items-center justify-between gap-4 w-full">
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8">
-                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                <AvatarImage
+                  src="https://github.com/shadcn.png"
+                  alt="@shadcn"
+                />
                 <AvatarFallback>SC</AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start text-left">
                 <span className="text-sm font-medium">shadcn</span>
-                <span className="text-xs text-muted-foreground">m@example.com</span>
+                <span className="text-xs text-muted-foreground">
+                  m@example.com
+                </span>
               </div>
             </div>
             <ChevronRight className="h-4 w-4" />
@@ -161,24 +172,24 @@ const UserNav = () => {
         </div>
       </PopoverContent>
     </Popover>
-  )
-}
+  );
+};
 
-const NavMenuItem = ({ 
+const NavMenuItem = ({
   icon: Icon,
   label,
   isActive = false,
   subItems,
   action,
 }: {
-  icon: React.ElementType
-  label: string
-  isActive?: boolean
-  subItems?: { label: string; isActive?: boolean }[]
-  badge?: string | number
-  action?: React.ReactNode
+  icon: React.ElementType;
+  label: string;
+  isActive?: boolean;
+  subItems?: { label: string; isActive?: boolean }[];
+  badge?: string | number;
+  action?: React.ReactNode;
 }) => {
-  const [isOpen, setIsOpen] = React.useState(true)
+  const [isOpen, setIsOpen] = React.useState(true);
 
   if (subItems) {
     return (
@@ -189,8 +200,8 @@ const NavMenuItem = ({
               isActive={isActive}
               tooltip={label}
               onClick={(e) => {
-                e.preventDefault()
-                setIsOpen(!isOpen)
+                e.preventDefault();
+                setIsOpen(!isOpen);
               }}
             >
               <Icon />
@@ -217,7 +228,7 @@ const NavMenuItem = ({
           </SidebarMenuSub>
         </CollapsibleContent>
       </Collapsible>
-    )
+    );
   }
 
   return (
@@ -228,60 +239,58 @@ const NavMenuItem = ({
       </SidebarMenuButton>
       {action && <SidebarMenuAction>{action}</SidebarMenuAction>}
     </SidebarMenuItem>
-  )
-}
+  );
+};
 
 export const Configurator: Story = {
   render: (args) => {
     // const { isMobile } = useSidebar()
-    const [selectedItem] = React.useState('dashboard')
+    const [selectedItem] = React.useState("dashboard");
 
     return (
       <>
         <Sidebar {...args}>
-        <SidebarHeader>
-          <div className="flex items-center gap-3 px-4 py-4">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-              <span className="text-lg font-bold">U</span>
+          <SidebarHeader>
+            <div className="flex items-center gap-3 px-4 py-4">
+              <div className="flex size-8 items-center justify-center rounded-md bg-primary">
+                <span className="text-lg font-bold text-white leading-none">
+                  U
+                </span>
+              </div>
+              <span className="text-lg font-semibold">UpScore</span>
             </div>
-            <span className="text-lg font-semibold">UpScore</span>
-          </div>
-        </SidebarHeader>
+          </SidebarHeader>
           <SidebarContent>
             <SidebarGroup>
-              <div className="px-2 text-xs font-medium text-sidebar-foreground/70">
-                Main Menu
-              </div>
+              <div className="px-2 pb-2 text-heading-6">Main Menu</div>
               <SidebarMenu>
                 <NavMenuItem
                   icon={Home}
                   label="Dashboard"
-                  isActive={selectedItem === 'dashboard'}
+                  isActive={selectedItem === "dashboard"}
                 />
                 <NavMenuItem
                   icon={FileText}
                   label="Documents"
                   action={<Plus className="h-4 w-4" />}
                   subItems={[
-                    { label: 'Contracts', isActive: selectedItem === 'contracts' },
-                    { label: 'Proposals' },
-                    { label: 'Invoices' },
+                    {
+                      label: "Contracts",
+                      isActive: selectedItem === "contracts",
+                    },
+                    { label: "Proposals" },
+                    { label: "Invoices" },
                   ]}
                 />
                 <NavMenuItem
                   icon={Users}
                   label="Team"
-                  subItems={[
-                    { label: 'Members' },
-                    { label: 'Permissions' },
-                  ]}
+                  subItems={[{ label: "Members" }, { label: "Permissions" }]}
                 />
               </SidebarMenu>
             </SidebarGroup>
             <SidebarGroup>
-              <div className="px-2 text-xs font-medium text-sidebar-foreground/70">
-                Workspace
-              </div>
+              <div className="px-2 pb-2 text-heading-6">Workspace</div>
               <SidebarMenu>
                 <NavMenuItem
                   icon={Calendar}
@@ -297,9 +306,9 @@ export const Configurator: Story = {
                   icon={Settings}
                   label="Settings"
                   subItems={[
-                    { label: 'Account' },
-                    { label: 'Notifications' },
-                    { label: 'Security' },
+                    { label: "Account" },
+                    { label: "Notifications" },
+                    { label: "Security" },
                   ]}
                 />
               </SidebarMenu>
@@ -312,13 +321,13 @@ export const Configurator: Story = {
         <SidebarInset>
           <div className="p-6">
             <div className="mx-auto max-w-4xl space-y-4">
-
-                        <SidebarTrigger />
-              <h1 className="text-3xl font-bold">Dashboard</h1>
-              <p className="text-muted-foreground">
-                This is a full example of the Sidebar component with all available features:
+              <SidebarTrigger />
+              <h1 className="text-heading-1">Dashboard</h1>
+              <p className="text-copy">
+                This is a full example of the Sidebar component with all
+                available features:
               </p>
-              <ul className="list-disc space-y-2 pl-6">
+              <ul className="list-disc text-copy">
                 <li>Multiple collapsible modes (icon, offcanvas, none)</li>
                 <li>Nested menu items with collapsible sections</li>
                 <li>Menu item actions and tooltips</li>
@@ -331,6 +340,6 @@ export const Configurator: Story = {
           </div>
         </SidebarInset>
       </>
-    )
+    );
   },
-}
+};

@@ -2,7 +2,7 @@
 
 /* Base Skeleton */
 .skeleton-base {
-  @apply rounded-md animate-pulse bg-surface-sunken;
+  @apply rounded-md animate-pulse bg-surface-hollowed;
  }
  
  /* Sizes */
@@ -50,7 +50,7 @@
  
  /* Card Skeleton */
  .skeleton-card {
-  @apply rounded-lg p-md border border-neutral-weak gap-sm;
+  @apply rounded-lg p-md border border-neutral-base gap-sm;
  }
  
  /* Table Skeleton */

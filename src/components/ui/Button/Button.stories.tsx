@@ -32,7 +32,7 @@ const meta = {
     },
     shape: {
       control: 'select',
-      options: ['beveled', 'rounded', 'squared'],
+      options: ['beveled', 'rounded'],
       description: 'Shape of the button corners',
     },
     disabled: { control: 'boolean' },
@@ -111,7 +111,6 @@ export const Shapes: Story = {
     <div className="flex gap-[var(--space-base)]">
       <Button shape="beveled">Beveled Button</Button>
       <Button shape="rounded">Rounded Button</Button>
-      <Button shape="squared">Squared Button</Button>
     </div>
   )
 };

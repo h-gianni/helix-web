@@ -168,7 +168,7 @@ export const ComposableDialog: Story = {
             <DialogFooter>
               <Button
                 variant="neutral"
-                appearance="outline"
+                appearance="text"
                 onClick={() => setOpen(false)}
               >
                 Cancel
@@ -291,7 +291,7 @@ export const FormExample: Story = {
             <DialogFooter>
               <Button
                 variant="neutral"
-                appearance="outline"
+                appearance="text"
                 onClick={() => setOpen(false)}
               >
                 Cancel

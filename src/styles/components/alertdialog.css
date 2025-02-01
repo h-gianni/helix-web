@@ -21,7 +21,7 @@
 }
 
 .alert-dialog-icon svg {
-  @apply size-5;
+  @apply size-5 mt-[2px];
 }
 
 /* Icon Variants */
@@ -38,12 +38,12 @@
 }
 
 .alert-dialog-icon-neutral {
-  @apply text-weak;
+  @apply text-neutral;
 }
 
 /* Typography & Structure */
 .alert-dialog-header {
-  @apply flex flex-col space-y-sm text-center sm:text-left;
+  @apply flex flex-col space-y-xxs text-center sm:text-left;
 }
 
 .alert-dialog-title {
@@ -51,7 +51,7 @@
 }
 
 .alert-dialog-description {
-  @apply m-0 text-copy text-weak;
+  @apply m-0 text-copy;
 }
 
 .alert-dialog-footer {

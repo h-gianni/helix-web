@@ -52,7 +52,7 @@
   .text-heading-4,
   .text-heading-5,
   .text-heading-6 {
-    @apply font-sans;
+    @apply font-sans text-strong;
   }
   .text-display-1,
   .text-display-2,
@@ -87,16 +87,6 @@
   .text-heading-5,
   .text-heading-6 {
     @apply font-semibold;
-  }
-  .text-display-1,
-  .text-display-2,
-  .text-heading-1,
-  .text-heading-2,
-  .text-heading-3,
-  .text-heading-4,
-  .text-heading-5,
-  .text-heading-6 {
-    @apply text-strong;
   }
 
   /* Display styles */
@@ -219,7 +209,7 @@
   }
 
   .text-footnote {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-xxs);
     line-height: var(--line-height-tight);
   }
 
@@ -237,6 +227,7 @@
 
   /* Interactive styles */
   .text-link {
+    @apply cursor-pointer;
     text-decoration-line: underline;
     text-underline-offset: 0.2em;
     font-weight: var(--font-weight-medium);
@@ -249,7 +240,7 @@
     letter-spacing: var(--letter-spacing-wide);
   }
 
-  /* Neutral Backgrounds */
+  /* Neutral Text */
   .text-neutral,
   .text-foreground {
     color: var(--text-foreground);
@@ -261,7 +252,7 @@
     color: var(--text-strong);
   }
 
-  /* Primary Backgrounds */
+  /* Primary Text */
   .text-primary {
     color: var(--text-primary);
   }
@@ -269,7 +260,7 @@
     color: var(--text-primary-strong);
   }
 
-  /* Warning Backgrounds */
+  /* Warning Text */
   .text-warning {
     color: var(--text-warning);
   }
@@ -277,7 +268,7 @@
     color: var(--text-warning-strong);
   }
 
-  /* Danger Backgrounds */
+  /* Danger Text */
   .text-danger {
     color: var(--text-danger);
   }
@@ -285,7 +276,7 @@
     color: var(--text-danger-strong);
   }
 
-  /* Success Backgrounds */
+  /* Success Text */
   .text-success {
     color: var(--text-success);
   }
@@ -293,29 +284,23 @@
     color: var(--text-success-strong);
   }
 
-  /* Accent Backgrounds */
+  /* Accent Text */
   .text-accent {
     color: var(--text-accent);
   }
-  /* 
-    .text-accent-weak {
-      color: var(--background-accent-weak);
-    }
-    .text-accent-strong {
-      color: var(--background-accent-strong);
-    } */
+  /* Accent Text */
+  .text-accent-strong {
+    color: var(--text-accent-strong);
+  }
 
-  /* Info Backgrounds */
+  /* Info Text */
   .text-info {
     color: var(--text-info);
   }
-  /*
-    .text-info-weak {
-      color: var(--background-info-weak);
-    }
-    .text-info-strong {
-      color: var(--background-info-strong);
-    } */
+  /* Info Text */
+  .text-info-strong {
+    color: var(--text-info-strong);
+  }
 
   /* ==========================================================================
      Backgrounds + Fills
@@ -327,8 +312,7 @@
   }
 
   /* Neutral Backgrounds */
-  .bg-neutral,
-  .fill-neutral {
+  .bg-neutral {
     background-color: var(--background-neutral);
   }
   .bg-neutral-weak {
@@ -348,11 +332,13 @@
   }
   .bg-neutral-strongest {
     background-color: var(--background-neutral-strongest);
+  }  
+  .fill-neutral {
+    fill: var(--background-neutral);
   }
 
   /* Primary Backgrounds */
-  .bg-primary,
-  .fill-primary {
+  .bg-primary {
     background-color: var(--background-primary);
   }
   .bg-primary-weak {
@@ -373,10 +359,12 @@
   .bg-primary-strongest {
     background-color: var(--background-primary-strongest);
   }
+  .fill-primary {
+    fill: var(--background-primary);
+  }
 
   /* Warning Backgrounds */
-  .bg-warning,
-  .fill-warning {
+  .bg-warning {
     background-color: var(--background-warning);
   }
   .bg-warning-weak {
@@ -396,11 +384,13 @@
   }
   .bg-warning-strongest {
     background-color: var(--background-warning-strongest);
+  }  
+  .fill-warning {
+    fill: var(--background-warning);
   }
 
   /* Danger Backgrounds */
-  .bg-danger,
-  .fill-danger {
+  .bg-danger{
     background-color: var(--background-danger);
   }
   .bg-danger-weak {
@@ -420,11 +410,13 @@
   }
   .bg-danger-strongest {
     background-color: var(--background-danger-strongest);
+  }  
+  .fill-danger {
+    fill: var(--background-danger);
   }
 
   /* Success Backgrounds */
-  .bg-success,
-  .fill-success {
+  .bg-success {
     background-color: var(--background-success);
   }
   .bg-success-weak {
@@ -444,11 +436,13 @@
   }
   .bg-success-strongest {
     background-color: var(--background-success-strongest);
+  }  
+  .fill-success {
+    fill: var(--background-success);
   }
 
   /* Accent Backgrounds */
-  .bg-accent,
-  .fill-accent {
+  .bg-accent {
     background-color: var(--background-accent);
   }
   .bg-accent-weak {
@@ -468,11 +462,13 @@
   }
   .bg-accent-strongest {
     background-color: var(--background-accent-strongest);
+  }  
+  .fill-accent {
+    fill: var(--background-accent);
   }
 
   /* Info Backgrounds */
-  .bg-info,
-  .fill-info {
+  .bg-info {
     background-color: var(--background-info);
   }
   .bg-info-weak {
@@ -493,6 +489,9 @@
   .bg-info-strongest {
     background-color: var(--background-info-strongest);
   }
+  .fill-info {
+    fill: var(--background-info);
+  }
 
   /* ==========================================================================
      Borders + Rings + Divides
@@ -501,14 +500,17 @@
   /* General Border Styles: DON NOT USE BORDER-BASE (conflict with TEXT-BASE (as with strong, etc..) */
   /* Neutral Border Styles */
   .border-neutral-base,
-  .divide-neutral-base {
+  .ring-neutral-base,
+  .divide-neutral-base  {
     border-color: var(--border-base);
   }
   .border-neutral-strong,
+  .ring-neutral-strong,
   .divide-neutral-strong {
     border-color: var(--border-strong);
   }
   .border-neutral-weak,
+  .ring-neutral-weak,
   .divide-neutral-weak {
     border-color: var(--border-weak);
   }
@@ -607,7 +609,7 @@
     transition-duration: var(--duration-normal);
     transition-timing-function: var(--ease-out);
     z-index: var(--z-modal);
-    @apply fixed top-1/2 left-1/2 bg-surface rounded-lg shadow-md p-xl gap-md w-full;
+    @apply fixed top-1/2 left-1/2 bg-surface rounded-lg shadow-md p-lg gap-md w-full;
   }
 
   /* ==========================================================================
@@ -620,7 +622,7 @@
     transition-property: all;
     transition-timing-function: var(--ease-out);
     transition-duration: var(--duration-normal);
-    @apply bg-input text-foreground tracking-tight
+    @apply bg-input text-foreground leading-none tracking-tight
     border border-neutral-base rounded-base
     placeholder:text-muted;
   }
@@ -639,7 +641,7 @@
     cursor: not-allowed;
     opacity: var(--disabled-opacity);
     background-color: var(--background-disabled);
-  }
+  }  
 
   /* Shared Form Element Styles */
   .form-element-shared {
@@ -738,9 +740,10 @@
   }
 
   .form-layout-helper {
-    margin-top: var(--space-xs);
+    /* margin-bottom: var(--space-xxs);
     font-size: var(--font-size-sm);
-    color: var(--text-weak);
+    color: var(--text-weak); */
+    @apply text-helper mb-xxs -mt-xxs pb-[2px];
   }
   .form-layout-helper[data-error="true"] {
     color: var(--text-danger);
@@ -762,7 +765,7 @@
   /* Popcard List Group */
   .popcard-list-group {
     overflow: hidden;
-    color: var(--text-base);
+    color: var(--text-foreground);
   }
 
   .popcard-list-group-title {
@@ -784,6 +787,7 @@
 
   /* Popcard List Item */
   .popcard-list-item {
+    @apply cursor-pointer;
     position: relative;
     display: flex;
     cursor: default;
@@ -793,7 +797,7 @@
     border-radius: var(--radius-sm);
     padding: 0.375rem 0.5rem;
     outline: none;
-    color: var(--text-weak);
+    color: var(--text-foreground);
     font-size: var(--font-size-sm);
     line-height: var(--line-height-tight);
   }
@@ -802,12 +806,12 @@
     opacity: var(--disabled-opacity);
   }
   .popcard-list-item[data-selected="true"] {
-    background-color: var(--background-surface-sunken);
-    color: var(--text-primary-strong);
+    background-color: var(--background-primary-weakest);
+    color: var(--text-primary);
   }
   .popcard-list-item:focus,
   .popcard-list-item:hover {
-    @apply bg-base-hover;
+    @apply bg-base-hover text-strong;
   }
 
   /* Popcard List Shortcut */
@@ -856,30 +860,22 @@
 
   /* General SVG styles */
   svg {
-    width: 1rem;
-    height: 1rem;
+    @apply size-base;
   }
 
   /* Chevron Right Icon */
   .icon-chevron-right {
-    margin-left: auto;
-    width: 1rem;
-    color: var(--text-weak);
+    @apply text-icon ml-auto;
   }
 
   /* Checked Icon */
   .icon-checked {
-    width: 1rem;
-    height: 1rem;
-    color: var(--background-primary);
+    @apply text-primary size-base;
   }
 
   /* Circle Selected Icon */
   .icon-circle-selected {
-    width: 0.5rem;
-    height: 0.5rem;
-    color: var(--background-primary);
-    fill: var(--background-primary);
+    @apply size-xs text-primary fill-primary;
   }
 
   /* ==========================================================================

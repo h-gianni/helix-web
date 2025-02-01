@@ -33,43 +33,11 @@
   @apply popcard-list-item hover:bg-surface-sunken;
   }
  
- /* .menubar-item-inset {
-  @apply pl-xl;
- } */
- 
  /* Use popcard-list-item with checkbox modifications */
  .menubar-checkbox-item,
  .menubar-radio-item {
   @apply popcard-list-item popcard-checkbox-item hover:bg-surface-sunken;
   }
- 
- /* Indicator styles specific to menubar */
- /* .menubar-indicator-container {
-  @apply absolute left-sm flex size-3.5 items-center justify-center;
- } */
- 
- /* .menubar-indicator-icon {
-  @apply size-4;
- } */
- 
- /* Use popcard-list-group-title */
- /* .menubar-label {
-  @apply popcard-list-group-title;
- } */
- 
- /* .menubar-label-inset {
-  @apply pl-xl;
- } */
- 
- /* Use popcard-list-separator */
- /* .menubar-separator {
-  @apply popcard-list-separator;
- } */
- 
- /* Use popcard-list-shortcut */
- /* .menubar-shortcut {
-  @apply popcard-list-shortcut;
- } */
  
  @media print {
   .menubar-root {

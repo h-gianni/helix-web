@@ -14,7 +14,7 @@
 
 /* Select Trigger */
 .select-trigger {
-  @apply form-basics form-element-shared justify-between;
+  @apply form-basics form-element-shared justify-between gap-sm;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
   
@@ -128,28 +128,6 @@
   }
 }
 
-/* Icons in dropdown items */
-/* .select-item .select-icon svg {
-  @apply size-4;
-} */
-
-/* Icons in selected value */
-/* .select-trigger .select-icon svg {
-  @apply size-4;
-}
-
-.select-icon-sm {
-  @apply size-3.5;
-}
-
-.select-icon-base {
-  @apply size-4;
-}
-
-.select-icon-lg {
-  @apply size-5;
-} */
-
 /* Select Content */
 .select-content {
   @apply popcard-basics
@@ -174,7 +152,7 @@
 
 /* Viewport */
 .select-viewport {
-  @apply p-xxs;
+  @apply p-0;
 }
 
 .select-viewport-popper {
@@ -259,7 +237,7 @@
 
 /* Select Separator */
 .select-separator {
-  @apply mx-[-var(--space-xxs)] my-xxs h-px bg-black;
+  @apply mx-[-var(--space-xxs)] my-xxs h-px bg-neutral-weak;
 }
 
 /* Helper Text */

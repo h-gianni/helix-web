@@ -26,7 +26,6 @@ const buttonVariants = cva(["button-base"], {
     shape: {
       beveled: "",
       rounded: "button-rounded",
-      squared: "button-squared",
     },
     isLoading: {
       true: "button-loading",

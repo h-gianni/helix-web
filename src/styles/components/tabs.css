@@ -21,11 +21,11 @@
  }
  
  .tabs-list-size-base {
-  @apply pt-sm pb-0 text-heading-5 text-strong;
+  @apply pt-sm pb-0 text-heading-5;
  }
  
  .tabs-list-size-lg {
-  @apply pt-md pb-0 text-heading-4 text-strong;
+  @apply pt-md pb-0 text-heading-4;
  }
  
  .tabs-trigger-base {
@@ -44,7 +44,7 @@
  
  .tabs-trigger-appearance-base {
   @apply border-b-2 border-transparent -mb-px 
-  hover:bg-base-hover;
+  hover:bg-base-hover hover:border-neutral-base;
  
   &[data-state=active] {
     @apply border-primary text-primary;

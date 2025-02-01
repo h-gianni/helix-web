@@ -16,9 +16,6 @@
 .button-rounded {
   @apply rounded-full;
 }
-.button-squared {
-  @apply rounded-none;
-}
 
 .button-base svg {
   @apply size-4 shrink-0;

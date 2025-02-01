@@ -10,29 +10,24 @@
 
 /* Size Variants */
 .alert-base {
-  @apply py-sm px-md gap-base;
+  @apply p-sm gap-sm;
 }
 
 .alert-sm {
-  @apply py-xs px-sm gap-sm;
+  @apply p-sm gap-sm;
 }
 
 /* Alert Variants */
 .alert-default {
-  @apply bg-surface border border-neutral-weak;
-
-  &:focus-visible {
-    @apply focus-ring;
-  }
+  @apply bg-surface border border-neutral-weak
+  focus:focus-ring;
 }
 
 .alert-primary {
   @apply bg-primary-weakest border border-primary-weak;
 
   &:focus-visible {
-    @apply outline-none ring-2 ring-offset-2;
-    ring-color: var(--ring-primary);
-    ring-offset-color: var(--background-surface);
+    @apply outline-none ring-2 ring-offset-2 ring-primary ring-offset-surface;
   }
 }
 
@@ -48,9 +43,7 @@
   @apply bg-warning-weakest border border-warning-weak;
 
   &:focus-visible {
-    @apply outline-none ring-2 ring-offset-2;
-    ring-color: var(--ring-default);
-    ring-offset-color: var(--background-surface);
+    @apply outline-none ring-2 ring-offset-2 ring-neutral-base ring-offset-surface;
   }
 }
 
@@ -58,15 +51,13 @@
   @apply bg-success-weakest border border-success-weak;
 
   &:focus-visible {
-    @apply outline-none ring-2 ring-offset-2;
-    ring-color: var(--ring-default);
-    ring-offset-color: var(--background-surface);
+    @apply outline-none ring-2 ring-offset-2 ring-neutral-base ring-offset-surface;
   }
 }
 
 /* Icon Container */
 .alert-icon {
-  @apply flex-shrink-0;
+  @apply flex-shrink-0 mt-px ml-px;
 }
 
 /* Icon sizes */
@@ -80,7 +71,7 @@
 
 /* Icon colors */
 .alert-icon-default {
-  @apply text-weak;
+  @apply text-neutral;
 }
 
 .alert-icon-primary {
@@ -107,24 +98,27 @@
 .alert-content div {
   @apply space-y-0;
 }
+.alert-sm .alert-content div {
+  @apply space-y-xxs;
+}
 
 /* Alert Title */
 .alert-title {
-  @apply text-heading-4;
+  @apply text-heading-5;
 }
 
 /* Title sizes */
 .alert-title-base {
-  @apply text-heading-4 -mt-px;
+  @apply text-heading-5;
 }
 
 .alert-title-sm {
-  @apply text-heading-5 -mt-px;
+  @apply text-heading-6;
 }
 
 /* Title colors */
 .alert-title-default {
-  @apply text-strong;
+  @apply text-neutral;
 }
 
 .alert-title-primary {
@@ -147,7 +141,7 @@
 
 /* Description sizes */
 .alert-description-base {
-  @apply text-copy;
+  @apply text-copy text-neutral;
 }
 
 .alert-description-sm {

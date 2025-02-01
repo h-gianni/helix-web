@@ -46,28 +46,24 @@
 }
 
 .dialog-description {
-  @apply text-helper;
+  @apply text-helper -mt-xs;
 }
 
 .dialog-footer {
   @apply flex flex-col-reverse sm:flex-row sm:justify-end
-         gap-md pt-lg mt-lg;
+         gap-sm pt-lg mt-lg;
 }
 
 /* Close button */
 .dialog-close {
   @apply absolute right-lg top-lg 
-         size-4 rounded-sm
-         text-weak opacity-70
+         rounded-sm
+         text-icon
          transition-all hover:opacity-100
          focus-visible:focus-ring
          disabled:pointer-events-none disabled:opacity-50;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
-}
-
-.dialog-close svg {
-  @apply size-4;
 }
 
 /* Animations */

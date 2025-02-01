@@ -96,6 +96,14 @@
   & + div {
     @apply text-copy-small;
   }
+  .destructive & {
+       @apply text-inverse 
+              hover:text-inverse;
+     }
+     .destructive & + div {
+          @apply text-inverse 
+                 hover:text-inverse;
+        }
  }
  
  /* Toast Description */

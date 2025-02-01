@@ -8,7 +8,6 @@
  /* ScrollArea Viewport */
  .scroll-area-viewport {
   @apply h-full w-full;
-  border-radius: inherit;
  }
  
  /* ScrollBar Base */

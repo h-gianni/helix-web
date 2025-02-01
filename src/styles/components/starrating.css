@@ -62,11 +62,11 @@
  
  /* Text Elements */
  .star-value {
-  @apply ml-sm text-copy-small font-medium;
+  @apply ml-sm text-copy font-medium;
  }
  
  .star-count {
-  @apply ml-0 text-caption;
+  @apply ml-0 text-footnote tracking-tight;
  }
  
  .star-no-ratings {

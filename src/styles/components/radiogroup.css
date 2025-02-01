@@ -37,18 +37,18 @@
 }
 
 .radio-base {
-  @apply size-4 rounded-full form-basics transition-colors;
+  @apply size-4 shrink-0 rounded-pill border border-neutral-base transition-colors;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
 }
 
-.radio-default {
+.radio-base {
   /* &:hover {
     @apply  ;
   } */
 
   &[data-state="checked"] {
-    @apply bg-input border-primary;
+    @apply bg-primary border-none;
   }
 }
 
@@ -60,7 +60,7 @@
   }
   
   &[data-state="checked"] {
-    @apply bg-input border-danger;
+    @apply bg-danger border-danger;
   }
 }
 
@@ -83,12 +83,15 @@
 }
 
 .radio-container {
-  @apply relative flex size-4 items-center justify-center;
+  @apply relative flex items-center justify-center;
 }
 
 .radio-indicator {
-  @apply flex h-full w-full items-center justify-center text-primary animate-in zoom-in-50;
+  @apply flex size-4 items-center justify-center animate-in zoom-in-50;
   animation-duration: var(--duration-normal);
+}
+.radio-indicator svg {
+  @apply text-white fill-white size-2;
 }
 
 .radio-error .radio-indicator {
@@ -96,13 +99,13 @@
 }
 
 .radio-label-wrapper {
-  @apply relative flex cursor-pointer h-full p-md transition-colors;
+  @apply relative flex cursor-pointer h-full p-md transition-colors hover:bg-surface-hover;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
 
-  &:hover {
+  /* &:hover {
     @apply bg-surface-sunken;
-  }
+  } */
 
   &[data-state="checked"] {
     @apply bg-primary-weak;

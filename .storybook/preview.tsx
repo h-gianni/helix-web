@@ -33,7 +33,7 @@ const preview: Preview = {
       attributeName: 'data-theme',
     }),
     (Story) => (
-      <div className="p-4 font-sans" style={{ backgroundColor: 'var(--background-page)' }}>
+      <div className="p-4 font-sans w-full">
         <Story />
       </div>
     ),

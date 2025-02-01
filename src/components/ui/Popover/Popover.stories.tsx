@@ -35,7 +35,7 @@ export const Basic: Story = {
   render: () => (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="neutral" appearance="strong">Open Popover</Button>
+        <Button variant="neutral" appearance="outline">Open Popover</Button>
       </PopoverTrigger>
       <PopoverContent>
         <div className="grid gap-4">
@@ -63,7 +63,7 @@ export const SettingsForm: Story = {
   render: () => (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="neutral" appearance="strong" size="sm" leadingIcon={<Settings />}>Settings</Button>
+        <Button variant="neutral" appearance="outline" size="sm" leadingIcon={<Settings />}>Settings</Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="grid gap-4">
@@ -94,7 +94,7 @@ export const UserPreview: Story = {
   render: () => (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="neutral" appearance="strong" size="sm" leadingIcon={<User />}>Profile</Button>
+        <Button variant="neutral" appearance="outline" size="sm" leadingIcon={<User />}>Profile</Button>
       </PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="grid gap-4">
@@ -134,7 +134,7 @@ export const QuickActions: Story = {
     <div className="flex gap-4">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button appearance="strong" size="sm" leadingIcon={<Plus />}>Add New</Button>
+          <Button appearance="outline" size="sm" leadingIcon={<Plus />}>Add New</Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           <DropdownMenuItem className="flex items-center gap-2">

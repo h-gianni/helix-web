@@ -33,7 +33,7 @@
 /* Size Variants */
 .table-base[data-size="base"] {
   .table-cell {
-    @apply py-sm px-base text-copy text-weak;
+    @apply py-sm px-base text-copy;
   }
 
   .table-head {
@@ -53,7 +53,7 @@
 
 /* Zebra Striping */
 .table-zebra tbody tr:nth-child(even) {
-  @apply bg-surface-elevated hover:bg-surface-sunken;
+  @apply bg-surface-elevated hover:bg-surface-hover;
 }
 
 /* Table Header */
@@ -82,8 +82,8 @@
          [&>tr]:last:border-b-0;
 }
 
-.table-footer td.table-cell {
-  @apply !text-heading-4;
+.table-footer .table-row td.table-cell {
+  @apply text-heading-4;
 }
 
 /* Table Head Cell */
@@ -110,13 +110,9 @@
       transition-duration: var(--duration-normal);
       transition-timing-function: var(--ease-out);
 
-      &:hover {
-        @apply text-foreground bg-surface-elevated;
-      }
-
       /* Sort Icon */
       & > svg {
-        @apply size-4 opacity-0 transition-opacity;
+        @apply text-icon opacity-0 transition-opacity;
         transition-duration: var(--duration-normal);
         transition-timing-function: var(--ease-out);
       }
@@ -128,10 +124,6 @@
       &[data-sort-direction="desc"] > svg {
         @apply opacity-100 rotate-180;
       }
-
-      &:hover > svg {
-        @apply opacity-50;
-      }
     }
   }
 }
@@ -139,7 +131,7 @@
 /* Table Cell */
 .table-cell {
   @apply align-middle max-w-[20rem] overflow-hidden text-ellipsis
-  text-copy text-foreground
+         text-copy
          transition-colors;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
@@ -188,7 +180,7 @@
   }
 
   &[data-state="selected"] {
-    @apply bg-primary-weak;
+    @apply bg-primary-weakest;
   }
 
   &:focus-within {
@@ -202,13 +194,13 @@
 
   /* Disabled Row */
   &[data-disabled="true"] {
-    @apply pointer-events-none opacity-50;
+    @apply pointer-events-none opacity-disabled;
   }
 }
 
 /* Table Caption */
 .table-caption {
-  @apply mt-base mb-sm text-caption text-left text-weak;
+  @apply mt-base mb-sm text-caption text-left;
 }
 
 /* Table Empty State */

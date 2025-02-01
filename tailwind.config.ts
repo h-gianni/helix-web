@@ -65,6 +65,7 @@ const config: Config = {
         weak: "var(--text-weak)",
         muted: "var(--text-muted)",
         inverse: "var(--text-inverse)",
+        icon: "var(--text-weak)",
 
         // Background colors (will use `bg-{value}`)
         body: "var(--background-page)",
@@ -72,6 +73,7 @@ const config: Config = {
         disabled: "var(--background-disabled)",
         surface: {
           DEFAULT: "var(--background-surface)",
+          hover: "var(--background-surface-sunken)",
           raised: "var(--background-surface-raised)",
           elevated: "var(--background-surface-elevated)",
           sunken: "var(--background-surface-sunken)",

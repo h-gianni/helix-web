@@ -13,10 +13,6 @@
   background-color: var(--border-weak);
  }
  
- .separator-muted {
-  background-color: var(--border-weak);
- }
- 
  .separator-accent {
   background-color: var(--border-primary);
  }
