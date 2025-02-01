@@ -210,9 +210,7 @@
 
   /* UI Element styles */
   .text-label {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    letter-spacing: var(--letter-spacing-wide);
+    @apply text-sm font-medium tracking-tight;
   }
 
   .text-caption {
@@ -250,6 +248,74 @@
     font-weight: var(--font-weight-medium);
     letter-spacing: var(--letter-spacing-wide);
   }
+
+  /* Neutral Backgrounds */
+  .text-neutral,
+  .text-foreground {
+    color: var(--text-foreground);
+  }
+  .text-weak {
+    color: var(--text-weak);
+  }
+  .text-strong {
+    color: var(--text-strong);
+  }
+
+  /* Primary Backgrounds */
+  .text-primary {
+    color: var(--text-primary);
+  }
+  .text-primary-strong {
+    color: var(--text-primary-strong);
+  }
+
+  /* Warning Backgrounds */
+  .text-warning {
+    color: var(--text-warning);
+  }
+  .text-warning-strong {
+    color: var(--text-warning-strong);
+  }
+
+  /* Danger Backgrounds */
+  .text-danger {
+    color: var(--text-danger);
+  }
+  .text-danger-strong {
+    color: var(--text-danger-strong);
+  }
+
+  /* Success Backgrounds */
+  .text-success {
+    color: var(--text-success);
+  }
+  .text-success-strong {
+    color: var(--text-success-strong);
+  }
+
+  /* Accent Backgrounds */
+  .text-accent {
+    color: var(--text-accent);
+  }
+  /* 
+    .text-accent-weak {
+      color: var(--background-accent-weak);
+    }
+    .text-accent-strong {
+      color: var(--background-accent-strong);
+    } */
+
+  /* Info Backgrounds */
+  .text-info {
+    color: var(--text-info);
+  }
+  /*
+    .text-info-weak {
+      color: var(--background-info-weak);
+    }
+    .text-info-strong {
+      color: var(--background-info-strong);
+    } */
 
   /* ==========================================================================
      Backgrounds + Fills
@@ -429,77 +495,6 @@
   }
 
   /* ==========================================================================
-     Text
-     ========================================================================== */
-
-  /* Neutral Backgrounds */
-  .text-neutral, .text-foreground {
-    color: var(--text-foreground);
-  }
-  .text-weak {
-    color: var(--text-weak);
-  }
-  .text-strong {
-    color: var(--text-strong);
-  }
-
-  /* Primary Backgrounds */
-  .text-primary {
-    color: var(--text-primary);
-  }
-  .text-primary-strong {
-    color: var(--text-primary-strong);
-  }
-
-  /* Warning Backgrounds */
-  .text-warning {
-    color: var(--text-warning);
-  }
-  .text-warning-strong {
-    color: var(--text-warning-strong);
-  }
-
-  /* Danger Backgrounds */
-  .text-danger {
-    color: var(--text-danger);
-  }
-  .text-danger-strong {
-    color: var(--text-danger-strong);
-  }
-
-  /* Success Backgrounds */
-  .text-success {
-    color: var(--text-success);
-  }
-  .text-success-strong {
-    color: var(--text-success-strong);
-  }
-
-  /* Accent Backgrounds */
-  .text-accent {
-    color: var(--text-accent);
-  }
-  /* 
-  .text-accent-weak {
-    color: var(--background-accent-weak);
-  }
-  .text-accent-strong {
-    color: var(--background-accent-strong);
-  } */
-
-  /* Info Backgrounds */
-  .text-info {
-    color: var(--text-info);
-  }
-  /*
-  .text-info-weak {
-    color: var(--background-info-weak);
-  }
-  .text-info-strong {
-    color: var(--background-info-strong);
-  } */
-
-  /* ==========================================================================
      Borders + Rings + Divides
      ========================================================================== */
 
@@ -606,23 +601,13 @@
 
   /* Dialog Basics */
   .dialog-basics {
-    position: fixed;
-    left: 50%;
-    top: 50%;
     transform: translate(-50%, -50%);
-    width: 100%;
     display: grid;
-    gap: var(--space-md);
-    background-color: var(--background-surface);
-    border-width: 1px;
-    border-style: solid;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    padding: var(--space-lg);
     transition-property: all;
     transition-duration: var(--duration-normal);
     transition-timing-function: var(--ease-out);
     z-index: var(--z-modal);
+    @apply fixed top-1/2 left-1/2 bg-surface rounded-lg shadow-md p-xl gap-md w-full;
   }
 
   /* ==========================================================================
@@ -631,15 +616,13 @@
 
   /* Form Basics */
   .form-basics {
-    background-color: var(--background-input);
-    color: var(--text-base);
-    border-color: var(--border-base);
-    border-width: 1px;
-    border-style: solid;
-    border-radius: var(--radius-base);
+    /* border-color: var(--border-base); */
     transition-property: all;
     transition-timing-function: var(--ease-out);
     transition-duration: var(--duration-normal);
+    @apply bg-input text-foreground tracking-tight
+    border border-neutral-base rounded-base
+    placeholder:text-muted;
   }
   .form-basics:hover {
     border-color: var(--border-strong);
@@ -919,20 +902,4 @@
 
 @tailwind utilities;
 
-/* Fullstory compatibility */
-@layer utilities {
-  .fs-hide {
-    visibility: hidden;
-  }
-  .fs-mask {
-    background-color: var(--background-surface);
-    color: transparent !important;
-  }
-  .fs-exclude {
-    display: none !important;
-  }
-  .fs-unmask {
-    visibility: visible !important;
-    background-color: transparent !important;
-  }
-}
+

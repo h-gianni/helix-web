@@ -85,7 +85,7 @@
   --text-strong: rgb(var(--color-strongest));
   --text-foreground: rgb(var(--color-stronger));
   --text-weak: rgb(var(--color-strong));
-  --text-muted: rgb(var(--color-text-medium));
+  --text-muted: rgb(var(--color-medium));
 
   /* Status Text */
   --text-primary: rgb(var(--color-primary-stronger));

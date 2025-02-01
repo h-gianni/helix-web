@@ -4,7 +4,7 @@
 .button-base {
   @apply inline-flex items-center justify-center gap-sm
     whitespace-nowrap rounded-base
-    text-base font-medium capitalize
+    text-base font-medium tracking-tight capitalize
     transition-all cursor-pointer
     focus-visible:outline-none focus-visible:ring-2
     focus-visible:ring-primary focus-visible:ring-offset-2

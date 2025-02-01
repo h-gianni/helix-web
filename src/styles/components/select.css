@@ -27,6 +27,7 @@
   }
 }
 
+
 /* Size Variants */
 .select-trigger-sm {
   @apply form-element-sm min-w-[8rem];
@@ -49,11 +50,6 @@
 /* .select-trigger > span:first-of-type {
   @apply pl-2xl;
 } */
-
-/* Value text */
-[data-placeholder] {
-  @apply text-weak;
-}
 
  .select-value {
   &[data-with-icon="true"] {
@@ -287,5 +283,25 @@
   
   .select-content {
     @apply hidden;
+  }
+  
+
+  .select-content {
+    @apply relative z-50 min-w-[8rem]
+    overflow-hidden border rounded-base bg-surface-raised text-foreground p-xxs shadow;
+  }
+  [data-radix-select-portal] {
+    @apply fixed inset-0 z-50 h-[--radix-select-content-available-height] w-full;
+  }
+  .select-content {
+    @apply data-[state=open]:animate-in data-[state=closed]:animate-out;
+    @apply data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0;
+    @apply data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95;
+  }
+  
+  select[aria-hidden="true"] {
+    @apply block absolute opacity-0 pointer-events-none;
+    width: 1px !important;
+    height: 1px !important;
   }
 }

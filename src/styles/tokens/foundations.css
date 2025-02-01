@@ -95,23 +95,23 @@
   /* ==========================================================================
       Shadows
       ========================================================================== */
-  --shadow-sm: 0px 0.7px 0.6px hsl(0deg 0% 67% / 0.49),
-    0px 0.9px 0.7px -2.2px hsl(0deg 0% 67% / 0.35),
-    0px 2.3px 1.9px -4.5px hsl(0deg 0% 67% / 0.2);
+  --shadow-sm: 0px 0.7px 0.6px hsl(207deg 22% 62% / 0.49),
+    0px 0.9px 0.7px -2.2px hsl(207deg 22% 62% / 0.35),
+    0px 2.3px 1.9px -4.5px hsl(207deg 22% 62% / 0.2);
 
-  --shadow-base: 0px 0.7px 0.6px hsl(0deg 0% 67% / 0.41),
-    0px 1px 0.8px -1.1px hsl(0deg 0% 67% / 0.34),
-    0px 2.2px 1.8px -2.2px hsl(0deg 0% 67% / 0.27),
-    0px 5.5px 4.5px -3.4px hsl(0deg 0% 67% / 0.19),
-    0px 11.7px 9.7px -4.5px hsl(0deg 0% 67% / 0.12);
+  --shadow-base: 0px 0.7px 0.6px hsl(207deg 22% 62% / 0.41),
+    0px 1px 0.8px -1.1px hsl(207deg 22% 62% / 0.34),
+    0px 2.2px 1.8px -2.2px hsl(207deg 22% 62% / 0.27),
+    0px 5.5px 4.5px -3.4px hsl(207deg 22% 62% / 0.19),
+    0px 11.7px 9.7px -4.5px hsl(207deg 22% 62% / 0.12);
 
-  --shadow-md: 0px 0.7px 0.6px hsl(0deg 0% 67% / 0.38),
-    0px 1.1px 0.9px -0.5px hsl(0deg 0% 67% / 0.35),
-    0px 1.9px 1.6px -1px hsl(0deg 0% 67% / 0.32),
-    0px 3.4px 2.8px -1.5px hsl(0deg 0% 67% / 0.28),
-    0px 6.1px 5px -2px hsl(0deg 0% 67% / 0.25),
-    0px 10.4px 8.6px -2.5px hsl(0deg 0% 67% / 0.21),
-    0px 16.7px 13.8px -3px hsl(0deg 0% 67% / 0.18);
+  --shadow-md: 0px 0.7px 0.6px hsl(207deg 22% 62% / 0.38),
+    0px 1.1px 0.9px -0.5px hsl(207deg 22% 62% / 0.35),
+    0px 1.9px 1.6px -1px hsl(207deg 22% 62% / 0.32),
+    0px 3.4px 2.8px -1.5px hsl(207deg 22% 62% / 0.28),
+    0px 6.1px 5px -2px hsl(207deg 22% 62% / 0.25),
+    0px 10.4px 8.6px -2.5px hsl(207deg 22% 62% / 0.21),
+    0px 16.7px 13.8px -3px hsl(207deg 22% 62% / 0.18);
 
   --shadow-lg: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px,
     rgba(0, 0, 0, 0.3) 0px 18px 36px -18px;
@@ -140,8 +140,8 @@
   --z-raised: 1;
   --z-sticky: 100;
   --z-overlay: 200;
-  --z-dropdown: 300;
   --z-modal: 400;
+  --z-dropdown: 500;
   --z-popover: 500;
   --z-toast: 600;
   --z-tooltip: 700;

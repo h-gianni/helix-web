@@ -12,18 +12,19 @@ import { Input } from "@/components/ui/Input";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { AlertCircle } from "lucide-react";
 import {
-  SelectField,
+  Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectField,
 } from "@/components/ui/Select";
 import type { BusinessActivityResponse as BusinessFunctionResponse } from "@/lib/types/api";
 
 interface TeamCreateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateTeam: (name: string, disciplineId: string) => Promise<void>;
+  onCreateTeam: (name: string, teamFunctionId: string) => Promise<void>;
 }
 
 export default function TeamCreateModal({
@@ -32,7 +33,7 @@ export default function TeamCreateModal({
   onCreateTeam,
 }: TeamCreateModalProps) {
   const [teamName, setTeamName] = useState("");
-  const [disciplineId, setDisciplineId] = useState("");
+  const [teamFunctionId, setteamFunctionId] = useState("");
   const [disciplines, setDisciplines] = useState<BusinessFunctionResponse[]>([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -67,12 +68,12 @@ export default function TeamCreateModal({
     try {
       setSaving(true);
       setError(null);
-      if (!disciplineId) {
+      if (!teamFunctionId) {
         throw new Error("Please select a discipline");
       }
-      await onCreateTeam(teamName.trim(), disciplineId);
+      await onCreateTeam(teamName.trim(), teamFunctionId);
       setTeamName("");
-      setDisciplineId("");
+      setteamFunctionId("");
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
@@ -86,9 +87,9 @@ export default function TeamCreateModal({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Team</DialogTitle>
-          <DialogDescription>
+          {/* <DialogDescription>
             Create a new team by selecting its function and providing a name.
-          </DialogDescription>
+          </DialogDescription> */}
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -100,31 +101,34 @@ export default function TeamCreateModal({
           )}
 
           <div className="space-y-4">
-            <SelectField
-              value={disciplineId}
-              onValueChange={setDisciplineId}
+            <Select 
+              value={teamFunctionId} 
+              onValueChange={setteamFunctionId}
               disabled={loading}
-              width="full"
-              label="Team function"
-              withLabel
-              error={!!error && !disciplineId}
             >
-              <SelectTrigger>
-                <SelectValue 
-                  placeholder={loading ? "Loading function..." : "Select a function"} 
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {disciplines.map((discipline) => (
-                  <SelectItem
-                    key={discipline.id}
-                    value={discipline.id}
-                  >
-                    {discipline.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </SelectField>
+              <SelectField
+                width="full"
+                label="Team function"
+                withLabel
+                error={!!error && !teamFunctionId}
+              >
+                <SelectTrigger>
+                  <SelectValue 
+                    placeholder={loading ? "Loading function..." : "Select a function"} 
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {disciplines.map((discipline) => (
+                    <SelectItem
+                      key={discipline.id}
+                      value={discipline.id}
+                    >
+                      {discipline.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </SelectField>
+            </Select>
 
             <Input
               value={teamName}
@@ -140,7 +144,7 @@ export default function TeamCreateModal({
           <DialogFooter>
             <Button
               variant="neutral"
-              appearance="subtle"
+              appearance="text"
               onClick={onClose}
               disabled={saving}
             >
@@ -149,7 +153,7 @@ export default function TeamCreateModal({
             <Button
               variant="primary"
               type="submit"
-              disabled={saving || !teamName.trim() || !disciplineId || loading}
+              disabled={saving || !teamName.trim() || !teamFunctionId || loading}
               isLoading={saving}
             >
               Create Team
