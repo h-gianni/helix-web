@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
@@ -19,7 +18,7 @@ import {
   SelectValue,
   SelectField,
 } from "@/components/ui/Select";
-import type { BusinessActivityResponse as BusinessFunctionResponse } from "@/lib/types/api";
+import type { TeamFunctionResponse } from "@/lib/types/api";
 
 interface TeamCreateModalProps {
   isOpen: boolean;
@@ -33,25 +32,25 @@ export default function TeamCreateModal({
   onCreateTeam,
 }: TeamCreateModalProps) {
   const [teamName, setTeamName] = useState("");
-  const [teamFunctionId, setteamFunctionId] = useState("");
-  const [disciplines, setDisciplines] = useState<BusinessFunctionResponse[]>([]);
+  const [teamFunctionId, setTeamFunctionId] = useState("");
+  const [teamFunctions, setTeamFunctions] = useState<TeamFunctionResponse[]>([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchDisciplines = async () => {
+    const fetchTeamFunctions = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch("/api/disciplines");
+        const response = await fetch("/api/team-functions");
         const data = await response.json();
         if (!data.success) {
-          throw new Error(data.error || "Failed to fetch disciplines");
+          throw new Error(data.error || "Failed to fetch team functions");
         }
-        setDisciplines(data.data);
+        setTeamFunctions(data.data);
       } catch (err) {
-        console.error("Error fetching disciplines:", err);
+        console.error("Error fetching team functions:", err);
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
@@ -59,24 +58,43 @@ export default function TeamCreateModal({
     };
 
     if (isOpen) {
-      fetchDisciplines();
+      fetchTeamFunctions();
+      setTeamName("");
+      setTeamFunctionId("");
+      setError(null);
     }
   }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
+    console.log('Form submission:', {
+      teamName: teamName.trim(),
+      teamFunctionId,
+      hasTeamName: !!teamName.trim(),
+      hasTeamFunction: !!teamFunctionId
+    });
+
+    // Validation checks
+    if (!teamName.trim()) {
+      setError("Team name is required");
+      return;
+    }
+
+    if (!teamFunctionId) {
+      console.log('No team function selected');
+      setError("Please select a team function");
+      return;
+    }
+
     try {
       setSaving(true);
-      setError(null);
-      if (!teamFunctionId) {
-        throw new Error("Please select a discipline");
-      }
       await onCreateTeam(teamName.trim(), teamFunctionId);
-      setTeamName("");
-      setteamFunctionId("");
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Error creating team:", err);
+      setError(err instanceof Error ? err.message : "Failed to create team");
     } finally {
       setSaving(false);
     }
@@ -87,9 +105,6 @@ export default function TeamCreateModal({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Team</DialogTitle>
-          {/* <DialogDescription>
-            Create a new team by selecting its function and providing a name.
-          </DialogDescription> */}
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -101,40 +116,48 @@ export default function TeamCreateModal({
           )}
 
           <div className="space-y-4">
-            <Select 
-              value={teamFunctionId} 
-              onValueChange={setteamFunctionId}
-              disabled={loading}
+            <SelectField
+              label="Team function"
+              withLabel
+              error={!!error && !teamFunctionId}
             >
-              <SelectField
-                width="full"
-                label="Team function"
-                withLabel
-                error={!!error && !teamFunctionId}
+              <Select
+                value={teamFunctionId}
+                onValueChange={(value) => {
+                  console.log('Selected value:', value);
+                  setTeamFunctionId(value);
+                  setError(null);
+                }}
+                name="teamFunction"
               >
-                <SelectTrigger>
-                  <SelectValue 
-                    placeholder={loading ? "Loading function..." : "Select a function"} 
+                <SelectTrigger
+                  className="w-full"
+                  disabled={loading}
+                >
+                  <SelectValue
+                    placeholder={loading ? "Loading functions..." : "Select a function"}
                   />
                 </SelectTrigger>
                 <SelectContent>
-                  {disciplines.map((discipline) => (
+                  {teamFunctions.map((teamFunction) => (
                     <SelectItem
-                      key={discipline.id}
-                      value={discipline.id}
+                      key={teamFunction.id}
+                      value={teamFunction.id}
                     >
-                      {discipline.name}
+                      {teamFunction.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
-              </SelectField>
-            </Select>
+              </Select>
+            </SelectField>
 
             <Input
               value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
+              onChange={(e) => {
+                setTeamName(e.target.value);
+                setError(null);
+              }}
               placeholder="Enter team name"
-              required
               label="Team Name"
               withLabel
               error={!!error && !teamName.trim()}
@@ -153,7 +176,6 @@ export default function TeamCreateModal({
             <Button
               variant="primary"
               type="submit"
-              disabled={saving || !teamName.trim() || !teamFunctionId || loading}
               isLoading={saving}
             >
               Create Team

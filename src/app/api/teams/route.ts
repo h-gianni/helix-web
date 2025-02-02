@@ -86,21 +86,11 @@ export const GET = async (request: Request) => {
       name: team.name,
       description: team.description,
       teamFunctionId: team.teamFunctionId,
-      businessFunction: {
-        id: team.teamFunction.id,
-        name: team.teamFunction.name,
-        description: team.teamFunction.description,
-        // jobTitles: team.teamFunction.jobTitles,
-        jobTitles:team.teamFunction.jobTitles.map((jobTitle: any) => ({
-          ...jobTitle,
-          businessFunctionId: team.teamFunction.id,
-        })),
-        createdAt: team.teamFunction.createdAt,
-        updatedAt: team.teamFunction.updatedAt,
-      },
       ownerId: team.ownerId,
       createdAt: team.createdAt,
       updatedAt: team.updatedAt,
+      deletedAt: team.deletedAt,
+      customFields: team.customFields
     }));
 
     console.log("✅ Successfully fetched teams:", teams.length);
@@ -121,7 +111,6 @@ export const GET = async (request: Request) => {
 export const POST = async (request: Request) => {
   console.log("🎯 POST /api/teams - Started");
   
-  // Debug auth header
   const authHeader = request.headers.get('authorization');
   console.log("📝 Auth header:", authHeader?.substring(0, 20) + "...");
 
@@ -140,12 +129,12 @@ export const POST = async (request: Request) => {
     const body = await request.json();
     console.log("📦 Request body:", body);
 
-    const { name, businessFunctionId, description } = body;
+    const { name, teamFunctionId, description } = body;
 
-    if (!name?.trim() || !businessFunctionId) {
-      console.log("❌ Missing required fields:", { name, businessFunctionId });
+    if (!name?.trim() || !teamFunctionId) {
+      console.log("❌ Missing required fields:", { name, teamFunctionId });
       return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Team name and business function are required" },
+        { success: false, error: "Team name and team function are required" },
         { status: 400 }
       );
     }
@@ -166,17 +155,17 @@ export const POST = async (request: Request) => {
       );
     }
 
-    // Verify business function exists
-    const businessFunction = await prisma.teamFunction.findUnique({
+    // Verify team function exists
+    const teamFunction = await prisma.teamFunction.findUnique({
       where: { 
-        id: businessFunctionId,
+        id: teamFunctionId,
         deletedAt: null
       },
     });
 
-    if (!businessFunction) {
+    if (!teamFunction) {
       return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Business function not found" },
+        { success: false, error: "Team function not found" },
         { status: 404 }
       );
     }
@@ -186,20 +175,9 @@ export const POST = async (request: Request) => {
       data: {
         name: name.trim(),
         description: description?.trim(),
-        teamFunctionId: businessFunctionId,
+        teamFunctionId: teamFunctionId,
         ownerId: user.id,
-      },
-      include: {
-        teamFunction: {
-          include: {
-            jobTitles: {
-              where: {
-                deletedAt: null
-              }
-            },
-          }
-        },
-      },
+      }
     });
 
     const teamResponse: TeamResponse = {
@@ -207,21 +185,9 @@ export const POST = async (request: Request) => {
       name: team.name,
       description: team.description,
       teamFunctionId: team.teamFunctionId,
-      // businessFunction: {
-      //   id: team.teamFunction.id,
-      //   name: team.teamFunction.name,
-      //   description: team.teamFunction.description,
-      //   // jobTitles: team.teamFunction.jobTitles,
-      //   jobTitles: team.teamFunction.jobTitles.map((jobTitle: any) => ({
-      //     ...jobTitle,
-      //     businessFunctionId: team.teamFunction.id,
-      //   })),
-      //   createdAt: team.teamFunction.createdAt,
-      //   updatedAt: team.teamFunction.updatedAt,
-      // },
       ownerId: team.ownerId,
       createdAt: team.createdAt,
-      updatedAt: team.updatedAt,
+      updatedAt: team.updatedAt
     };
 
     console.log("✅ Team created successfully:", teamResponse);

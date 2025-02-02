@@ -67,14 +67,14 @@ export default function TeamsPage() {
     fetchTeams();
   }, [fetchTeams]);
 
-  const handleCreateTeam = async (name: string, disciplineId: string) => {
+  const handleCreateTeam = async (name: string, teamFunctionId: string) => {
     try {
       const response = await fetch("/api/teams", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           name,
-          businessFunctionId: disciplineId
+          teamFunctionId
         }),
       });
 

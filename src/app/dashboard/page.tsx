@@ -135,20 +135,32 @@ export default function DashboardPage() {
     }
   };
 
-  const handleCreateTeam = async (name: string) => {
+  const handleCreateTeam = async (name: string, teamFunctionId: string) => {
     try {
       const response = await fetch("/api/teams", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ 
+          name,
+          teamFunctionId,  // Updated from businessFunctionId to teamFunctionId
+        }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create team');
+      }
+
       const data = await response.json();
       if (data.success) {
         setIsCreateModalOpen(false);
         router.push("/dashboard/teams");
+      } else {
+        throw new Error(data.error || 'Failed to create team');
       }
     } catch (error) {
       console.error("Error creating team:", error);
+      throw error; // Re-throw to be handled by the modal
     }
   };
 
