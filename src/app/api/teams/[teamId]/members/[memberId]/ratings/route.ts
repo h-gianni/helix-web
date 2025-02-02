@@ -31,14 +31,16 @@ async function checkTeamAccess(teamId: string, userId: string) {
 }
 
 async function validateActivity(teamId: string, activityId: string) {
-  const businessActivity = await prisma.businessActivity.findFirst({
+  console.log("Validating activity:", { teamId, activityId }); // Debug log
+  const activity = await prisma.businessActivity.findFirst({
     where: {
       id: activityId,
       teamId: teamId,
+      deletedAt: null,
     },
   });
-
-  return !!businessActivity;
+  console.log("Found activity:", activity); // Debug log
+  return !!activity;
 }
 
 export async function GET(
@@ -155,32 +157,18 @@ export async function POST(
       );
     }
 
-    const hasAccess = await checkTeamAccess(params.teamId, userId);
-    if (!hasAccess) {
-      return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Access denied" },
-        { status: 403 }
-      );
-    }
-
     const body = await request.json();
+    console.log("Received rating request:", { // Debug log
+      teamId: params.teamId,
+      memberId: params.memberId,
+      body
+    });
+
     const { activityId, value } = body;
 
     // Validate activity association
     const isValidActivity = await validateActivity(params.teamId, activityId);
-
     if (!isValidActivity) {
-      const activityExists = await prisma.businessActivity.findUnique({
-        where: { id: activityId },
-      });
-
-      if (!activityExists) {
-        return NextResponse.json<ApiResponse<never>>(
-          { success: false, error: "Activity not found" },
-          { status: 404 }
-        );
-      }
-
       return NextResponse.json<ApiResponse<never>>(
         {
           success: false,

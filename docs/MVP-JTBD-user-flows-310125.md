@@ -24,8 +24,8 @@
 5. **Add members to the team**  
    - *When I want to evaluate individual team members, I want to add them to the app, so I can track their performance over time.*  
 
-6. **Rate a member’s performance on a specific initiative**  
-   - *When I need to evaluate a team member’s contribution, I want to rate their performance on a specific initiative, so I can provide meaningful feedback.*  
+6. **Rate a member’s performance on a specific activity**  
+   - *When I need to evaluate a team member’s contribution, I want to rate their performance on a specific activity, so I can provide meaningful feedback.*  
 
 7. **Give general written feedback**  
    - *When I want to provide holistic feedback, I want to write general comments, so I can help the team member improve.*  
@@ -39,7 +39,7 @@
 2. **Review the overall performance of team members (Dashboard)**  
    - *When I need a quick overview of my team’s performance, I want to review the dashboard, so I can identify areas for improvement.*  
 
-3. **Rate a member’s performance on an initiative**  
+3. **Rate a member’s performance on an activity**  
    - *When I observe a team member’s contribution, I want to rate their performance, so I can track their progress over time.*  
 
 4. **Give general written feedback**  
@@ -80,12 +80,12 @@
   3. Set up team/business context.  
   4. Create a team.  
   5. Add members to the team.  
-  6. Rate a member’s performance on an initiative.  
+  6. Rate a member’s performance on an activity.  
   7. Give general written feedback.  
 
 - **Pain Points**:  
   - Time-consuming setup process.  
-  - Confusion about how to define initiatives or job titles.  
+  - Confusion about how to define activities or job titles.  
 
 - **Emotions**:  
   - Frustration during setup.  
@@ -97,12 +97,12 @@
 - **Steps**:  
   1. Log in to the app.  
   2. Review the overall performance of team members (Dashboard).  
-  3. Rate a member’s performance on an initiative.  
+  3. Rate a member’s performance on an activity.  
   4. Give general written feedback.  
 
 - **Pain Points**:  
   - Forgetting to log performance data regularly.  
-  - Difficulty finding specific members or initiatives.  
+  - Difficulty finding specific members or activities.  
 
 - **Emotions**:  
   - Satisfaction when seeing progress.  

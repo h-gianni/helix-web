@@ -2,7 +2,10 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { MemberPerformance, PerformanceCategory } from '@/app/dashboard/types/member';
+import {
+  MemberPerformance,
+  PerformanceCategory,
+} from "@/app/dashboard/types/member";
 import { TeamPerformanceView } from "./_teamPerformanceView";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import {
@@ -11,7 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/Select';
+} from "@/components/ui/Select";
 import {
   Gem,
   Sparkles,
@@ -33,8 +36,8 @@ interface PerformersByCategoryProps {
   performers: MemberPerformance[];
   teams: Team[];
   isLoading?: boolean;
-  viewType: 'table' | 'grid';
-  onViewChange: (value: 'table' | 'grid') => void;
+  viewType: "table" | "grid";
+  onViewChange: (value: "table" | "grid") => void;
 }
 
 export const performanceCategories: PerformanceCategory[] = [
@@ -44,7 +47,7 @@ export const performanceCategories: PerformanceCategory[] = [
     maxRating: 5,
     className: "text-success bg-success-weakest",
     Icon: Gem,
-    description: "Outstanding performance across all initiatives",
+    description: "Outstanding performance across all activities",
   },
   {
     label: "Strong Performers",
@@ -82,7 +85,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Not Rated",
     minRating: 0,
     maxRating: 0,
-    className: "text-text bg-neutral",
+    className: "text-neutral bg-neutral-weakest",
     Icon: MinusCircle,
     description: "Members awaiting their first performance rating",
   },
@@ -95,35 +98,22 @@ export const ViewSwitcher = ({
   viewType: 'table' | 'grid';
   onViewChange: (value: 'table' | 'grid') => void;
 }) => {
-  const icons = {
-    table: <TableIcon />,
-    grid: <LayoutGrid />
-  };
-
   return (
+    <div className="w-fit">
     <Select 
-      size="sm"
       value={viewType} 
       onValueChange={onViewChange}
+      width="inline"
     >
-      <SelectTrigger icon={icons[viewType]} className="w-40">
+      <SelectTrigger>
         <SelectValue placeholder="Select view" />
       </SelectTrigger>
-      <SelectContent>
-        <SelectItem 
-          value="table"
-          withIcon={icons.table}
-        >
-          Table View
-        </SelectItem>
-        <SelectItem 
-          value="grid"
-          withIcon={icons.grid}
-        >
-          Card View
-        </SelectItem>
+      <SelectContent align="end">
+        <SelectItem value="table">Table View</SelectItem>
+        <SelectItem value="grid">Card View</SelectItem>
       </SelectContent>
     </Select>
+    </div>
   );
 };
 
@@ -133,7 +123,7 @@ export function PerformersByCategory({
   teams,
   isLoading,
   viewType,
-  onViewChange
+  onViewChange,
 }: PerformersByCategoryProps) {
   const router = useRouter();
 
@@ -156,13 +146,13 @@ export function PerformersByCategory({
     });
 
   const EmptyState = () => (
-    <div className="flex flex-col items-center justify-center py-base">
-      <div className={`p-3 rounded-full ${category.className} mb-4`}>
-        <category.Icon className="size-6" />
+    <div className="flex flex-col items-center justify-center py-sm">
+      <div className={`p-sm rounded-full ${category.className} mb-sm`}>
+        <category.Icon className="size-5" />
       </div>
-      <div className="text-center space-y-xxs">
-        <h3 className="text-heading-3 text-text-strong">No {category.label}</h3>
-        <p className="text-body-small text-text-weakest max-w-copy mx-auto">
+      <div className="text-center">
+        <h3 className="text-heading-5 text-text-strong">No {category.label}</h3>
+        <p className="text-helper max-w-copy mx-auto">
           {category.label === "Not Rated"
             ? "All team members have received at least one rating."
             : category.label === "Poor Performers" ||
@@ -187,17 +177,15 @@ export function PerformersByCategory({
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-sm">
             <category.Icon className={`size-5 ${category.className}`} />
             <span>{category.label}</span>
             {category.description && (
-              <span className="text-body-small text-text-weakest">
-                - {category.description}
+              <span className="text-helper">
+               <span className="pr-xs text-muted"> / </span> {category.description}
               </span>
             )}
           </CardTitle>
-        </div>
       </CardHeader>
       <CardContent>
         <TeamPerformanceView

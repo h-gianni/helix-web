@@ -3,7 +3,7 @@
 /* Base Card */
 .card-base {
   @apply rounded-lg border border-neutral-weak bg-surface text-foreground
-         outline-none transition-all space-y-xs px-lg py-md;
+         outline-none transition-all space-y-base px-lg py-md;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
 }

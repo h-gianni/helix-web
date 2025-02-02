@@ -15,13 +15,13 @@ const EmptyDashboardView = ({ onCreateTeam }: EmptyDashboardViewProps) => {
     },
     {
       icon: Target,
-      title: "2. Configure Initiatives",
-      description: "Set up performance initiatives for your team"
+      title: "2. Configure activities",
+      description: "Set up performance activities for your team"
     },
     {
       icon: Star,
       title: "3. Rate Performance",
-      description: "Add ratings and track member performance on initiatives"
+      description: "Add ratings and track member performance on activities"
     },
     {
       icon: MessageSquare,
@@ -57,14 +57,14 @@ const EmptyDashboardView = ({ onCreateTeam }: EmptyDashboardViewProps) => {
               },
               {
                 icon: Target,
-                title: "2. Configure Initiatives",
-                description: "Set up performance initiatives for your team",
+                title: "2. Configure activities",
+                description: "Set up performance activities for your team",
               },
               {
                 icon: Star,
                 title: "3. Rate Performance",
                 description:
-                  "Add ratings and track member performance on initiatives",
+                  "Add ratings and track member performance on activities",
               },
               {
                 icon: MessageSquare,

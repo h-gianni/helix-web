@@ -16,7 +16,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectField,
 } from "@/components/ui/Select";
 import type { TeamFunctionResponse } from "@/lib/types/api";
 
@@ -33,7 +32,9 @@ export default function TeamCreateModal({
 }: TeamCreateModalProps) {
   const [teamName, setTeamName] = useState("");
   const [teamFunctionId, setTeamFunctionId] = useState("");
-  const [teamFunctions, setTeamFunctions] = useState<TeamFunctionResponse[]>([]);
+  const [teamFunctions, setTeamFunctions] = useState<TeamFunctionResponse[]>(
+    []
+  );
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -69,11 +70,11 @@ export default function TeamCreateModal({
     e.preventDefault();
     setError(null);
 
-    console.log('Form submission:', {
+    console.log("Form submission:", {
       teamName: teamName.trim(),
       teamFunctionId,
       hasTeamName: !!teamName.trim(),
-      hasTeamFunction: !!teamFunctionId
+      hasTeamFunction: !!teamFunctionId,
     });
 
     // Validation checks
@@ -83,7 +84,7 @@ export default function TeamCreateModal({
     }
 
     if (!teamFunctionId) {
-      console.log('No team function selected');
+      console.log("No team function selected");
       setError("Please select a team function");
       return;
     }
@@ -116,40 +117,33 @@ export default function TeamCreateModal({
           )}
 
           <div className="space-y-4">
-            <SelectField
+            <Select
               label="Team function"
               withLabel
               error={!!error && !teamFunctionId}
+              value={teamFunctionId}
+              onValueChange={(value) => {
+                console.log("Selected value:", value);
+                setTeamFunctionId(value);
+                setError(null);
+              }}
+              name="teamFunction"
             >
-              <Select
-                value={teamFunctionId}
-                onValueChange={(value) => {
-                  console.log('Selected value:', value);
-                  setTeamFunctionId(value);
-                  setError(null);
-                }}
-                name="teamFunction"
-              >
-                <SelectTrigger
-                  className="w-full"
-                  disabled={loading}
-                >
-                  <SelectValue
-                    placeholder={loading ? "Loading functions..." : "Select a function"}
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  {teamFunctions.map((teamFunction) => (
-                    <SelectItem
-                      key={teamFunction.id}
-                      value={teamFunction.id}
-                    >
-                      {teamFunction.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </SelectField>
+              <SelectTrigger className="w-full" disabled={loading}>
+                <SelectValue
+                  placeholder={
+                    loading ? "Loading functions..." : "Select a function"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {teamFunctions.map((teamFunction) => (
+                  <SelectItem key={teamFunction.id} value={teamFunction.id}>
+                    {teamFunction.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             <Input
               value={teamName}
@@ -173,11 +167,7 @@ export default function TeamCreateModal({
             >
               Cancel
             </Button>
-            <Button
-              variant="primary"
-              type="submit"
-              isLoading={saving}
-            >
+            <Button variant="primary" type="submit" isLoading={saving}>
               Create Team
             </Button>
           </DialogFooter>

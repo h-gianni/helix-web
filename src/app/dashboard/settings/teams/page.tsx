@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
-import TeamInitiativesConfig from "./_components/_teamInitiativesConfig";
+import TeamActivitiesConfig from "./_components/_teamActivitiesConfig";
 import { useTeams } from '@/lib/context/teams-context';
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { AlertCircle } from "lucide-react";
@@ -79,13 +79,10 @@ export default function TeamsSettingsPage() {
  }
 
  return (
-   <div className="space-y-6">
-     <PageBreadcrumbs items={breadcrumbItems} />
-     <h1 className="text-3xl font-semibold">Team Settings</h1>
-     <TeamInitiativesConfig 
-       team={teamDetails}
-       onUpdate={fetchTeamDetails}
-     />
-   </div>
- );
+  <div className="space-y-6">
+    <PageBreadcrumbs items={breadcrumbItems} />
+    <h1 className="text-3xl font-semibold">Team Settings</h1>
+    <TeamActivitiesConfig onUpdate={fetchTeamDetails} />
+  </div>
+);
 }

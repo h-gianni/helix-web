@@ -73,7 +73,7 @@ const TeamsContent = ({
       </div>
 
       <div className="space-y-4">
-        <div className="flex justify-end">
+        <div className="flex justify-end bg-surface-hollowed rounded-base p-sm border-t border-neutral-weak">
           <ViewSwitcher viewType={viewType} onViewChange={setViewType} />
         </div>
         {performanceCategories.map((category) => (
@@ -167,7 +167,7 @@ export default function DashboardPage() {
   const handleRatingSubmit = async (data: {
     teamId: string;
     memberId: string;
-    initiativeId: string;
+    activityId: string;
     rating: number;
     feedback?: string;
   }) => {
@@ -178,13 +178,23 @@ export default function DashboardPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            initiativeId: data.initiativeId,
-            rating: data.rating,
+            activityId: data.activityId,
+            value: data.rating, 
             feedback: data.feedback,
           }),
         }
       );
-      if (!response.ok) throw new Error("Failed to save rating");
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to save rating");
+      }
+  
+      const responseData = await response.json();
+      if (!responseData.success) {
+        throw new Error(responseData.error || "Failed to save rating");
+      }
+  
       await fetchPerformers();
       setIsRatingModalOpen(false);
     } catch (error) {

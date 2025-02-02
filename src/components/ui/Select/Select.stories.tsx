@@ -5,12 +5,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectField,
 } from './index';
 
 const meta = {
   title: 'Components/Select',
-  component: SelectField,
+  component: Select,
   parameters: {
     layout: 'centered',
   },
@@ -18,7 +17,6 @@ const meta = {
   args: {
     withLabel: true,
     width: 'inline',
-    size: 'base',
   },
   argTypes: {
     withLabel: {
@@ -34,11 +32,6 @@ const meta = {
       control: 'select',
       options: ['inline', 'full'],
       description: 'Width of the select component',
-    },
-    size: {
-      control: 'select',
-      options: ['sm', 'base', 'lg'],
-      description: 'Size of the select component',
     },
     error: {
       control: 'boolean',
@@ -57,10 +50,10 @@ const meta = {
       description: 'Helper text below the select',
     },
   },
-} satisfies Meta<typeof SelectField>;
+} satisfies Meta<typeof Select>;
 
 export default meta;
-type Story = StoryObj<typeof SelectField>;
+type Story = StoryObj<typeof Select>;
 
 // Configurable story
 export const Configurator: Story = {
@@ -68,7 +61,6 @@ export const Configurator: Story = {
     withLabel: true,
     label: 'Select an option',
     width: 'inline',
-    size: 'base',
     error: false,
     disabled: false,
     required: false,
@@ -76,7 +68,7 @@ export const Configurator: Story = {
   },
   render: (args) => (
     <div className="w-[320px]">
-      <SelectField {...args}>
+      <Select {...args}>
         <SelectTrigger>
           <SelectValue placeholder="Select an option..." />
         </SelectTrigger>
@@ -85,7 +77,7 @@ export const Configurator: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
     </div>
   ),
 };
@@ -94,25 +86,25 @@ export const Configurator: Story = {
 export const Sizes: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-4">
-      <SelectField
+      <Select
         label="Small Select"
-        size="sm"
+        withLabel
       >
-        <SelectTrigger>
+        <SelectTrigger size="sm">
           <SelectValue placeholder="Small size" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="option1">Option 1</SelectItem>
-          <SelectItem value="option2">Option 2</SelectItem>
-          <SelectItem value="option3">Option 3</SelectItem>
+          <SelectItem value="option1" size="sm">Option 1</SelectItem>
+          <SelectItem value="option2" size="sm">Option 2</SelectItem>
+          <SelectItem value="option3" size="sm">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
 
-      <SelectField
+      <Select
         label="Base Select"
-        size="base"
+        withLabel
       >
-        <SelectTrigger>
+        <SelectTrigger size="base">
           <SelectValue placeholder="Base size" />
         </SelectTrigger>
         <SelectContent>
@@ -120,21 +112,21 @@ export const Sizes: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
 
-      <SelectField
+      <Select
         label="Large Select"
-        size="lg"
+        withLabel
       >
-        <SelectTrigger>
+        <SelectTrigger size="lg">
           <SelectValue placeholder="Large size" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="option1">Option 1</SelectItem>
-          <SelectItem value="option2">Option 2</SelectItem>
-          <SelectItem value="option3">Option 3</SelectItem>
+          <SelectItem value="option1" size="lg">Option 1</SelectItem>
+          <SelectItem value="option2" size="lg">Option 2</SelectItem>
+          <SelectItem value="option3" size="lg">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
     </div>
   ),
 };
@@ -143,8 +135,9 @@ export const Sizes: Story = {
 export const Widths: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-4 w-[800px]">
-      <SelectField
+      <Select
         label="Inline Width"
+        withLabel
         width="inline"
       >
         <SelectTrigger>
@@ -155,10 +148,11 @@ export const Widths: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
 
-      <SelectField
+      <Select
         label="Full Width"
+        withLabel
         width="full"
       >
         <SelectTrigger>
@@ -169,7 +163,7 @@ export const Widths: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
     </div>
   ),
 };
@@ -178,8 +172,9 @@ export const Widths: Story = {
 export const States: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-4">
-      <SelectField
+      <Select
         label="Default State"
+        withLabel
       >
         <SelectTrigger>
           <SelectValue placeholder="Default state" />
@@ -189,10 +184,11 @@ export const States: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
 
-      <SelectField
+      <Select
         label="Required"
+        withLabel
         required
       >
         <SelectTrigger>
@@ -203,10 +199,11 @@ export const States: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
 
-      <SelectField
+      <Select
         label="With Helper Text"
+        withLabel
         helperText="Please select an option from the list"
       >
         <SelectTrigger>
@@ -217,10 +214,11 @@ export const States: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
 
-      <SelectField
+      <Select
         label="Error State"
+        withLabel
         error
         helperText="This field is required"
       >
@@ -232,10 +230,11 @@ export const States: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
 
-      <SelectField
+      <Select
         label="Disabled"
+        withLabel
         disabled
       >
         <SelectTrigger>
@@ -246,7 +245,7 @@ export const States: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
     </div>
   ),
 };
@@ -255,8 +254,9 @@ export const States: Story = {
 export const FormExample: Story = {
   render: () => (
     <div className="w-[400px] p-6 border rounded-lg space-y-4">
-      <SelectField
+      <Select
         label="Country"
+        withLabel
         required
       >
         <SelectTrigger>
@@ -268,10 +268,11 @@ export const FormExample: Story = {
           <SelectItem value="ca">Canada</SelectItem>
           <SelectItem value="au">Australia</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
 
-      <SelectField
+      <Select
         label="Language"
+        withLabel
         helperText="Choose your preferred language"
       >
         <SelectTrigger>
@@ -283,10 +284,11 @@ export const FormExample: Story = {
           <SelectItem value="fr">French</SelectItem>
           <SelectItem value="de">German</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
 
-      <SelectField
+      <Select
         label="Time Zone"
+        withLabel
         error
         helperText="Please select a time zone"
       >
@@ -299,7 +301,7 @@ export const FormExample: Story = {
           <SelectItem value="cst">Central Time (CT)</SelectItem>
           <SelectItem value="est">Eastern Time (ET)</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
     </div>
   ),
 };
@@ -308,7 +310,7 @@ export const FormExample: Story = {
 export const WithoutLabels: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-4">
-      <SelectField
+      <Select
         withLabel={false}
       >
         <SelectTrigger>
@@ -319,9 +321,9 @@ export const WithoutLabels: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
 
-      <SelectField
+      <Select
         withLabel={false}
         error
         helperText="Please make a selection"
@@ -334,7 +336,7 @@ export const WithoutLabels: Story = {
           <SelectItem value="option2">Option 2</SelectItem>
           <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
-      </SelectField>
+      </Select>
     </div>
   ),
 };
