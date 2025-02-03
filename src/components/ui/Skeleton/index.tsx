@@ -29,7 +29,9 @@ function Skeleton({
   )
 }
 
-interface SkeletonGroupProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface SkeletonGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+  gap?: string;
+}
 
 function SkeletonGroup({
   className,

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as MenubarPrimitive from "@radix-ui/react-menubar";
-import { Check, ChevronRight, Circle } from "lucide-react";
+import { Check, ChevronRight, Circle, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type RootElement = React.ElementRef<typeof MenubarPrimitive.Root>;
@@ -17,6 +17,8 @@ const Menubar = React.forwardRef<RootElement, RootProps>(
     />
   )
 );
+
+Menubar.displayName = MenubarPrimitive.Root.displayName;
 
 const MenubarMenu = MenubarPrimitive.Menu;
 const MenubarGroup = MenubarPrimitive.Group;
@@ -39,6 +41,8 @@ const MenubarTrigger = React.forwardRef<TriggerElement, TriggerProps>(
   )
 );
 
+MenubarTrigger.displayName = MenubarPrimitive.Trigger.displayName;
+
 type SubTriggerElement = React.ElementRef<typeof MenubarPrimitive.SubTrigger>;
 type SubTriggerProps = React.ComponentPropsWithoutRef<
   typeof MenubarPrimitive.SubTrigger
@@ -58,6 +62,8 @@ const MenubarSubTrigger = React.forwardRef<SubTriggerElement, SubTriggerProps>(
     </MenubarPrimitive.SubTrigger>
   )
 );
+MenubarSubTrigger.displayName = MenubarPrimitive.SubTrigger.displayName;
+
 type SubContentElement = React.ElementRef<typeof MenubarPrimitive.SubContent>;
 type SubContentProps = React.ComponentPropsWithoutRef<
   typeof MenubarPrimitive.SubContent
@@ -72,6 +78,9 @@ const MenubarSubContent = React.forwardRef<SubContentElement, SubContentProps>(
     />
   )
 );
+
+MenubarSubContent.displayName = MenubarPrimitive.SubContent.displayName;
+
 
 type ContentElement = React.ElementRef<typeof MenubarPrimitive.Content>;
 type ContentProps = React.ComponentPropsWithoutRef<
@@ -96,6 +105,8 @@ const MenubarContent = React.forwardRef<ContentElement, ContentProps>(
   )
 );
 
+MenubarContent.displayName = MenubarPrimitive.Content.displayName;
+
 type ItemElement = React.ElementRef<typeof MenubarPrimitive.Item>;
 type ItemProps = React.ComponentPropsWithoutRef<
   typeof MenubarPrimitive.Item
@@ -112,6 +123,8 @@ const MenubarItem = React.forwardRef<ItemElement, ItemProps>(
     />
   )
 );
+
+MenubarItem.displayName = MenubarPrimitive.Item.displayName;
 
 type CheckboxItemElement = React.ElementRef<
   typeof MenubarPrimitive.CheckboxItem
@@ -139,6 +152,8 @@ const MenubarCheckboxItem = React.forwardRef<
   </MenubarPrimitive.CheckboxItem>
 ));
 
+MenubarCheckboxItem.displayName = MenubarPrimitive.CheckboxItem.displayName;
+
 type RadioItemElement = React.ElementRef<typeof MenubarPrimitive.RadioItem>;
 type RadioItemProps = React.ComponentPropsWithoutRef<
   typeof MenubarPrimitive.RadioItem
@@ -161,6 +176,8 @@ const MenubarRadioItem = React.forwardRef<RadioItemElement, RadioItemProps>(
   )
 );
 
+MenubarRadioItem.displayName = MenubarPrimitive.RadioItem.displayName;
+
 type LabelElement = React.ElementRef<typeof MenubarPrimitive.Label>;
 type LabelProps = React.ComponentPropsWithoutRef<
   typeof MenubarPrimitive.Label
@@ -178,6 +195,8 @@ const MenubarLabel = React.forwardRef<LabelElement, LabelProps>(
   )
 );
 
+MenubarLabel.displayName = MenubarPrimitive.Label.displayName;
+
 type SeparatorElement = React.ElementRef<typeof MenubarPrimitive.Separator>;
 type SeparatorProps = React.ComponentPropsWithoutRef<
   typeof MenubarPrimitive.Separator
@@ -193,12 +212,16 @@ const MenubarSeparator = React.forwardRef<SeparatorElement, SeparatorProps>(
   )
 );
 
+MenubarSeparator.displayName = MenubarPrimitive.Separator.displayName;
+
 const MenubarShortcut = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLSpanElement>) => (
   <span className={cn("popcard-list-shortcut", className)} {...props} />
 );
+
+
 
 export {
   Menubar,

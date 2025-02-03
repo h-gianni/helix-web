@@ -74,7 +74,7 @@ export default function MemberDetailsPage() {
  }, [params.teamId, params.memberId]);
 
  const handleRatingSubmit = async (data: {
-   initiativeId: string;
+  activityId: string;
    rating: number;
    feedback?: string;
  }) => {
