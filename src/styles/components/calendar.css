@@ -51,7 +51,7 @@
  }
  
  .calendar-head-cell {
-  @apply text-weakest rounded-md w-9 font-normal text-xxs;
+  @apply text-weak rounded-md w-9 font-normal text-xxs;
  }
  
  .calendar-row {
@@ -104,11 +104,11 @@
  }
  
  .calendar-day-outside {
-  @apply text-weakest opacity-disabled;
+  @apply text-weak opacity-disabled;
  }
  
  .calendar-day-disabled {
-  @apply text-weakest opacity-disabled;
+  @apply text-weak opacity-disabled;
  }
  
  .calendar-day-range-middle {

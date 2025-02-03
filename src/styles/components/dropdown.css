@@ -21,45 +21,11 @@
   @apply popcard-list-item hover:bg-surface-sunken;
 }
 
-/* .popcard-item-destructive {
-  @apply text-danger;
-} */
-
-/* .dropdown-item-inset {
-  @apply pl-2xl;
-} */
-
 /* Checkbox and Radio items */
 .dropdown-checkbox,
 .dropdown-radio {
   @apply popcard-list-item popcard-radio-item hover:bg-surface-sunken;
 }
-
-/* .dropdown-checkbox-indicator,
-.dropdown-radio-indicator {
-  @apply absolute left-sm flex items-center justify-center;
-} */
-
-/* .dropdown-checkbox-indicator {
-  @apply size-md;
-} */
-
-/* .dropdown-radio-indicator {
-  @apply size-sm;
-} */
-
-/* Icons */
-/* .dropdown-item svg {
-  @apply size-base shrink-0 pointer-events-none;
-} */
-
-/* .dropdown-checkbox-icon {
-  @apply size-base text-primary;
-} */
-
-/* .dropdown-radio-icon {
-  @apply size-xs fill-current text-primary;
-} */
 
 /* Print styles */
 @media print {

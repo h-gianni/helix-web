@@ -2,8 +2,9 @@
 
 /* Base Label */
 .label-base {
-  @apply text-body-small select-none cursor-default whitespace-nowrap
-         text-foreground transition-all;
+  @apply text-label text-foreground 
+         select-none cursor-default whitespace-nowrap
+         transition-all;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
  }
@@ -13,7 +14,7 @@
  *:has(> .checkbox-base) .label-base,
  .radio-group-base + .label-base,
  *:has(> .radio-group-base) .label-base {
-  @apply text-body text-weak cursor-pointer;
+  @apply text-base font-normal cursor-pointer;
  }
  
  /* Required State */
@@ -23,7 +24,7 @@
  }
  
  /* Error State */
- .label-base[data-error="true"]::after {
+ .label-base[data-error="true"], .label-base[data-error="true"]::after {
   @apply text-danger;
  }
  

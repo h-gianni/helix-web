@@ -12,7 +12,7 @@
  .toast-root {
   @apply pointer-events-auto relative flex w-full items-center 
          justify-between rounded-md overflow-hidden pr-md
-         gap-sm py-md pl-md border border-weakest shadow-lg;
+         gap-sm py-md pl-md border border-neutral-weak shadow-lg;
   transition-property: all;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
@@ -49,7 +49,7 @@
  /* Toast Action Button */
  .toast-action {
   @apply inline-flex shrink-0 items-center justify-center rounded-md h-8 px-sm
-         text-sm border border-base bg-transparent
+         text-sm border border-neutral-base bg-transparent
          hover:bg-surface-sunken
          focus:outline-none focus:focus-ring
          disabled:pointer-events-none disabled:opacity-disabled;
@@ -66,7 +66,7 @@
  
  /* Toast Close Button */
  .toast-close {
-  @apply absolute right-1 top-1 rounded-md p-xs text-weakest opacity-0
+  @apply absolute right-1 top-1 rounded-md p-xs text-weak opacity-0
          hover:text-foreground
          focus:opacity-100 focus:outline-none focus:focus-ring
          group-hover:opacity-100;
@@ -94,13 +94,21 @@
   @apply text-heading-5;
   
   & + div {
-    @apply text-body-small;
+    @apply text-copy-small;
   }
+  .destructive & {
+       @apply text-inverse 
+              hover:text-inverse;
+     }
+     .destructive & + div {
+          @apply text-inverse 
+                 hover:text-inverse;
+        }
  }
  
  /* Toast Description */
  .toast-description {
-  @apply text-body-small opacity-75;
+  @apply text-helper;
  }
  
  /* Print Styles */

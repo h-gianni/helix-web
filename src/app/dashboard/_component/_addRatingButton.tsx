@@ -32,7 +32,7 @@ interface PerformanceRatingModalProps {
   memberName: string;
   memberTitle?: string | null;
   onSubmit: (data: {
-    initiativeId: string;
+    activityId: string;
     rating: number;
     feedback?: string;
   }) => Promise<void>;
@@ -46,26 +46,26 @@ export default function PerformanceRatingModal({
   memberTitle,
   onSubmit,
 }: PerformanceRatingModalProps) {
-  const [initiatives, setInitiatives] = useState<BusinessActivityResponse[]>([]);
+  const [activities, setActivities] = useState<BusinessActivityResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>("");
+  const [selectedActivityId, setSelectedActivityId] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>("");
 
   useEffect(() => {
-    const fetchInitiatives = async () => {
+    const fetchActivities = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch(`/api/initiatives?teamId=${teamId}`);
-        if (!response.ok) throw new Error("Failed to fetch initiatives");
+        const response = await fetch(`/api/activities?teamId=${teamId}`);
+        if (!response.ok) throw new Error("Failed to fetch activities");
         const data = await response.json();
-        if (!data.success) throw new Error(data.error || "Failed to fetch initiatives");
-        setInitiatives(data.data);
+        if (!data.success) throw new Error(data.error || "Failed to fetch activities");
+        setActivities(data.data);
       } catch (err) {
-        console.error("Error fetching initiatives:", err);
+        console.error("Error fetching activities:", err);
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
@@ -73,7 +73,7 @@ export default function PerformanceRatingModal({
     };
 
     if (isOpen && teamId) {
-      fetchInitiatives();
+      fetchActivities();
     }
   }, [isOpen, teamId]);
 
@@ -83,7 +83,7 @@ export default function PerformanceRatingModal({
       setSaving(true);
       setError(null);
       await onSubmit({
-        initiativeId: selectedInitiativeId,
+        activityId: selectedActivityId,
         rating,
         feedback: feedback.trim() || undefined,
       });
@@ -97,7 +97,7 @@ export default function PerformanceRatingModal({
   };
 
   const handleReset = () => {
-    setSelectedInitiativeId("");
+    setSelectedActivityId("");
     setRating(0);
     setFeedback("");
   };
@@ -108,7 +108,7 @@ export default function PerformanceRatingModal({
         <DialogHeader>
           <DialogTitle>Add Performance Rating</DialogTitle>
           <DialogDescription>
-            Rate the performance of team members on specific initiatives.
+            Rate the performance of team members on specific activities.
           </DialogDescription>
         </DialogHeader>
 
@@ -136,19 +136,19 @@ export default function PerformanceRatingModal({
           </div>
 
           <div className="space-y-2">
-            <Label>Initiative</Label>
+            <Label>Activity</Label>
             <Select
-              value={selectedInitiativeId}
-              onValueChange={setSelectedInitiativeId}
+              value={selectedActivityId}
+              onValueChange={setSelectedActivityId}
               disabled={loading}
             >
               <SelectTrigger>
-                <SelectValue placeholder={loading ? "Loading initiatives..." : "Select an initiative"} />
+                <SelectValue placeholder={loading ? "Loading activities..." : "Select an activity"} />
               </SelectTrigger>
               <SelectContent>
-                {initiatives.map((initiative) => (
-                  <SelectItem key={initiative.id} value={initiative.id}>
-                    {initiative.name}
+                {activities.map((activity) => (
+                  <SelectItem key={activity.id} value={activity.id}>
+                    {activity.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -182,7 +182,7 @@ export default function PerformanceRatingModal({
         <DialogFooter>
           <Button
             variant="neutral"
-            appearance="subtle"
+            appearance="outline"
             onClick={handleReset}
             disabled={saving}
           >
@@ -191,7 +191,7 @@ export default function PerformanceRatingModal({
           <Button
             variant="primary"
             onClick={handleSubmit}
-            disabled={saving || !selectedInitiativeId || rating === 0}
+            disabled={saving || !selectedActivityId || rating === 0}
             isLoading={saving}
           >
             Save Rating

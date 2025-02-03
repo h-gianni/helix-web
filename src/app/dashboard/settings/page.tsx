@@ -6,35 +6,35 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Ca
 import { Users, Target, User } from "lucide-react";
 
 const settingsGroups = [
- {
-   title: "Team Management",
-   items: [
-     {
-       title: "Teams",
-       description: "Manage team settings and configurations",
-       icon: Users,
-       href: "/dashboard/settings/teams",
-     },
-     {
-       title: "Initiatives",
-       description: "Configure performance tracking initiatives",
-       icon: Target,
-       href: "/dashboard/settings/initiatives",
-     },
-   ],
- },
- {
-   title: "Personal Settings",
-   items: [
-     {
-       title: "Profile",
-       description: "Manage your personal information and preferences",
-       icon: User,
-       href: "/dashboard/settings/profile",
-     },
-   ],
- },
-];
+  {
+    title: "Team Management",
+    items: [
+      {
+        title: "Teams",
+        description: "Manage team settings and configurations",
+        icon: Users,
+        href: "/dashboard/settings/teams",
+      },
+      {
+        title: "Business Activities", 
+        description: "Configure and track team activities and performance", 
+        icon: Target,
+        href: "/dashboard/settings/business-activities",
+      },
+    ],
+  },
+  {
+    title: "Personal Settings",
+    items: [
+      {
+        title: "Profile",
+        description: "Manage your personal information and preferences",
+        icon: User,
+        href: "/dashboard/settings/profile",
+      },
+    ],
+  },
+ ];
 
 export default function SettingsPage() {
  const router = useRouter();

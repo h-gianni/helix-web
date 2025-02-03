@@ -23,7 +23,7 @@
  }
  
  .star-button:disabled {
-  @apply cursor-default opacity-50;
+  @apply cursor-default opacity-disabled;
  }
  
  /* Star Sizes */
@@ -41,34 +41,36 @@
  
  /* Star States */
  .star-empty {
-  @apply fill-transparent text-muted;
+  @apply fill-transparent;
+  color: var(--border-base);
  }
  
  .star-filled {
-  @apply fill-warning text-warning;
+  @apply fill-yellow-500 text-yellow-500;
  }
  
  /* Half Star Specific */
  .star-base-layer {
   @apply absolute inset-xxs
-         fill-transparent text-muted;
+         fill-transparent;
+  color: var(--border-base);
  }
  
  .star-overlay {
-  @apply relative fill-warning text-warning;
+  @apply relative fill-yellow-500 text-yellow-500;
  }
  
  /* Text Elements */
  .star-value {
-  @apply ml-sm text-sm font-medium text-foreground;
+  @apply ml-sm text-copy font-medium;
  }
  
  .star-count {
-  @apply ml-0 text-sm text-weakest;
+  @apply ml-0 text-footnote tracking-tight;
  }
  
  .star-no-ratings {
-  @apply text-sm text-weakest;
+  @apply text-caption;
  }
  
  /* Transitions */

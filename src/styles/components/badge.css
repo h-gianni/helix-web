@@ -24,16 +24,16 @@
 }
 
 .badge-default-light {
-  @apply bg-neutral text-foreground border-transparent;
+  @apply bg-neutral-weakest text-foreground border-transparent;
 }
 
 .badge-default-outline {
-  @apply bg-transparent border text-foreground border-base;
+  @apply bg-transparent text-foreground border border-neutral-strong;
 }
 
 /* Primary Variant */
 .badge-primary {
-  @apply bg-primary text-inverse border-transparent;
+  @apply bg-primary-strong text-inverse border-transparent;
 }
 
 .badge-primary-light {
@@ -41,12 +41,12 @@
 }
 
 .badge-primary-outline {
-  @apply bg-transparent border-primary text-primary;
+  @apply bg-transparent border-primary-strong text-primary;
 }
 
 /* Accent Variant */
 .badge-accent {
-  @apply bg-accent text-inverse border-transparent;
+  @apply bg-accent-strong text-inverse border-transparent;
 }
 
 .badge-accent-light {
@@ -54,12 +54,12 @@
 }
 
 .badge-accent-outline {
-  @apply bg-transparent border-accent text-accent;
+  @apply bg-transparent border-accent-strong text-accent;
 }
 
 /* Danger Variant */
 .badge-danger {
-  @apply bg-danger text-inverse border-transparent;
+  @apply bg-danger-strong text-inverse border-transparent;
 }
 
 .badge-danger-light {
@@ -67,12 +67,12 @@
 }
 
 .badge-danger-outline {
-  @apply bg-transparent border-danger text-danger;
+  @apply bg-transparent border-danger-strong text-danger;
 }
 
 /* Success Variant */
 .badge-success {
-  @apply bg-success text-inverse border-transparent;
+  @apply bg-success-strong text-inverse border-transparent;
 }
 
 .badge-success-light {
@@ -80,12 +80,12 @@
 }
 
 .badge-success-outline {
-  @apply bg-transparent border-success text-success;
+  @apply bg-transparent border-success-strong text-success;
 }
 
 /* Warning Variant */
 .badge-warning {
-  @apply bg-warning text-inverse border-transparent;
+  @apply bg-warning-strong text-inverse border-transparent;
 }
 
 .badge-warning-light {
@@ -93,12 +93,12 @@
 }
 
 .badge-warning-outline {
-  @apply bg-transparent border-warning text-warning;
+  @apply bg-transparent border-warning-strong text-warning;
 }
 
 /* Info Variant */
 .badge-info {
-  @apply bg-info text-inverse border-transparent;
+  @apply bg-info-strong text-inverse border-transparent;
 }
 
 .badge-info-light {
@@ -106,7 +106,7 @@
 }
 
 .badge-info-outline {
-  @apply bg-transparent border-info text-info;
+  @apply bg-transparent border-info-strong text-info;
 }
 
 .badge-base svg {

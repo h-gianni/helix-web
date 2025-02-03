@@ -21,7 +21,7 @@
 
 
 .accordionRoot {
-  @apply w-full min-w-[400px];
+  @apply w-full min-w-80;
 }
 
 /* Size variants using typography tokens */
@@ -65,18 +65,16 @@
   @apply rotate-180;
 }
 
-.chevronIcon {
-  @apply size-4 shrink-0 
-         text-weakest
-         transition-transform;
+.accordionTrigger svg {
+  @apply text-icon transition-transform;
   transition-duration: var(--duration-fast);
 }
 
 .accordionContent {
-  @apply overflow-hidden text-body text-weakest;
+  @apply overflow-hidden text-copy;
 }
 .accordionRoot.sm .accordionContent {
-  @apply text-body-small;
+  @apply text-copy-small;
 }
 
 .accordionContent[data-state="closed"] {

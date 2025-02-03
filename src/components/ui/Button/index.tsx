@@ -14,7 +14,6 @@ const buttonVariants = cva(["button-base"], {
     },
     appearance: {
       strong: "button-default",
-      subtle: "button-subtle",
       outline: "button-outline",
       text: "button-text",
       "icon-only": "button-icon-only",
@@ -27,7 +26,6 @@ const buttonVariants = cva(["button-base"], {
     shape: {
       beveled: "",
       rounded: "button-rounded",
-      squared: "button-squared",
     },
     isLoading: {
       true: "button-loading",
@@ -39,11 +37,6 @@ const buttonVariants = cva(["button-base"], {
       variant: "primary",
       appearance: ["strong", "icon-only"],
       className: "button-primary",
-    },
-    {
-      variant: "primary",
-      appearance: "subtle",
-      className: "button-primary-subtle",
     },
     {
       variant: "primary",
@@ -63,11 +56,6 @@ const buttonVariants = cva(["button-base"], {
     },
     {
       variant: "warning",
-      appearance: "subtle",
-      className: "button-warning-subtle",
-    },
-    {
-      variant: "warning",
       appearance: "outline",
       className: "button-warning-outline",
     },
@@ -81,11 +69,6 @@ const buttonVariants = cva(["button-base"], {
       variant: "danger",
       appearance: ["strong", "icon-only"],
       className: "button-danger",
-    },
-    {
-      variant: "danger",
-      appearance: "subtle",
-      className: "button-danger-subtle",
     },
     {
       variant: "danger",
@@ -105,23 +88,13 @@ const buttonVariants = cva(["button-base"], {
     },
     {
       variant: "neutral",
-      appearance: "subtle",
-      className: "button-neutral-subtle",
-    },
-    {
-      variant: "neutral",
       appearance: "outline",
       className: "button-neutral-outline",
     },
     {
       variant: "neutral",
-      appearance: ["text"],
+      appearance: ["text", "icon-only"],
       className: "button-neutral-text",
-    },
-    {
-      variant: "neutral",
-      appearance: ["icon-only"],
-      className: "button-neutral-icon",
     },
     // Icon sizes
     {

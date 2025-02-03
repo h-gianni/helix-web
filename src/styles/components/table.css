@@ -4,7 +4,7 @@
 .table-container {
   @apply relative w-full overflow-auto rounded-t
          scrollbar-thin;
-  scrollbar-color: var(--border-default) transparent;
+  scrollbar-color: var(--border-base) transparent;
 
   /* Fixed Header Shadow on Scroll */
   &::after {
@@ -12,7 +12,7 @@
            transition-opacity;
     background: linear-gradient(
       to bottom,
-      var(--border-weakest) 50%,
+      var(--border-weak) 50%,
       transparent
     );
     transition-duration: var(--duration-normal);
@@ -33,7 +33,7 @@
 /* Size Variants */
 .table-base[data-size="base"] {
   .table-cell {
-    @apply py-sm px-base text-body text-weakest;
+    @apply py-sm px-base text-copy;
   }
 
   .table-head {
@@ -43,7 +43,7 @@
 
 .table-base[data-size="sm"] {
   .table-cell {
-    @apply py-xs px-sm text-body-small;
+    @apply py-xs px-sm text-copy-small;
   }
 
   .table-head {
@@ -53,15 +53,15 @@
 
 /* Zebra Striping */
 .table-zebra tbody tr:nth-child(even) {
-  @apply bg-surface-elevated hover:bg-surface-sunken;
+  @apply bg-surface-elevated hover:bg-surface-hover;
 }
 
 /* Table Header */
 .table-header {
   @apply sticky top-0 z-10 
          backdrop-blur-sm backdrop-saturate-150 
-         text-xs text-weakest
-         border-b border-base shadow-sm;
+         text-xs text-weak
+         border-b border-neutral-base shadow-sm;
   background-color: color-mix(
     in srgb,
     var(--background-surface-sunken) 95%,
@@ -71,25 +71,25 @@
 
 /* Table Body */
 .table-body {
-  @apply bg-surface divide-y divide-neutral-weakest
+  @apply bg-surface divide-y divide-neutral-weak
          [&_tr:last-child]:border-0;
 }
 
 /* Table Footer */
 .table-footer {
   @apply bg-surface-sunken
-         border-t border-base
+         border-t border-neutral-base
          [&>tr]:last:border-b-0;
 }
 
-.table-footer td.table-cell {
-  @apply !text-heading-4;
+.table-footer .table-row td.table-cell {
+  @apply text-heading-4;
 }
 
 /* Table Head Cell */
 .table-head {
   @apply text-left align-middle text-heading-6 
-         whitespace-nowrap text-weakest
+         whitespace-nowrap text-weak
          transition-colors;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
@@ -105,18 +105,14 @@
 
     & > button:not([role="checkbox"]) {
       @apply w-full flex items-center justify-between 
-             px-sm py-xs text-heading-6 text-weakest
+             px-sm py-xs text-heading-6 text-weak
              gap-sm transition-all;
       transition-duration: var(--duration-normal);
       transition-timing-function: var(--ease-out);
 
-      &:hover {
-        @apply text-foreground bg-surface-elevated;
-      }
-
       /* Sort Icon */
       & > svg {
-        @apply size-4 opacity-0 transition-opacity;
+        @apply text-icon opacity-0 transition-opacity;
         transition-duration: var(--duration-normal);
         transition-timing-function: var(--ease-out);
       }
@@ -128,10 +124,6 @@
       &[data-sort-direction="desc"] > svg {
         @apply opacity-100 rotate-180;
       }
-
-      &:hover > svg {
-        @apply opacity-50;
-      }
     }
   }
 }
@@ -139,7 +131,7 @@
 /* Table Cell */
 .table-cell {
   @apply align-middle max-w-[20rem] overflow-hidden text-ellipsis
-  text-body text-foreground
+         text-copy
          transition-colors;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
@@ -202,13 +194,13 @@
 
   /* Disabled Row */
   &[data-disabled="true"] {
-    @apply pointer-events-none opacity-50;
+    @apply pointer-events-none opacity-disabled;
   }
 }
 
 /* Table Caption */
 .table-caption {
-  @apply mt-base mb-sm text-caption text-left text-weakest;
+  @apply mt-base mb-sm text-caption text-left;
 }
 
 /* Table Empty State */

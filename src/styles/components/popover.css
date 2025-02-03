@@ -16,6 +16,6 @@
    /* Print Styles */
    @media print {
     .popover-content {
-      @apply shadow-none border-base;
+      @apply shadow-none border-neutral-base;
     }
    }

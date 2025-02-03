@@ -21,7 +21,7 @@
 }
 
 .alert-dialog-icon svg {
-  @apply size-5;
+  @apply size-5 mt-[2px];
 }
 
 /* Icon Variants */
@@ -38,20 +38,20 @@
 }
 
 .alert-dialog-icon-neutral {
-  @apply text-weakest;
+  @apply text-neutral;
 }
 
 /* Typography & Structure */
 .alert-dialog-header {
-  @apply flex flex-col space-y-sm text-center sm:text-left;
+  @apply flex flex-col space-y-xxs text-center sm:text-left;
 }
 
 .alert-dialog-title {
-  @apply -mt-[2px] text-heading-3 text-strongest;
+  @apply -mt-[2px] text-heading-3 text-strong;
 }
 
 .alert-dialog-description {
-  @apply m-0 text-body text-weak;
+  @apply m-0 text-copy;
 }
 
 .alert-dialog-footer {
@@ -87,6 +87,6 @@
   .alert-dialog-footer {
     @apply fixed bottom-0 left-0 right-0 
            bg-surface p-md
-           border-t border-weakest;
+           border-t border-neutral-weak;
   }
 }

@@ -35,7 +35,7 @@
 }
 
 .input-icon {
-  @apply absolute inset-y-0 left-0 flex items-center pointer-events-none text-weakest z-10 pl-sm;
+  @apply absolute inset-y-0 left-0 flex items-center pointer-events-none text-icon z-10 pl-sm;
 }
 
 .input-icon-sm {
@@ -74,16 +74,16 @@
 }
 
 .input-helper {
-  @apply text-body-small text-weakest;
+  @apply text-helper;
 }
 
 .input-helper-error {
-  @apply text-body-small text-danger;
+  @apply text-copy-small text-danger;
 }
 
 @media print {
   .input {
-    @apply border-base bg-input text-foreground;
+    @apply border-neutral-base bg-input text-foreground;
   }
   
   .input-error {

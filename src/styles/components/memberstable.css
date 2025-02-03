@@ -47,10 +47,6 @@
   @apply flex items-center gap-sm;
  }
  
- .members-table-performance-icon {
-  @apply size-4;
- }
- 
  /* Delete Action */
  .members-table-delete-action {
   @apply text-danger focus:text-danger focus:focus-ring-danger;
@@ -58,5 +54,5 @@
  
  /* Action Icon */
  .members-table-action-icon {
-  @apply mr-sm size-4;
+  @apply mr-sm;
  }

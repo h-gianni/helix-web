@@ -1,11 +1,11 @@
-// app/api/initiatives/route.ts
+// app/api/business-activities/route.ts
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type {
   ApiResponse,
-  BusinessActivityResponse as InitiativeResponse,
-  CreateBusinessActivityInput as CreateInitiativeInput,
+  BusinessActivityResponse as ActivityResponse,
+  CreateBusinessActivityInput as CreateActivityInput,
   JsonValue,
 } from "@/lib/types/api";
 
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
     const teamId = url.searchParams.get("teamId");
 
     // Modify query to include null teamId or matching teamId
-    const initiatives = await prisma.businessActivity.findMany({
+    const activities = await prisma.businessActivity.findMany({
       where: teamId ? { teamId } : {},  
        
       select: {
@@ -81,17 +81,17 @@ export async function GET(request: Request) {
       },
     });
 
-    const initiativeResponses: InitiativeResponse[] = initiatives.map((initiative) => ({
-      ...initiative,
-      customFields: initiative.customFields as JsonValue | undefined,
+    const activitiesResponses: ActivityResponse[] = activities.map((activities) => ({
+      ...activities,
+      customFields: activities.customFields as JsonValue | undefined,
     }));
     
-    return NextResponse.json<ApiResponse<InitiativeResponse[]>>({
+    return NextResponse.json<ApiResponse<ActivityResponse[]>>({
       success: true,
-      data: initiativeResponses,
+      data: activitiesResponses,
     });
   } catch (error) {
-    console.error("Error fetching initiatives:", error);
+    console.error("Error fetching activities:", error);
     return NextResponse.json<ApiResponse<never>>(
       { success: false, error: "Internal server error" },
       { status: 500 }
@@ -109,12 +109,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const body: CreateInitiativeInput = await request.json();
+    const body: CreateActivityInput = await request.json();
     const { name, description, teamId } = body;
 
     if (!name?.trim()) {
       return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Initiative name is required" },
+        { success: false, error: "Activities name is required" },
         { status: 400 }
       );
     }
@@ -130,7 +130,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const initiative = await prisma.businessActivity.create({
+    const activities = await prisma.businessActivity.create({
       data: {
         name: name.trim(),
         description: description?.trim() || null,
@@ -161,17 +161,17 @@ export async function POST(request: Request) {
         },
       },
     });
-    const initiativeResponse: InitiativeResponse = {
-      ...initiative,
-      customFields: initiative.customFields as JsonValue | undefined,
+    const activitiesResponse: ActivityResponse = {
+      ...activities,
+      customFields: activities.customFields as JsonValue | undefined,
     };
 
-    return NextResponse.json<ApiResponse<InitiativeResponse>>(
-      { success: true, data: initiativeResponse },
+    return NextResponse.json<ApiResponse<ActivityResponse>>(
+      { success: true, data: activitiesResponse },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating initiative:", error);
+    console.error("Error creating activities:", error);
     return NextResponse.json<ApiResponse<never>>(
       { success: false, error: "Internal server error" },
       { status: 500 }

@@ -6,97 +6,100 @@
      ========================================================================== */
 
   /* Base Backgrounds */
-  --background-page: rgb(var(--color-neutral-25));
+  --background-page: rgb(var(--color-background));
   --background-input: rgb(var(--color-white));
-  --background-disabled: rgb(var(--color-neutral-50));
+  --background-disabled: rgb(var(--color-muted));
 
   --background-surface-raised: rgb(var(--color-white));
-  --background-surface-elevated: rgb(var(--color-neutral-25));
+  --background-surface-elevated: rgb(var(--color-white));
   --background-surface: rgb(var(--color-white));
-  --background-surface-sunken: rgb(var(--color-neutral-50));
-  --background-surface-hollowed: rgb(var(--color-neutral-100));
+  --background-surface-sunken: rgb(var(--color-muted));
+  --background-surface-hollowed: rgb(var(--color-weakest));
 
-  /* Backgrounds */
-  --background-neutral: rgb(var(--color-neutral-700));
-  --background-neutral-strong: rgb(var(--color-neutral-800));
-  --background-neutral-stronger: rgb(var(--color-neutral-900));
-  --background-neutral-strongest: rgb(var(--color-neutral-950));
-  --background-neutral-weak: rgb(var(--color-neutral-200));
-  --background-neutral-weaker: rgb(var(--color-neutral-100));
-  --background-neutral-weakest: rgb(var(--color-neutral-50));
+  --background-neutral: rgb(var(--color-medium));
+  --background-neutral-strongest: rgb(var(--color-strongest));
+  --background-neutral-stronger: rgb(var(--color-stronger));
+  --background-neutral-strong: rgb(var(--color-strong));
+  --background-neutral-weak: rgb(var(--color-weak));
+  --background-neutral-weaker: rgb(var(--color-weaker));
+  --background-neutral-weakest: rgb(var(--color-weakest));
 
-  --background-primary: rgb(var(--color-primary-500));
-  --background-primary-strong: rgb(var(--color-primary-600));
-  --background-primary-stronger: rgb(var(--color-primary-700));
-  --background-primary-strongest: rgb(var(--color-primary-800));
-  --background-primary-weak: rgb(var(--color-primary-200));
-  --background-primary-weaker: rgb(var(--color-primary-100));
-  --background-primary-weakest: rgb(var(--color-primary-50));
+  --background-primary: rgb(var(--color-primary-medium));
+  --background-primary-strongest: rgb(var(--color-primary-strongest));
+  --background-primary-stronger: rgb(var(--color-primary-stronger));
+  --background-primary-strong: rgb(var(--color-primary-strong));
+  --background-primary-weak: rgb(var(--color-primary-weak));
+  --background-primary-weaker: rgb(var(--color-primary-weaker));
+  --background-primary-weakest: rgb(var(--color-primary-weakest));
 
-  --background-warning: rgb(var(--color-warning-500));
-  --background-warning-strong: rgb(var(--color-warning-600));
-  --background-warning-stronger: rgb(var(--color-warning-700));
-  --background-warning-strongest: rgb(var(--color-warning-800));
-  --background-warning-weak: rgb(var(--color-warning-200));
-  --background-warning-weaker: rgb(var(--color-warning-100));
-  --background-warning-weakest: rgb(var(--color-warning-50));
+  --background-warning: rgb(var(--color-warning-medium));
+  --background-warning-strongest: rgb(var(--color-warning-strongest));
+  --background-warning-stronger: rgb(var(--color-warning-stronger));
+  --background-warning-strong: rgb(var(--color-warning-strong));
+  --background-warning-weak: rgb(var(--color-warning-weak));
+  --background-warning-weaker: rgb(var(--color-warning-weaker));
+  --background-warning-weakest: rgb(var(--color-warning-weakest));
 
-  --background-danger: rgb(var(--color-danger-500));
-  --background-danger-strong: rgb(var(--color-danger-600));
-  --background-danger-stronger: rgb(var(--color-danger-700));
-  --background-danger-strongest: rgb(var(--color-danger-800));
-  --background-danger-weak: rgb(var(--color-danger-200));
-  --background-danger-weaker: rgb(var(--color-danger-100));
-  --background-danger-weakest: rgb(var(--color-danger-50));
+  --background-danger: rgb(var(--color-danger-medium));
+  --background-danger-strongest: rgb(var(--color-danger-strongest));
+  --background-danger-stronger: rgb(var(--color-danger-stronger));
+  --background-danger-strong: rgb(var(--color-danger-strong));
+  --background-danger-weak: rgb(var(--color-danger-weak));
+  --background-danger-weaker: rgb(var(--color-danger-weaker));
+  --background-danger-weakest: rgb(var(--color-danger-weakest));
 
-  --background-success: rgb(var(--color-success-500));
-  --background-success-strong: rgb(var(--color-success-600));
-  --background-success-stronger: rgb(var(--color-success-700));
-  --background-success-strongest: rgb(var(--color-success-800));
-  --background-success-weak: rgb(var(--color-success-200));
-  --background-success-weaker: rgb(var(--color-success-100));
-  --background-success-weakest: rgb(var(--color-success-50));
+  --background-success: rgb(var(--color-success-medium));
+  --background-success-strongest: rgb(var(--color-success-strongest));
+  --background-success-stronger: rgb(var(--color-success-stronger));
+  --background-success-strong: rgb(var(--color-success-strong));
+  --background-success-weak: rgb(var(--color-success-weak));
+  --background-success-weaker: rgb(var(--color-success-weaker));
+  --background-success-weakest: rgb(var(--color-success-weakest));
 
-  --background-accent: rgb(var(--color-accent-500));
-  --background-accent-strong: rgb(var(--color-accent-600));
-  --background-accent-stronger: rgb(var(--color-accent-700));
-  --background-accent-strongest: rgb(var(--color-accent-800));
-  --background-accent-weak: rgb(var(--color-accent-200));
-  --background-accent-weaker: rgb(var(--color-accent-100));
-  --background-accent-weakest: rgb(var(--color-accent-50));
+  --background-accent: rgb(var(--color-accent-medium));
+  --background-accent-strongest: rgb(var(--color-accent-strongest));
+  --background-accent-stronger: rgb(var(--color-accent-stronger));
+  --background-accent-strong: rgb(var(--color-accent-strong));
+  --background-accent-weak: rgb(var(--color-accent-weak));
+  --background-accent-weaker: rgb(var(--color-accent-weaker));
+  --background-accent-weakest: rgb(var(--color-accent-weakest));
 
-  --background-info: rgb(var(--color-info-500));
-  --background-info-strong: rgb(var(--color-info-600));
-  --background-info-stronger: rgb(var(--color-info-700));
-  --background-info-strongest: rgb(var(--color-info-800));
-  --background-info-weak: rgb(var(--color-info-200));
-  --background-info-weaker: rgb(var(--color-info-100));
-  --background-info-weakest: rgb(var(--color-info-50));
+  --background-info: rgb(var(--color-info-medium));
+  --background-info-strongest: rgb(var(--color-info-strongest));
+  --background-info-stronger: rgb(var(--color-info-stronger));
+  --background-info-strong: rgb(var(--color-info-strong));
+  --background-info-weak: rgb(var(--color-info-weak));
+  --background-info-weaker: rgb(var(--color-info-weaker));
+  --background-info-weakest: rgb(var(--color-info-weakest));
 
   /* Overlay Backgrounds */
-  --background-overlay: rgb(var(--color-neutral-300) / 0.75);
-  --background-overlay-hover: rgb(var(--color-neutral-400) / 0.85);
-  --background-scrim: rgb(var(--color-neutral-950) / 0.8);
+  --background-overlay: rgb(var(--color-weak) / 0.80);
+  --background-overlay-hover: rgb(var(--color-stronger) / 0.90);
+  --background-scrim: rgb(var(--color-strongest) / 0.8);
 
   /* ==========================================================================
      Text Colors
      ========================================================================== */
 
   /* Base Text */
-  --text-strongest: rgb(var(--color-neutral-900));
-  --text-strong: rgb(var(--color-neutral-800));
-  --text-base: rgb(var(--color-neutral-700));
-  --text-weak: rgb(var(--color-neutral-600));
-  --text-weakest: rgb(var(--color-neutral-500));
-  --text-muted: rgb(var(--color-neutral-400));
+  --text-strong: rgb(var(--color-strongest));
+  --text-foreground: rgb(var(--color-stronger));
+  --text-weak: rgb(var(--color-strong));
+  --text-muted: rgb(var(--color-medium));
 
   /* Status Text */
-  --text-primary: rgb(var(--color-primary-600));
-  --text-accent: rgb(var(--color-accent-600));
-  --text-success: rgb(var(--color-success-600));
-  --text-warning: rgb(var(--color-warning-600));
-  --text-danger: rgb(var(--color-danger-600));
-  --text-info: rgb(var(--color-info-600));
+  --text-primary: rgb(var(--color-primary-stronger));
+  --text-primary-strong: rgb(var(--color-primary-strongest));
+  --text-warning: rgb(var(--color-warning-stronger));
+  --text-warning-strong: rgb(var(--color-warning-strongest));
+  --text-danger: rgb(var(--color-danger-stronger));
+  --text-danger-strong: rgb(var(--color-danger-strongest));
+  --text-success: rgb(var(--color-success-stronger));
+  --text-success-strong: rgb(var(--color-success-strongest));
+  --text-accent: rgb(var(--color-accent-stronger));
+  --text-accent-strong: rgb(var(--color-accent-strongest));
+  --text-info: rgb(var(--color-info-stronger));
+  --text-info-strong: rgb(var(--color-info-strongest));
 
   /* Inverse Text */
   --text-inverse: rgb(var(--color-white));
@@ -106,51 +109,37 @@
      ========================================================================== */
 
   /* Borders */
-  --border-strongest: rgb(var(--color-neutral-400));
-  --border-strong: rgb(var(--color-neutral-300));
-  --border-base: rgb(var(--color-neutral-200));
-  --border-weak: rgb(var(--color-neutral-100));
-  --border-weakest: rgb(var(--color-neutral-50));
+  --border-strong: rgb(var(--color-medium));
+  --border-base: rgb(var(--color-weak));
+  --border-weak: rgb(var(--color-weaker));
 
-  --border-primary-strongest: rgb(var(--color-primary-600));
-  --border-primary-strong: rgb(var(--color-primary-500));
-  --border-primary: rgb(var(--color-primary-400));
-  --border-primary-weak: rgb(var(--color-primary-200));
-  --border-primary-weakest: rgb(var(--color-primary-100));
+  --border-primary-strong: rgb(var(--color-primary-medium));
+  --border-primary: rgb(var(--color-primary-weak));
+  --border-primary-weak: rgb(var(--color-primary-weaker));
 
-  --border-success-strongest: rgb(var(--color-success-600));
-  --border-success-strong: rgb(var(--color-success-500));
-  --border-success: rgb(var(--color-success-400));
-  --border-success-weak: rgb(var(--color-success-200));
-  --border-success-weakest: rgb(var(--color-success-100));
+  --border-warning-strong: rgb(var(--color-warning-medium));
+  --border-warning: rgb(var(--color-warning-weak));
+  --border-warning-weak: rgb(var(--color-warning-weaker));
 
-  --border-warning-strongest: rgb(var(--color-warning-600));
-  --border-warning-strong: rgb(var(--color-warning-500));
-  --border-warning: rgb(var(--color-warning-400));
-  --border-warning-weak: rgb(var(--color-warning-200));
-  --border-warning-weakest: rgb(var(--color-warning-100));
+  --border-danger-strong: rgb(var(--color-danger-medium));
+  --border-danger: rgb(var(--color-danger-weak));
+  --border-danger-weak: rgb(var(--color-danger-weaker));
 
-  --border-danger-strongest: rgb(var(--color-danger-600));
-  --border-danger-strong: rgb(var(--color-danger-500));
-  --border-danger: rgb(var(--color-danger-400));
-  --border-danger-weak: rgb(var(--color-danger-200));
-  --border-danger-weakest: rgb(var(--color-danger-100));
+  --border-success-strong: rgb(var(--color-success-medium));
+  --border-success: rgb(var(--color-success-weak));
+  --border-success-weak: rgb(var(--color-success-weaker));
 
-  --border-accent-strongest: rgb(var(--color-accent-600));
-  --border-accent-strong: rgb(var(--color-accent-500));
-  --border-accent: rgb(var(--color-accent-400));
-  --border-accent-weak: rgb(var(--color-accent-200));
-  --border-accent-weakest: rgb(var(--color-accent-100));
+  --border-accent-strong: rgb(var(--color-accent-medium));
+  --border-accent: rgb(var(--color-accent-weak));
+  --border-accent-weak: rgb(var(--color-accent-weaker));
 
-  --border-info-strongest: rgb(var(--color-info-600));
-  --border-info-strong: rgb(var(--color-info-500));
-  --border-info: rgb(var(--color-info-400));
-  --border-info-weak: rgb(var(--color-info-200));
-  --border-info-weakest: rgb(var(--color-info-100));
+  --border-info-strong: rgb(var(--color-info-medium));
+  --border-info: rgb(var(--color-info-weak));
+  --border-info-weak: rgb(var(--color-info-weaker));
 
   /* Focus Rings */
-  --ring-default: rgb(var(--color-neutral-400));
-  --ring-primary: rgb(var(--color-primary-500));
+  --ring-default: rgb(var(--color-weak));
+  --ring-primary: rgb(var(--color-primary-strong));
   --ring-danger: rgb(var(--color-danger-500));
 
   /* ==========================================================================
@@ -159,31 +148,31 @@
 
   /* Cards */
   --card-background: var(--background-surface);
-  --card-border: var(--border-subtle);
+  --card-border: var(--color-weakest);
   --card-shadow: var(--shadow-sm);
 
   /* Popovers */
   --popover-background: var(--background-surface);
-  --popover-border: var(--border-subtle);
+  --popover-border: var(--color-weakest);
   --popover-shadow: var(--shadow);
 
   /* Navigation */
   --nav-background: var(--background-surface);
-  --nav-border: var(--border-subtle);
+  --nav-border: var(--color-weakest);
   --nav-shadow: var(--shadow-sm);
   --nav-item-hover: var(--background-secondary);
-  --nav-item-active: var(--background-primary-subtle);
+  --nav-item-active: var(--background-primary-weakest);
 
   /* Tooltips */
-  --tooltip-background: rgb(var(--color-neutral-900));
-  --tooltip-text: rgb(var(--color-white));
+  --tooltip-background: rgb(var(--color-white));
+  --tooltip-text: rgb(var(--color-strong));
 
   /* ==========================================================================
      States
      ========================================================================== */
 
   /* Selection */
-  --selection-background: rgb(var(--color-primary-100));
+  --selection-background: rgb(var(--color-primary-muted));
   --selection-text: var(--text-base);
 
   /* Focus */
@@ -197,37 +186,29 @@
 /* strong theme semantic overrides */
 [data-theme="strong"] {
   /* Background Colors */
-  --background-page: rgb(var(--color-neutral-950));
+  /* --background-page: rgb(var(--color-neutral-950));
   --background-surface: rgb(var(--color-neutral-900));
   --background-surface-raised: rgb(var(--color-neutral-800));
-  --background-surface-sunken: rgb(var(--color-neutral-950));
+  --background-surface-sunken: rgb(var(--color-neutral-950)); */
 
   /* Text Colors */
-  --text-base: rgb(var(--color-neutral-50));
+  /* --text-base: rgb(var(--color-neutral-50));
   --text-secondary: rgb(var(--color-neutral-300));
   --text-tertiary: rgb(var(--color-neutral-500));
-  --text-muted: rgb(var(--color-neutral-600));
+  --text-muted: rgb(var(--color-neutral-600)); */
 
   /* Border Colors */
-  --border-default: rgb(var(--color-neutral-700));
-  --border-strong: rgb(var(--color-neutral-600));
-  --border-subtle: rgb(var(--color-neutral-800));
+  /* --border-default: rgb(var(--color-weaker));
+  --border-strong: rgb(var(--color-weak));
+  --border-subtle: rgb(var(--color-weakest)); */
 
   /* Component Specific */
   --card-shadow: none;
   --nav-shadow: none;
 
   /* Interactive States */
-  --selection-background: rgb(var(--color-primary-900));
-  --selection-text: rgb(var(--color-primary-50));
-}
-
-/* High Contrast overrides */
-[data-contrast="high"] {
-  --text-secondary: var(--text-base);
-  --text-tertiary: var(--text-base);
-  --border-subtle: var(--border-default);
-  --disabled-opacity: 0.75;
+  --selection-background: rgb(var(--color-primary-strongest));
+  --selection-text: rgb(var(--color-primary-muted));
 }
 
 /* Fullstory compatibility */

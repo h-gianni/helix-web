@@ -25,7 +25,7 @@ import type {
   TeamResponse,
   TeamMemberResponse,
 } from "@/lib/types/api";
-import { TeamInitiative } from "@/lib/types/intiative";
+import { TeamActivity } from "@/lib/types/business-activities";
 import StarRating from '@/components/ui/StarRating';
 
 interface PerformanceRatingModalProps {
@@ -38,7 +38,7 @@ interface PerformanceRatingModalProps {
   onSubmit: (data: {
     teamId: string;
     memberId: string;
-    initiativeId: string;
+    activityId: string;
     rating: number;
     feedback?: string;
   }) => Promise<void>;
@@ -57,8 +57,8 @@ export default function PerformanceRatingModal({
   const [selectedTeamId, setSelectedTeamId] = useState<string>(initialTeamId || "");
   const [members, setMembers] = useState<TeamMemberResponse[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState<string>(initialMemberId || "");
-  const [initiatives, setInitiatives] = useState<BusinessActivityResponse[]>([]);
-  const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>("");
+  const [activities, setActivities] = useState<BusinessActivityResponse[]>([]);
+  const [selectedActivityId, setSelectedActivityId] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -74,7 +74,7 @@ export default function PerformanceRatingModal({
   useEffect(() => {
     if (selectedTeamId) {
       fetchMembers(selectedTeamId);
-      fetchInitiatives(selectedTeamId);
+      fetchActivities(selectedTeamId);
     }
   }, [selectedTeamId]);
 
@@ -107,18 +107,19 @@ export default function PerformanceRatingModal({
     }
   };
 
-  const fetchInitiatives = async (teamId: string) => {
+  const fetchActivities = async (teamId: string) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/initiatives/${teamId}`);
+      console.log("Fetching activities for team:", teamId); // Debug log
+      const response = await fetch(`/api/teams/${teamId}/activities`);
       const data = await response.json();
+      console.log("Activities response:", data); // Debug log
       if (data.success) {
-        const teamInitiatives = data.data.map((ti: TeamInitiative) => ti.initiative);
-        setInitiatives(teamInitiatives);
+        setActivities(data.data);
       }
     } catch (err) {
-      console.error(err);
-      setError("Failed to fetch initiatives");
+      console.error("Error fetching activities:", err);
+      setError("Failed to fetch activities");
     } finally {
       setLoading(false);
     }
@@ -129,10 +130,17 @@ export default function PerformanceRatingModal({
     try {
       setSaving(true);
       setError(null);
+      console.log("Submitting rating with data:", {  // Debug log
+        teamId: selectedTeamId,
+        memberId: selectedMemberId,
+        activityId: selectedActivityId,
+        rating,
+        feedback,
+      });
       await onSubmit({
         teamId: selectedTeamId,
         memberId: selectedMemberId,
-        initiativeId: selectedInitiativeId,
+        activityId: selectedActivityId,
         rating,
         feedback: feedback.trim() || undefined,
       });
@@ -148,7 +156,7 @@ export default function PerformanceRatingModal({
   const handleReset = () => {
     if (!initialTeamId) setSelectedTeamId("");
     if (!initialMemberId) setSelectedMemberId("");
-    setSelectedInitiativeId("");
+    setSelectedActivityId("");
     setRating(0);
     setFeedback("");
   };
@@ -213,32 +221,32 @@ export default function PerformanceRatingModal({
           )}
 
           <Select
-            value={selectedInitiativeId}
-            onValueChange={setSelectedInitiativeId}
+            value={selectedActivityId}
+            onValueChange={setSelectedActivityId}
             width="full"
             withLabel
-            label="Select Initiative"
+            label="Select activity"
           >
             <SelectTrigger disabled={loading || !selectedTeamId || !selectedMemberId}>
               <SelectValue
                 placeholder={
                   loading
-                    ? "Loading initiatives..."
+                    ? "Loading activities..."
                     : !selectedTeamId || !selectedMemberId
                     ? "Select team and member first"
-                    : "Select an initiative"
+                    : "Select an activity"
                 }
               />
             </SelectTrigger>
             <SelectContent>
-              {initiatives.length === 0 ? (
+              {activities.length === 0 ? (
                 <div className="p-2 text-sm text-muted-foreground">
-                  {loading ? "Loading..." : "No initiatives available for this team"}
+                  {loading ? "Loading..." : "No activities available for this team"}
                 </div>
               ) : (
-                initiatives.map((initiative) => (
-                  <SelectItem key={initiative.id} value={initiative.id}>
-                    {initiative.name}
+                activities.map((activity) => (
+                  <SelectItem key={activity.id} value={activity.id}>
+                    {activity.name}
                   </SelectItem>
                 ))
               )}
@@ -280,7 +288,7 @@ export default function PerformanceRatingModal({
           <Button
             variant="primary"
             onClick={handleSubmit}
-            disabled={saving || !selectedTeamId || !selectedMemberId || !selectedInitiativeId || rating === 0}
+            disabled={saving || !selectedTeamId || !selectedMemberId || !selectedActivityId || rating === 0}
             isLoading={saving}
           >
             Save Rating

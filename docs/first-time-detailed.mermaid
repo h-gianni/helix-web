@@ -1,0 +1,76 @@
+flowchart TD
+    %% Entry Point
+    Start([Start]) --> Register[Register Account]
+    
+    %% Registration Flow
+    Register --> ValidateEmail{Valid Email?}
+    ValidateEmail -->|No| EmailError[Show Email Error]
+    EmailError --> Register
+    ValidateEmail -->|Yes| CheckEmail[Check Email Exists]
+    
+    CheckEmail --> EmailExists{Email Exists?}
+    EmailExists -->|Yes| LoginPrompt[Show Login Prompt]
+    LoginPrompt --> Login
+    EmailExists -->|No| SetPassword[Set Password]
+    
+    %% Password Validation
+    SetPassword --> ValidatePassword{Password Valid?}
+    ValidatePassword -->|No| PasswordError[Show Password Requirements]
+    PasswordError --> SetPassword
+    ValidatePassword -->|Yes| CreateAccount[Create Account]
+    
+    %% Account Creation
+    CreateAccount --> SendVerification[Send Verification Email]
+    SendVerification --> VerificationSent{Email Sent?}
+    VerificationSent -->|No| RetryOption[Show Retry Option]
+    RetryOption --> SendVerification
+    VerificationSent -->|Yes| AwaitVerification[Await Verification]
+    
+    %% Email Verification
+    AwaitVerification --> Verified{Email Verified?}
+    Verified -->|No| ResendOption[Show Resend Option]
+    ResendOption --> SendVerification
+    Verified -->|Yes| Login[Login]
+    
+    %% Login Process
+    Login --> ValidateCredentials{Valid Credentials?}
+    ValidateCredentials -->|No| LoginError[Show Login Error]
+    LoginError --> Login
+    ValidateCredentials -->|Yes| SetupContext[Team Context Setup]
+    
+    %% Context Setup
+    SetupContext --> ValidateContext{Context Valid?}
+    ValidateContext -->|No| ContextError[Show Context Error]
+    ContextError --> SetupContext
+    ValidateContext -->|Yes| CreateTeam[Create Team]
+    
+    %% Team Creation
+    CreateTeam --> ValidateTeam{Team Valid?}
+    ValidateTeam -->|No| TeamError[Show Team Error]
+    TeamError --> CreateTeam
+    ValidateTeam -->|Yes| AddMembers[Add Team Members]
+    
+    %% Member Addition
+    AddMembers --> ValidateMembers{Members Valid?}
+    ValidateMembers -->|No| MemberError[Show Member Error]
+    MemberError --> AddMembers
+    ValidateMembers -->|Yes| Dashboard[Access Dashboard]
+    
+    %% Data Dependencies
+    Dashboard --> SaveData[Save All Settings]
+    SaveData --> SaveSuccess{Save Successful?}
+    SaveSuccess -->|No| RetryData[Retry Save]
+    RetryData --> SaveData
+    SaveSuccess -->|Yes| Complete([Setup Complete])
+    
+    %% Styling
+    classDef start fill:#ff9999,stroke:#333,stroke-width:2px,color:#000000
+    classDef process fill:#99ff99,stroke:#333,stroke-width:1px,color:#000000
+    classDef decision fill:#99ccff,stroke:#333,stroke-width:2px,color:#000000
+    classDef error fill:#ff9999,stroke:#333,stroke-width:1px,color:#000000
+    classDef success fill:#90EE90,stroke:#333,stroke-width:1px,color:#000000
+    
+    class Start,Complete start
+    class ValidateEmail,EmailExists,ValidatePassword,VerificationSent,Verified,ValidateCredentials,ValidateContext,ValidateTeam,ValidateMembers,SaveSuccess decision
+    class EmailError,PasswordError,LoginError,ContextError,TeamError,MemberError error
+    class Dashboard,SaveData success

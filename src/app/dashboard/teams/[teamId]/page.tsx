@@ -292,7 +292,7 @@ export default function TeamDetailsPage({
             <AlertDialogTitle>Delete Team</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this team? This action cannot be
-              undone. All team members, initiatives, and performance data will
+              undone. All team members, activites, and performance data will
               be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>

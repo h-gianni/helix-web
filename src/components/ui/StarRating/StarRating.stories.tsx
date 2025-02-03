@@ -82,16 +82,16 @@ export const Default: Story = {
 export const Sizes: Story = {
   render: () => (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <span className="w-20 text-sm text-muted-foreground">Small:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-20 text-body">Small:</span>
         <StarRating value={4} size="sm" disabled ratingsCount={8} />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-20 text-sm text-muted-foreground">Base:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-20 text-body">Base:</span>
         <StarRating value={4} size="base" disabled ratingsCount={8} />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-20 text-sm text-muted-foreground">Large:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-20 text-body">Large:</span>
         <StarRating value={4} size="lg" disabled ratingsCount={8} />
       </div>
     </div>
@@ -102,16 +102,16 @@ export const Sizes: Story = {
 export const InteractionModes: Story = {
   render: () => (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <span className="w-24 text-sm text-muted-foreground">Interactive:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-24 text-body">Interactive:</span>
         <StarRating value={3.5} onChange={console.log} ratingsCount={15} />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-24 text-sm text-muted-foreground">Display only:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-24 text-body">Display only:</span>
         <StarRating value={3.5} disabled ratingsCount={15} />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-24 text-sm text-muted-foreground">No ratings:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-24 text-body">No ratings:</span>
         <StarRating value={0} disabled ratingsCount={0} />
       </div>
     </div>
@@ -122,24 +122,24 @@ export const InteractionModes: Story = {
 export const Values: Story = {
   render: () => (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <span className="w-24 text-sm text-muted-foreground">5.0 stars:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-24 text-body">5.0 stars:</span>
         <StarRating value={5.0} disabled ratingsCount={42} />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-24 text-sm text-muted-foreground">4.5 stars:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-24 text-body">4.5 stars:</span>
         <StarRating value={4.5} disabled ratingsCount={38} />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-24 text-sm text-muted-foreground">3.7 stars:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-24 text-body">3.7 stars:</span>
         <StarRating value={3.7} disabled ratingsCount={27} />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-24 text-sm text-muted-foreground">2.3 stars:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-24 text-body">2.3 stars:</span>
         <StarRating value={2.3} disabled ratingsCount={15} />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-24 text-sm text-muted-foreground">1.0 stars:</span>
+      <div className="flex items-center gap-sm">
+        <span className="w-24 text-body">1.0 stars:</span>
         <StarRating value={1.0} disabled ratingsCount={3} />
       </div>
     </div>
@@ -150,8 +150,8 @@ export const Values: Story = {
 export const DisplayVariations: Story = {
   render: () => (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <span className="w-32 text-sm text-muted-foreground">Complete:</span>
+      <div className="flex items-center gap-base">
+        <span className="w-32 text-body">Complete:</span>
         <StarRating 
           value={4.5} 
           disabled 
@@ -160,8 +160,8 @@ export const DisplayVariations: Story = {
           showRatingsCount={true}
         />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-32 text-sm text-muted-foreground">No value:</span>
+      <div className="flex items-center gap-base">
+        <span className="w-32 text-body">No value:</span>
         <StarRating 
           value={4.5} 
           disabled 
@@ -170,8 +170,8 @@ export const DisplayVariations: Story = {
           showRatingsCount={true}
         />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-32 text-sm text-muted-foreground">No count:</span>
+      <div className="flex items-center gap-base">
+        <span className="w-32 text-body">No count:</span>
         <StarRating 
           value={4.5} 
           disabled 
@@ -180,8 +180,8 @@ export const DisplayVariations: Story = {
           showRatingsCount={false}
         />
       </div>
-      <div className="flex items-center gap-2">
-        <span className="w-32 text-sm text-muted-foreground">Stars only:</span>
+      <div className="flex items-center gap-base">
+        <span className="w-32 text-body">Stars only:</span>
         <StarRating 
           value={4.5} 
           disabled 
@@ -199,28 +199,28 @@ export const Examples: Story = {
   render: () => (
     <div className="space-y-8">
       {/* Product rating example */}
-      <div className="max-w-sm p-4 border rounded-lg space-y-2">
-        <h3 className="font-semibold">Product Rating</h3>
+      <div className="max-w-sm p-base border rounded-lg space-y-sm">
+        <h3 className="text-heading-4">Product Rating</h3>
         <StarRating value={4.5} disabled ratingsCount={123} />
-        <p className="text-sm text-muted-foreground">Based on verified purchases</p>
+        <p className="text-body">Based on verified purchases</p>
       </div>
 
       {/* Feedback form example */}
-      <div className="max-w-sm p-4 border rounded-lg space-y-2">
-        <h3 className="font-semibold">Leave a Review</h3>
+      <div className="max-w-sm p-base border rounded-lg space-y-sm">
+        <h3 className="text-heading-4">Leave a Review</h3>
         <StarRating 
           value={0} 
           onChange={console.log} 
           size="lg" 
           showRatingsCount={false}
         />
-        <p className="text-sm text-muted-foreground">Click to rate</p>
+        <p className="text-link text-primary">Click to rate</p>
       </div>
 
       {/* Compact display example */}
-      <div className="max-w-sm p-4 border rounded-lg">
-        <div className="flex items-center justify-between">
-          <span className="font-medium">Customer Satisfaction</span>
+      <div className="max-w-sm p-base border rounded-lg">
+        <div className="flex items-center justify-between gap-base">
+          <span className="text-heading-5">Customer Satisfaction</span>
           <StarRating 
             value={3.8} 
             size="sm" 
@@ -232,9 +232,9 @@ export const Examples: Story = {
       </div>
 
       {/* New rating example */}
-      <div className="max-w-sm p-4 border rounded-lg">
-        <div className="flex items-center justify-between">
-          <span className="font-medium">New Product</span>
+      <div className="max-w-sm p-base border rounded-lg">
+        <div className="flex items-center justify-between gap-base">
+          <span className="text-heading-5">New Product</span>
           <StarRating 
             value={0} 
             size="sm" 

@@ -2,9 +2,8 @@
 
 /* Base Card */
 .card-base {
-  @apply rounded-lg border border-neutral-weakest bg-surface text-foreground
-         outline-none transition-all space-y-xs px-lg py-md;
-  /* border-color: var(--border-weakest); */
+  @apply rounded-lg border border-neutral-weak bg-surface text-foreground
+         outline-none transition-all space-y-base px-lg py-md;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
 }
@@ -35,7 +34,7 @@
 }
 .card-interactive {
   &:hover {
-    @apply border-base;
+    @apply border-neutral-base;
   }
   &:active {
     @apply bg-surface-sunken;
@@ -44,7 +43,7 @@
 .card-clickable {
   @apply cursor-pointer;
   &:hover {
-    @apply border-base;
+    @apply border-neutral-base;
   }
   &:active {
     @apply bg-surface-sunken;
@@ -62,11 +61,6 @@
 /* Card Header */
 .card-header {
   @apply flex flex-col gap-xxs;
-}
-
-/* Card Title Colour */
-.card-title-sm, .card-title-base, .card-title-lg, .card-title-xl {
-  @apply text-strongest;
 }
 
 /* Card Title Sizes */
@@ -88,10 +82,10 @@
 
 /* Card Description */
 .card-description {
-  @apply text-body -mt-xxs pb-xs;
+  @apply text-helper -mt-xxs pb-xs;
 }
 .card-sm .card-description {
-  @apply text-body-small text-weakest;
+  @apply text-caption;
 }
 .card-xl .card-description {
   @apply  mt-0 pb-xs;
@@ -99,16 +93,16 @@
 
 /* Card Content */
 .card-content {
-  @apply text-body pb-md;
+  @apply text-copy pb-md;
 }
 
 .card-sm .card-content {
-  @apply text-body-small;
+  @apply text-copy-small;
 }
 
 /* Card Footer */
 .card-footer {
-  @apply flex flex-col-reverse sm:flex-row sm:justify-end pt-lg mt-lg border-t border-weakest gap-sm;
+  @apply flex flex-col-reverse sm:flex-row sm:justify-end pt-lg mt-lg border-t border-neutral-weak gap-sm;
 }
 
 /* Card Header with Actions */

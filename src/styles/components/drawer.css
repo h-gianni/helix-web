@@ -18,7 +18,7 @@
 
 .drawer-content {
   @apply fixed flex flex-col 
-         bg-surface border border-base shadow-md;
+         bg-surface border border-neutral-base shadow-md;
   z-index: var(--z-modal);
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
@@ -87,40 +87,36 @@
 /* Drawer Components */
 .drawer-header {
   @apply relative flex flex-col gap-md p-lg
-         border-b border-base;
+         border-b border-neutral-weak;
 }
 
 .drawer-close {
   @apply absolute right-lg top-lg
-         rounded-sm text-weakest opacity-70
+         rounded-sm text-icon
          transition-all hover:opacity-100
          focus-visible:focus-ring
          disabled:pointer-events-none disabled:opacity-50;
 }
 
-.drawer-close svg {
-  @apply size-4;
-}
-
 .drawer-title {
-  @apply text-heading-2 text-foreground;
+  @apply text-heading-2;
 }
 
 .drawer-description {
-  @apply text-body text-weak;
+  @apply text-helper;
 }
 
 .drawer-body {
-  @apply flex-1 overflow-auto p-lg;
+  @apply flex-1 overflow-auto p-lg text-copy text-foreground;
 }
 
 .drawer-footer {
   @apply flex items-center justify-end gap-md p-lg
-         border-t border-base;
+         border-t border-neutral-base;
 }
 
 .drawer-handle {
-  @apply mx-auto mt-2 h-1 w-8 rounded-full bg-black;
+  @apply mx-auto mt-2 h-1 w-8 rounded-full bg-neutral;
 }
 
 /* Overlay animations */

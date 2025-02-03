@@ -10,7 +10,7 @@
 
 /* Command Input */
 .command-input-wrapper {
-  @apply flex items-center px-xs pb-xs border-b border-base;
+  @apply flex items-center px-xs pb-xs border-b border-neutral-weak;
 }
 
 .command-input-icon {
@@ -29,7 +29,7 @@
 }
 
 .command-empty {
-  @apply py-6 text-center text-body-small text-foreground;
+  @apply py-6 text-center text-copy-small text-foreground;
 }
 
 .command-list .popcard-list-group-title:first-of-type {
@@ -48,7 +48,7 @@
   }
 
   .command-item[data-selected="true"] {
-    @apply bg-primary-stronger text-inverse;
+    @apply bg-primary-strong text-inverse;
   }
 }
 

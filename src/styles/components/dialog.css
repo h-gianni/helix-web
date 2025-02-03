@@ -46,29 +46,24 @@
 }
 
 .dialog-description {
-  @apply text-body;
+  @apply text-helper -mt-xs;
 }
 
 .dialog-footer {
   @apply flex flex-col-reverse sm:flex-row sm:justify-end
-         gap-md pt-lg mt-lg
-         border-t border-base;
+         gap-sm pt-lg mt-lg;
 }
 
 /* Close button */
 .dialog-close {
   @apply absolute right-lg top-lg 
-         size-4 rounded-sm
-         text-weakest opacity-70
+         rounded-sm
+         text-icon
          transition-all hover:opacity-100
          focus-visible:focus-ring
          disabled:pointer-events-none disabled:opacity-50;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
-}
-
-.dialog-close svg {
-  @apply size-4;
 }
 
 /* Animations */
@@ -94,7 +89,7 @@
   .dialog-footer {
     @apply fixed bottom-0 left-0 right-0
            bg-surface p-md
-           border-t border-base;
+           border-t border-neutral-base;
   }
 
   .dialog-close {

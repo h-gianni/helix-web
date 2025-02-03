@@ -8,7 +8,7 @@
 /* Breadcrumb List */
 .breadcrumb-list {
   @apply flex flex-wrap items-center gap-sm 
-         break-words text-sm text-weakest;
+         break-words text-sm text-weak;
 }
 
 /* Breadcrumb Item */
@@ -26,7 +26,7 @@
 
 /* Breadcrumb Current Page */
 .breadcrumb-page {
-  @apply font-normal text-weakest;
+  @apply font-normal text-weak;
 }
 
 /* Breadcrumb Separator */
@@ -41,7 +41,7 @@
 /* Breadcrumb Ellipsis */
 .breadcrumb-ellipsis {
   @apply flex items-center justify-center size-2xl
-         text-weakest;
+         text-weak;
 }
 
 .breadcrumb-ellipsis svg {

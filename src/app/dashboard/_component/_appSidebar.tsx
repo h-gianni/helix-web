@@ -87,7 +87,7 @@ const mainNavItems: NavItem[] = [
     subItems: [
       { to: "/dashboard/settings", label: "All Settings" },
       { to: "/dashboard/settings/teams", label: "Teams" },
-      { to: "/dashboard/settings/initiatives", label: "Initiatives" },
+      { to: "/dashboard/settings/business-activities", label: "Activities" },
       { to: "/dashboard/settings/profile", label: "Profile" },
     ],
   },

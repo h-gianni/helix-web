@@ -1,16 +1,15 @@
-// app/api/disciplines/[disciplineId]/route.ts
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { 
   ApiResponse, 
-  TeamFunctionResponse as  DisciplineResponse,
-  UpdateTeamFunctionInput as UpdateDisciplineInput 
+  TeamFunctionResponse,
+  UpdateTeamFunctionInput
 } from "@/lib/types/api";
 
 export async function GET(
   request: Request,
-  { params }: { params: { disciplineId: string } }
+  { params }: { params: { teamFunctionId: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -21,9 +20,9 @@ export async function GET(
       );
     }
 
-    const discipline = await prisma.teamFunction.findUnique({
+    const teamFunction = await prisma.teamFunction.findUnique({
       where: { 
-        id: params.disciplineId,
+        id: params.teamFunctionId,
         deletedAt: null,
       },
       include: {
@@ -36,19 +35,19 @@ export async function GET(
       },
     });
 
-    if (!discipline) {
+    if (!teamFunction) {
       return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Discipline not found" },
+        { success: false, error: "Team function not found" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json<ApiResponse<DisciplineResponse>>({
+    return NextResponse.json<ApiResponse<TeamFunctionResponse>>({
       success: true,
-      data: discipline as DisciplineResponse,
+      data: teamFunction as TeamFunctionResponse,
     });
   } catch (error) {
-    console.error("Error fetching discipline:", error);
+    console.error("Error fetching team function:", error);
     return NextResponse.json<ApiResponse<never>>(
       { success: false, error: "Internal server error" },
       { status: 500 }
@@ -58,7 +57,7 @@ export async function GET(
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { disciplineId: string } }
+  { params }: { params: { teamFunctionId: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -69,7 +68,7 @@ export async function PATCH(
       );
     }
 
-    const body = await request.json() as UpdateDisciplineInput;
+    const body = await request.json() as UpdateTeamFunctionInput;
     const { name, description } = body;
 
     if (!name?.trim()) {
@@ -79,8 +78,8 @@ export async function PATCH(
       );
     }
 
-    const discipline = await prisma.teamFunction.update({
-      where: { id: params.disciplineId },
+    const teamFunction = await prisma.teamFunction.update({
+      where: { id: params.teamFunctionId },
       data: {
         name: name.trim(),
         description: description?.trim() || null,
@@ -95,12 +94,12 @@ export async function PATCH(
       },
     });
 
-    return NextResponse.json<ApiResponse<DisciplineResponse>>({
+    return NextResponse.json<ApiResponse<TeamFunctionResponse>>({
       success: true,
-      data: discipline as DisciplineResponse,
+      data: teamFunction as TeamFunctionResponse,
     });
   } catch (error) {
-    console.error("Error updating discipline:", error);
+    console.error("Error updating team function:", error);
     return NextResponse.json<ApiResponse<never>>(
       { success: false, error: "Internal server error" },
       { status: 500 }
@@ -110,7 +109,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { disciplineId: string } }
+  { params }: { params: { teamFunctionId: string } }
 ) {
   try {
     const { userId } = await auth();
@@ -123,7 +122,7 @@ export async function DELETE(
 
     // Soft delete by setting deletedAt
     await prisma.teamFunction.update({
-      where: { id: params.disciplineId },
+      where: { id: params.teamFunctionId },
       data: { deletedAt: new Date() },
     });
 
@@ -132,7 +131,7 @@ export async function DELETE(
       data: undefined,
     });
   } catch (error) {
-    console.error("Error deleting discipline:", error);
+    console.error("Error deleting team function:", error);
     return NextResponse.json<ApiResponse<never>>(
       { success: false, error: "Internal server error" },
       { status: 500 }

@@ -16,7 +16,7 @@
  /* Print Styles */
  @media print {
   .progress-root {
-    @apply border border-base bg-transparent;
+    @apply border border-neutral-base bg-transparent;
   }
  
   .progress-indicator {

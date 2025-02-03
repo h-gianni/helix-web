@@ -1,0 +1,72 @@
+flowchart TD
+    %% Entry Point
+    Start([Dashboard Entry]) --> CheckSession{Active Session?}
+    
+    %% Session Validation
+    CheckSession -->|No| Login[Login Required]
+    CheckSession -->|Yes| LoadDashboard[Load Dashboard Data]
+    Login --> ValidateLogin{Login Valid?}
+    ValidateLogin -->|No| LoginError[Show Login Error]
+    LoginError --> Login
+    ValidateLogin -->|Yes| LoadDashboard
+    
+    %% Dashboard Loading
+    LoadDashboard --> DataLoad{Load Success?}
+    DataLoad -->|No| RetryLoad[Retry Loading]
+    RetryLoad --> LoadDashboard
+    DataLoad -->|Yes| Dashboard[Show Dashboard]
+    
+    %% Main Actions
+    Dashboard --> Actions{Select Action}
+    
+    %% Performance Tracking
+    Actions -->|Track| SelectMember[Select Team Member]
+    SelectMember --> ValidateMember{Member Active?}
+    ValidateMember -->|No| MemberError[Show Member Error]
+    MemberError --> SelectMember
+    ValidateMember -->|Yes| InputRating[Input Performance Rating]
+    
+    %% Rating Validation
+    InputRating --> ValidateRating{Rating Valid?}
+    ValidateRating -->|No| RatingError[Show Rating Error]
+    RatingError --> InputRating
+    ValidateRating -->|Yes| AddComments[Add Comments]
+    
+    %% Feedback Process
+    AddComments --> ValidateComments{Comments Valid?}
+    ValidateComments -->|No| CommentError[Show Comment Error]
+    CommentError --> AddComments
+    ValidateComments -->|Yes| SaveFeedback[Save Feedback]
+    
+    %% Save Process
+    SaveFeedback --> SaveSuccess{Save Successful?}
+    SaveSuccess -->|No| RetryFeedback[Retry Save]
+    RetryFeedback --> SaveFeedback
+    SaveSuccess -->|Yes| NotifyMember{Notify Member?}
+    
+    %% Notification Flow
+    NotifyMember -->|Yes| SendNotification[Send Notification]
+    NotifyMember -->|No| Dashboard
+    SendNotification --> NotifySuccess{Sent Successfully?}
+    NotifySuccess -->|No| RetryNotify[Retry Notification]
+    RetryNotify --> SendNotification
+    NotifySuccess -->|Yes| Dashboard
+    
+    %% Data Cache
+    Dashboard --> CacheData[Cache Latest Data]
+    CacheData --> CacheSuccess{Cache Success?}
+    CacheSuccess -->|No| RetryCaching[Retry Caching]
+    RetryCaching --> CacheData
+    CacheSuccess -->|Yes| Ready([Ready for Next Action])
+    
+    %% Styling
+    classDef start fill:#ff9999,stroke:#333,stroke-width:2px,color:#000000
+    classDef process fill:#99ff99,stroke:#333,stroke-width:1px,color:#000000
+    classDef decision fill:#99ccff,stroke:#333,stroke-width:2px,color:#000000
+    classDef error fill:#ff9999,stroke:#333,stroke-width:1px,color:#000000
+    classDef success fill:#90EE90,stroke:#333,stroke-width:1px,color:#000000
+    
+    class Start,Ready start
+    class CheckSession,ValidateLogin,DataLoad,Actions,ValidateMember,ValidateRating,ValidateComments,SaveSuccess,NotifyMember,NotifySuccess,CacheSuccess decision
+    class LoginError,MemberError,RatingError,CommentError error
+    class Dashboard,SaveFeedback,SendNotification success

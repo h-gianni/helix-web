@@ -1,0 +1,80 @@
+flowchart TD
+    %% Entry Points
+    Start([App Entry]) --> Login{Existing User?}
+    Login -->|No| Register[Register Account]
+    Login -->|Yes| Authenticate[Login]
+    Register --> Authenticate
+    
+    %% First Time Setup Flow
+    Authenticate --> IsConfigured{Team Configured?}
+    IsConfigured -->|No| SetupContext[Set up team/business context]
+    SetupContext --> CreateTeam[Create Team]
+    CreateTeam --> AddMembers[Add Team Members]
+    AddMembers --> Dashboard
+    
+    %% Main Dashboard
+    IsConfigured -->|Yes| Dashboard{Dashboard View}
+    
+    %% Regular User Actions
+    Dashboard --> Track[Track Performance]
+    Track --> Rate[Rate Member]
+    Rate --> AddFeedback[Add Written Feedback]
+    AddFeedback --> Dashboard
+    
+    %% Review Generation Flow
+    Dashboard --> Review[Generate Review]
+    Review --> SelectMember[Select Team Member]
+    SelectMember --> SelectPeriod[Select Time Period]
+    SelectPeriod --> GenerateDoc[Generate Document]
+    GenerateDoc --> Format{Choose Format}
+    Format -->|Download| Download[Download Document]
+    Format -->|Email| Email[Share via Email]
+    Download --> Dashboard
+    Email --> Dashboard
+    
+    %% Configuration Actions
+    Dashboard --> Config[Access Settings]
+    Config --> UpdateTeam[Update Team Settings]
+    Config --> UpdateContext[Update Business Context]
+    UpdateTeam --> Dashboard
+    UpdateContext --> Dashboard
+    
+    %% Subgraphs for Visual Organization
+    subgraph "First-Time Setup"
+        SetupContext
+        CreateTeam
+        AddMembers
+    end
+    
+    subgraph "Regular Usage"
+        Track
+        Rate
+        AddFeedback
+    end
+    
+    subgraph "Review Process"
+        Review
+        SelectMember
+        SelectPeriod
+        GenerateDoc
+        Format
+        Download
+        Email
+    end
+    
+    subgraph "Configuration"
+        Config
+        UpdateTeam
+        UpdateContext
+    end
+    
+    %% Styling
+    classDef start fill:#ff9999,stroke:#333,stroke-width:2px,color:#000000
+    classDef process fill:#99ff99,stroke:#333,stroke-width:1px,color:#000000
+    classDef decision fill:#99ccff,stroke:#333,stroke-width:2px,color:#000000
+    classDef action fill:#ffcc99,stroke:#333,stroke-width:1px,color:#000000
+    
+    class Start,Register start
+    class Dashboard,Format,Login,IsConfigured decision
+    class Track,Rate,AddFeedback,Review,GenerateDoc action
+    class SetupContext,CreateTeam,AddMembers,UpdateTeam,UpdateContext process

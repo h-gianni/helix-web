@@ -22,7 +22,7 @@ const meta = {
     },
     appearance: {
       control: 'select',
-      options: ['strong', 'subtle', 'outline', 'text', 'icon-only'],
+      options: ['strong', 'outline', 'text', 'icon-only'],
       description: 'Visual style of the button',
     },
     size: {
@@ -32,7 +32,7 @@ const meta = {
     },
     shape: {
       control: 'select',
-      options: ['beveled', 'rounded', 'squared'],
+      options: ['beveled', 'rounded'],
       description: 'Shape of the button corners',
     },
     disabled: { control: 'boolean' },
@@ -69,7 +69,7 @@ export const AllVariants: Story = {
         <div key={variant} className="space-y-[var(--space-base)]">
           <h3 className="text-sm font-medium capitalize">{variant}</h3>
           <div className="grid grid-cols-4 gap-[var(--space-base)]">
-            {(['strong', 'subtle', 'outline', 'text'] as const).map(appearance => (
+            {(['strong', 'outline', 'text'] as const).map(appearance => (
               <Button 
                 key={`${variant}-${appearance}`}
                 variant={variant}
@@ -111,7 +111,6 @@ export const Shapes: Story = {
     <div className="flex gap-[var(--space-base)]">
       <Button shape="beveled">Beveled Button</Button>
       <Button shape="rounded">Rounded Button</Button>
-      <Button shape="squared">Squared Button</Button>
     </div>
   )
 };

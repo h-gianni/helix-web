@@ -5,7 +5,7 @@
  }
  
  .tabs-list-appearance-base {
-  @apply border-b border-base;
+  @apply border-b border-neutral-base;
  }
  
  .tabs-list-appearance-compact {
@@ -21,11 +21,11 @@
  }
  
  .tabs-list-size-base {
-  @apply p-sm pb-0 text-heading-5;
+  @apply pt-sm pb-0 text-heading-5;
  }
  
  .tabs-list-size-lg {
-  @apply p-md pb-0 text-heading-4;
+  @apply pt-md pb-0 text-heading-4;
  }
  
  .tabs-trigger-base {
@@ -43,7 +43,8 @@
  }
  
  .tabs-trigger-appearance-base {
-  @apply border-b-2 border-transparent -mb-[1px] hover:bg-neutral;
+  @apply border-b-2 border-transparent -mb-px 
+  hover:bg-base-hover hover:border-neutral-base;
  
   &[data-state=active] {
     @apply border-primary text-primary;
@@ -51,10 +52,10 @@
  }
  
  .tabs-trigger-appearance-compact {
-  @apply rounded-t border-0 hover:bg-neutral;
+  @apply rounded-t border-0;
  
   &:hover {
-    @apply bg-surface-sunken;
+    background-color: var(--background-surface-hollowed);
   }
  
   &[data-state=active] {
