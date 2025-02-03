@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { TrendingUp, LucideIcon } from "lucide-react";
 import { MemberCard } from "@/components/ui/MemberCard";
 import { MembersTable } from "@/components/ui/MembersTable";
+import { Card, CardContent } from "@/components/ui/Card";
 
 interface Team {
   id: string;
@@ -118,7 +119,6 @@ export function TeamPerformanceView({
 }: TeamPerformanceViewProps) {
   const router = useRouter();
 
-  // Sort members by rating, handling cases with no ratings
   const sortedMembers = [...members].sort((a, b) => {
     if (a.ratingsCount === 0 && b.ratingsCount === 0) return 0;
     if (a.ratingsCount === 0) return 1;
@@ -128,7 +128,6 @@ export function TeamPerformanceView({
 
   const handleGenerateReview = (member: MemberPerformance) => {
     console.log("Generate review clicked", member);
-    // Implement review generation logic
   };
 
   const handleNavigate = (path: string) => {
@@ -137,27 +136,29 @@ export function TeamPerformanceView({
 
   if (members.length === 0) {
     return (
-      <div className="text-center py-8 text-muted-foreground">
-        No team members found.
-      </div>
+      <Card>
+        <CardContent className="flex items-center justify-center py-8">
+          <p className="text-muted-foreground">No team members found.</p>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
     <div className="space-y-4">
       {viewType === "table" ? (
-        <MembersTable
-          members={sortedMembers}
-          teams={teams}
-          teamId={teamId}
-          showAvatar={showAvatar}
-          showActions={showActions}
-          onDelete={onMemberDelete}
-          onGenerateReview={handleGenerateReview}
-          onNavigate={handleNavigate}
-          performanceCategories={performanceCategories}
-          getPerformanceCategory={getPerformanceCategory}
-        />
+            <MembersTable
+              members={sortedMembers}
+              teams={teams}
+              teamId={teamId}
+              showAvatar={showAvatar}
+              showActions={showActions}
+              onDelete={onMemberDelete}
+              onGenerateReview={handleGenerateReview}
+              onNavigate={handleNavigate}
+              performanceCategories={performanceCategories}
+              getPerformanceCategory={getPerformanceCategory}
+            />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {sortedMembers.map((member) => {

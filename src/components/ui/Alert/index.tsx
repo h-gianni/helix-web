@@ -7,11 +7,12 @@ import {
   XOctagon,
   HelpCircle,
   CheckCircle,
+  CircleCheckBig,
 } from 'lucide-react';
 
-type AlertVariant = "default" | "primary" | "danger" | "warning";
+type AlertVariant = "default" | "primary" | "danger" | "warning" | "success";
 type AlertSize = "sm" | "base";
-type AlertIcon = "AlertCircle" | "Bell" | "TriangleAlert" | "OctagonX" | "CircleHelp" | "CircleCheck";
+type AlertIcon = "AlertCircle" | "Bell" | "TriangleAlert" | "OctagonX" | "CircleHelp" | "CircleCheck" | "CircleCheckBig";
 
 const iconMap = {
   AlertCircle,
@@ -20,6 +21,7 @@ const iconMap = {
   OctagonX: XOctagon,
   CircleHelp: HelpCircle,
   CircleCheck: CheckCircle,
+  CircleCheckBig: CircleCheckBig,
 } as const;
 
 interface AlertContextValue {

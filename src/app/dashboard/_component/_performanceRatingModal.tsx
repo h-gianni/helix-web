@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -17,14 +19,13 @@ import {
   SelectValue,
 } from "@/components/ui/Select";
 import { Label } from "@/components/ui/Label";
-import { User, Users } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import type {
   BusinessActivityResponse,
   TeamResponse,
   TeamMemberResponse,
 } from "@/lib/types/api";
-import { TeamInitiative } from "@/lib/types/intiative";
+import { TeamActivity } from "@/lib/types/business-activities";
 import StarRating from '@/components/ui/StarRating';
 
 interface PerformanceRatingModalProps {
@@ -37,7 +38,7 @@ interface PerformanceRatingModalProps {
   onSubmit: (data: {
     teamId: string;
     memberId: string;
-    initiativeId: string;
+    activityId: string;
     rating: number;
     feedback?: string;
   }) => Promise<void>;
@@ -56,8 +57,8 @@ export default function PerformanceRatingModal({
   const [selectedTeamId, setSelectedTeamId] = useState<string>(initialTeamId || "");
   const [members, setMembers] = useState<TeamMemberResponse[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState<string>(initialMemberId || "");
-  const [initiatives, setInitiatives] = useState<BusinessActivityResponse[]>([]);
-  const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>("");
+  const [activities, setActivities] = useState<BusinessActivityResponse[]>([]);
+  const [selectedActivityId, setSelectedActivityId] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -73,7 +74,7 @@ export default function PerformanceRatingModal({
   useEffect(() => {
     if (selectedTeamId) {
       fetchMembers(selectedTeamId);
-      fetchInitiatives(selectedTeamId);
+      fetchActivities(selectedTeamId);
     }
   }, [selectedTeamId]);
 
@@ -88,7 +89,7 @@ export default function PerformanceRatingModal({
         }
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError("Failed to fetch teams");
     }
   };
@@ -101,23 +102,24 @@ export default function PerformanceRatingModal({
         setMembers(data.data);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       setError("Failed to fetch team members");
     }
   };
 
-  const fetchInitiatives = async (teamId: string) => {
+  const fetchActivities = async (teamId: string) => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/initiatives/${teamId}`);
+      console.log("Fetching activities for team:", teamId); // Debug log
+      const response = await fetch(`/api/teams/${teamId}/activities`);
       const data = await response.json();
+      console.log("Activities response:", data); // Debug log
       if (data.success) {
-        const teamInitiatives = data.data.map((ti: TeamInitiative) => ti.initiative);
-        setInitiatives(teamInitiatives);
+        setActivities(data.data);
       }
     } catch (err) {
-      console.log(err);
-      setError("Failed to fetch initiatives");
+      console.error("Error fetching activities:", err);
+      setError("Failed to fetch activities");
     } finally {
       setLoading(false);
     }
@@ -128,15 +130,20 @@ export default function PerformanceRatingModal({
     try {
       setSaving(true);
       setError(null);
-
+      console.log("Submitting rating with data:", {  // Debug log
+        teamId: selectedTeamId,
+        memberId: selectedMemberId,
+        activityId: selectedActivityId,
+        rating,
+        feedback,
+      });
       await onSubmit({
         teamId: selectedTeamId,
         memberId: selectedMemberId,
-        initiativeId: selectedInitiativeId,
+        activityId: selectedActivityId,
         rating,
         feedback: feedback.trim() || undefined,
       });
-
       handleReset();
       onClose();
     } catch (err) {
@@ -149,20 +156,14 @@ export default function PerformanceRatingModal({
   const handleReset = () => {
     if (!initialTeamId) setSelectedTeamId("");
     if (!initialMemberId) setSelectedMemberId("");
-    setSelectedInitiativeId("");
+    setSelectedActivityId("");
     setRating(0);
     setFeedback("");
   };
 
-  const getSelectedMemberName = () => {
-    if (initialMemberName) return initialMemberName;
-    const member = members.find((m) => m.id === selectedMemberId);
-    return member?.user.name || member?.user.email || "";
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent size="base">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Performance Rating</DialogTitle>
           <DialogDescription>
@@ -170,139 +171,109 @@ export default function PerformanceRatingModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4">
           {error && (
             <Alert variant="danger">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
-          {/* Team Selection */}
           {!initialTeamId && teams.length > 1 && (
-            <div>
-              <Select 
-                value={selectedTeamId} 
-                onValueChange={setSelectedTeamId}
-                width="full"
-                withLabel
-                label="Select Team"
-              >
-                <SelectTrigger size="base">
-                  <SelectValue placeholder="Select a team" />
-                </SelectTrigger>
-                <SelectContent>
-                  {teams.map((team) => (
-                    <SelectItem 
-                      key={team.id} 
-                      value={team.id} 
-                      size="base"
-                    >
-                      {team.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* Member Selection */}
-          {!initialMemberId && selectedTeamId && (
-            <div>
-              <Select 
-                value={selectedMemberId} 
-                onValueChange={setSelectedMemberId}
-                width="full"
-                withLabel
-                label="Select Member"
-              >
-                <SelectTrigger size="base">
-                  <SelectValue placeholder="Select a member" />
-                </SelectTrigger>
-                <SelectContent>
-                  {members.map((member) => (
-                    <SelectItem 
-                      key={member.id} 
-                      value={member.id} 
-                      size="base"
-                    >
-                      {member.user.name || member.user.email}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          {/* Initiative Selection */}
-          <div>
-            <Select
-              value={selectedInitiativeId}
-              onValueChange={setSelectedInitiativeId}
+            <Select 
+              value={selectedTeamId} 
+              onValueChange={setSelectedTeamId}
               width="full"
               withLabel
-              label="Select Initiative"
+              label="Select Team"
             >
-              <SelectTrigger 
-                size="base"
-                disabled={loading || !selectedTeamId || !selectedMemberId}
-              >
-                <SelectValue
-                  placeholder={
-                    loading
-                      ? "Loading initiatives..."
-                      : !selectedTeamId || !selectedMemberId
-                      ? "Select team and member first"
-                      : "Select an initiative"
-                  }
-                />
+              <SelectTrigger>
+                <SelectValue placeholder="Select a team" />
               </SelectTrigger>
               <SelectContent>
-                {initiatives.length === 0 ? (
-                  <div className="p-2 text-sm text-muted-foreground">
-                    {loading ? "Loading..." : "No initiatives available for this team"}
-                  </div>
-                ) : (
-                  initiatives.map((initiative) => (
-                    <SelectItem 
-                      key={initiative.id} 
-                      value={initiative.id} 
-                      size="base"
-                    >
-                      {initiative.name}
-                    </SelectItem>
-                  ))
-                )}
+                {teams.map((team) => (
+                  <SelectItem key={team.id} value={team.id}>
+                    {team.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
-          </div>
+          )}
 
-          {/* Rating */}
+          {!initialMemberId && selectedTeamId && (
+            <Select 
+              value={selectedMemberId} 
+              onValueChange={setSelectedMemberId}
+              width="full"
+              withLabel
+              label="Select Member"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a member" />
+              </SelectTrigger>
+              <SelectContent>
+                {members.map((member) => (
+                  <SelectItem key={member.id} value={member.id}>
+                    {member.user.name || member.user.email}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+
+          <Select
+            value={selectedActivityId}
+            onValueChange={setSelectedActivityId}
+            width="full"
+            withLabel
+            label="Select activity"
+          >
+            <SelectTrigger disabled={loading || !selectedTeamId || !selectedMemberId}>
+              <SelectValue
+                placeholder={
+                  loading
+                    ? "Loading activities..."
+                    : !selectedTeamId || !selectedMemberId
+                    ? "Select team and member first"
+                    : "Select an activity"
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              {activities.length === 0 ? (
+                <div className="p-2 text-sm text-muted-foreground">
+                  {loading ? "Loading..." : "No activities available for this team"}
+                </div>
+              ) : (
+                activities.map((activity) => (
+                  <SelectItem key={activity.id} value={activity.id}>
+                    {activity.name}
+                  </SelectItem>
+                ))
+              )}
+            </SelectContent>
+          </Select>
+
           <div className="space-y-2">
             <Label>Rating</Label>
-            <div>
             <StarRating 
-      value={rating} 
-      onChange={setRating} 
-      size="lg"
-      showValue={true}
-    />
-            </div>
-          </div>
-
-          {/* Feedback */}
-          <div>
-            <Textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Enter feedback..."
-              rows={3}
-              inputSize="base"
-              showCount
-              maxLength={1000}
-              withLabel
-              label="Feedback (Optional)"
+              value={rating} 
+              onChange={setRating} 
+              size="lg"
+              showValue={true}
             />
           </div>
+
+          <Textarea
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            placeholder="Enter feedback..."
+            rows={3}
+            inputSize="base"
+            showCount
+            maxLength={1000}
+            withLabel
+            label="Feedback (Optional)"
+          />
         </form>
 
         <DialogFooter>
@@ -317,7 +288,7 @@ export default function PerformanceRatingModal({
           <Button
             variant="primary"
             onClick={handleSubmit}
-            disabled={saving || !selectedTeamId || !selectedMemberId || !selectedInitiativeId || rating === 0}
+            disabled={saving || !selectedTeamId || !selectedMemberId || !selectedActivityId || rating === 0}
             isLoading={saving}
           >
             Save Rating

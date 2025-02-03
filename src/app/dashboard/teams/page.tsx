@@ -1,4 +1,3 @@
-// app/dashboard/teams/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,10 +8,50 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Plus, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
-import type { ApiResponse, TeamResponse } from "@/lib/types/api";
+import type { TeamResponse } from "@/lib/types/api";
 import TeamCreateModal from "./_teamCreateModal";
 import EmptyTeamsView from "./_emptyTeamsView";
 import { useTeams } from "@/lib/context/teams-context";
+
+const TeamsContent = ({ 
+  teams, 
+  onCreateTeam 
+}: { 
+  teams: TeamResponse[];
+  onCreateTeam: () => void;
+}) => {
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Teams</h1>
+        <Button
+          variant="primary"
+          onClick={onCreateTeam}
+          className="gap-2"
+        >
+          <Plus className="size-4" />
+          Create Team
+        </Button>
+      </div>
+
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {teams.map((team) => (
+          <Link key={team.id} href={`/dashboard/teams/${team.id}`}>
+            <Card className="hover:bg-accent transition-colors">
+              <CardContent className="p-4">
+                <h3 className="font-medium">{team.name}</h3>
+                <p className="text-sm text-primary-600">{team.name}</p>
+                <p className="text-sm text-muted-foreground">
+                  Created: {new Date(team.createdAt).toLocaleDateString()}
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default function TeamsPage() {
   const router = useRouter();
@@ -28,24 +67,18 @@ export default function TeamsPage() {
     fetchTeams();
   }, [fetchTeams]);
 
-  const handleCreateTeam = async (name: string, disciplineId: string) => {
-    console.log("Creating team with name:", name);
-    console.log("Creating team with disciplineId:", disciplineId);
-   // return;
+  const handleCreateTeam = async (name: string, teamFunctionId: string) => {
     try {
       const response = await fetch("/api/teams", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           name,
-          businessFunctionId: disciplineId  // Add disciplineId to the request
+          teamFunctionId
         }),
       });
 
       const data = await response.json();
-
       if (data.success) {
         setIsCreateModalOpen(false);
         router.push(`/dashboard/teams/${data.data.id}`);
@@ -61,10 +94,8 @@ export default function TeamsPage() {
   if (isLoading) {
     return (
       <>
-        <PageBreadcrumbs
-          items={[{ href: "/dashboard/teams", label: "Teams" }]}
-        />
-        <div className="text-muted-foreground">Loading teams...</div>
+        <PageBreadcrumbs items={[{ href: "/dashboard/teams", label: "Teams" }]} />
+        <div className="text-muted-foreground p-4">Loading teams...</div>
       </>
     );
   }
@@ -72,14 +103,12 @@ export default function TeamsPage() {
   if (error) {
     return (
       <>
-        <PageBreadcrumbs
-          items={[{ href: "/dashboard/teams", label: "Teams" }]}
-        />
+        <PageBreadcrumbs items={[{ href: "/dashboard/teams", label: "Teams" }]} />
         <Alert variant="danger">
           <AlertCircle className="size-4" />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
-        <Button variant="primary" onClick={() => fetchTeams()}>
+        <Button variant="neutral" onClick={() => fetchTeams()}>
           Retry
         </Button>
       </>
@@ -90,45 +119,13 @@ export default function TeamsPage() {
     <>
       <PageBreadcrumbs items={[{ href: "/dashboard/teams", label: "Teams" }]} />
 
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4">
-          <h1 className="text-display-1">Teams</h1>
-        </div>
-        <Button
-          variant="neutral"
-          onClick={() => setIsCreateModalOpen(true)}
-          leadingIcon={<Plus className="size-4" />}
-        >
-          Create Team
-        </Button>
-      </div>
-
       {teams.length === 0 ? (
         <EmptyTeamsView onCreateTeam={() => setIsCreateModalOpen(true)} />
       ) : (
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {teams.map((team) => (
-            <Link key={team.id} href={`/dashboard/teams/${team.id}`}>
-              <Card
-                size="default"
-                background={true}
-                border={true}
-                interactive={true}
-                shadow="sm"
-              >
-                <CardContent className="p-4">
-                  <h3 className="text-heading-4">{team.name}</h3>
-                  <p className="text-p-small text-primary-600">
-                    {team.name}
-                  </p>
-                  <p className="text-p-small text-muted">
-                    Created: {new Date(team.createdAt).toLocaleDateString()}
-                  </p>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
+        <TeamsContent 
+          teams={teams} 
+          onCreateTeam={() => setIsCreateModalOpen(true)} 
+        />
       )}
 
       <TeamCreateModal

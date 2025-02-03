@@ -1,0 +1,183 @@
+/* alert.css */
+
+/* Base Alert Styles */
+.alert-base {
+  @apply relative rounded flex items-start outline-none shadow-sm;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+  transition-property: all;
+}
+
+/* Size Variants */
+.alert-base {
+  @apply p-sm gap-sm;
+}
+
+.alert-sm {
+  @apply p-sm gap-sm;
+}
+
+/* Alert Variants */
+.alert-default {
+  @apply bg-surface border border-neutral-weak
+  focus:focus-ring;
+}
+
+.alert-primary {
+  @apply bg-primary-weakest border border-primary-weak;
+
+  &:focus-visible {
+    @apply outline-none ring-2 ring-offset-2 ring-primary ring-offset-surface;
+  }
+}
+
+.alert-danger {
+  @apply bg-danger-weakest border border-danger-weak;
+
+  &:focus-visible {
+    @apply focus-ring-danger;
+  }
+}
+
+.alert-warning {
+  @apply bg-warning-weakest border border-warning-weak;
+
+  &:focus-visible {
+    @apply outline-none ring-2 ring-offset-2 ring-neutral-base ring-offset-surface;
+  }
+}
+
+.alert-success {
+  @apply bg-success-weakest border border-success-weak;
+
+  &:focus-visible {
+    @apply outline-none ring-2 ring-offset-2 ring-neutral-base ring-offset-surface;
+  }
+}
+
+/* Icon Container */
+.alert-icon {
+  @apply flex-shrink-0 mt-px ml-px;
+}
+
+/* Icon sizes */
+.alert-icon-base svg {
+  @apply size-5;
+}
+
+.alert-icon-sm svg {
+  @apply size-4;
+}
+
+/* Icon colors */
+.alert-icon-default {
+  @apply text-neutral;
+}
+
+.alert-icon-primary {
+  @apply text-primary;
+}
+
+.alert-icon-danger {
+  @apply text-danger;
+}
+
+.alert-icon-warning {
+  @apply text-warning;
+}
+
+.alert-icon-success {
+  @apply text-success;
+}
+
+/* Content Container */
+.alert-content {
+  @apply flex-grow min-w-0 relative;
+}
+
+.alert-content div {
+  @apply space-y-0;
+}
+.alert-sm .alert-content div {
+  @apply space-y-xxs;
+}
+
+/* Alert Title */
+.alert-title {
+  @apply text-heading-5;
+}
+
+/* Title sizes */
+.alert-title-base {
+  @apply text-heading-5;
+}
+
+.alert-title-sm {
+  @apply text-heading-6;
+}
+
+/* Title colors */
+.alert-title-default {
+  @apply text-neutral;
+}
+
+.alert-title-primary {
+  @apply text-primary;
+}
+
+.alert-title-danger {
+  @apply text-danger;
+}
+
+.alert-title-warning {
+  @apply text-warning;
+}
+
+.alert-title-success {
+  @apply text-success;
+}
+
+/* Alert Description */
+
+/* Description sizes */
+.alert-description-base {
+  @apply text-copy text-neutral;
+}
+
+.alert-description-sm {
+  @apply text-copy-small;
+}
+
+/* Description colors */
+.alert-description-default {
+  @apply text-weak;
+}
+
+.alert-description-primary {
+  @apply text-primary;
+}
+
+.alert-description-danger {
+  @apply text-danger;
+}
+
+.alert-description-warning {
+  @apply text-warning;
+}
+
+.alert-description-success {
+  @apply text-success;
+}
+
+/* Animation */
+.alert-base {
+  @apply animate-in fade-in-0;
+  animation-duration: var(--duration-normal);
+}
+
+/* Print styles */
+@media print {
+  .alert-base {
+    @apply shadow-none border print:break-inside-avoid;
+  }
+}

@@ -174,7 +174,7 @@ const DialogWithConfig = React.forwardRef<
             footerConfig.secondaryAction && (
               <Button
                 variant="neutral"
-                appearance="default"
+                appearance="outline"
                 onClick={footerConfig.secondaryAction.onClick}
                 isLoading={footerConfig.secondaryAction.isLoading}
               >

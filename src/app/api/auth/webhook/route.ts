@@ -83,6 +83,8 @@ export async function POST(request: Request) {
           clerkId: id,
           email,
           name: `${first_name || ""} ${last_name || ""}`.trim() || null,
+          subscriptionTier: "FREE",
+          subscriptionStart: new Date(),
           customFields: {
             firstName: first_name,
             lastName: last_name,

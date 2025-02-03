@@ -1,0 +1,50 @@
+/* checkbox.css */
+
+/* Base Checkbox */
+.checkbox-base {
+  @apply size-4 shrink-0
+         form-basics
+         transition-all cursor-pointer;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+
+  /* Focus States */
+  &:focus-visible {
+    @apply focus-ring;
+  }
+
+  /* Checked States */
+  &[data-state="checked"] {
+    @apply bg-primary border-primary text-inverse hover:bg-primary hover:border-primary;
+  }
+}
+
+/* Checkbox Indicator */
+.checkbox-indicator {
+  @apply flex items-center justify-center text-current;
+}
+
+/* Animation Classes */
+.checkbox-animation {
+  @apply animate-in zoom-in-50;
+  animation-duration: var(--duration-normal);
+}
+
+/* Checkbox Group */
+.checkbox-group {
+  @apply flex flex-col gap-sm;
+}
+
+/* Description */
+.checkbox-description {
+  @apply text-copy-small text-weak;
+}
+
+/* Label Wrapper */
+.checkbox-label-wrapper {
+  @apply flex items-start gap-sm;
+}
+
+.checkbox-label-wrapper div {
+  @apply -mt-[2px];
+}

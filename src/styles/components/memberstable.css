@@ -1,0 +1,58 @@
+/* members-table.css */
+
+/* Container */
+.members-table-container {
+  @apply w-full;
+ }
+ 
+ /* Table Column Widths */
+ .members-table-col-name {
+  @apply w-[20%];
+ }
+ 
+ .members-table-col-team {
+  @apply w-[15%];
+ }
+ 
+ .members-table-col-title {
+  @apply w-[15%];
+ }
+ 
+ .members-table-col-seniority {
+  @apply w-[15%];
+ }
+ 
+ .members-table-col-performance {
+  @apply w-[15%];
+ }
+ 
+ /* Screen Reader Only */
+ .members-table-sr-only {
+  @apply sr-only;
+ }
+ 
+ /* Member Name Link */
+ .members-table-name-link {
+  @apply font-semibold cursor-pointer no-underline
+         text-primary hover:underline hover:text-primary;
+ }
+ 
+ /* Cell Content */
+ .members-table-cell-nowrap {
+  @apply whitespace-nowrap;
+ }
+ 
+ /* Performance Indicator */
+ .members-table-performance-container {
+  @apply flex items-center gap-sm;
+ }
+ 
+ /* Delete Action */
+ .members-table-delete-action {
+  @apply text-danger focus:text-danger focus:focus-ring-danger;
+ }
+ 
+ /* Action Icon */
+ .members-table-action-icon {
+  @apply mr-sm;
+ }

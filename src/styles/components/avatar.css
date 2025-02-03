@@ -1,0 +1,87 @@
+/* avatar.css */
+
+/* Base Avatar Styles */
+.avatar-base {
+  @apply relative flex shrink-0 overflow-hidden rounded-full
+         ring-2 ring-surface-raised 
+         transition-all ease-out;
+  transition-duration: var(--duration-normal);
+}
+
+/* Avatar Sizes */
+.avatar-sm {
+  @apply size-7;
+}
+
+.avatar-md {
+  @apply size-10;
+}
+
+.avatar-lg {
+  @apply size-14;
+}
+
+.avatar-xl {
+  @apply size-20;
+}
+
+/* Avatar Image */
+.avatar-image {
+  @apply aspect-square h-full w-full object-cover;
+}
+
+/* Avatar Fallback */
+.avatar-fallback {
+  @apply flex h-full w-full items-center justify-center rounded-full
+         bg-surface-sunken
+         text-weak
+         font-medium;
+}
+
+/* Fallback Text Sizes */
+.avatar-fallback-sm {
+  @apply text-xs font-medium;
+}
+
+.avatar-fallback-md {
+  @apply text-sm font-medium;
+}
+
+.avatar-fallback-lg {
+  @apply text-base font-medium;
+}
+
+.avatar-fallback-xl {
+  @apply text-xl font-medium;
+}
+
+/* Avatar Group */
+.avatar-group {
+  @apply flex -space-x-2;
+}
+
+.avatar-group .avatar-base {
+  @apply ring-2 ring-surface-raised;
+}
+
+/* Avatar Status */
+.avatar-status {
+  @apply absolute bottom-0 right-0 h-1/4 w-1/4 
+         rounded-full ring-2 ring-surface-raised;
+}
+
+.avatar-status-online {
+  @apply bg-success;
+}
+
+.avatar-status-offline {
+  @apply bg-disabled;
+}
+
+.avatar-status-busy {
+  @apply bg-danger;
+}
+
+.avatar-status-away {
+  @apply bg-warning;
+}

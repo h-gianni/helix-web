@@ -1,0 +1,159 @@
+/* separator.css */
+
+/* Base Separator */
+.separator-base {
+  @apply shrink-0;
+  transition-property: background-color;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+ }
+ 
+ /* Variants */
+ .separator-default {
+  background-color: var(--border-weak);
+ }
+ 
+ .separator-accent {
+  background-color: var(--border-primary);
+ }
+ 
+ /* Orientations */
+ .separator-horizontal {
+  @apply h-px w-full my-sm;
+ }
+ 
+ .separator-vertical {
+  @apply h-full w-px mx-sm;
+ }
+ 
+ /* Dashed Variant */
+ .separator-dashed {
+  @apply bg-transparent border-0;
+ }
+ 
+ .separator-dashed.separator-horizontal {
+  @apply border-b border-dashed border-neutral-base;
+ }
+ 
+ .separator-dashed.separator-vertical {
+  @apply border-r border-dashed border-neutral-base;
+ }
+ 
+ /* Dotted Variant */
+ .separator-dotted {
+  @apply bg-transparent border-0;
+ }
+ 
+ .separator-dotted.separator-horizontal {
+  @apply border-b border-dotted border-neutral-base;
+ }
+ 
+ .separator-dotted.separator-vertical {
+  @apply border-r border-dotted border-neutral-base;
+ }
+ 
+ /* Gradient Variants */
+ .separator-gradient {
+  @apply border-none;
+ }
+ 
+ .separator-gradient.separator-horizontal {
+  background: linear-gradient(to right, transparent, var(--border-base) 50%, transparent);
+ }
+ 
+ .separator-gradient.separator-vertical {
+  background: linear-gradient(to bottom, transparent, var(--border-base) 50%, transparent);
+ }
+ 
+ /* With Text */
+ .separator-with-text {
+  @apply flex items-center text-sm gap-md my-md;
+ }
+ 
+ .separator-with-text::before,
+ .separator-with-text::after {
+  @apply flex-1 h-px bg-neutral;
+  content: '';
+ }
+ 
+ /* With Text Variants */
+ .separator-with-text-muted::before,
+ .separator-with-text-muted::after {
+  @apply bg-neutral;
+ }
+ 
+ .separator-with-text-accent::before,
+ .separator-with-text-accent::after {
+  @apply bg-primary;
+ }
+ 
+ .separator-with-text-gradient::before {
+  background: linear-gradient(to right, transparent, var(--border-base));
+ }
+ 
+ .separator-with-text-gradient::after {
+  background: linear-gradient(to right, var(--border-base), transparent);
+ }
+ 
+ /* Sizes */
+ .separator-sm {
+  @apply my-sm;
+ }
+ 
+ .separator-md {
+  @apply my-md;
+ }
+ 
+ .separator-lg {
+  @apply my-lg;
+ }
+ 
+ /* Thickness Variants */
+ .separator-thin {
+  @apply h-[0.5px];
+ }
+ 
+ .separator-thick {
+  @apply h-0.5;
+ }
+ 
+ .separator-thicker {
+  @apply h-1;
+ }
+ 
+ /* Interactive States */
+ .separator-interactive {
+  @apply cursor-col-resize hover:bg-neutral active:bg-surface-sunken;
+ }
+ 
+ /* Animated Variants */
+ .separator-shimmer {
+  @apply relative overflow-hidden;
+ }
+ 
+ .separator-shimmer::after {
+  @apply absolute inset-0 -translate-x-full;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in srgb, var(--background-surface) 10%, transparent),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+  content: '';
+ }
+ 
+ /* Double Line */
+ .separator-double.separator-horizontal {
+  @apply h-[3px] bg-none border-t border-b border-neutral-base;
+ }
+ 
+ .separator-double.separator-vertical {
+  @apply w-[3px] bg-none border-l border-r border-neutral-base;
+ }
+ 
+ @keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+ }

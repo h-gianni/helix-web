@@ -1,0 +1,137 @@
+/* button.css */
+
+/* Base button styles */
+.button-base {
+  @apply inline-flex items-center justify-center gap-sm
+    whitespace-nowrap rounded-base
+    text-base font-medium tracking-tight capitalize
+    transition-all cursor-pointer
+    focus-visible:outline-none focus-visible:ring-2
+    focus-visible:ring-primary focus-visible:ring-offset-2
+    disabled:cursor-not-allowed disabled:opacity-50;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+}
+/* Shape variants */
+.button-rounded {
+  @apply rounded-full;
+}
+
+.button-base svg {
+  @apply size-4 shrink-0;
+}
+
+.button-outline {
+  @apply border border-current 
+    disabled:hover:bg-disabled;
+}
+
+/* Neutral appearance */
+.button-neutral {
+  @apply bg-neutral-strong text-inverse
+  hover:bg-neutral-stronger
+  active:bg-neutral-strongest;
+}
+
+.button-neutral-outline {
+  @apply border-neutral-strong text-neutral
+    hover:bg-neutral-weakest hover:text-strong
+    active:bg-neutral-weaker;
+}
+
+.button-neutral-text {
+  @apply bg-transparent text-neutral 
+  hover:bg-neutral-weakest
+  active:bg-neutral-weaker;
+}
+
+/* Primary variant */
+.button-primary {
+  @apply bg-primary-strong text-inverse
+  hover:bg-primary-stronger
+  active:bg-primary-strongest;
+}
+
+.button-primary-outline {
+  @apply border-primary-strong text-primary
+    hover:bg-primary-weakest hover:text-primary-strong
+    active:bg-primary-weaker;
+}
+
+.button-primary-text {
+  @apply bg-transparent text-primary 
+  hover:bg-primary-weakest
+  active:bg-primary-weaker;
+}
+
+/* Warning variant */
+.button-warning {
+  @apply bg-warning text-inverse
+  hover:bg-warning-strong
+  active:bg-warning-stronger;
+}
+
+.button-warning-outline {
+  @apply border-warning-strong text-warning
+    hover:bg-warning-weakest hover:text-warning-strong
+    active:bg-warning-weaker;
+}
+
+.button-warning-text {
+  @apply bg-transparent text-warning 
+  hover:bg-warning-weakest
+  active:bg-warning-weaker;
+}
+
+/* Danger variant */
+.button-danger {
+  @apply bg-danger text-inverse
+  hover:bg-danger-strong
+  active:bg-danger-stronger;
+}
+
+.button-danger-outline {
+  @apply border-danger-strong text-danger
+    hover:bg-danger-weakest hover:text-danger-strong
+    active:bg-danger-weaker;
+}
+
+.button-danger-text {
+  @apply bg-transparent text-danger 
+  hover:bg-danger-weakest
+  active:bg-danger-weaker;
+}
+
+/* Icon-only appearance */
+.button-icon-only {
+  @apply p-0 flex items-center justify-center
+    aspect-square bg-transparent
+    disabled:bg-surface-sunken;
+}
+
+/* Sizes */
+.button-sm {
+  @apply h-8 min-w-8 px-sm text-sm;
+}
+.button-base-size {
+  @apply h-10 min-w-10 px-md text-base leading-null;
+}
+.button-lg {
+  @apply h-12 min-w-12 px-lg text-base;
+}
+
+/* Icon sizes */
+.button-icon-sm {
+  @apply size-8 p-0;
+}
+.button-icon-base {
+  @apply size-10 p-0;
+}
+.button-icon-lg {
+  @apply size-12 p-0;
+}
+
+/* Loading state */
+.button-loading {
+  @apply cursor-wait opacity-100;
+}

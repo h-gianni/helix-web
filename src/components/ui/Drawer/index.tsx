@@ -147,7 +147,7 @@ const DrawerContent = React.forwardRef<
           {footer === 'two-actions' && footerConfig?.secondaryAction && (
             <Button
               variant={footerConfig.secondaryAction.variant || 'neutral'}
-              appearance={footerConfig.secondaryAction.appearance || 'default'}
+              appearance={footerConfig.secondaryAction.appearance || 'text'}
               isLoading={footerConfig.secondaryAction.isLoading}
               onClick={footerConfig.secondaryAction.onClick}
             >
@@ -157,7 +157,7 @@ const DrawerContent = React.forwardRef<
           {footerConfig?.primaryAction && (
             <Button
               variant={footerConfig.primaryAction.variant || 'primary'}
-              appearance={footerConfig.primaryAction.appearance || 'default'}
+              appearance={footerConfig.primaryAction.appearance || 'strong'}
               isLoading={footerConfig.primaryAction.isLoading}
               onClick={footerConfig.primaryAction.onClick}
             >

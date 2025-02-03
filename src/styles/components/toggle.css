@@ -1,0 +1,49 @@
+/* toggle.css */
+
+/* Toggle Base */
+.toggle-base {
+  @apply inline-flex items-center justify-center rounded-md text-copy-small text-weak font-medium
+    hover:bg-surface-hover hover:text-foreground
+    focus-visible:outline-none focus-visible:focus-ring
+    disabled:pointer-events-none disabled:opacity-50
+    data-[state=on]:bg-primary-weakest data-[state=on]:text-strong
+    ;
+  transition-property: background-color, color, border-color;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+ }
+ 
+ /* Icon Styles */
+ .toggle-base svg {
+  @apply size-4 flex-shrink-0 pointer-events-none;
+ }
+ 
+ /* Variants */
+ .toggle-default {
+  @apply bg-transparent;
+ }
+ 
+ .toggle-outline {
+  @apply border border-neutral-weak bg-transparent
+    hover:bg-surface-hover hover:text-foreground;
+ }
+ 
+ /* Sizes */
+ .toggle-size-default {
+  @apply h-9 px-xs min-w-9;
+ }
+ 
+ .toggle-size-sm {
+  @apply h-8 px-xs min-w-8;
+ }
+ 
+ .toggle-size-lg {
+  @apply h-10 px-sm min-w-10;
+ }
+ 
+ /* Print Styles */
+ @media print {
+  .toggle-base {
+    @apply border shadow-none;
+  }
+ }

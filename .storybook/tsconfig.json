@@ -1,0 +1,22 @@
+// .storybook/tsconfig.json
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+      "jsx": "react-jsx",
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "allowJs": true,
+      "baseUrl": "..",
+      "paths": {
+        "@/*": ["./src/*"]
+      }
+    },
+    "include": [
+      "../src/**/*.stories.tsx",
+      "../src/**/*.stories.ts",
+      "../src/**/*.stories.mdx",
+      "./preview.tsx",
+      "./main.ts"
+    ],
+    "exclude": ["node_modules"]
+  }

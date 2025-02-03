@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Roboto_Flex } from "next/font/google";
-import "./globals.css";
+import "../styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { TeamsProvider } from "@/lib/context/teams-context";
@@ -34,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning style={{ fontSize: "14px" }}>
         <body className={`${robotoFlex.variable} antialiased`}>
           <ThemeProvider defaultTheme="system" storageKey="ui-theme">
             <TeamsProvider>

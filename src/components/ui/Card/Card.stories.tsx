@@ -31,13 +31,13 @@ const meta: Meta<CombinedProps> = {
   },
   tags: ['autodocs'],
   args: {
-    size: 'default',
-    shadow: 'default',
+    size: 'base',
+    shadow: 'base',
     border: true,
     background: true,
     interactive: false,
     clickable: false,
-    contentAlignment: 'default',
+    contentAlignment: 'base',
     showTitle: true,
     showDescription: false,
     showFooter: false,
@@ -46,7 +46,7 @@ const meta: Meta<CombinedProps> = {
   argTypes: {
     size: {
       control: 'select',
-      options: ['sm', 'default', 'lg', 'xl'],
+      options: ['sm', 'base', 'lg', 'xl'],
       description: 'Size of the card padding and title',
       table: {
         category: 'Component',
@@ -55,7 +55,7 @@ const meta: Meta<CombinedProps> = {
     },
     shadow: {
       control: 'select',
-      options: ['none', 'sm', 'default', 'lg', 'xl'],
+      options: ['none', 'sm', 'base', 'lg', 'xl'],
       description: 'Shadow depth of the card',
       table: {
         category: 'Component',
@@ -91,7 +91,7 @@ const meta: Meta<CombinedProps> = {
     },
     contentAlignment: {
       control: 'radio',
-      options: ['default', 'center'],
+      options: ['base', 'center'],
       description: 'Alignment of card content',
       table: {
         category: 'Component',
@@ -234,7 +234,7 @@ export const Default: Story = {
 
 export const AllSizes: Story = {
   render: function render(args: CombinedProps) {
-    const sizes: CardSize[] = ['sm', 'default', 'lg', 'xl'];
+    const sizes: CardSize[] = ['sm', 'base', 'lg', 'xl'];
     const { 
       showDescription, 
       showFooter, 

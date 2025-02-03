@@ -1,4 +1,5 @@
-// app/dashboard/_components/_performanceRatingModal.tsx
+"use client";
+
 import React, { useState, useEffect } from "react";
 import {
   Dialog,
@@ -31,7 +32,7 @@ interface PerformanceRatingModalProps {
   memberName: string;
   memberTitle?: string | null;
   onSubmit: (data: {
-    initiativeId: string;
+    activityId: string;
     rating: number;
     feedback?: string;
   }) => Promise<void>;
@@ -45,34 +46,26 @@ export default function PerformanceRatingModal({
   memberTitle,
   onSubmit,
 }: PerformanceRatingModalProps) {
-  const [initiatives, setInitiatives] = useState<BusinessActivityResponse[]>([]);
+  const [activities, setActivities] = useState<BusinessActivityResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-
-  const [selectedInitiativeId, setSelectedInitiativeId] = useState<string>("");
+  const [selectedActivityId, setSelectedActivityId] = useState<string>("");
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>("");
 
   useEffect(() => {
-    const fetchInitiatives = async () => {
+    const fetchActivities = async () => {
       try {
         setLoading(true);
         setError(null);
-
-        const response = await fetch(`/api/initiatives?teamId=${teamId}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch initiatives");
-        }
-
+        const response = await fetch(`/api/activities?teamId=${teamId}`);
+        if (!response.ok) throw new Error("Failed to fetch activities");
         const data = await response.json();
-        if (!data.success) {
-          throw new Error(data.error || "Failed to fetch initiatives");
-        }
-
-        setInitiatives(data.data);
+        if (!data.success) throw new Error(data.error || "Failed to fetch activities");
+        setActivities(data.data);
       } catch (err) {
-        console.error("Error fetching initiatives:", err);
+        console.error("Error fetching activities:", err);
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
@@ -80,7 +73,7 @@ export default function PerformanceRatingModal({
     };
 
     if (isOpen && teamId) {
-      fetchInitiatives();
+      fetchActivities();
     }
   }, [isOpen, teamId]);
 
@@ -89,13 +82,11 @@ export default function PerformanceRatingModal({
     try {
       setSaving(true);
       setError(null);
-
       await onSubmit({
-        initiativeId: selectedInitiativeId,
+        activityId: selectedActivityId,
         rating,
         feedback: feedback.trim() || undefined,
       });
-
       handleReset();
       onClose();
     } catch (err) {
@@ -106,93 +97,89 @@ export default function PerformanceRatingModal({
   };
 
   const handleReset = () => {
-    setSelectedInitiativeId("");
+    setSelectedActivityId("");
     setRating(0);
     setFeedback("");
   };
 
-  const handleClose = () => {
-    handleReset();
-    onClose();
-  };
-
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent size="base">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Performance Rating</DialogTitle>
           <DialogDescription>
-            Rate the performance of team members on specific initiatives.
+            Rate the performance of team members on specific activities.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
             <Alert variant="danger">
-              <AlertCircle className="h-4 w-4" />
+              <AlertCircle className="size-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
-          {/* Member Display */}
           <div className="space-y-2">
             <Label>Member</Label>
-            <div className="p-2 border rounded-base bg-muted">
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4 text-muted-foreground" />
-                <span className="text-base">
-                  {memberName}
-                  {memberTitle && (
-                    <span className="text-muted-foreground ml-1">- {memberTitle}</span>
-                  )}
-                </span>
-              </div>
+            <div className="flex items-center gap-2 p-3 rounded-md border bg-muted">
+              <User className="size-4 text-muted-foreground" />
+              <span>
+                {memberName}
+                {memberTitle && (
+                  <span className="text-muted-foreground ml-1">
+                    - {memberTitle}
+                  </span>
+                )}
+              </span>
             </div>
           </div>
 
-          {/* Initiative Selection */}
           <div className="space-y-2">
-            <Label>Select Initiative</Label>
+            <Label>Activity</Label>
             <Select
-              value={selectedInitiativeId}
-              onValueChange={setSelectedInitiativeId}
+              value={selectedActivityId}
+              onValueChange={setSelectedActivityId}
               disabled={loading}
             >
-              <SelectTrigger size="base">
-                <SelectValue placeholder="Select an initiative" />
+              <SelectTrigger>
+                <SelectValue placeholder={loading ? "Loading activities..." : "Select an activity"} />
               </SelectTrigger>
               <SelectContent>
-                {initiatives.map((initiative) => (
-                  <SelectItem key={initiative.id} value={initiative.id} size="base">
-                    {initiative.name}
+                {activities.map((activity) => (
+                  <SelectItem key={activity.id} value={activity.id}>
+                    {activity.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
 
-          {/* Rating */}
           <div className="space-y-2">
             <Label>Rating</Label>
             <div className="flex justify-center py-2">
-              <StarRating value={rating} onChange={setRating} size="lg" />
+              <StarRating 
+                value={rating} 
+                onChange={setRating} 
+                size="lg"
+                showValue 
+              />
             </div>
           </div>
 
-          {/* Feedback */}
-          <div className="space-y-2">
-            <Label>Feedback (Optional)</Label>
-            <Textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Enter feedback..."
-              rows={3}
-              inputSize="base"
-            />
-          </div>
+          <Textarea
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            placeholder="Enter feedback..."
+            rows={3}
+            withLabel
+            label="Feedback (Optional)"
+            showCount
+            maxLength={1000}
+          />
         </form>
 
-        <DialogFooter className="sm:justify-end">
+        <DialogFooter>
           <Button
             variant="neutral"
             appearance="outline"
@@ -204,10 +191,10 @@ export default function PerformanceRatingModal({
           <Button
             variant="primary"
             onClick={handleSubmit}
-            disabled={saving || !selectedInitiativeId || rating === 0}
+            disabled={saving || !selectedActivityId || rating === 0}
             isLoading={saving}
           >
-            {saving ? "Saving..." : "Save Rating"}
+            Save Rating
           </Button>
         </DialogFooter>
       </DialogContent>

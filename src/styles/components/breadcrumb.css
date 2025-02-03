@@ -1,0 +1,49 @@
+/* breadcrumb.css */
+
+/* Base Breadcrumb Nav */
+.breadcrumb-nav {
+  @apply w-full text-foreground;
+}
+
+/* Breadcrumb List */
+.breadcrumb-list {
+  @apply flex flex-wrap items-center gap-sm 
+         break-words text-sm text-weak;
+}
+
+/* Breadcrumb Item */
+.breadcrumb-item {
+  @apply inline-flex items-center gap-xs;
+}
+
+/* Breadcrumb Link */
+.breadcrumb-link {
+  @apply text-foreground hover:text-primary
+         transition-all focus-visible:focus-ring;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+}
+
+/* Breadcrumb Current Page */
+.breadcrumb-page {
+  @apply font-normal text-weak;
+}
+
+/* Breadcrumb Separator */
+.breadcrumb-separator {
+  @apply text-muted;
+}
+
+.breadcrumb-separator svg {
+  @apply size-3.5;
+}
+
+/* Breadcrumb Ellipsis */
+.breadcrumb-ellipsis {
+  @apply flex items-center justify-center size-2xl
+         text-weak;
+}
+
+.breadcrumb-ellipsis svg {
+  @apply size-4;
+}

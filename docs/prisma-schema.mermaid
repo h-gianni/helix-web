@@ -1,0 +1,152 @@
+erDiagram
+    AppUser ||--o{ TeamMember : "has_many"
+    AppUser ||--o{ GTeam : "owns"
+    AppUser ||--o{ BusinessActivity : "creates"
+    AppUser {
+        string id PK
+        string email
+        string name
+        string clerkId
+        datetime createdAt
+        datetime updatedAt
+        datetime deletedAt
+        json customFields
+    }
+
+    TeamFunction ||--o{ JobTitle : "has_many"
+    TeamFunction ||--o{ GTeam : "has_many"
+    TeamFunction {
+        string id PK
+        string name
+        string description
+        datetime createdAt
+        datetime updatedAt
+        datetime deletedAt
+        json customFields
+    }
+
+    JobTitle {
+        string id PK
+        string name
+        string teamFunctionId FK
+        datetime createdAt
+        datetime updatedAt
+        datetime deletedAt
+        json customFields
+    }
+
+    JobGrade ||--o{ TeamMember : "has_many"
+    JobGrade {
+        string id PK
+        int level
+        string grade
+        string typicalResponsibilities
+        datetime createdAt
+        datetime updatedAt
+        datetime deletedAt
+        json customFields
+    }
+
+    GTeam ||--o{ TeamMember : "has_many"
+    GTeam ||--o{ BusinessActivity : "has_many"
+    GTeam {
+        string id PK
+        string name
+        string description
+        string teamFunctionId FK
+        string ownerId FK
+        datetime createdAt
+        datetime updatedAt
+        datetime deletedAt
+        json customFields
+    }
+
+    BusinessActivity ||--o{ MemberRating : "has_many"
+    BusinessActivity {
+        string id PK
+        string name
+        string description
+        string category
+        enum priority
+        enum status
+        datetime dueDate
+        string teamId FK
+        string createdBy FK
+        datetime createdAt
+        datetime updatedAt
+        datetime deletedAt
+        json customFields
+    }
+
+    TeamMember ||--o{ MemberRating : "receives"
+    TeamMember ||--o{ StructuredFeedback : "receives"
+    TeamMember ||--o{ MemberComment : "receives"
+    TeamMember ||--o{ PerformanceReview : "has_many"
+    TeamMember {
+        string id PK
+        string userId FK
+        string teamId FK
+        string title
+        boolean isAdmin
+        enum status
+        string firstName
+        string lastName
+        string photoUrl
+        datetime joinedDate
+        string jobGradeId FK
+        datetime createdAt
+        datetime updatedAt
+        datetime deletedAt
+        json customFields
+    }
+
+    MemberRating {
+        string id PK
+        int value
+        string teamMemberId FK
+        string activityId FK
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    StructuredFeedback {
+        string id PK
+        string[] strengths
+        string[] improvements
+        string[] goals
+        string teamMemberId FK
+        datetime createdAt
+        datetime updatedAt
+        json customFields
+    }
+
+    MemberComment {
+        string id PK
+        string content
+        string teamMemberId FK
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    PerformanceReview {
+        string id PK
+        int quarter
+        int year
+        string content
+        enum status
+        int version
+        string teamMemberId FK
+        datetime createdAt
+        datetime updatedAt
+        json customFields
+    }
+
+    AuditLog {
+        string id PK
+        enum action
+        enum entityType
+        string entityId
+        json changes
+        string performedBy
+        datetime createdAt
+    }

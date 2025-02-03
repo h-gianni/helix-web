@@ -1,0 +1,748 @@
+// This schema uses PostgreSQL specific features
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Core Enums
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  GONE
+}
+
+enum TeamMemberStatus {
+  ACTIVE
+  INACTIVE
+  ONLEAVE
+}
+
+enum ReviewStatus {
+  DRAFT
+  PUBLISHED
+  ACKNOWLEDGED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum BusinessActivityStatus {
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum EntityType {
+  APP_USER
+  TEAM_FUNCTION
+  JOB_TITLE
+  JOB_GRADE
+  BUSINESS_ACTIVITY
+  G_TEAM
+  TEAM_MEMBER
+  MEMBER_RATING
+  STRUCTURED_FEEDBACK
+  MEMBER_COMMENT
+  PERFORMANCE_REVIEW
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  RESTORE
+  STATUS_CHANGE
+}
+
+// HR Management Enums
+enum PlanStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum ObjectiveStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  BLOCKED
+}
+
+enum FeedbackCategory {
+  BEHAVIORAL
+  TECHNICAL
+  LEADERSHIP
+}
+
+enum FeedbackStatus {
+  DRAFT
+  SHARED
+  ACKNOWLEDGED
+  ACTIONED
+}
+
+enum FeedbackImpact {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum GoalStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum ContributionImpact {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum PeriodType {
+  QUARTER
+  HALF_YEAR
+  YEAR
+}
+
+// Behavioral Psychology Enums
+enum EmotionalState {
+  ENGAGED
+  NEUTRAL
+  DISENGAGED
+  STRESSED
+  ENTHUSIASTIC
+  FRUSTRATED
+  CHALLENGED
+}
+
+enum BiasCategory {
+  RECENCY
+  HALO_EFFECT
+  SIMILARITY
+  CONFIRMATION
+  CENTRAL_TENDENCY
+  LENIENCY
+  SEVERITY
+}
+
+enum RecognitionType {
+  PEER_APPRECIATION
+  MANAGER_RECOGNITION
+  ACHIEVEMENT_MILESTONE
+  INNOVATION
+  COLLABORATION
+  MENTORSHIP
+  VALUES_DEMONSTRATION
+}
+
+enum EngagementLevel {
+  HIGHLY_ENGAGED
+  ENGAGED
+  NEUTRAL
+  DISENGAGED
+  AT_RISK
+}
+
+enum FeedbackSentiment {
+  POSITIVE
+  CONSTRUCTIVE
+  NEUTRAL
+  NEEDS_IMPROVEMENT
+}
+
+enum PulseCheckType {
+  WELLBEING
+  WORKLOAD
+  GROWTH
+  SUPPORT
+  ALIGNMENT
+  RECOGNITION
+}
+
+// Core Models
+model AppUser {
+  id            String     @id @default(cuid())
+  email         String     @unique @db.VarChar(255)
+  name          String?    @db.VarChar(100)
+  clerkId       String?    @unique
+  status        UserStatus @default(ACTIVE)
+  successorId   String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  deletedAt     DateTime?
+  customFields  Json?
+
+  // Relations
+  successor           AppUser?         @relation("UserSuccessor", fields: [successorId], references: [id])
+  predecessor         AppUser[]        @relation("UserSuccessor")
+  teamMembers        TeamMember[]
+  ownedTeams         GTeam[]          @relation("TeamOwner")
+  managedTeams       GTeam[]          @relation("TeamManager")
+  createdActivities  BusinessActivity[]
+  submittedRatings   MemberRating[]   @relation("RatingSubmitter")
+  submittedFeedback  StructuredFeedback[] @relation("FeedbackSubmitter")
+
+  @@map("app_users")
+  @@index([status])
+  @@index([deletedAt])
+}
+
+model TeamFunction {
+  id               String    @id @default(cuid())
+  name             String    @unique @db.VarChar(100)
+  description      String?   @db.VarChar(500)
+  isCrossFunctional Boolean  @default(false)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+  customFields     Json?
+
+  // Relations
+  jobTitles             JobTitle[]
+  teams                 GTeam[]    @relation("TeamFunctions")
+  teamFunctionMappings  TeamFunctionMapping[]
+
+  @@map("team_functions")
+  @@index([deletedAt])
+}
+
+model TeamFunctionMapping {
+  teamId          String
+  teamFunctionId  String
+  isPrimary       Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+
+  // Relations
+  team          GTeam         @relation(fields: [teamId], references: [id])
+  teamFunction  TeamFunction  @relation(fields: [teamFunctionId], references: [id])
+
+  @@id([teamId, teamFunctionId])
+  @@map("team_function_mappings")
+}
+
+model JobTitle {
+  id             String       @id @default(cuid())
+  name           String       @db.VarChar(100)
+  teamFunctionId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  deletedAt      DateTime?
+  customFields   Json?
+
+  // Relations
+  teamFunction   TeamFunction @relation(fields: [teamFunctionId], references: [id])
+  teamMembers    TeamMember[]
+
+  @@unique([name, teamFunctionId])
+  @@index([teamFunctionId])
+  @@index([deletedAt])
+  @@map("job_titles")
+}
+
+model JobGrade {
+  id                      String    @id @default(cuid())
+  level                   Int       @unique
+  grade                   String    @unique @db.VarChar(50)
+  typicalResponsibilities String?   @db.Text
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime   @updatedAt
+  deletedAt              DateTime?
+  customFields           Json?
+
+  // Relations
+  teamMembers           TeamMember[]
+
+  @@map("job_grades")
+  @@index([deletedAt])
+}
+
+model GTeam {
+  id             String    @id @default(cuid())
+  name           String    @db.VarChar(200)
+  description    String?   @db.Text
+  ownerId        String
+  managerId      String
+  parentTeamId   String?   // Reference to parent team
+  isContainer    Boolean   @default(false)  // Indicates if team can contain other teams
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+  customFields   Json?
+
+  // Relations
+  owner          AppUser   @relation("TeamOwner", fields: [ownerId], references: [id])
+  manager        AppUser   @relation("TeamManager", fields: [managerId], references: [id])
+  parentTeam     GTeam?    @relation("TeamHierarchy", fields: [parentTeamId], references: [id])
+  childTeams     GTeam[]   @relation("TeamHierarchy")
+  
+  // Existing relations
+  teamFunctions          TeamFunction[]          @relation("TeamFunctions")
+  teamFunctionMappings   TeamFunctionMapping[]
+  teamMembers           TeamMember[]
+  activities            BusinessActivity[]
+  metrics              TeamMetrics[]
+  receivedContributions CrossTeamContribution[]
+  psychologicalSafety   PsychologicalSafety[]
+
+  @@unique([name, ownerId])
+  @@index([ownerId])
+  @@index([managerId])
+  @@index([parentTeamId])
+  @@index([deletedAt])
+  @@map("g_teams")
+}
+
+model TeamMember {
+  id              String           @id @default(email)
+  userId          String
+  teamId          String
+  jobTitleId      String?
+  jobGradeId      String?
+  title           String?          @db.VarChar(100)
+  firstName       String?          @db.VarChar(50)
+  lastName        String?          @db.VarChar(50)
+  email           String           @unique @db.VarChar(255)
+  photoUrl        String?          @db.Text
+  status          TeamMemberStatus @default(ACTIVE)
+  canViewFeedback Boolean          @default(false)
+  joinedDate      DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deletedAt       DateTime?
+  customFields    Json?
+
+  // Relations
+  user                   AppUser          @relation(fields: [userId], references: [id])
+  team                   GTeam            @relation(fields: [teamId], references: [id])
+  jobTitle               JobTitle?        @relation(fields: [jobTitleId], references: [id])
+  jobGrade               JobGrade?        @relation(fields: [jobGradeId], references: [id])
+  ratings                MemberRating[]   @relation("RatingReceiver")
+  feedback               StructuredFeedback[] @relation("FeedbackReceiver")
+  performanceScores      PerformanceScore[]
+  reviews                PerformanceReview[]
+  developmentPlans       DevelopmentPlan[]
+  performanceGoals       PerformanceGoal[]
+  competencyAssessments  CompetencyAssessment[]
+  careerPaths            CareerPath[]
+  mentoring              CareerPath[] @relation("CareerMentor")
+  crossTeamContributions CrossTeamContribution[] @relation("Contributor")
+  
+  // Behavioral Psychology relations
+  engagementPulses       EngagementPulse[]
+  biasReviewer          BiasDetection[]     @relation("BiasReviewer")
+  biasSubject           BiasDetection[]     @relation("BiasSubject")
+  givenRecognitions     Recognition[]       @relation("RecognitionGiver")
+  receivedRecognitions  Recognition[]       @relation("RecognitionReceiver")
+  motivationTriggers    MotivationTrigger[]
+  growthIndicators      GrowthMindsetIndicator[]
+  feedbackPreferences   FeedbackPreference[]
+
+  @@unique([userId, teamId])
+  @@index([email])
+  @@index([teamId])
+  @@index([jobTitleId])
+  @@index([jobGradeId])
+  @@index([status])
+  @@index([deletedAt])
+  @@map("team_members")
+}
+
+// Performance Models
+model BusinessActivity {
+  id          String                 @id @default(cuid())
+  name        String                 @unique @db.VarChar(200)
+  description String?                @db.Text
+  category    String?                @db.VarChar(100)
+  priority    Priority               @default(MEDIUM)
+  status      BusinessActivityStatus @default(ACTIVE)
+  dueDate     DateTime?
+  teamId      String
+  createdBy   String
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  deletedAt   DateTime?
+  customFields Json?
+
+  // Relations
+  team        GTeam          @relation(fields: [teamId], references: [id])
+  user        AppUser        @relation(fields: [createdBy], references: [id])
+  ratings     MemberRating[]
+
+  @@index([teamId, createdAt])
+  @@index([status])
+  @@index([createdBy])
+  @@index([deletedAt])
+  @@map("business_activities")
+}
+
+model MemberRating {
+  id            String    @id @default(cuid())
+  value         Int       @db.SmallInt
+  teamMemberId  String
+  activityId    String
+  submitterId   String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  teamMember    TeamMember       @relation("RatingReceiver", fields: [teamMemberId], references: [id])
+  activity      BusinessActivity @relation(fields: [activityId], references: [id])
+  submitter     AppUser         @relation("RatingSubmitter", fields: [submitterId], references: [id])
+
+  @@index([teamMemberId])
+  @@index([activityId])
+  @@index([submitterId])
+  @@index([createdAt])
+  @@index([deletedAt])
+  @@map("member_ratings")
+}
+
+model PerformanceScore {
+  id            String     @id @default(cuid())
+  teamMemberId  String
+  periodType    PeriodType
+  periodNumber  Int
+  year          Int
+  score         Float
+  trend         Float
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  // Relations
+  teamMember    TeamMember @relation(fields: [teamMemberId], references: [id])
+
+  @@unique([teamMemberId, periodType, periodNumber, year])
+  @@index([teamMemberId])
+  @@map("performance_scores")
+}
+
+// Development Models
+model DevelopmentPlan {
+  id            String     @id @default(cuid())
+  teamMemberId  String
+  objectives    DevelopmentObjective[]
+  startDate     DateTime
+  endDate       DateTime
+  status        PlanStatus @default(DRAFT)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  
+  // Relations
+  teamMember    TeamMember @relation(fields: [teamMemberId], references: [id])
+
+  @@index([teamMemberId])
+  @@index([status])
+  @@map("development_plans")
+}
+
+model DevelopmentObjective {
+  id            String          @id @default(cuid())
+  planId        String
+  description   String          @db.Text
+  targetDate    DateTime
+  supportNeeded String?         @db.Text
+  progress      Float           @db.Real
+  status        ObjectiveStatus @default(NOT_STARTED)
+  feedback      String?         @db.Text
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  
+  // Relations
+  plan          DevelopmentPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  milestones    Milestone[]
+
+  @@index([planId])
+  @@index([status])
+  @@map("development_objectives")
+}
+
+model Milestone {
+  id            String    @id @default(cuid())
+  objectiveId   String
+  description   String    @db.Text
+  dueDate       DateTime
+  completed     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  objective     DevelopmentObjective @relation(fields: [objectiveId], references: [id], onDelete: Cascade)
+
+  @@index([objectiveId])
+  @@index([completed])
+  @@map("milestones")
+}
+
+// Behavioral Psychology Models
+model EngagementPulse {
+  id             String          @id @default(cuid())
+  teamMemberId   String
+  checkType      PulseCheckType
+  emotionalState EmotionalState
+  score          Int            @db.SmallInt
+  comment        String?        @db.Text
+  createdAt      DateTime       @default(now())
+  
+  // Relations
+  teamMember     TeamMember     @relation(fields: [teamMemberId], references: [id])
+
+  @@index([teamMemberId])
+  @@index([checkType])
+  @@index([createdAt])
+  @@map("engagement_pulses")
+}
+
+model BiasDetection {
+  id               String       @id @default(cuid())
+  reviewerId       String      // The person potentially showing bias
+  subjectId        String      // The person being reviewed
+  biasCategory     BiasCategory
+  evidence         String      @db.Text
+  mitigationAction String?     @db.Text
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  
+  // Relations
+  reviewer         TeamMember  @relation("BiasReviewer", fields: [reviewerId], references: [id])
+  subject          TeamMember  @relation("BiasSubject", fields: [subjectId], references: [id])
+
+  @@index([reviewerId])
+  @@index([subjectId])
+  @@map("bias_detections")
+}
+
+model Recognition {
+  id            String          @id @default(cuid())
+  giverId       String
+  receiverId    String
+  type          RecognitionType
+  description   String          @db.Text
+  impact        String?         @db.Text
+  visibility    String[]        // Teams or individuals who can see this recognition
+  createdAt     DateTime        @default(now())
+  
+  // Relations
+  giver         TeamMember      @relation("RecognitionGiver", fields: [giverId], references: [id])
+  receiver      TeamMember      @relation("RecognitionReceiver", fields: [receiverId], references: [id])
+
+  @@index([giverId])
+  @@index([receiverId])
+  @@index([type])
+  @@map("recognitions")
+}
+
+model MotivationTrigger {
+  id            String    @id @default(cuid())
+  teamMemberId  String
+  trigger       String    @db.Text
+  impact        String    @db.Text
+  frequency     Int       @db.SmallInt  // How often this motivator appears
+  strength      Int       @db.SmallInt  // Impact strength 1-5
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  teamMember    TeamMember @relation(fields: [teamMemberId], references: [id])
+
+  @@index([teamMemberId])
+  @@map("motivation_triggers")
+}
+
+model GrowthMindsetIndicator {
+  id            String    @id @default(cuid())
+  teamMemberId  String
+  category      String    // e.g., "Learning from Feedback", "Embracing Challenges"
+  observation   String    @db.Text
+  evidence      String    @db.Text
+  createdAt     DateTime  @default(now())
+  
+  // Relations
+  teamMember    TeamMember @relation(fields: [teamMemberId], references: [id])
+
+  @@index([teamMemberId])
+  @@index([category])
+  @@map("growth_mindset_indicators")
+}
+
+model PsychologicalSafety {
+  id            String    @id @default(cuid())
+  teamId        String
+  dimension     String    // e.g., "Speaking Up", "Risk Taking", "Learning from Mistakes"
+  score         Float     @db.Real
+  insights      String    @db.Text
+  actionItems   String[]
+  assessedAt    DateTime
+  
+  // Relations
+  team          GTeam     @relation(fields: [teamId], references: [id])
+
+  @@index([teamId])
+  @@index([assessedAt])
+  @@map("psychological_safety")
+}
+
+model FeedbackPreference {
+  id               String    @id @default(cuid())
+  teamMemberId     String
+  preferredTime    String[]  // Preferred times for feedback
+  preferredMethod  String    // e.g., "Written", "Verbal", "Mixed"
+  feedbackFrequency String   // e.g., "Weekly", "Bi-weekly", "Monthly"
+  sensitivityAreas String[]  // Areas requiring extra careful feedback
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  // Relations
+  teamMember       TeamMember @relation(fields: [teamMemberId], references: [id])
+
+  @@index([teamMemberId])
+  @@map("feedback_preferences")
+}
+
+// Audit Model
+model AuditLog {
+  id          String      @id @default(cuid())
+  action      AuditAction
+  entityType  EntityType
+  entityId    String
+  changes     Json
+  performedBy String
+  createdAt   DateTime    @default(now())
+
+  @@index([entityType, entityId])
+  @@index([performedBy])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// Career Development Models
+model CareerPath {
+  id            String    @id @default(cuid())
+  teamMemberId  String
+  currentRole   String
+  targetRole    String
+  timeframe     Int       @db.SmallInt
+  progress      Float     @db.Real
+  mentorId      String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  teamMember    TeamMember  @relation(fields: [teamMemberId], references: [id])
+  mentor        TeamMember? @relation("CareerMentor", fields: [mentorId], references: [id])
+  skillGaps     SkillGapAssessment[]
+
+  @@index([teamMemberId])
+  @@index([mentorId])
+  @@map("career_paths")
+}
+
+model SkillGapAssessment {
+  id              String    @id @default(cuid())
+  careerPathId    String
+  skillId         String
+  currentLevel    Int       @db.SmallInt
+  requiredLevel   Int       @db.SmallInt
+  developmentPlan String?   @db.Text
+  priority        Priority  @default(MEDIUM)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  // Relations
+  careerPath      CareerPath @relation(fields: [careerPathId], references: [id])
+  skill           Skill      @relation(fields: [skillId], references: [id])
+
+  @@index([careerPathId])
+  @@index([skillId])
+  @@map("skill_gap_assessments")
+}
+
+model Skill {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  category    String
+  description String    @db.Text
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  // Relations
+  assessments SkillGapAssessment[]
+
+  @@map("skills")
+}
+
+// Performance Review Models
+model PerformanceReview {
+  id           String       @id @default(cuid())
+  teamMemberId String
+  quarter      Int         @db.SmallInt
+  year         Int
+  content      String      @db.Text
+  status       ReviewStatus @default(DRAFT)
+  version      Int         @default(1)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  customFields Json?
+
+  // Relations
+  teamMember   TeamMember  @relation(fields: [teamMemberId], references: [id])
+
+  @@unique([teamMemberId, quarter, year])
+  @@index([teamMemberId])
+  @@index([status, teamMemberId])
+  @@index([year, quarter])
+  @@index([createdAt])
+  @@map("performance_reviews")
+}
+
+// Team Dynamics Models
+model TeamMetrics {
+  id                String    @id @default(cuid())
+  teamId           String
+  engagementScore  Float     @db.Real
+  velocityScore    Float     @db.Real
+  collaborationIndex Float    @db.Real
+  periodStart      DateTime
+  periodEnd        DateTime
+  insights         String?    @db.Text
+  createdAt        DateTime   @default(now())
+  
+  // Relations
+  team             GTeam     @relation(fields: [teamId], references: [id])
+
+  @@index([teamId])
+  @@index([periodStart, periodEnd])
+  @@map("team_metrics")
+}
+
+model CrossTeamContribution {
+  id            String              @id @default(cuid())
+  contributorId String
+  targetTeamId  String
+  projectId     String
+  impact        ContributionImpact
+  duration      Int                @db.SmallInt
+  feedback      String?            @db.Text
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  
+  // Relations
+  contributor   TeamMember         @relation("Contributor", fields: [contributorId], references: [id])
+  targetTeam    GTeam             @relation(fields: [targetTeamId], references: [id])
+
+  @@index([contributorId])
+  @@index([targetTeamId])
+  @@map("cross_team_contributions")
+}

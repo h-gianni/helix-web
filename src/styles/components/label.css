@@ -1,0 +1,55 @@
+/* label.css */
+
+/* Base Label */
+.label-base {
+  @apply text-label text-foreground 
+         select-none cursor-default whitespace-nowrap
+         transition-all;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+ }
+ 
+ /* When used with checkbox or radio, use normal font weight */
+ .checkbox-base + .label-base,
+ *:has(> .checkbox-base) .label-base,
+ .radio-group-base + .label-base,
+ *:has(> .radio-group-base) .label-base {
+  @apply text-base font-normal cursor-pointer;
+ }
+ 
+ /* Required State */
+ .label-base[data-required="true"]::after {
+  @apply ml-xxs text-primary;
+  content: "*";
+ }
+ 
+ /* Error State */
+ .label-base[data-error="true"], .label-base[data-error="true"]::after {
+  @apply text-danger;
+ }
+ 
+ /* Error Overrides Required State */
+ .label-base[data-required="true"][data-error="true"]::after {
+  @apply text-danger;
+ }
+ 
+ /* Disabled State */
+ .label-base[data-disabled="true"] {
+  @apply cursor-not-allowed opacity-disabled;
+ }
+ 
+ /* Focus State - When associated input is focused */
+ .label-base[data-focused="true"] {
+  @apply text-primary;
+ }
+ 
+ /* Print styles */
+ @media print {
+  .label-base {
+    @apply text-foreground;
+  }
+  
+  .label-base[data-required="true"]::after {
+    @apply text-danger;
+  }
+ }

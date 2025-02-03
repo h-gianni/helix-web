@@ -98,11 +98,24 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
       >
         <CardHeader className={cn("space-y-4", variant === 'compact' && "p-0")}>
           <div className="flex justify-between items-start">
-            <Avatar size="lg" className="border-2 border-primary-50">
-              <AvatarFallback className="text-lg">
+            <div className="flex gap-sm">
+            <Avatar size="md">
+              <AvatarFallback className="text-heading-5">
                 {member.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
+          <div className="space-y-xxs">
+            <h1 className="text-heading-4">
+              <span
+                onClick={handleViewDetails}
+                className="text-primary hover:underline cursor-pointer"
+              >
+                {member.name}
+              </span>
+            </h1>
+            <p className="text-body-small text-text-weakest">{member.title || "No title"}</p>
+          </div>
+          </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -115,12 +128,12 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={handleViewDetails}>
-                  <ChevronRight className="mr-2 size-4" />
+                  <ChevronRight />
                   View Details
                 </DropdownMenuItem>
                 {onGenerateReview && (
                   <DropdownMenuItem onClick={() => onGenerateReview(member)}>
-                    <FileText className="mr-2 size-4" />
+                    <FileText />
                     Generate Performance Review
                   </DropdownMenuItem>
                 )}
@@ -129,27 +142,18 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
                     onClick={() => onDelete(member)}
                     className="text-danger-500 focus:text-danger-500"
                   >
-                    <Trash2 className="mr-2 size-4" />
+                    <Trash2 />
                     Delete
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="space-y-1">
-            <CardTitle className="text-heading-4">
-              <span
-                onClick={handleViewDetails}
-                className="text-primary hover:underline cursor-pointer"
-              >
-                {member.name}
-              </span>
-            </CardTitle>
-            <p className="text-muted-foreground">{member.title || "No title"}</p>
-            <p className="text-muted-foreground">{teamName}</p>
-          </div>
+          {/* <div className="space-y-1">
+            <p className="text-text-weakest">{teamName}</p>
+          </div> */}
         </CardHeader>
-        <CardContent className={cn("flex-1 space-y-4", variant === 'compact' && "p-0 pt-4")}>
+        <CardContent className={cn("flex-1 space-y-base border-t border-border-weak pt-sm", variant === 'compact' && "p-0 pt-4")}>
           <div className="flex items-center gap-2">
             {category.Icon && (
               <category.Icon className={`size-4 ${category.className}`} />

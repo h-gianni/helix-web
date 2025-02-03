@@ -66,7 +66,7 @@ const RadioGroupItem = React.forwardRef<
         {...props}
       >
         <RadioGroupPrimitive.Indicator className="radio-indicator">
-          <Circle className="size-2.5 fill-current" />
+          <Circle />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
     </div>
@@ -88,7 +88,7 @@ const RadioGroupItem = React.forwardRef<
           "radio-content-wrapper",
           orientation === "horizontal" && "radio-content-wrapper-horizontal"
         )}>
-          <div className="flex-none w-4 h-4">{radio}</div>
+          {radio}
           <div className="radio-label-content">
             {label && <div className="radio-label-text">{label}</div>}
             {description && <div className="radio-description">{description}</div>}

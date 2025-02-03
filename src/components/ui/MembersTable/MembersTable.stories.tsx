@@ -145,7 +145,7 @@ type Story = StoryObj<typeof MembersTable>;
 // Default table with all features
 export const Default: Story = {
   render: (args) => (
-    <div className="w-[1000px]">
+    <div className="w-full">
       <MembersTable {...args} />
     </div>
   ),
@@ -157,7 +157,7 @@ export const WithoutAvatars: Story = {
     showAvatar: false
   },
   render: (args) => (
-    <div className="w-[1000px]">
+    <div className="w-full">
       <MembersTable {...args} />
     </div>
   ),
@@ -169,7 +169,7 @@ export const WithoutActions: Story = {
     showActions: false
   },
   render: (args) => (
-    <div className="w-[1000px]">
+    <div className="w-full">
       <MembersTable {...args} />
     </div>
   ),
@@ -191,7 +191,7 @@ export const WithNoRatings: Story = {
     ]
   },
   render: (args) => (
-    <div className="w-[1000px]">
+    <div className="w-full">
       <MembersTable {...args} />
     </div>
   ),
@@ -203,7 +203,7 @@ export const Empty: Story = {
     members: []
   },
   render: (args) => (
-    <div className="w-[1000px]">
+    <div className="w-full">
       <MembersTable {...args} />
     </div>
   ),

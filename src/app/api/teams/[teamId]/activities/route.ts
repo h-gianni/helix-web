@@ -50,7 +50,6 @@ export async function PUT(
       );
     }
 
-    // Check team access
     const hasAccess = await checkTeamAccess(params.teamId, userId);
     if (!hasAccess) {
       return NextResponse.json<ApiResponse<never>>(
@@ -68,31 +67,58 @@ export async function PUT(
       );
     }
 
-    await prisma.$transaction(async (tx: TransactionClient) => {
-      // First verify all activities exist and are accessible
-      const activities = await tx.businessActivity.findMany({
+    await prisma.$transaction(async (tx) => {
+      // Get all activities currently associated with this team
+      const currentActivities = await tx.businessActivity.findMany({
         where: {
-          id: { in: activityIds },
+          teamId: params.teamId,
           deletedAt: null,
         },
         select: { id: true },
       });
 
-      if (activities.length !== activityIds.length) {
-        throw new Error("One or more activities not found");
+      const currentActivityIds = currentActivities.map(a => a.id);
+      
+      // Find activities to reassign to this team
+      for (const activityId of activityIds) {
+        await tx.businessActivity.update({
+          where: { id: activityId },
+          data: { 
+            teamId: params.teamId,
+            updatedAt: new Date()
+          },
+        });
       }
 
-      // Update activities with new team
-      await tx.businessActivity.updateMany({
-        where: {
-          id: { in: activityIds },
-          deletedAt: null,
-        },
-        data: {
-          teamId: params.teamId,
-          updatedAt: new Date(),
-        },
-      });
+      // Find activities to remove from this team
+      const activitiesToRemove = currentActivityIds.filter(
+        id => !activityIds.includes(id)
+      );
+
+      // First, find an available team to reassign to
+      if (activitiesToRemove.length > 0) {
+        const availableTeam = await tx.gTeam.findFirst({
+          where: {
+            NOT: { id: params.teamId },
+            deletedAt: null,
+          },
+          select: { id: true },
+        });
+
+        // Update activities to be assigned to another team
+        if (availableTeam) {
+          await tx.businessActivity.updateMany({
+            where: {
+              id: { in: activitiesToRemove },
+              teamId: params.teamId,
+            },
+            data: {
+              teamId: availableTeam.id,
+              updatedAt: new Date(),
+            },
+          });
+        }
+      }
     });
 
     return NextResponse.json<ApiResponse<void>>({
@@ -101,12 +127,6 @@ export async function PUT(
     });
   } catch (error) {
     console.error("Error updating team activities:", error);
-    if (error instanceof Error && error.message === "One or more activities not found") {
-      return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "One or more activities not found" },
-        { status: 404 }
-      );
-    }
     return NextResponse.json<ApiResponse<never>>(
       { success: false, error: "Internal server error" },
       { status: 500 }
@@ -127,7 +147,6 @@ export async function GET(
       );
     }
 
-    // Check team access
     const hasAccess = await checkTeamAccess(params.teamId, userId);
     if (!hasAccess) {
       return NextResponse.json<ApiResponse<never>>(
@@ -135,6 +154,8 @@ export async function GET(
         { status: 403 }
       );
     }
+
+    console.log("Fetching activities for team:", params.teamId); // Debug log
 
     const activities = await prisma.businessActivity.findMany({
       where: {
@@ -150,42 +171,18 @@ export async function GET(
         status: true,
         dueDate: true,
         teamId: true,
-        createdBy: true,
         createdAt: true,
         updatedAt: true,
         deletedAt: true,
-        ratings: {
-          select: {
-            id: true,
-            value: true,
-            teamMemberId: true,
-            activityId: true,
-            createdAt: true,
-            updatedAt: true,
-            teamMember: {
-              select: {
-                id: true,
-                user: {
-                  select: {
-                    id: true,
-                    email: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        },
         _count: {
           select: {
             ratings: true,
           },
         },
       },
-      orderBy: {
-        createdAt: 'desc',
-      },
     });
+
+    console.log("Found activities:", activities); // Debug log
 
     return NextResponse.json<ApiResponse<BusinessActivityResponse[]>>({
       success: true,

@@ -82,12 +82,16 @@ interface AlertDialogContentProps extends
 const AlertDialogContent = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Content>,
   AlertDialogContentProps
->(({ className, withIcon = true, variant = 'primary', children, ...props }, ref) => (
+>(({ className, withIcon = true, variant = 'neutral', children, ...props }, ref) => (
   <AlertDialogPortal>
     <AlertDialogOverlay />
     <AlertDialogPrimitive.Content
       ref={ref}
-      className={cn("alert-dialog-content", className)}
+      className={cn(
+        "alert-dialog-content",
+        `alert-dialog-content-${variant}`,
+        className
+      )}
       {...props}
     >
       <div className="alert-dialog-content-with-icon">
@@ -152,11 +156,14 @@ const AlertDialogAction = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> & {
     variant?: keyof typeof variantIconMap;
   }
->(({ className, variant = "primary", ...props }, ref) => (
+>(({ className, variant = "neutral", ...props }, ref) => (
   <AlertDialogPrimitive.Action
     ref={ref}
     className={cn(
-      buttonVariants({ variant: variant === 'neutral' ? 'primary' : variant }),
+      buttonVariants({ 
+        variant,
+        appearance: "strong"
+      }),
       className
     )}
     {...props}
@@ -171,7 +178,10 @@ const AlertDialogCancel = React.forwardRef<
   <AlertDialogPrimitive.Cancel
     ref={ref}
     className={cn(
-      buttonVariants({ variant: "neutral", appearance: "default" }),
+      buttonVariants({ 
+        variant: "neutral", 
+        appearance: "text" 
+      }),
       "sm:mt-0",
       className
     )}

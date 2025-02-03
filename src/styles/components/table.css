@@ -1,0 +1,213 @@
+/* table.css */
+
+/* Table Container */
+.table-container {
+  @apply relative w-full overflow-auto rounded-t
+         scrollbar-thin;
+  scrollbar-color: var(--border-base) transparent;
+
+  /* Fixed Header Shadow on Scroll */
+  &::after {
+    @apply absolute top-0 left-0 right-0 h-px opacity-0
+           transition-opacity;
+    background: linear-gradient(
+      to bottom,
+      var(--border-weak) 50%,
+      transparent
+    );
+    transition-duration: var(--duration-normal);
+    transition-timing-function: var(--ease-out);
+    content: "";
+  }
+
+  &[data-scrolled="true"]::after {
+    @apply opacity-100;
+  }
+}
+
+/* Base Table */
+.table-base {
+  @apply w-full caption-bottom border-collapse;
+}
+
+/* Size Variants */
+.table-base[data-size="base"] {
+  .table-cell {
+    @apply py-sm px-base text-copy;
+  }
+
+  .table-head {
+    @apply h-2xl px-base;
+  }
+}
+
+.table-base[data-size="sm"] {
+  .table-cell {
+    @apply py-xs px-sm text-copy-small;
+  }
+
+  .table-head {
+    @apply h-2xl px-sm;
+  }
+}
+
+/* Zebra Striping */
+.table-zebra tbody tr:nth-child(even) {
+  @apply bg-surface-elevated hover:bg-surface-hover;
+}
+
+/* Table Header */
+.table-header {
+  @apply sticky top-0 z-10 
+         backdrop-blur-sm backdrop-saturate-150 
+         text-xs text-weak
+         border-b border-neutral-base shadow-sm;
+  background-color: color-mix(
+    in srgb,
+    var(--background-surface-sunken) 95%,
+    transparent
+  );
+}
+
+/* Table Body */
+.table-body {
+  @apply bg-surface divide-y divide-neutral-weak
+         [&_tr:last-child]:border-0;
+}
+
+/* Table Footer */
+.table-footer {
+  @apply bg-surface-sunken
+         border-t border-neutral-base
+         [&>tr]:last:border-b-0;
+}
+
+.table-footer .table-row td.table-cell {
+  @apply text-heading-4;
+}
+
+/* Table Head Cell */
+.table-head {
+  @apply text-left align-middle text-heading-6 
+         whitespace-nowrap text-weak
+         transition-colors;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+
+  /* Checkbox Column */
+  &:has([role="checkbox"]) {
+    @apply w-[calc(1rem+2rem)] pr-0 pl-4;
+  }
+
+  /* Sort Button */
+  &:has(button:not([role="checkbox"])) {
+    @apply p-0;
+
+    & > button:not([role="checkbox"]) {
+      @apply w-full flex items-center justify-between 
+             px-sm py-xs text-heading-6 text-weak
+             gap-sm transition-all;
+      transition-duration: var(--duration-normal);
+      transition-timing-function: var(--ease-out);
+
+      /* Sort Icon */
+      & > svg {
+        @apply text-icon opacity-0 transition-opacity;
+        transition-duration: var(--duration-normal);
+        transition-timing-function: var(--ease-out);
+      }
+
+      &[data-sort-direction="asc"] > svg {
+        @apply opacity-100 rotate-0;
+      }
+
+      &[data-sort-direction="desc"] > svg {
+        @apply opacity-100 rotate-180;
+      }
+    }
+  }
+}
+
+/* Table Cell */
+.table-cell {
+  @apply align-middle max-w-[20rem] overflow-hidden text-ellipsis
+         text-copy
+         transition-colors;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+
+  /* Checkbox Column */
+  &:has([role="checkbox"]) {
+    @apply w-[calc(1rem+2rem)] pr-0 pl-sm;
+  }
+
+  /* Actions Column */
+  &:has(.table-action-trigger) {
+    @apply w-10 pr-xs text-right;
+  }
+
+  /* Status Indicator */
+  &:has([data-status]) {
+    @apply relative pl-8;
+
+    & > [data-status] {
+      @apply absolute left-4 top-1/2 -translate-y-1/2 
+             size-2 rounded-full;
+    }
+  }
+
+  /* Focus State */
+  &:focus-within {
+    @apply relative;
+
+    &::after {
+      @apply absolute inset-0 rounded-sm;
+      content: "";
+      box-shadow: 0 0 0 2px var(--ring-primary),
+        0 0 0 4px var(--background-surface);
+    }
+  }
+}
+
+/* Table Row */
+.table-row {
+  @apply transition-colors;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+
+  &:hover {
+    @apply bg-surface-sunken;
+  }
+
+  &[data-state="selected"] {
+    @apply bg-primary-weakest;
+  }
+
+  &:focus-within {
+    @apply outline-none bg-surface-sunken;
+  }
+
+  /* Interactive Row */
+  &[data-interactive="true"] {
+    @apply cursor-pointer;
+  }
+
+  /* Disabled Row */
+  &[data-disabled="true"] {
+    @apply pointer-events-none opacity-disabled;
+  }
+}
+
+/* Table Caption */
+.table-caption {
+  @apply mt-base mb-sm text-caption text-left;
+}
+
+/* Table Empty State */
+.table-empty {
+  @apply p-2xl text-center;
+}
+
+/* .table-head button {
+  @apply -ml-md;
+} */

@@ -3,11 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
 import { useRouter } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Users, Target, Star, MessageSquare, Plus } from "lucide-react";
+import { MessageSquare, Star } from "lucide-react";
 import TeamCreateModal from "../dashboard/teams/_teamCreateModal";
 import PerformanceRatingModal from "./_component/_performanceRatingModal";
+import EmptyDashboardView from "./_component/_emptyDashboardView";
 import {
   PerformersByCategory,
   performanceCategories,
@@ -27,107 +27,6 @@ interface Performer {
 
 const breadcrumbItems = [{ label: "Dashboard" }];
 
-// Empty State Component
-const NoTeamsContent = ({ onCreateTeam }: { onCreateTeam: () => void }) => (
-  <Card size="default" background={true} border={true}>
-    <CardContent>
-      <div className="text-center space-y-8">
-        <div className="space-y-4">
-          <div className="bg-primary-50 rounded-full p-3 size-12 mx-auto">
-            <Users className="size-6 text-primary-600" />
-          </div>
-          <div className="space-y-2">
-            <h2 className="text-display-1">Welcome to UpScore</h2>
-            <p className="max-w-xl mx-auto">
-              Get started by following these steps:
-            </p>
-          </div>
-        </div>
-
-        <div className="grid gap-4 max-w-[1000px] mx-auto">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <Card size="sm" border={true} shadow="sm">
-              <CardContent>
-                <div className="flex flex-col justify-center space-y-2">
-                  <div className="bg-primary-25 rounded-full p-2 size-8 mx-auto">
-                    <Users className="size-4 text-primary-600" />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-heading-4">1. Create a Team</h3>
-                    <p className="text-p-small">
-                      Start by creating your first team and adding team members
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card size="sm" border={true} shadow="sm">
-              <CardContent>
-                <div className="flex flex-col justify-center space-y-2">
-                  <div className="bg-primary-25 rounded-full p-2 size-8 mx-auto">
-                    <Target className="size-4 text-primary-600" />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-heading-4">2. Configure Initiatives</h3>
-                    <p className="text-p-small">
-                      Set up performance initiatives for your team
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card size="sm" border={true} shadow="sm">
-              <CardContent>
-                <div className="flex flex-col justify-center space-y-2">
-                  <div className="bg-primary-25 rounded-full p-2 size-8 mx-auto">
-                    <Star className="size-4 text-primary-600" />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-heading-4">3. Rate Performance</h3>
-                    <p className="text-p-small">
-                      Add ratings and track member performance on initiatives
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card size="sm" border={true} shadow="sm">
-              <CardContent>
-                <div className="flex flex-col justify-center space-y-2">
-                  <div className="bg-primary-25 rounded-full p-2 size-8 mx-auto">
-                    <MessageSquare className="size-4 text-primary-600" />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-heading-4">4. Provide Feedback</h3>
-                    <p className="text-p-small">
-                      Give detailed feedback to help members improve
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="flex justify-center pt-4">
-            <Button
-              size="lg"
-              variant="primary"
-              onClick={onCreateTeam}
-              leadingIcon={<Plus className="size-4" />}
-            >
-              Create Your First Team
-            </Button>
-          </div>
-        </div>
-      </div>
-    </CardContent>
-  </Card>
-);
-
-// Teams Content Component
 const TeamsContent = ({
   performers,
   teams,
@@ -151,57 +50,48 @@ const TeamsContent = ({
   }, [performers]);
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-4">
-          <h1 className="text-display-1">Dashboard</h1>
-        </div>
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
         <div className="flex items-center gap-4">
           <Button
-            size="default"
-            variant="neutral"
-            appearance="default"
-            leadingIcon={<MessageSquare />}
+            appearance="outline"
             onClick={() => router.push("/dashboard/feedback")}
+            className="gap-2"
           >
-            Add Feedback on Member
+            <MessageSquare />
+            Add Feedback
           </Button>
           <Button
-            size="default"
             variant="primary"
-            appearance="default"
-            leadingIcon={<Star />}
             onClick={onAddRating}
           >
-            Rate Member Performance
+            <Star />
+            Rate Performance
           </Button>
         </div>
       </div>
 
-      {/* Performance Categories */}
-      <div>
-        <div className="space-y-4">
-          <div className="flex gap-4 justify-end">
-            <ViewSwitcher viewType={viewType} onViewChange={setViewType} />
-          </div>
-          {performanceCategories.map((category) => (
-            <PerformersByCategory
-              key={category.label}
-              category={category}
-              performers={performers}
-              teams={teams}
-              isLoading={isLoadingPerformers}
-              viewType={viewType}
-              onViewChange={setViewType}
-            />
-          ))}
+      <div className="space-y-4">
+        <div className="flex justify-end bg-surface-hollowed rounded-base p-sm border-t border-neutral-weak">
+          <ViewSwitcher viewType={viewType} onViewChange={setViewType} />
         </div>
+        {performanceCategories.map((category) => (
+          <PerformersByCategory
+            key={category.label}
+            category={category}
+            performers={performers}
+            teams={teams}
+            isLoading={isLoadingPerformers}
+            viewType={viewType}
+            onViewChange={setViewType}
+          />
+        ))}
       </div>
     </div>
   );
 };
 
-// Main Dashboard Page Component
 export default function DashboardPage() {
   const router = useRouter();
   const [teams, setTeams] = useState<TeamResponse[]>([]);
@@ -220,7 +110,6 @@ export default function DashboardPage() {
       setLoading(true);
       const response = await fetch("/api/teams");
       const data = await response.json();
-
       if (data.success) {
         setTeams(data.data);
         if (data.data.length > 0) {
@@ -238,7 +127,6 @@ export default function DashboardPage() {
     try {
       const response = await fetch("/api/dashboard/performers");
       const data = await response.json();
-
       if (data.success) {
         setPerformers(data.data.performers);
       }
@@ -247,31 +135,39 @@ export default function DashboardPage() {
     }
   };
 
-  const handleCreateTeam = async (name: string) => {
+  const handleCreateTeam = async (name: string, teamFunctionId: string) => {
     try {
       const response = await fetch("/api/teams", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          name,
+          teamFunctionId,  // Updated from businessFunctionId to teamFunctionId
+        }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create team');
+      }
 
+      const data = await response.json();
       if (data.success) {
         setIsCreateModalOpen(false);
         router.push("/dashboard/teams");
+      } else {
+        throw new Error(data.error || 'Failed to create team');
       }
     } catch (error) {
       console.error("Error creating team:", error);
+      throw error; // Re-throw to be handled by the modal
     }
   };
 
   const handleRatingSubmit = async (data: {
     teamId: string;
     memberId: string;
-    initiativeId: string;
+    activityId: string;
     rating: number;
     feedback?: string;
   }) => {
@@ -280,21 +176,25 @@ export default function DashboardPage() {
         `/api/teams/${data.teamId}/members/${data.memberId}/ratings`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            initiativeId: data.initiativeId,
-            rating: data.rating,
+            activityId: data.activityId,
+            value: data.rating, 
             feedback: data.feedback,
           }),
         }
       );
-
+  
       if (!response.ok) {
-        throw new Error("Failed to save rating");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to save rating");
       }
-
+  
+      const responseData = await response.json();
+      if (!responseData.success) {
+        throw new Error(responseData.error || "Failed to save rating");
+      }
+  
       await fetchPerformers();
       setIsRatingModalOpen(false);
     } catch (error) {
@@ -311,7 +211,7 @@ export default function DashboardPage() {
     <>
       <PageBreadcrumbs items={breadcrumbItems} />
       {teams.length === 0 ? (
-        <NoTeamsContent onCreateTeam={() => setIsCreateModalOpen(true)} />
+        <EmptyDashboardView onCreateTeam={() => setIsCreateModalOpen(true)} />
       ) : (
         <TeamsContent
           performers={performers}

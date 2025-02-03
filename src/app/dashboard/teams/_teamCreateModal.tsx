@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
@@ -18,12 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/Select";
-import type { BusinessActivityResponse as BusinessFunctionResponse } from "@/lib/types/api";
+import type { TeamFunctionResponse } from "@/lib/types/api";
 
 interface TeamCreateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateTeam: (name: string, disciplineId: string) => Promise<void>;
+  onCreateTeam: (name: string, teamFunctionId: string) => Promise<void>;
 }
 
 export default function TeamCreateModal({
@@ -32,27 +31,27 @@ export default function TeamCreateModal({
   onCreateTeam,
 }: TeamCreateModalProps) {
   const [teamName, setTeamName] = useState("");
-  const [disciplineId, setDisciplineId] = useState("");
-  const [disciplines, setDisciplines] = useState<BusinessFunctionResponse[]>([]);
+  const [teamFunctionId, setTeamFunctionId] = useState("");
+  const [teamFunctions, setTeamFunctions] = useState<TeamFunctionResponse[]>(
+    []
+  );
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchDisciplines = async () => {
+    const fetchTeamFunctions = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch("/api/disciplines");
+        const response = await fetch("/api/team-functions");
         const data = await response.json();
-
         if (!data.success) {
-          throw new Error(data.error || "Failed to fetch disciplines");
+          throw new Error(data.error || "Failed to fetch team functions");
         }
-
-        setDisciplines(data.data);
+        setTeamFunctions(data.data);
       } catch (err) {
-        console.error("Error fetching disciplines:", err);
+        console.error("Error fetching team functions:", err);
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setLoading(false);
@@ -60,117 +59,115 @@ export default function TeamCreateModal({
     };
 
     if (isOpen) {
-      fetchDisciplines();
+      fetchTeamFunctions();
+      setTeamName("");
+      setTeamFunctionId("");
+      setError(null);
     }
   }, [isOpen]);
 
-  const resetForm = () => {
-    setTeamName("");
-    setDisciplineId("");
-    setError(null);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
-   
-    //return;
+    console.log("Form submission:", {
+      teamName: teamName.trim(),
+      teamFunctionId,
+      hasTeamName: !!teamName.trim(),
+      hasTeamFunction: !!teamFunctionId,
+    });
+
+    // Validation checks
+    if (!teamName.trim()) {
+      setError("Team name is required");
+      return;
+    }
+
+    if (!teamFunctionId) {
+      console.log("No team function selected");
+      setError("Please select a team function");
+      return;
+    }
 
     try {
       setSaving(true);
-      setError(null);
-
-      if (!disciplineId) {
-        throw new Error("Please select a discipline");
-      }
-
-      await onCreateTeam(teamName.trim(), disciplineId);
-      resetForm();
+      await onCreateTeam(teamName.trim(), teamFunctionId);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
+      console.error("Error creating team:", err);
+      setError(err instanceof Error ? err.message : "Failed to create team");
     } finally {
       setSaving(false);
     }
   };
 
-  const handleClose = () => {
-    resetForm();
-    onClose();
-  };
-
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent size="base">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Create New Team</DialogTitle>
-          <DialogDescription>
-            Create a new team by selecting its discipline and providing a name.
-          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <Alert variant="danger">
-              <AlertCircle className="h-4 w-4" />
+              <AlertCircle className="size-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <div className="space-y-4">
-            <Select 
-              value={disciplineId} 
-              onValueChange={setDisciplineId}
-              disabled={loading}
+            <Select
+              label="Team function"
               withLabel
-              label="Discipline"
+              error={!!error && !teamFunctionId}
+              value={teamFunctionId}
+              onValueChange={(value) => {
+                console.log("Selected value:", value);
+                setTeamFunctionId(value);
+                setError(null);
+              }}
+              name="teamFunction"
             >
-              <SelectTrigger>
-                <SelectValue 
-                  placeholder={loading ? "Loading disciplines..." : "Select a discipline"} 
+              <SelectTrigger className="w-full" disabled={loading}>
+                <SelectValue
+                  placeholder={
+                    loading ? "Loading functions..." : "Select a function"
+                  }
                 />
               </SelectTrigger>
               <SelectContent>
-                {disciplines.map((discipline) => (
-                  <SelectItem 
-                    key={discipline.id} 
-                    value={discipline.id}
-                  >
-                    {discipline.name}
+                {teamFunctions.map((teamFunction) => (
+                  <SelectItem key={teamFunction.id} value={teamFunction.id}>
+                    {teamFunction.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
 
             <Input
-              id="teamName"
               value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
+              onChange={(e) => {
+                setTeamName(e.target.value);
+                setError(null);
+              }}
               placeholder="Enter team name"
-              inputSize="base"
-              required
-              withLabel
               label="Team Name"
-              error={!!error}
+              withLabel
+              error={!!error && !teamName.trim()}
             />
           </div>
 
           <DialogFooter>
             <Button
-              type="button"
               variant="neutral"
-              appearance="default"
-              onClick={handleClose}
+              appearance="text"
+              onClick={onClose}
               disabled={saving}
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={saving || !teamName.trim() || !disciplineId || loading}
-              isLoading={saving}
-            >
+            <Button variant="primary" type="submit" isLoading={saving}>
               Create Team
             </Button>
           </DialogFooter>
