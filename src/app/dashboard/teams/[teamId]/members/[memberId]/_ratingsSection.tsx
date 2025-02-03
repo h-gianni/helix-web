@@ -32,7 +32,9 @@ export default function RatingsSection({
 
  const fetchRatings = async (showRefreshIndicator = true) => {
    try {
-     showRefreshIndicator && setIsRefreshing(true);
+    if (showRefreshIndicator) {
+      setIsRefreshing(true);
+    }
      setError(null);
 
      const response = await fetch(
@@ -55,8 +57,8 @@ export default function RatingsSection({
  };
 
  useEffect(() => {
-   fetchRatings(false);
- }, [teamId, memberId]);
+  fetchRatings(false);
+}, [teamId, memberId]); 
 
  if (loading) {
    return <div className="text-muted-foreground">Loading ratings...</div>;
@@ -115,7 +117,7 @@ export default function RatingsSection({
          </div>
        ) : ratings.length === 0 ? (
          <div className="py-8 text-center text-muted-foreground">
-           No ratings yet. Click "Add Rating" to provide the first rating.
+           No ratings yet. Click &ldquo;Add Rating&ldquo; to provide the first rating.
          </div>
        ) : (
          <div className="space-y-4">
