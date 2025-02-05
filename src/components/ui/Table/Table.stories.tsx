@@ -45,6 +45,9 @@ const meta = {
       control: 'boolean',
       defaultValue: true,
       description: 'Show or hide the table header',
+      table: {
+        category: 'Story Controls', // Indicate this is a story-only control
+      },
     },
     zebra: {
       control: 'boolean',
@@ -55,7 +58,7 @@ const meta = {
 } satisfies Meta<typeof Table>;
 
 export default meta;
-type Story = StoryObj<typeof Table>;
+type Story = StoryObj<typeof Table & StoryProps>;
 
 const invoices = [
   {
@@ -90,27 +93,31 @@ const invoices = [
   },
 ];
 
+type StoryProps = {
+  showHeader?: boolean;
+};
+
 // Configurator
 export const Configurator: Story = {
-  render: (args) => (
+  render: ({ showHeader, ...args }) => (
     <Table {...args}>
-      {args.showHeader && (
+      {showHeader && (
         <TableHeader>
           <TableRow>
-            <TableHead>Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead className="ui-text-body-small">Invoice</TableHead>
+            <TableHead className="ui-text-body-small">Status</TableHead>
+            <TableHead className="ui-text-body-small">Method</TableHead>
+            <TableHead className="ui-text-body-small text-right">Amount</TableHead>
           </TableRow>
         </TableHeader>
       )}
       <TableBody>
         {invoices.map((invoice) => (
           <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+            <TableCell className="ui-text-body-base font-medium">{invoice.invoice}</TableCell>
+            <TableCell className="ui-text-body-base">{invoice.paymentStatus}</TableCell>
+            <TableCell className="ui-text-body-base">{invoice.paymentMethod}</TableCell>
+            <TableCell className="ui-text-body-base text-right">{invoice.totalAmount}</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -127,22 +134,22 @@ export const Configurator: Story = {
 export const Default: Story = {
   render: () => (
     <Table>
-      <TableCaption>A list of recent invoices.</TableCaption>
+      <TableCaption className="ui-text-body-small">A list of recent invoices.</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead>Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
+          <TableHead className="ui-text-body-small">Invoice</TableHead>
+          <TableHead className="ui-text-body-small">Status</TableHead>
+          <TableHead className="ui-text-body-small">Method</TableHead>
+          <TableHead className="ui-text-body-small text-right">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {invoices.map((invoice) => (
           <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+            <TableCell className="ui-text-body-base font-medium">{invoice.invoice}</TableCell>
+            <TableCell className="ui-text-body-base">{invoice.paymentStatus}</TableCell>
+            <TableCell className="ui-text-body-base">{invoice.paymentMethod}</TableCell>
+            <TableCell className="ui-text-body-base text-right">{invoice.totalAmount}</TableCell>
           </TableRow>
         ))}
       </TableBody>
@@ -170,7 +177,6 @@ export const WithSelection: Story = {
     };
     
     const isAllSelected = selectedRows.length === invoices.length;
-    // const isIndeterminate = selectedRows.length > 0 && selectedRows.length < invoices.length;
     
     return (
       <Table>
@@ -183,10 +189,10 @@ export const WithSelection: Story = {
                 aria-label="Select all"
               />
             </TableHead>
-            <TableHead>Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead className="ui-text-body-small">Invoice</TableHead>
+            <TableHead className="ui-text-body-small">Status</TableHead>
+            <TableHead className="ui-text-body-small">Method</TableHead>
+            <TableHead className="ui-text-body-small text-right">Amount</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -204,10 +210,10 @@ export const WithSelection: Story = {
                     aria-label={`Select invoice ${invoice.invoice}`}
                   />
                 </TableCell>
-                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                <TableCell>{invoice.paymentStatus}</TableCell>
-                <TableCell>{invoice.paymentMethod}</TableCell>
-                <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                <TableCell className="ui-text-body-base font-medium">{invoice.invoice}</TableCell>
+                <TableCell className="ui-text-body-base">{invoice.paymentStatus}</TableCell>
+                <TableCell className="ui-text-body-base">{invoice.paymentMethod}</TableCell>
+                <TableCell className="ui-text-body-base text-right">{invoice.totalAmount}</TableCell>
               </TableRow>
             );
           })}
@@ -223,26 +229,26 @@ export const WithFooter: Story = {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
+          <TableHead className="ui-text-body-small">Invoice</TableHead>
+          <TableHead className="ui-text-body-small">Status</TableHead>
+          <TableHead className="ui-text-body-small">Method</TableHead>
+          <TableHead className="ui-text-body-small text-right">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {invoices.map((invoice) => (
           <TableRow key={invoice.invoice}>
-            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-            <TableCell>{invoice.paymentStatus}</TableCell>
-            <TableCell>{invoice.paymentMethod}</TableCell>
-            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+            <TableCell className="ui-text-body-base font-medium">{invoice.invoice}</TableCell>
+            <TableCell className="ui-text-body-base">{invoice.paymentStatus}</TableCell>
+            <TableCell className="ui-text-body-base">{invoice.paymentMethod}</TableCell>
+            <TableCell className="ui-text-body-base text-right">{invoice.totalAmount}</TableCell>
           </TableRow>
         ))}
       </TableBody>
       <TableFooter>
         <TableRow>
-          <TableCell colSpan={3}>Total</TableCell>
-          <TableCell className="text-right">$1,750.00</TableCell>
+          <TableCell colSpan={3} className="ui-text-heading-4">Total</TableCell>
+          <TableCell className="ui-text-heading-4 text-right">$1,750.00</TableCell>
         </TableRow>
       </TableFooter>
     </Table>
@@ -273,7 +279,7 @@ export const WithActions: Story = {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button 
-                    appearance="text" 
+                    volume="soft" 
                     size="sm"
                     className="table-action-trigger"
                   >
@@ -320,7 +326,7 @@ export const WithSorting: Story = {
           <TableRow>
             <TableHead>
               <Button 
-                appearance="text" 
+                volume="soft" 
                 size="sm"
                 onClick={() => sortInvoices(sorting === "asc" ? "desc" : "asc")}
                 data-sort-direction={sorting !== "none" ? sorting : undefined}
@@ -330,14 +336,14 @@ export const WithSorting: Story = {
               </Button>
             </TableHead>
             <TableHead>
-              <Button appearance="text" size="sm">
+              <Button volume="soft" size="sm">
                 <span>Status</span>
                 <ArrowUpDown className="ml-2 h-4 w-4" />
               </Button>
             </TableHead>
             <TableHead>Method</TableHead>
             <TableHead>
-              <Button appearance="text" size="sm">
+              <Button volume="soft" size="sm">
                 <span>Amount</span>
                 <ArrowUpDown className="ml-2 h-4 w-4" />
               </Button>
@@ -365,15 +371,18 @@ export const EmptyState: Story = {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Invoice</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Method</TableHead>
-          <TableHead className="text-right">Amount</TableHead>
+          <TableHead className="ui-text-body-small">Invoice</TableHead>
+          <TableHead className="ui-text-body-small">Status</TableHead>
+          <TableHead className="ui-text-body-small">Method</TableHead>
+          <TableHead className="ui-text-body-small text-right">Amount</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow>
-          <TableCell colSpan={4} className="h-24 text-center">
+          <TableCell 
+            colSpan={4} 
+            className="h-24 text-center ui-text-body-base"
+          >
             No results found.
           </TableCell>
         </TableRow>

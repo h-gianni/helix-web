@@ -1,0 +1,84 @@
+/* Form Layout */
+.ui-textarea-layout {
+  @apply flex flex-col w-full;
+
+  &[data-has-label="true"] {
+    @apply gap-xxs;
+  }
+}
+
+/* Textarea */
+.ui-textarea {
+  @apply ui-form-base ui-form-element w-full resize-y transition-colors;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+
+  &::placeholder {
+    color: var(--text-muted);
+  }
+}
+
+/* Sizes */
+.ui-textarea[data-size="sm"] {
+  @apply px-xs py-xxs ui-text-body min-h-[var(--space-5xl)];
+  font-size: var(--font-size-sm);
+}
+
+.ui-textarea[data-size="base"] {
+  @apply px-sm py-xs ui-text-body min-h-[var(--space-6xl)];
+  font-size: var(--font-size-base);
+}
+
+.ui-textarea[data-size="lg"] {
+  @apply px-sm py-xs ui-text-body min-h-[var(--space-7xl)];
+  font-size: var(--font-size-lg);
+}
+
+/* Error State */
+.ui-textarea[data-error="true"] {
+  @apply hover:ui-border-danger;
+
+  &:focus {
+    border-color: var(--border-danger);
+    --tw-ring-color: var(--ring-danger);
+  }
+}
+
+/* Footer */
+.ui-textarea-footer {
+  @apply flex justify-between gap-2xl;
+}
+
+/* Helper Text */
+.ui-form-helper {
+  @apply ui-text-body-small;
+
+  &[data-error="true"] {
+    color: var(--text-danger);
+  }
+}
+
+/* Counter */
+.ui-textarea-counter {
+  @apply ui-text-body whitespace-nowrap;
+  font-size: var(--font-size-sm);
+
+  &[data-error="true"] {
+    color: var(--text-danger);
+  }
+
+  &[data-solo="true"] {
+    @apply ml-auto;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .ui-textarea {
+    @apply ui-form-base;
+  }
+  
+  .ui-textarea[data-error="true"] {
+    @apply ui-border-danger ui-text-danger;
+  }
+}

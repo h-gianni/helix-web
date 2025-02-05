@@ -1,0 +1,28 @@
+/* ui-progress.css */
+
+/* Progress Root */
+.ui-progress-root {
+  @apply relative h-2 w-full overflow-hidden rounded-full;
+  background-color: var(--background-primary-weakest);
+}
+
+/* Progress Indicator */
+.ui-progress-indicator {
+  @apply h-full w-full flex-1;
+  background-color: var(--background-primary);
+  transition-property: width, background-color;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+}
+
+/* Print Styles */
+@media print {
+  .ui-progress-root {
+    @apply border bg-transparent;
+    border-color: var(--border-base);
+  }
+  
+  .ui-progress-indicator {
+    background-color: var(--background-neutral);
+  }
+}

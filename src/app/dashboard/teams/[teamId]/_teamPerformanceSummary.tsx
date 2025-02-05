@@ -87,7 +87,7 @@ export function TeamPerformanceSummary({
          </AlertDialogHeader>
          <AlertDialogFooter>
            <AlertDialogCancel asChild>
-             <Button variant="neutral" appearance="subtle">Cancel</Button>
+             <Button variant="neutral" volume="soft">Cancel</Button>
            </AlertDialogCancel>
            <AlertDialogAction asChild>
              <Button variant="danger" onClick={handleDeleteMember}>Delete Member</Button>

@@ -34,7 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning style={{ fontSize: "14px" }}>
+      <html lang="en" suppressHydrationWarning>
         <body className={`${robotoFlex.variable} antialiased`}>
           <ThemeProvider defaultTheme="system" storageKey="ui-theme">
             <TeamsProvider>

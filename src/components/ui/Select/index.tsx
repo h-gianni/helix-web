@@ -11,10 +11,12 @@ interface ExtendedSelectProps extends SelectPrimitive.SelectProps {
   className?: string;
   error?: boolean;
   width?: SelectWidth;
+  size?: SelectSize;
   withLabel?: boolean;
   label?: string;
   helperText?: string;
   required?: boolean;
+  showItemIndicator?: boolean;
 }
 
 const Select = React.forwardRef<
@@ -23,57 +25,63 @@ const Select = React.forwardRef<
 >(({ 
   className, 
   children, 
-  width = "full", 
+  width = "full",
+  size = "base",
   withLabel, 
   label, 
   error,
   helperText,
-  required,
   disabled,
+  required,
+  showItemIndicator = true,
   ...props 
 }, ref) => {
   const selectId = React.useId();
   const helperId = React.useId();
 
   const content = (
-    <div className="form-layout-field">
-      {helperText && (
-        <p
-          id={helperId}
-          className="form-layout-helper"
-          data-error={error}
-        >
-          {helperText}
-        </p>
-      )}
-      <div className={cn("select-container", className)} data-width={width}>
-        <SelectPrimitive.Root
-          disabled={disabled}
-          required={required}
-          {...props}
-        >
+    <div className="ui-form-field">
+      <div className={cn("ui-select", className)} data-width={width} data-size={size}>
+        <SelectPrimitive.Root disabled={disabled} required={required} {...props}>
           {React.Children.map(children, child => {
             if (!React.isValidElement(child)) return child;
             
             if ((child.type as any).displayName === SelectTrigger.displayName) {
               return React.cloneElement(child as React.ReactElement<any>, {
                 error,
+                size,
                 'aria-describedby': helperText ? helperId : undefined,
                 'aria-labelledby': label ? selectId : undefined,
+              });
+            }
+            if ((child.type as any).displayName === SelectContent.displayName) {
+              return React.cloneElement(child as React.ReactElement<any>, {
+                size,
+              });
+            }
+            if ((child.type as any).displayName === SelectItem.displayName) {
+              return React.cloneElement(child as React.ReactElement<any>, {
+                size,
+                'data-show-indicator': showItemIndicator,
               });
             }
             return child;
           })}
         </SelectPrimitive.Root>
       </div>
+      {helperText && (
+        <p id={helperId} className="ui-form-helper" data-error={error}>
+          {helperText}
+        </p>
+      )}
     </div>
   );
 
   if (!withLabel || !label) return content;
 
   return (
-    <div className="form-layout">
-      <div className="form-layout-label">
+    <div className="ui-form-layout">
+      <div className="ui-form-label">
         <Label
           htmlFor={selectId}
           data-error={error}
@@ -89,12 +97,6 @@ const Select = React.forwardRef<
 });
 Select.displayName = SelectPrimitive.Root.displayName;
 
-interface ExtendedSelectTriggerElement extends React.ReactElement<
-  React.ComponentPropsWithoutRef<typeof SelectTrigger>
-> {
-  type: typeof SelectTrigger;
-}
-
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
@@ -105,18 +107,18 @@ const SelectTrigger = React.forwardRef<
 >(({ className, children, error, size = "base", icon, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
-    className={cn(
-      "select-trigger",
-      `select-trigger-${size}`,
-      error && "select-trigger-error",
-      className
-    )}
+    className={cn("ui-select-trigger")}
+    data-size={size}
+    data-error={error}
+    data-has-icon={!!icon}
     {...props}
   >
-    {icon && <span className="select-trigger-icon">{icon}</span>}
-    <span className="select-value">{children}</span>
-    <SelectPrimitive.Icon className="select-chevron">
-      <ChevronDown className="size-4" />
+    {icon && <span className="ui-select-icon">{icon}</span>}
+    <span className="ui-select-value" data-size={size} data-with-icon={!!icon}>
+      {children}
+    </span>
+    <SelectPrimitive.Icon>
+      <ChevronDown className="ui-select-chevron" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -124,24 +126,22 @@ SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
 const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
->(({ className, children, position = "popper", ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content> & {
+    size?: SelectSize;
+  }
+>(({ className, children, position = "popper", size = "base", ...props }, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
-      className={cn(
-        "select-content",
-        position === "popper" && "select-content-popper",
-        className
-      )}
+      className={cn("ui-select-content")}
+      data-position={position}
+      data-size={size}
       position={position}
       {...props}
     >
       <SelectPrimitive.Viewport 
-        className={cn(
-          "select-viewport",
-          position === "popper" && "select-viewport-popper"
-        )}
+        className="ui-select-viewport"
+        data-position={position}
       >
         {children}
       </SelectPrimitive.Viewport>
@@ -159,17 +159,20 @@ const SelectItem = React.forwardRef<
 >(({ className, children, size = "base", withIcon, ...props }, ref) => (
   <SelectPrimitive.Item
     ref={ref}
-    className={cn("select-item", `select-item-${size}`, className)}
+    className={cn("ui-select-item")}
+    data-size={size}
     {...props}
   >
-    <span className="select-item-indicator">
+    <span className="ui-select-item-content">
+      {withIcon && <span className="ui-select-item-icon">{withIcon}</span>}
+      <SelectPrimitive.ItemText>
+        <span className="ui-select-item-text" data-with-icon={!!withIcon} data-size={size}>
+          {children}
+        </span>
+      </SelectPrimitive.ItemText>
       <SelectPrimitive.ItemIndicator>
-        <Check className="size-4" />
+        <Check className="ui-select-item-indicator" data-size={size} />
       </SelectPrimitive.ItemIndicator>
-    </span>
-    <span className="select-item-text">
-      {withIcon && <span className="select-item-icon">{withIcon}</span>}
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
     </span>
   </SelectPrimitive.Item>
 ));

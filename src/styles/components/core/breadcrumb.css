@@ -1,0 +1,66 @@
+/* Base Breadcrumb Nav */
+.ui-breadcrumb-nav {
+  @apply w-full;
+}
+
+/* Breadcrumb List */
+.ui-breadcrumb-list {
+  @apply flex flex-wrap items-center gap-sm break-words;
+  @apply ui-text-body-small;
+}
+
+/* Breadcrumb Item */
+.ui-breadcrumb-item {
+  @apply inline-flex items-center gap-xs;
+}
+
+/* Breadcrumb Link */
+.ui-breadcrumb-link {
+  @apply transition-colors;
+  color: var(--text-foreground);
+
+  &:hover {
+    color: var(--text-primary);
+  }
+
+  &:focus-visible {
+    @apply outline-none;
+    --tw-ring-width: 2px;
+    --tw-ring-offset-width: 2px;
+    --tw-ring-color: var(--ring-primary);
+    --tw-ring-offset-color: var(--background-surface);
+  }
+
+  &:active {
+    color: var(--text-primary-strong);
+  }
+}
+
+/* Breadcrumb Current Page */
+.ui-breadcrumb-page {
+  @apply font-normal;
+  color: var(--text-weak);
+}
+
+/* Breadcrumb Separator */
+.ui-breadcrumb-separator {
+  color: var(--text-muted);
+
+  svg {
+    @apply size-3.5;
+  }
+}
+
+/* Breadcrumb Ellipsis */
+.ui-breadcrumb-ellipsis {
+  @apply flex items-center justify-center h-8 w-8;
+  color: var(--text-weak);
+
+  svg {
+    @apply size-4;
+  }
+
+  &:hover {
+    color: var(--text-strong);
+  }
+}

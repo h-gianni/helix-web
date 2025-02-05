@@ -1,0 +1,78 @@
+/* Command Input */
+.ui-command-input-wrapper {
+  @apply flex items-center px-xs pb-xs;
+  border-bottom-width: 1px;
+
+  &[data-color="neutral-weak"] {
+    border-color: var(--border-weak);
+  }
+}
+
+.ui-command-input-icon {
+  @apply mr-2 shrink-0;
+  opacity: var(--disabled-opacity);
+
+  &[data-size="base"] {
+    @apply size-base;
+  }
+}
+
+.ui-command-input {
+  @apply flex w-full bg-transparent outline-none h-xl;
+  
+  &::placeholder {
+    color: var(--text-muted);
+  }
+  
+  &:disabled {
+    @apply cursor-not-allowed;
+    opacity: var(--disabled-opacity);
+  }
+}
+
+/* Command List */
+.ui-command-list {
+  @apply overflow-y-auto overflow-x-hidden min-w-64;
+}
+
+.ui-command-empty {
+  @apply py-6 text-center;
+
+  &[data-variant="small"] {
+    font-size: var(--font-size-sm);
+  }
+
+  &[data-color="neutral"] {
+    color: var(--text-foreground);
+  }
+}
+
+.ui-command-list .ui-popcard-list-title:first-of-type {
+  @apply pt-xs;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  .ui-command-root[data-surface="raised"] {
+    background-color: var(--background-surface-raised);
+  }
+
+  .ui-command-root[data-color="neutral"] {
+    color: var(--text-foreground);
+  }
+  
+  .ui-command-item[data-selected="true"] {
+    &[data-color="primary-strong"] {
+      background-color: var(--background-primary-strong);
+    }
+    &[data-color="inverse"] {
+      color: var(--text-inverse);
+    }
+  }
+}
+
+@media print {
+  .ui-command-root {
+    @apply print:hidden;
+  }
+}

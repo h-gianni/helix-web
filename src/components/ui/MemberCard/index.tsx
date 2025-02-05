@@ -12,7 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 import {
-
   MoreVertical,
   ChevronRight,
   FileText,
@@ -51,31 +50,34 @@ export interface MemberCardProps extends React.HTMLAttributes<HTMLDivElement> {
   category: PerformanceCategory;
   onDelete?: (member: Member) => void;
   onGenerateReview?: (member: Member) => void;
-  variant?: 'default' | 'compact';
+  variant?: "default" | "compact";
   onNavigate?: (path: string) => void;
 }
 
 const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
-  ({ 
-    className, 
-    member, 
-    teamId, 
-    teams, 
-    category, 
-    onDelete, 
-    onGenerateReview,
-    variant = 'default',
-    onNavigate,
-    ...props 
-  }, ref) => {
-
+  (
+    {
+      className,
+      member,
+      teamId,
+      teams,
+      category,
+      onDelete,
+      onGenerateReview,
+      variant = "default",
+      onNavigate,
+      ...props
+    },
+    ref
+  ) => {
     const mainRouter = useRouter();
 
-    const router = typeof window !== 'undefined' ? mainRouter : null;
+    const router = typeof window !== "undefined" ? mainRouter : null;
     const effectiveTeamId = teamId ?? member.teamId;
     const encodedTeamId = encodeURIComponent(effectiveTeamId);
     const encodedMemberId = encodeURIComponent(member.id);
-    const teamName = teams.find(team => team.id === member.teamId)?.name || "No team";
+    const teamName =
+      teams.find((team) => team.id === member.teamId)?.name || "No team";
 
     const handleViewDetails = () => {
       const path = `/dashboard/teams/${encodedTeamId}/members/${encodedMemberId}`;
@@ -87,39 +89,41 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
     };
 
     return (
-      <Card 
+      <Card
         ref={ref}
         className={cn(
           "flex flex-col",
-          variant === 'compact' && "p-4",
+          variant === "compact" && "p-base",
           className
-        )} 
+        )}
         {...props}
       >
-        <CardHeader className={cn("space-y-4", variant === 'compact' && "p-0")}>
+        <CardHeader className={cn("space-y-4", variant === "compact" && "p-0")}>
           <div className="flex justify-between items-start">
             <div className="flex gap-sm">
-            <Avatar size="md">
-              <AvatarFallback className="text-heading-5">
-                {member.name.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-          <div className="space-y-xxs">
-            <h1 className="text-heading-4">
-              <span
-                onClick={handleViewDetails}
-                className="text-primary hover:underline cursor-pointer"
-              >
-                {member.name}
-              </span>
-            </h1>
-            <p className="text-body-small text-text-weakest">{member.title || "No title"}</p>
-          </div>
-          </div>
+              <Avatar size="md">
+                <AvatarFallback className="text-heading-5">
+                  {member.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="space-y-xxs">
+                <h1 className="text-heading-4">
+                  <span
+                    onClick={handleViewDetails}
+                    className="ui-text-heading-4 hover:underline cursor-pointer"
+                  >
+                    {member.name}
+                  </span>
+                </h1>
+                <p className="ui-text-body-small ui-text-weakest">
+                  {member.title || "No title"}
+                </p>
+              </div>
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  appearance="icon-only"
+                  iconOnly
                   aria-label="Member actions"
                   leadingIcon={<MoreVertical />}
                   size="sm"
@@ -140,7 +144,7 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
                 {onDelete && (
                   <DropdownMenuItem
                     onClick={() => onDelete(member)}
-                    className="text-danger-500 focus:text-danger-500"
+                    className="ui-text-danger focus:ui-text-danger"
                   >
                     <Trash2 />
                     Delete
@@ -153,21 +157,30 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
             <p className="text-text-weakest">{teamName}</p>
           </div> */}
         </CardHeader>
-        <CardContent className={cn("flex-1 space-y-base border-t border-border-weak pt-sm", variant === 'compact' && "p-0 pt-4")}>
-          <div className="flex items-center gap-2">
-            {category.Icon && (
-              <category.Icon className={`size-4 ${category.className}`} />
-            )}
-            <span className={`${category.className} font-medium`}>
-              {category.label}
-            </span>
+        <CardContent
+          className={cn(
+            "flex-1 space-y-base pt-sm",
+            variant === "compact" && "p-0 pt-base"
+          )}
+        >
+          <div className="flex justify-between items-center gap-base">
+            <div className="flex items-center gap-2">
+              {category.Icon && (
+                <category.Icon
+                  className={`ui-icon-base ${category.className}`}
+                />
+              )}
+              <span className={`${category.className} font-medium`}>
+                {category.label}
+              </span>
+            </div>
+            <StarRating
+              value={member.averageRating}
+              disabled={true}
+              size="sm"
+              ratingsCount={member.ratingsCount}
+            />
           </div>
-          <StarRating
-            value={member.averageRating}
-            disabled={true}
-            size="sm"
-            ratingsCount={member.ratingsCount}
-          />
         </CardContent>
       </Card>
     );

@@ -1,0 +1,83 @@
+/* Container & Overlay */
+.ui-alert-dialog-container {
+  @apply fixed inset-0 flex items-center justify-center;
+  z-index: var(--z-modal);
+ }
+ 
+ .ui-alert-dialog-overlay {
+  background-color: var(--background-overlay);
+  backdrop-filter: blur(var(--overlay-blur));
+  @apply data-[state=open]:animate-in data-[state=closed]:animate-out
+         data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0;
+ }
+ 
+ /* Content */
+ .ui-alert-dialog-content {
+  @apply fixed top-1/2 left-1/2 bg-surface rounded-lg shadow-md p-lg gap-md w-full max-w-[32rem];
+  transform: translate(-50%, -50%);
+  @apply data-[state=open]:animate-in data-[state=closed]:animate-out
+         data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
+         data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
+         data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%]
+         data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%];
+ }
+ 
+ /* Icon Container */
+ .ui-alert-dialog-icon {
+  @apply flex-shrink-0;
+ }
+ 
+ .ui-alert-dialog-icon svg {
+  @apply size-5 mt-[2px];
+ }
+ 
+ .ui-alert-dialog-icon[data-variant="primary"] svg {
+  color: var(--text-primary);
+ }
+ 
+ .ui-alert-dialog-icon[data-variant="danger"] svg {
+  color: var(--text-danger);
+ }
+ 
+ .ui-alert-dialog-icon[data-variant="warning"] svg {
+  color: var(--text-warning);
+ }
+ 
+ .ui-alert-dialog-icon[data-variant="neutral"] svg {
+  color: var(--text-foreground);
+ }
+ 
+ /* Typography & Structure */
+ .ui-alert-dialog-header {
+  @apply flex flex-col space-y-xxs text-center sm:text-left;
+ }
+ 
+ .ui-alert-dialog-title {
+  @apply -mt-[2px] ui-text-heading;
+  font-size: var(--font-size-lg);
+ }
+ 
+ .ui-alert-dialog-description {
+  @apply m-0 ui-text-body;
+  font-size: var(--font-size-base);
+ }
+ 
+ .ui-alert-dialog-footer {
+  @apply flex flex-col-reverse gap-sm mt-lg sm:flex-row sm:justify-end;
+ }
+ 
+ .ui-alert-dialog-content-with-icon {
+  @apply flex gap-sm items-start;
+ }
+ 
+ @media (max-width: 639px) {
+  .ui-alert-dialog-content {
+    @apply h-full border-none rounded-none;
+  }
+  
+  .ui-alert-dialog-footer {
+    @apply fixed bottom-0 left-0 right-0 p-md;
+    background-color: var(--background-surface);
+    border-top-color: var(--border-weak);
+  }
+ }

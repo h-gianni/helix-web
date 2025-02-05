@@ -1,0 +1,13 @@
+/* toggle-group.css */
+
+/* Toggle Group Root */
+.ui-toggle-group-root {
+  @apply flex items-center justify-center gap-xxs;
+}
+
+/* Print Styles */
+@media print {
+  .ui-toggle-group-root {
+    gap: calc(var(--space-xxs) * 0.5);
+  }
+}

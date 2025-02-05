@@ -22,7 +22,7 @@ const meta = {
   args: {
     withLabel: true,
     placeholder: 'Enter text...',
-    inputSize: 'base',
+    "data-size": 'base',
     className: 'w-[320px]',
   },
   argTypes: {
@@ -35,7 +35,7 @@ const meta = {
       control: 'text',
       description: 'Label text (requires withLabel to be true)',
     },
-    inputSize: {
+    "data-size": {
       control: 'select',
       options: ['sm', 'base', 'lg'],
       description: 'Size of the input',
@@ -84,7 +84,7 @@ export const Configurator: Story = {
     withLabel: true,
     label: 'Label',
     placeholder: 'Placeholder text',
-    inputSize: 'base',
+    "data-size": 'base',
     error: false,
     disabled: false,
     required: false,
@@ -94,88 +94,110 @@ export const Configurator: Story = {
 };
 
 // Basic input sizes
+// Configurator story - no changes needed as it uses args pattern
+
+// Sizes story
 export const Sizes: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-4">
       <Input
-        inputSize="sm"
+        data-size="sm"
         label="Small Input"
         placeholder="Small size"
+        withLabel={true}
       />
       <Input
-        inputSize="base"
+        data-size="base" 
         label="Medium Input"
         placeholder="Medium size"
+        withLabel={true}
       />
       <Input
-        inputSize="lg"
+        data-size="lg"
         label="Large Input"
         placeholder="Large size"
+        withLabel={true}
       />
     </div>
   ),
-};
-
-// With Icons
-export const WithIcons: Story = {
+ };
+ 
+ // WithIcons story
+ export const WithIcons: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-4">
       <Input
         label="Email"
         placeholder="Enter your email"
         leadingIcon={<Mail />}
+        withLabel={true}
+        data-size="base"
       />
-      <Input
+      <Input 
         label="Username"
         placeholder="Enter username"
         leadingIcon={<User />}
+        withLabel={true}
+        data-size="base"
       />
       <Input
         label="Password"
         type="password"
         placeholder="Enter password"
         leadingIcon={<Lock />}
+        withLabel={true}
+        data-size="base"
       />
       <Input
         label="Search"
         type="search"
         placeholder="Search..."
         leadingIcon={<Search />}
+        withLabel={true}
+        data-size="base"
       />
     </div>
   ),
-};
-
-// States
-export const States: Story = {
+ };
+ 
+ // States story - update props
+ export const States: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-4">
       <Input
         label="Default"
         placeholder="Default state"
+        withLabel={true}
+        data-size="base"
       />
       <Input
         label="Disabled"
         placeholder="Disabled state"
         disabled
+        withLabel={true}
+        data-size="base"
       />
       <Input
         label="Error"
         placeholder="Error state"
         error
         helperText="This field is required"
+        withLabel={true}
+        data-size="base"
       />
       <Input
         label="Required"
         placeholder="Required field"
         required
+        withLabel={true}
+        data-size="base"
       />
     </div>
   ),
-};
-
-// Form Example
-export const FormExample: Story = {
+ };
+ 
+ // FormExample story - update props
+ export const FormExample: Story = {
   render: () => (
     <div className="w-[400px] p-6 border rounded-lg space-y-4">
       <div className="space-y-4">
@@ -184,6 +206,8 @@ export const FormExample: Story = {
           placeholder="John Doe"
           leadingIcon={<User />}
           required
+          withLabel={true}
+          data-size="base"
         />
         <Input
           label="Email"
@@ -191,17 +215,23 @@ export const FormExample: Story = {
           placeholder="john@example.com"
           leadingIcon={<AtSign />}
           required
+          withLabel={true}
+          data-size="base"
         />
         <Input
           label="Phone"
           type="tel"
           placeholder="+1 (555) 000-0000"
           leadingIcon={<Phone />}
+          withLabel={true}
+          data-size="base"
         />
         <Input
           label="Date of Birth"
           type="date"
           leadingIcon={<CalendarDays />}
+          withLabel={true}
+          data-size="base"
         />
         <Input
           label="Card Number"
@@ -209,19 +239,23 @@ export const FormExample: Story = {
           leadingIcon={<CreditCard />}
           error
           helperText="Invalid card number"
+          withLabel={true}
+          data-size="base"
         />
         <Input
           label="Website"
           placeholder="https://example.com"
           leadingIcon={<LinkIcon />}
+          withLabel={true}
+          data-size="base"
         />
       </div>
     </div>
   ),
-};
-
-// Without Labels
-export const WithoutLabels: Story = {
+ };
+ 
+ // WithoutLabels story - update props
+ export const WithoutLabels: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-4">
       <Input
@@ -229,12 +263,14 @@ export const WithoutLabels: Story = {
         placeholder="Search..."
         leadingIcon={<Search />}
         aria-label="Search"
+        data-size="base"
       />
       <Input
         withLabel={false}
         placeholder="Enter email"
         leadingIcon={<Mail />}
         aria-label="Email input"
+        data-size="base"
       />
       <Input
         withLabel={false}
@@ -242,7 +278,8 @@ export const WithoutLabels: Story = {
         placeholder="Enter password"
         leadingIcon={<Lock />}
         aria-label="Password input"
+        data-size="base"
       />
     </div>
   ),
-};
+ };

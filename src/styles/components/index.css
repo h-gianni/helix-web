@@ -6,42 +6,51 @@
  */
 
 /* Component styles in alphabetical order */
-@import './accordion.css';
-@import './alert.css';
-@import './alertdialog.css';
-@import './avatar.css';
-@import './badge.css';
-@import './breadcrumb.css';
-@import './button.css';
-@import './calendar.css';
-@import './card.css';
-@import './checkbox.css';
-@import './command.css';
-@import './dialog.css';
-@import './drawer.css';
-@import './dropdown.css';
-@import './hovercard.css';
-@import './input.css';
-@import './label.css';
+
+/* Core - Base components (buttons, inputs) */
+@import './core/accordion.css';
+@import './core/alert.css';
+@import './core/alertdialog.css';
+@import './core/avatar.css';
+@import './core/badge.css';
+@import './core/breadcrumb.css';
+@import './core/button.css';
+@import './core/calendar.css';
+@import './core/card.css';
+@import './core/checkbox.css';
+@import './core/command.css';
+@import './core/dialog.css';
+@import './core/drawer.css';
+@import './core/dropdown.css';
+@import './core/hovercard.css';
+@import './core/input.css';
+@import './core/label.css';
+@import './core/menubar.css';
+@import './core/navigationmenu.css';
+@import './core/pagination.css';
+@import './core/popover.css';
+@import './core/progress.css';
+@import './core/radiogroup.css';
+@import './core/scrollarea.css';
+@import './core/select.css';
+@import './core/separator.css';
+@import './core/sheet.css';
+@import './core/skeleton.css';
+@import './core/switch.css';
+@import './core/starrating.css';
+@import './core/table.css';
+@import './core/tabs.css';
+@import './core/textarea.css';
+@import './core/toggle.css';
+@import './core/togglegroup.css';
+@import './core/toast.css';
+@import './core/tooltip.css';
+
+/* Composite - Components built from core components */
 @import './memberstable.css';
-@import './menubar.css';
-@import './navigationmenu.css';
-@import './pagination.css';
-@import './popover.css';
-@import './progress.css';
-@import './radiogroup.css';
-@import './scrollarea.css';
-@import './select.css';
-@import './separator.css';
-@import './sheet.css';
-@import './skeleton.css';
-@import './switch.css';
-@import './starrating.css';
-@import './table.css';
-@import './tabs.css';
-@import './textarea.css';
-@import './toggle.css';
-@import './togglegroup.css';
-@import './toast.css';
-@import './tooltip.css';
+
+/* Layout - Layout components */
+
+/* Patterns - Complex UI patterns */
+
 @import './../globals.css'

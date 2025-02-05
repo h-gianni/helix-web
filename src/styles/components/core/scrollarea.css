@@ -1,0 +1,44 @@
+/* ui-scrollarea.css */
+
+/* ScrollArea Root */
+.ui-scrollarea-root {
+  @apply relative overflow-hidden;
+}
+
+/* ScrollArea Viewport */
+.ui-scrollarea-viewport {
+  @apply h-full w-full;
+}
+
+/* ScrollBar Base */
+.ui-scrollarea-scrollbar {
+  @apply flex touch-none select-none;
+  transition-property: background-color;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+}
+
+/* ScrollBar Orientations */
+.ui-scrollarea-scrollbar-vertical {
+  @apply h-full w-2.5 p-[1px] border-l border-transparent;
+}
+
+.ui-scrollarea-scrollbar-horizontal {
+  @apply w-full h-2.5 p-[1px] border-t border-transparent flex flex-col;
+}
+
+/* ScrollBar Thumb */
+.ui-scrollarea-thumb {
+  @apply relative flex-1 rounded-full bg-black hover:bg-black active:bg-black;
+}
+
+/* Print Styles */
+@media print {
+  .ui-scrollarea-root {
+    @apply overflow-visible;
+  }
+  
+  .ui-scrollarea-scrollbar {
+    @apply hidden;
+  }
+}

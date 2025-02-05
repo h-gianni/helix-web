@@ -1,0 +1,56 @@
+/* Base Checkbox */
+.ui-checkbox-base {
+  @apply size-4 shrink-0 ui-form-base transition-all cursor-pointer;
+  transition-duration: var(--duration-normal);
+  transition-timing-function: var(--ease-out);
+ 
+  /* Focus States */
+  &:focus-visible {
+    @apply outline-none;
+    --tw-ring-width: 2px;
+    --tw-ring-offset-width: 2px;
+    --tw-ring-color: var(--ring-primary);
+    --tw-ring-offset-color: var(--background-surface);
+  }
+ 
+  /* Checked States */
+  &[data-state="checked"] {
+    @apply ui-background-primary ui-border-primary ui-text-inverse;
+    &:hover {
+      @apply ui-background-primary-strong ui-border-primary-strong;
+    }
+  }
+}
+ 
+/* Checkbox Indicator */
+.ui-checkbox-indicator {
+  @apply flex items-center justify-center text-current;
+}
+ 
+/* Animation Classes */
+.ui-checkbox-animation {
+  @apply animate-in zoom-in-50;
+  animation-duration: var(--duration-normal);
+}
+ 
+/* Checkbox Group */
+.ui-checkbox-group {
+  @apply flex flex-col gap-sm;
+}
+ 
+/* Description */
+.ui-checkbox-description {
+  @apply ui-text-body ui-text-weak;
+  &[data-variant="small"] {
+    font-size: var(--font-size-sm);
+  }
+}
+ 
+/* Label Wrapper */
+.ui-checkbox-label-wrapper {
+  @apply flex items-start gap-sm;
+  
+  div {
+    @apply -mt-[2px];
+  }
+}

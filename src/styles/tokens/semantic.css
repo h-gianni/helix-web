@@ -1,223 +1,200 @@
 /* src/styles/semantic.css */
 
 :root {
-  /* ==========================================================================
-     Background Colors
-     ========================================================================== */
-
-  /* Base Backgrounds */
-  --background-page: rgb(var(--color-background));
-  --background-input: rgb(var(--color-white));
-  --background-disabled: rgb(var(--color-muted));
-
-  --background-surface-raised: rgb(var(--color-white));
-  --background-surface-elevated: rgb(var(--color-white));
-  --background-surface: rgb(var(--color-white));
-  --background-surface-sunken: rgb(var(--color-muted));
-  --background-surface-hollowed: rgb(var(--color-weakest));
-
-  --background-neutral: rgb(var(--color-medium));
-  --background-neutral-strongest: rgb(var(--color-strongest));
-  --background-neutral-stronger: rgb(var(--color-stronger));
-  --background-neutral-strong: rgb(var(--color-strong));
-  --background-neutral-weak: rgb(var(--color-weak));
-  --background-neutral-weaker: rgb(var(--color-weaker));
-  --background-neutral-weakest: rgb(var(--color-weakest));
-
-  --background-primary: rgb(var(--color-primary-medium));
-  --background-primary-strongest: rgb(var(--color-primary-strongest));
-  --background-primary-stronger: rgb(var(--color-primary-stronger));
-  --background-primary-strong: rgb(var(--color-primary-strong));
-  --background-primary-weak: rgb(var(--color-primary-weak));
-  --background-primary-weaker: rgb(var(--color-primary-weaker));
-  --background-primary-weakest: rgb(var(--color-primary-weakest));
-
-  --background-warning: rgb(var(--color-warning-medium));
-  --background-warning-strongest: rgb(var(--color-warning-strongest));
-  --background-warning-stronger: rgb(var(--color-warning-stronger));
-  --background-warning-strong: rgb(var(--color-warning-strong));
-  --background-warning-weak: rgb(var(--color-warning-weak));
-  --background-warning-weaker: rgb(var(--color-warning-weaker));
-  --background-warning-weakest: rgb(var(--color-warning-weakest));
-
-  --background-danger: rgb(var(--color-danger-medium));
-  --background-danger-strongest: rgb(var(--color-danger-strongest));
-  --background-danger-stronger: rgb(var(--color-danger-stronger));
-  --background-danger-strong: rgb(var(--color-danger-strong));
-  --background-danger-weak: rgb(var(--color-danger-weak));
-  --background-danger-weaker: rgb(var(--color-danger-weaker));
-  --background-danger-weakest: rgb(var(--color-danger-weakest));
-
-  --background-success: rgb(var(--color-success-medium));
-  --background-success-strongest: rgb(var(--color-success-strongest));
-  --background-success-stronger: rgb(var(--color-success-stronger));
-  --background-success-strong: rgb(var(--color-success-strong));
-  --background-success-weak: rgb(var(--color-success-weak));
-  --background-success-weaker: rgb(var(--color-success-weaker));
-  --background-success-weakest: rgb(var(--color-success-weakest));
-
-  --background-accent: rgb(var(--color-accent-medium));
-  --background-accent-strongest: rgb(var(--color-accent-strongest));
-  --background-accent-stronger: rgb(var(--color-accent-stronger));
-  --background-accent-strong: rgb(var(--color-accent-strong));
-  --background-accent-weak: rgb(var(--color-accent-weak));
-  --background-accent-weaker: rgb(var(--color-accent-weaker));
-  --background-accent-weakest: rgb(var(--color-accent-weakest));
-
-  --background-info: rgb(var(--color-info-medium));
-  --background-info-strongest: rgb(var(--color-info-strongest));
-  --background-info-stronger: rgb(var(--color-info-stronger));
-  --background-info-strong: rgb(var(--color-info-strong));
-  --background-info-weak: rgb(var(--color-info-weak));
-  --background-info-weaker: rgb(var(--color-info-weaker));
-  --background-info-weakest: rgb(var(--color-info-weakest));
-
-  /* Overlay Backgrounds */
-  --background-overlay: rgb(var(--color-weak) / 0.80);
-  --background-overlay-hover: rgb(var(--color-stronger) / 0.90);
-  --background-scrim: rgb(var(--color-strongest) / 0.8);
-
-  /* ==========================================================================
-     Text Colors
-     ========================================================================== */
-
-  /* Base Text */
-  --text-strong: rgb(var(--color-strongest));
-  --text-foreground: rgb(var(--color-stronger));
-  --text-weak: rgb(var(--color-strong));
-  --text-muted: rgb(var(--color-medium));
-
-  /* Status Text */
-  --text-primary: rgb(var(--color-primary-stronger));
-  --text-primary-strong: rgb(var(--color-primary-strongest));
-  --text-warning: rgb(var(--color-warning-stronger));
-  --text-warning-strong: rgb(var(--color-warning-strongest));
-  --text-danger: rgb(var(--color-danger-stronger));
-  --text-danger-strong: rgb(var(--color-danger-strongest));
-  --text-success: rgb(var(--color-success-stronger));
-  --text-success-strong: rgb(var(--color-success-strongest));
-  --text-accent: rgb(var(--color-accent-stronger));
-  --text-accent-strong: rgb(var(--color-accent-strongest));
-  --text-info: rgb(var(--color-info-stronger));
-  --text-info-strong: rgb(var(--color-info-strongest));
-
-  /* Inverse Text */
-  --text-inverse: rgb(var(--color-white));
-
-  /* ==========================================================================
-     Border Colors
-     ========================================================================== */
-
-  /* Borders */
-  --border-strong: rgb(var(--color-medium));
-  --border-base: rgb(var(--color-weak));
-  --border-weak: rgb(var(--color-weaker));
-
-  --border-primary-strong: rgb(var(--color-primary-medium));
-  --border-primary: rgb(var(--color-primary-weak));
-  --border-primary-weak: rgb(var(--color-primary-weaker));
-
-  --border-warning-strong: rgb(var(--color-warning-medium));
-  --border-warning: rgb(var(--color-warning-weak));
-  --border-warning-weak: rgb(var(--color-warning-weaker));
-
-  --border-danger-strong: rgb(var(--color-danger-medium));
-  --border-danger: rgb(var(--color-danger-weak));
-  --border-danger-weak: rgb(var(--color-danger-weaker));
-
-  --border-success-strong: rgb(var(--color-success-medium));
-  --border-success: rgb(var(--color-success-weak));
-  --border-success-weak: rgb(var(--color-success-weaker));
-
-  --border-accent-strong: rgb(var(--color-accent-medium));
-  --border-accent: rgb(var(--color-accent-weak));
-  --border-accent-weak: rgb(var(--color-accent-weaker));
-
-  --border-info-strong: rgb(var(--color-info-medium));
-  --border-info: rgb(var(--color-info-weak));
-  --border-info-weak: rgb(var(--color-info-weaker));
-
-  /* Focus Rings */
-  --ring-default: rgb(var(--color-weak));
-  --ring-primary: rgb(var(--color-primary-strong));
-  --ring-danger: rgb(var(--color-danger-500));
-
-  /* ==========================================================================
-     Component Specific
-     ========================================================================== */
-
-  /* Cards */
-  --card-background: var(--background-surface);
-  --card-border: var(--color-weakest);
-  --card-shadow: var(--shadow-sm);
-
-  /* Popovers */
-  --popover-background: var(--background-surface);
-  --popover-border: var(--color-weakest);
-  --popover-shadow: var(--shadow);
-
-  /* Navigation */
-  --nav-background: var(--background-surface);
-  --nav-border: var(--color-weakest);
-  --nav-shadow: var(--shadow-sm);
-  --nav-item-hover: var(--background-secondary);
-  --nav-item-active: var(--background-primary-weakest);
-
-  /* Tooltips */
-  --tooltip-background: rgb(var(--color-white));
-  --tooltip-text: rgb(var(--color-strong));
-
-  /* ==========================================================================
-     States
-     ========================================================================== */
-
-  /* Selection */
-  --selection-background: rgb(var(--color-primary-muted));
-  --selection-text: var(--text-base);
-
-  /* Focus */
-  --focus-ring: 0 0 0 var(--ring-width) var(--ring-primary);
-  --focus-ring-offset: var(--ring-offset);
-
-  /* Disabled */
-  --disabled-opacity: 0.5;
-}
-
-/* strong theme semantic overrides */
-[data-theme="strong"] {
-  /* Background Colors */
-  /* --background-page: rgb(var(--color-neutral-950));
-  --background-surface: rgb(var(--color-neutral-900));
-  --background-surface-raised: rgb(var(--color-neutral-800));
-  --background-surface-sunken: rgb(var(--color-neutral-950)); */
-
-  /* Text Colors */
-  /* --text-base: rgb(var(--color-neutral-50));
-  --text-secondary: rgb(var(--color-neutral-300));
-  --text-tertiary: rgb(var(--color-neutral-500));
-  --text-muted: rgb(var(--color-neutral-600)); */
-
-  /* Border Colors */
-  /* --border-default: rgb(var(--color-weaker));
-  --border-strong: rgb(var(--color-weak));
-  --border-subtle: rgb(var(--color-weakest)); */
-
-  /* Component Specific */
-  --card-shadow: none;
-  --nav-shadow: none;
-
-  /* Interactive States */
-  --selection-background: rgb(var(--color-primary-strongest));
-  --selection-text: rgb(var(--color-primary-muted));
-}
-
-/* Fullstory compatibility */
-:root {
-  --fs-mask-background: var(--background-surface);
-  --fs-mask-text: transparent;
-}
-
-.fs-mask {
-  background-color: var(--fs-mask-background);
-  color: var(--fs-mask-text);
-}
+   /* ==========================================================================
+      Background Colors
+      ========================================================================== */
+ 
+   /* Base Backgrounds */
+   --background-page: hsl(var(--color-background));
+   --background-input: hsl(var(--color-white));
+   --background-disabled: hsl(var(--color-muted));
+ 
+   --background-surface-raised: hsl(var(--color-white));
+   --background-surface-elevated: hsl(var(--color-white));
+   --background-surface: hsl(var(--color-white));
+   --background-surface-sunken: hsl(var(--color-muted));
+   --background-surface-hollowed: hsl(var(--color-weakest));
+ 
+   --background-neutral: hsl(var(--color-medium));
+   --background-neutral-strongest: hsl(var(--color-strongest));
+   --background-neutral-stronger: hsl(var(--color-stronger));
+   --background-neutral-strong: hsl(var(--color-strong));
+   --background-neutral-weak: hsl(var(--color-weak));
+   --background-neutral-weaker: hsl(var(--color-weaker));
+   --background-neutral-weakest: hsl(var(--color-weakest));
+ 
+   --background-primary: hsl(var(--color-primary-medium));
+   --background-primary-strongest: hsl(var(--color-primary-strongest));
+   --background-primary-stronger: hsl(var(--color-primary-stronger));
+   --background-primary-strong: hsl(var(--color-primary-strong));
+   --background-primary-weak: hsl(var(--color-primary-weak));
+   --background-primary-weaker: hsl(var(--color-primary-weaker));
+   --background-primary-weakest: hsl(var(--color-primary-weakest));
+ 
+   --background-warning: hsl(var(--color-warning-medium));
+   --background-warning-strongest: hsl(var(--color-warning-strongest));
+   --background-warning-stronger: hsl(var(--color-warning-stronger));
+   --background-warning-strong: hsl(var(--color-warning-strong));
+   --background-warning-weak: hsl(var(--color-warning-weak));
+   --background-warning-weaker: hsl(var(--color-warning-weaker));
+   --background-warning-weakest: hsl(var(--color-warning-weakest));
+ 
+   --background-danger: hsl(var(--color-danger-medium));
+   --background-danger-strongest: hsl(var(--color-danger-strongest));
+   --background-danger-stronger: hsl(var(--color-danger-stronger));
+   --background-danger-strong: hsl(var(--color-danger-strong));
+   --background-danger-weak: hsl(var(--color-danger-weak));
+   --background-danger-weaker: hsl(var(--color-danger-weaker));
+   --background-danger-weakest: hsl(var(--color-danger-weakest));
+ 
+   --background-success: hsl(var(--color-success-medium));
+   --background-success-strongest: hsl(var(--color-success-strongest));
+   --background-success-stronger: hsl(var(--color-success-stronger));
+   --background-success-strong: hsl(var(--color-success-strong));
+   --background-success-weak: hsl(var(--color-success-weak));
+   --background-success-weaker: hsl(var(--color-success-weaker));
+   --background-success-weakest: hsl(var(--color-success-weakest));
+ 
+   --background-accent: hsl(var(--color-accent-medium));
+   --background-accent-strongest: hsl(var(--color-accent-strongest));
+   --background-accent-stronger: hsl(var(--color-accent-stronger));
+   --background-accent-strong: hsl(var(--color-accent-strong));
+   --background-accent-weak: hsl(var(--color-accent-weak));
+   --background-accent-weaker: hsl(var(--color-accent-weaker));
+   --background-accent-weakest: hsl(var(--color-accent-weakest));
+ 
+   --background-info: hsl(var(--color-info-medium));
+   --background-info-strongest: hsl(var(--color-info-strongest));
+   --background-info-stronger: hsl(var(--color-info-stronger));
+   --background-info-strong: hsl(var(--color-info-strong));
+   --background-info-weak: hsl(var(--color-info-weak));
+   --background-info-weaker: hsl(var(--color-info-weaker));
+   --background-info-weakest: hsl(var(--color-info-weakest));
+ 
+   /* Overlay Backgrounds */
+   --background-overlay: hsl(var(--color-weak) / 0.80);
+   --background-overlay-hover: hsl(var(--color-stronger) / 0.90);
+   --background-scrim: hsl(var(--color-strongest) / 0.8);
+ 
+   /* ==========================================================================
+      Text Colors
+      ========================================================================== */
+ 
+   /* Base Text */
+   --text-strong: hsl(var(--color-strongest));
+   --text-foreground: hsl(var(--color-stronger));
+   --text-weak: hsl(var(--color-strong));
+   --text-muted: hsl(var(--color-medium));
+ 
+   /* Status Text */
+   --text-primary: hsl(var(--color-primary-stronger));
+   --text-primary-strong: hsl(var(--color-primary-strongest));
+   --text-warning: hsl(var(--color-warning-stronger));
+   --text-warning-strong: hsl(var(--color-warning-strongest));
+   --text-danger: hsl(var(--color-danger-stronger));
+   --text-danger-strong: hsl(var(--color-danger-strongest));
+   --text-success: hsl(var(--color-success-stronger));
+   --text-success-strong: hsl(var(--color-success-strongest));
+   --text-accent: hsl(var(--color-accent-stronger));
+   --text-accent-strong: hsl(var(--color-accent-strongest));
+   --text-info: hsl(var(--color-info-stronger));
+   --text-info-strong: hsl(var(--color-info-strongest));
+ 
+   /* Inverse Text */
+   --text-inverse: hsl(var(--color-white));
+ 
+   /* ==========================================================================
+      Border Colors
+      ========================================================================== */
+ 
+   /* Borders */
+   --border-strong: hsl(var(--color-medium));
+   --border-base: hsl(var(--color-weak));
+   --border-weak: hsl(var(--color-weaker));
+ 
+   --border-primary-strong: hsl(var(--color-primary-medium));
+   --border-primary: hsl(var(--color-primary-weak));
+   --border-primary-weak: hsl(var(--color-primary-weaker));
+ 
+   --border-warning-strong: hsl(var(--color-warning-medium));
+   --border-warning: hsl(var(--color-warning-weak));
+   --border-warning-weak: hsl(var(--color-warning-weaker));
+ 
+   --border-danger-strong: hsl(var(--color-danger-medium));
+   --border-danger: hsl(var(--color-danger-weak));
+   --border-danger-weak: hsl(var(--color-danger-weaker));
+ 
+   --border-success-strong: hsl(var(--color-success-medium));
+   --border-success: hsl(var(--color-success-weak));
+   --border-success-weak: hsl(var(--color-success-weaker));
+ 
+   --border-accent-strong: hsl(var(--color-accent-medium));
+   --border-accent: hsl(var(--color-accent-weak));
+   --border-accent-weak: hsl(var(--color-accent-weaker));
+ 
+   --border-info-strong: hsl(var(--color-info-medium));
+   --border-info: hsl(var(--color-info-weak));
+   --border-info-weak: hsl(var(--color-info-weaker));
+ 
+   /* Focus Rings */
+   --ring-default: hsl(var(--color-weak));
+   --ring-primary: hsl(var(--color-primary-strong));
+   --ring-danger: hsl(var(--color-danger-500));
+ 
+   /* ==========================================================================
+      Component Specific
+      ========================================================================== */
+ 
+   /* Cards */
+   --card-background: var(--background-surface);
+   --card-border: var(--color-weakest);
+   --card-shadow: var(--shadow-sm);
+ 
+   /* Popovers */
+   --popover-background: var(--background-surface);
+   --popover-border: var(--color-weakest);
+   --popover-shadow: var(--shadow);
+ 
+   /* Navigation */
+   --nav-background: var(--background-surface);
+   --nav-border: var(--color-weakest);
+   --nav-shadow: var(--shadow-sm);
+   --nav-item-hover: var(--background-secondary);
+   --nav-item-active: var(--background-primary-weakest);
+ 
+   /* Tooltips */
+   --tooltip-background: hsl(var(--color-white));
+   --tooltip-text: hsl(var(--color-strong));
+ 
+   /* ==========================================================================
+      States
+      ========================================================================== */
+ 
+   /* Selection */
+   --selection-background: hsl(var(--color-primary-muted));
+   --selection-text: var(--text-base);
+ 
+   /* Focus */
+   --focus-ring: 0 0 0 var(--ring-width) var(--ring-primary);
+   --focus-ring-offset: var(--ring-offset);
+ 
+   /* Disabled */
+   --disabled-opacity: 0.5;
+ }
+ 
+ /* strong theme semantic overrides */
+ [data-theme="dark"] {
+ 
+ }
+ 
+ /* Fullstory compatibility */
+ :root {
+   --fs-mask-background: var(--background-surface);
+   --fs-mask-text: transparent;
+ }
+ 
+ .fs-mask {
+   background-color: var(--fs-mask-background);
+   color: var(--fs-mask-text);
+ }

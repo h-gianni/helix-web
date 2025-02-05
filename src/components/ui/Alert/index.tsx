@@ -8,11 +8,11 @@ import {
   HelpCircle,
   CheckCircle,
   CircleCheckBig,
-} from 'lucide-react';
+} from "lucide-react";
 
-type AlertVariant = "default" | "primary" | "danger" | "warning" | "success";
-type AlertSize = "sm" | "base";
-type AlertIcon = "AlertCircle" | "Bell" | "TriangleAlert" | "OctagonX" | "CircleHelp" | "CircleCheck" | "CircleCheckBig";
+export type AlertVariant = "default" | "primary" | "danger" | "warning" | "success";
+export type AlertSize = "sm" | "base";
+export type AlertIcon = "AlertCircle" | "Bell" | "TriangleAlert" | "OctagonX" | "CircleHelp" | "CircleCheck" | "CircleCheckBig";
 
 const iconMap = {
   AlertCircle,
@@ -29,12 +29,12 @@ interface AlertContextValue {
   size: AlertSize;
 }
 
-const AlertContext = createContext<AlertContextValue>({ 
+const AlertContext = createContext<AlertContextValue>({
   variant: "default",
-  size: "base"
+  size: "base",
 });
 
-interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: AlertVariant;
   size?: AlertSize;
   fullWidth?: boolean;
@@ -44,39 +44,41 @@ interface AlertProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
-  ({ 
-    className, 
-    variant = "default", 
-    size = "base",
-    fullWidth = false,
-    icon = "AlertCircle",
-    withTitle = true,
-    withDescription = true,
-    children,
-    ...props 
-  }, ref) => (
-    <div className={fullWidth ? 'w-full' : 'w-fit'}>
-      <AlertContext.Provider value={{ variant, size }}>
-        <div
-          ref={ref}
-          role="alert"
-          className={cn(
-            "alert-base",
-            `alert-${variant}`,
-            `alert-${size}`,
-            className
-          )}
-          {...props}
-        >
-          {children}
-        </div>
-      </AlertContext.Provider>
-    </div>
-  )
+  (
+    {
+      className,
+      variant = "default",
+      size = "base",
+      fullWidth = false,
+      icon = "AlertCircle",
+      withTitle = true,
+      withDescription = true,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <div className={fullWidth ? "w-full" : "w-fit"}>
+        <AlertContext.Provider value={{ variant, size }}>
+          <div
+            ref={ref}
+            role="alert"
+            className={cn("ui-alert", className)}
+            data-variant={variant}
+            data-size={size}
+            {...props}
+          >
+            {children}
+          </div>
+        </AlertContext.Provider>
+      </div>
+    );
+  }
 );
 Alert.displayName = "Alert";
 
-interface AlertIconProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AlertIconProps extends React.HTMLAttributes<HTMLDivElement> {
   icon?: AlertIcon;
 }
 
@@ -88,12 +90,9 @@ const AlertIconContainer = React.forwardRef<HTMLDivElement, AlertIconProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          "alert-icon",
-          `alert-icon-${variant}`,
-          `alert-icon-${size}`,
-          className
-        )}
+        className={cn("ui-alert-icon", className)}
+        data-variant={variant}
+        data-size={size}
         {...props}
       >
         {props.children || <IconComponent />}
@@ -103,19 +102,14 @@ const AlertIconContainer = React.forwardRef<HTMLDivElement, AlertIconProps>(
 );
 AlertIconContainer.displayName = "AlertIconContainer";
 
-const AlertContent = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("alert-content", className)}
-    {...props}
-  />
-));
+const AlertContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn("ui-alert-content", className)} {...props} />
+  )
+);
 AlertContent.displayName = "AlertContent";
 
-interface AlertTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
+export interface AlertTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
   show?: boolean;
 }
 
@@ -127,12 +121,9 @@ const AlertTitle = React.forwardRef<HTMLHeadingElement, AlertTitleProps>(
     return (
       <h5
         ref={ref}
-        className={cn(
-          "alert-title",
-          `alert-title-${variant}`,
-          `alert-title-${size}`,
-          className
-        )}
+        className={cn("ui-alert-title", className)}
+        data-variant={variant}
+        data-size={size}
         {...props}
       />
     );
@@ -140,7 +131,7 @@ const AlertTitle = React.forwardRef<HTMLHeadingElement, AlertTitleProps>(
 );
 AlertTitle.displayName = "AlertTitle";
 
-interface AlertDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
+export interface AlertDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
   show?: boolean;
 }
 
@@ -152,12 +143,9 @@ const AlertDescription = React.forwardRef<HTMLParagraphElement, AlertDescription
     return (
       <p
         ref={ref}
-        className={cn(
-          "alert-description",
-          `alert-description-${variant}`,
-          `alert-description-${size}`,
-          className
-        )}
+        className={cn("ui-alert-description", className)}
+        data-variant={variant}
+        data-size={size}
         {...props}
       />
     );
@@ -165,15 +153,11 @@ const AlertDescription = React.forwardRef<HTMLParagraphElement, AlertDescription
 );
 AlertDescription.displayName = "AlertDescription";
 
-export { 
-  type AlertProps,
-  type AlertIcon,
-  type AlertVariant,
-  type AlertSize,
-  Alert, 
-  AlertIconContainer, 
-  AlertContent, 
-  AlertTitle, 
+export {
+  Alert,
+  AlertIconContainer,
+  AlertContent,
+  AlertTitle,
   AlertDescription,
-  iconMap
+  iconMap,
 };

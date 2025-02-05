@@ -3,16 +3,20 @@
 import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+export type AccordionSize = "sm" | "base" | "lg";
 
 const Accordion = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Root> & {
-    size?: "sm" | "base" | "lg";
+    size?: AccordionSize;
   }
 >(({ size = "base", className, ...props }, ref) => (
   <AccordionPrimitive.Root
     ref={ref}
-    className={`accordionRoot ${size} ${className}`}
+    className={cn("ui-accordion", className)}
+    data-size={size}
     {...props}
   />
 ));
@@ -24,7 +28,7 @@ const AccordionItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <AccordionPrimitive.Item
     ref={ref}
-    className={`accordionItem ${className}`}
+    className={cn("ui-accordion-item", className)}
     {...props}
   />
 ));
@@ -34,10 +38,10 @@ const AccordionTrigger = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
 >(({ className, children, ...props }, ref) => (
-  <AccordionPrimitive.Header className="accordionHeader">
+  <AccordionPrimitive.Header className="ui-accordion-header">
     <AccordionPrimitive.Trigger
       ref={ref}
-      className={`accordionTrigger ${className}`}
+      className={cn("ui-accordion-trigger", className)}
       {...props}
     >
       {children}
@@ -53,10 +57,10 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className={`accordionContent ${className}`}
+    className={cn("ui-accordion-content", className)}
     {...props}
   >
-    <div className="contentInner">{children}</div>
+    <div className="ui-accordion-content-inner">{children}</div>
   </AccordionPrimitive.Content>
 ));
 AccordionContent.displayName = AccordionPrimitive.Content.displayName;

@@ -58,7 +58,6 @@ const config: Config = {
     },
     extend: {
       colors: {
-
         // Text colors (no prefix for utility `text-{value}`)
         strong: "var(--text-strong)",
         foreground: "var(--text-foreground)",
@@ -117,7 +116,7 @@ const config: Config = {
         "2xl": "var(--shadow-2xl)",
       },
       fontSize: {
-        base: '14px', // Set the base font size to 14px
+        base: "14px", // Set the base font size to 14px
       },
       fontFamily: {
         sans: "var(--font-family-sans)",
@@ -131,6 +130,18 @@ const config: Config = {
   plugins: [
     require("tailwindcss-animate"),
     require("tailwind-scrollbar"),
+
+    // Add UI Components Plugin
+    plugin(({ addComponents }) => {
+      addComponents({
+        ".ui-base": {
+          // Common base styles for all UI components
+          "@apply transition-all": {},
+          "transition-duration": "var(--duration-normal)",
+          "transition-timing-function": "var(--ease-out)",
+        },
+      });
+    }),
 
     // Animation utilities plugin
     plugin(({ addUtilities }) => {

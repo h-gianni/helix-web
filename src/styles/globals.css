@@ -4,9 +4,11 @@
 
 @layer base {
   body {
-    font-size: 14px !important; /*set the body size*/
     @apply bg-body font-sans text-base;
-    /* font-family: var(--font-roboto-flex), system-ui, -apple-system, sans-serif; */
+    font-optical-sizing: auto;
+  }
+  main {
+    @apply w-full p-base;
   }
 
   :root {
@@ -36,866 +38,790 @@
 
 /* Add your custom components after @tailwind components */
 @layer components {
-  main {
+  /* ==========================================================================
+     Layout
+     ========================================================================== */
+  .ui-main {
     @apply space-y-4 p-4 w-full;
   }
 
   /* ==========================================================================
-     Typography
+     Typography System
      ========================================================================== */
 
-  .text-display-1,
-  .text-display-2,
-  .text-heading-1,
-  .text-heading-2,
-  .text-heading-3,
-  .text-heading-4,
-  .text-heading-5,
-  .text-heading-6 {
+  /* Display and Heading Shared Styles */
+  .ui-text-display,
+  .ui-text-heading {
     @apply font-sans text-strong;
   }
-  .text-display-1,
-  .text-display-2,
-  .text-heading-1 {
-    @apply leading-tight;
-  }
-  .text-heading-3,
-  .text-heading-4,
-  .text-heading-5 {
-    @apply leading-normal;
-  }
-  .text-display-1,
-  .text-display-2,
-  .text-heading-1,
-  .text-heading-2,
-  .text-heading-3 {
-    @apply tracking-tight;
-  }
-  .text-heading-4,
-  .text-heading-5,
-  .text-heading-6 {
-    @apply tracking-normal;
-  }
-  .text-display-1,
-  .text-display-2 {
-    @apply font-bold;
-  }
-  .text-heading-1,
-  .text-heading-2,
-  .text-heading-3,
-  .text-heading-4,
-  .text-heading-5,
-  .text-heading-6 {
-    @apply font-semibold;
-  }
 
-  /* Display styles */
-  .text-display-1 {
+  /* Display Typography */
+  .ui-text-display {
+    @apply font-bold leading-tight tracking-tight;
+  }
+  .ui-text-display-1 {
     font-size: var(--font-size-4xl);
   }
-
-  .text-display-2 {
+  .ui-text-display-2 {
     font-size: var(--font-size-3xl);
   }
 
-  /* Heading styles */
-  .text-heading-1 {
+  /* Heading Typography */
+  .ui-text-heading {
+    @apply font-semibold capitalize;
+  }
+
+  /* Individual Heading Levels */
+  .ui-text-heading-1 {
+    @apply ui-text-heading leading-tight tracking-tight;
     font-size: var(--font-size-2xl);
   }
 
-  .text-heading-2 {
+  .ui-text-heading-2 {
+    @apply ui-text-heading leading-tight tracking-tight;
     font-size: var(--font-size-xl);
     line-height: var(--line-height-snug);
   }
 
-  .text-heading-3 {
+  .ui-text-heading-3 {
+    @apply ui-text-heading leading-normal;
     font-size: var(--font-size-lg);
     letter-spacing: var(--letter-spacing-tight);
   }
 
-  .text-heading-4 {
+  .ui-text-heading-4 {
+    @apply ui-text-heading leading-normal tracking-normal;
     font-size: var(--font-size-base);
   }
 
-  .text-heading-5 {
+  .ui-text-heading-5 {
+    @apply ui-text-heading leading-normal tracking-normal;
     font-size: var(--font-size-sm);
   }
 
-  .text-heading-6 {
+  .ui-text-heading-6 {
+    @apply ui-text-heading tracking-normal;
     font-size: var(--font-size-xs);
     line-height: var(--line-height-none);
     font-weight: var(--font-weight-medium);
   }
 
-  /* Body styles */
-  .text-copy-large,
-  .text-copy,
-  .text-copy-small,
-  .text-helper,
-  .text-label,
-  .text-caption,
-  .text-footnote,
-  .text-overline,
-  .text-button {
-    @apply font-sans;
-  }
-  .text-copy-large,
-  .text-copy,
-  .text-copy-small,
-  .text-helper,
-  .text-caption,
-  .text-footnote,
-  .text-button,
-  .text-code {
-    @apply leading-normal;
-  }
-  .text-copy-large,
-  .text-copy,
-  .text-label,
-  .text-caption,
-  .text-footnote,
-  .text-overline,
-  .text-button,
-  .text-code {
-    @apply tracking-normal;
-  }
-  .text-copy-large,
-  .text-copy,
-  .text-copy-small,
-  .text-helper,
-  .text-caption,
-  .text-footnote,
-  .text-code {
-    @apply font-normal;
-  }
-  .text-copy-large,
-  .text-copy,
-  .text-copy-small,
-  .text-overline {
-    @apply text-foreground;
-  }
-  .text-helper,
-  .text-caption,
-  .text-footnote {
-    @apply text-weak;
+  /* Body Typography */
+  .ui-text-body {
+    @apply font-sans font-normal;
   }
 
-  .text-copy-large {
+  /* Body Text Sizes */
+  .ui-text-body-large {
+    @apply ui-text-body leading-normal tracking-normal text-foreground;
     font-size: var(--font-size-lg);
   }
 
-  .text-copy {
+  .ui-text-body-base {
+    @apply ui-text-body leading-normal tracking-normal text-foreground;
     font-size: var(--font-size-base);
   }
 
-  .text-copy-small {
+  .ui-text-body-small {
+    @apply ui-text-body leading-tight tracking-normal text-foreground;
     font-size: var(--font-size-sm);
-    line-height: var(--line-height-tight);
   }
 
-  .text-helper {
+  .ui-text-body-helper {
+    @apply ui-text-body leading-tight tracking-normal text-weak;
     font-size: var(--font-size-sm);
-    line-height: var(--line-height-tight);
   }
 
-  /* UI Element styles */
-  .text-label {
-    @apply text-sm font-medium tracking-tight;
-  }
-
-  .text-caption {
+  .ui-text-body-caption {
+    @apply ui-text-body leading-tight tracking-normal text-weak;
     font-size: var(--font-size-sm);
-    line-height: var(--line-height-tight);
   }
 
-  .text-footnote {
+  .ui-text-body-footnote {
+    @apply ui-text-body leading-tight tracking-normal text-weak;
     font-size: var(--font-size-xxs);
-    line-height: var(--line-height-tight);
   }
 
-  .text-overline {
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-medium);
-    letter-spacing: var(--letter-spacing-wider);
-    text-transform: uppercase;
-  }
-
-  .text-code {
-    font-family: var(--font-family-mono);
-    font-size: var(--font-size-sm);
-  }
-
-  /* Interactive styles */
-  .text-link {
-    @apply cursor-pointer;
+  /* Interactive Typography */
+  .ui-text-link {
+    @apply cursor-pointer font-medium;
     text-decoration-line: underline;
     text-underline-offset: 0.2em;
-    font-weight: var(--font-weight-medium);
     transition: all 150ms var(--ease-in-out);
   }
-
-  .text-button {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    letter-spacing: var(--letter-spacing-wide);
+  .ui-text-button {
+    @apply font-medium tracking-wide;
+  }
+  .ui-text-overline {
+    @apply font-medium uppercase text-foreground;
+    font-size: var(--font-size-xs);
+    letter-spacing: var(--letter-spacing-wider);
   }
 
-  /* Neutral Text */
-  .text-neutral,
-  .text-foreground {
+  /* Code Typography */
+  .ui-text-code {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+    @apply leading-normal tracking-normal font-normal;
+  }
+
+  /* ==========================================================================
+     Text Colors
+     ========================================================================== */
+
+  /* Base Text Colors */
+  .ui-text-neutral {
     color: var(--text-foreground);
   }
-  .text-weak {
+  .ui-text-weak {
     color: var(--text-weak);
   }
-  .text-strong {
+  .ui-text-strong {
     color: var(--text-strong);
   }
+  .ui-text-muted {
+    color: var(--text-muted);
+  }
+  .ui-text-inverse {
+    color: var(--text-inverse);
+  }
 
-  /* Primary Text */
-  .text-primary {
+  /* Primary Colors */
+  .ui-text-primary {
     color: var(--text-primary);
   }
-  .text-primary-strong {
+  .ui-text-primary-strong {
     color: var(--text-primary-strong);
   }
 
-  /* Warning Text */
-  .text-warning {
+  /* Warning Colors */
+  .ui-text-warning {
     color: var(--text-warning);
   }
-  .text-warning-strong {
+  .ui-text-warning-strong {
     color: var(--text-warning-strong);
   }
 
-  /* Danger Text */
-  .text-danger {
+  /* Danger Colors */
+  .ui-text-danger {
     color: var(--text-danger);
   }
-  .text-danger-strong {
+  .ui-text-danger-strong {
     color: var(--text-danger-strong);
   }
 
-  /* Success Text */
-  .text-success {
+  /* Success Colors */
+  .ui-text-success {
     color: var(--text-success);
   }
-  .text-success-strong {
+  .ui-text-success-strong {
     color: var(--text-success-strong);
   }
 
-  /* Accent Text */
-  .text-accent {
+  /* Accent Colors */
+  .ui-text-accent {
     color: var(--text-accent);
   }
-  /* Accent Text */
-  .text-accent-strong {
+  .ui-text-accent-strong {
     color: var(--text-accent-strong);
   }
 
-  /* Info Text */
-  .text-info {
+  /* Info Colors */
+  .ui-text-info {
     color: var(--text-info);
   }
-  /* Info Text */
-  .text-info-strong {
+  .ui-text-info-strong {
     color: var(--text-info-strong);
   }
 
   /* ==========================================================================
-     Backgrounds + Fills
+     Background Colors
      ========================================================================== */
 
-  /* Default Hover Background */
-  .bg-base-hover {
-    @apply hover:bg-surface-sunken;
+  /* Base Background Colors */
+  .ui-background-body {
+    background-color: var(--background-page);
+  }
+  .ui-background-input {
+    background-color: var(--background-input);
+  }
+  .ui-background-disabled {
+    background-color: var(--background-disabled);
   }
 
-  /* Neutral Backgrounds */
-  .bg-neutral {
+  /* Surface Variants */
+  .ui-background-surface {
+    background-color: var(--background-surface);
+  }
+  .ui-background-surface-raised {
+    background-color: var(--background-surface-raised);
+  }
+  .ui-background-surface-elevated {
+    background-color: var(--background-surface-elevated);
+  }
+  .ui-background-surface-sunken {
+    background-color: var(--background-surface-sunken);
+  }
+  .ui-background-surface-hollowed {
+    background-color: var(--background-surface-hollowed);
+  }
+
+  /* Neutral Colors */
+  .ui-background-neutral {
     background-color: var(--background-neutral);
   }
-  .bg-neutral-weak {
+  .ui-background-neutral-weak {
     background-color: var(--background-neutral-weak);
   }
-  .bg-neutral-weaker {
+  .ui-background-neutral-weaker {
     background-color: var(--background-neutral-weaker);
   }
-  .bg-neutral-weakest {
+  .ui-background-neutral-weakest {
     background-color: var(--background-neutral-weakest);
   }
-  .bg-neutral-strong {
+  .ui-background-neutral-strong {
     background-color: var(--background-neutral-strong);
   }
-  .bg-neutral-stronger {
+  .ui-background-neutral-stronger {
     background-color: var(--background-neutral-stronger);
   }
-  .bg-neutral-strongest {
+  .ui-background-neutral-strongest {
     background-color: var(--background-neutral-strongest);
-  }  
-  .fill-neutral {
-    fill: var(--background-neutral);
   }
 
-  /* Primary Backgrounds */
-  .bg-primary {
+  /* Primary Colors */
+  .ui-background-primary {
     background-color: var(--background-primary);
   }
-  .bg-primary-weak {
+  .ui-background-primary-weak {
     background-color: var(--background-primary-weak);
   }
-  .bg-primary-weaker {
+  .ui-background-primary-weaker {
     background-color: var(--background-primary-weaker);
   }
-  .bg-primary-weakest {
+  .ui-background-primary-weakest {
     background-color: var(--background-primary-weakest);
   }
-  .bg-primary-strong {
+  .ui-background-primary-strong {
     background-color: var(--background-primary-strong);
   }
-  .bg-primary-stronger {
+  .ui-background-primary-stronger {
     background-color: var(--background-primary-stronger);
   }
-  .bg-primary-strongest {
+  .ui-background-primary-strongest {
     background-color: var(--background-primary-strongest);
   }
-  .fill-primary {
-    fill: var(--background-primary);
-  }
 
-  /* Warning Backgrounds */
-  .bg-warning {
+  /* Warning Colors */
+  .ui-background-warning {
     background-color: var(--background-warning);
   }
-  .bg-warning-weak {
+  .ui-background-warning-weak {
     background-color: var(--background-warning-weak);
   }
-  .bg-warning-weaker {
+  .ui-background-warning-weaker {
     background-color: var(--background-warning-weaker);
   }
-  .bg-warning-weakest {
+  .ui-background-warning-weakest {
     background-color: var(--background-warning-weakest);
   }
-  .bg-warning-strong {
+  .ui-background-warning-strong {
     background-color: var(--background-warning-strong);
   }
-  .bg-warning-stronger {
+  .ui-background-warning-stronger {
     background-color: var(--background-warning-stronger);
   }
-  .bg-warning-strongest {
+  .ui-background-warning-strongest {
     background-color: var(--background-warning-strongest);
-  }  
-  .fill-warning {
-    fill: var(--background-warning);
   }
 
-  /* Danger Backgrounds */
-  .bg-danger{
+  /* Danger Colors */
+  .ui-background-danger {
     background-color: var(--background-danger);
   }
-  .bg-danger-weak {
+  .ui-background-danger-weak {
     background-color: var(--background-danger-weak);
   }
-  .bg-danger-weaker {
+  .ui-background-danger-weaker {
     background-color: var(--background-danger-weaker);
   }
-  .bg-danger-weakest {
+  .ui-background-danger-weakest {
     background-color: var(--background-danger-weakest);
   }
-  .bg-danger-strong {
+  .ui-background-danger-strong {
     background-color: var(--background-danger-strong);
   }
-  .bg-danger-stronger {
+  .ui-background-danger-stronger {
     background-color: var(--background-danger-stronger);
   }
-  .bg-danger-strongest {
+  .ui-background-danger-strongest {
     background-color: var(--background-danger-strongest);
-  }  
-  .fill-danger {
-    fill: var(--background-danger);
   }
 
-  /* Success Backgrounds */
-  .bg-success {
+  /* Success Colors */
+  .ui-background-success {
     background-color: var(--background-success);
   }
-  .bg-success-weak {
+  .ui-background-success-weak {
     background-color: var(--background-success-weak);
   }
-  .bg-success-weaker {
+  .ui-background-success-weaker {
     background-color: var(--background-success-weaker);
   }
-  .bg-success-weakest {
+  .ui-background-success-weakest {
     background-color: var(--background-success-weakest);
   }
-  .bg-success-strong {
+  .ui-background-success-strong {
     background-color: var(--background-success-strong);
   }
-  .bg-success-stronger {
+  .ui-background-success-stronger {
     background-color: var(--background-success-stronger);
   }
-  .bg-success-strongest {
+  .ui-background-success-strongest {
     background-color: var(--background-success-strongest);
-  }  
-  .fill-success {
-    fill: var(--background-success);
   }
 
-  /* Accent Backgrounds */
-  .bg-accent {
+  /* Accent Colors */
+  .ui-background-accent {
     background-color: var(--background-accent);
   }
-  .bg-accent-weak {
+  .ui-background-accent-weak {
     background-color: var(--background-accent-weak);
   }
-  .bg-accent-weaker {
+  .ui-background-accent-weaker {
     background-color: var(--background-accent-weaker);
   }
-  .bg-accent-weakest {
+  .ui-background-accent-weakest {
     background-color: var(--background-accent-weakest);
   }
-  .bg-accent-strong {
+  .ui-background-accent-strong {
     background-color: var(--background-accent-strong);
   }
-  .bg-accent-stronger {
+  .ui-background-accent-stronger {
     background-color: var(--background-accent-stronger);
   }
-  .bg-accent-strongest {
+  .ui-background-accent-strongest {
     background-color: var(--background-accent-strongest);
-  }  
-  .fill-accent {
-    fill: var(--background-accent);
   }
 
-  /* Info Backgrounds */
-  .bg-info {
+  /* Info Colors */
+  .ui-background-info {
     background-color: var(--background-info);
   }
-  .bg-info-weak {
+  .ui-background-info-weak {
     background-color: var(--background-info-weak);
   }
-  .bg-info-weaker {
+  .ui-background-info-weaker {
     background-color: var(--background-info-weaker);
   }
-  .bg-info-weakest {
+  .ui-background-info-weakest {
     background-color: var(--background-info-weakest);
   }
-  .bg-info-strong {
+  .ui-background-info-strong {
     background-color: var(--background-info-strong);
   }
-  .bg-info-stronger {
+  .ui-background-info-stronger {
     background-color: var(--background-info-stronger);
   }
-  .bg-info-strongest {
+  .ui-background-info-strongest {
     background-color: var(--background-info-strongest);
   }
-  .fill-info {
+
+  /* Fill Colors */
+  .ui-fill-neutral {
+    fill: var(--background-neutral);
+  }
+  .ui-fill-primary {
+    fill: var(--background-primary);
+  }
+  .ui-fill-warning {
+    fill: var(--background-warning);
+  }
+  .ui-fill-danger {
+    fill: var(--background-danger);
+  }
+  .ui-fill-success {
+    fill: var(--background-success);
+  }
+  .ui-fill-accent {
+    fill: var(--background-accent);
+  }
+  .ui-fill-info {
     fill: var(--background-info);
   }
 
   /* ==========================================================================
-     Borders + Rings + Divides
+     Borders
      ========================================================================== */
 
-  /* General Border Styles: DON NOT USE BORDER-BASE (conflict with TEXT-BASE (as with strong, etc..) */
-  /* Neutral Border Styles */
-  .border-neutral-base,
-  .ring-neutral-base,
-  .divide-neutral-base  {
+  /* Neutral Borders */
+  .ui-border-neutral {
     border-color: var(--border-base);
   }
-  .border-neutral-strong,
-  .ring-neutral-strong,
-  .divide-neutral-strong {
+  .ui-border-neutral-strong {
     border-color: var(--border-strong);
   }
-  .border-neutral-weak,
-  .ring-neutral-weak,
-  .divide-neutral-weak {
+  .ui-border-neutral-weak {
     border-color: var(--border-weak);
   }
 
-  /* Primary Border Styles */
-  .border-primary,
-  .ring-primary {
+  /* Primary Borders */
+  .ui-border-primary {
     border-color: var(--border-primary);
   }
-  .border-primary-strong,
-  .ring-primary-strong {
+  .ui-border-primary-strong {
     border-color: var(--border-primary-strong);
   }
-  .border-primary-weak,
-  .ring-primary-weak {
+  .ui-border-primary-weak {
     border-color: var(--border-primary-weak);
   }
 
-  /* Warning Border Styles */
-  .border-warning {
+  /* Warning Borders */
+  .ui-border-warning {
     border-color: var(--border-warning);
   }
-  .border-warning-strong {
+  .ui-border-warning-strong {
     border-color: var(--border-warning-strong);
   }
-  .border-warning-weak {
+  .ui-border-warning-weak {
     border-color: var(--border-warning-weak);
   }
 
-  /* Danger Border Styles */
-  .border-danger {
+  /* Danger Borders */
+  .ui-border-danger {
     border-color: var(--border-danger);
   }
-  .border-danger-strong {
+  .ui-border-danger-strong {
     border-color: var(--border-danger-strong);
   }
-  .border-danger-weak {
+  .ui-border-danger-weak {
     border-color: var(--border-danger-weak);
   }
 
-  /* Success Border Styles */
-  .border-success {
+  /* Success Borders */
+  .ui-border-success {
     border-color: var(--border-success);
   }
-  .border-success-strong {
+  .ui-border-success-strong {
     border-color: var(--border-success-strong);
   }
-  .border-success-weak {
+  .ui-border-success-weak {
     border-color: var(--border-success-weak);
   }
 
-  /* Accent Border Styles */
-  .border-accent {
+  /* Accent Borders */
+  .ui-border-accent {
     border-color: var(--border-accent);
   }
-  .border-accent-strong {
+  .ui-border-accent-strong {
     border-color: var(--border-accent-strong);
   }
-  .border-accent-weak {
+  .ui-border-accent-weak {
     border-color: var(--border-accent-weak);
   }
 
-  /* Info Border Styles */
-  .border-info {
+  /* Info Borders */
+  .ui-border-info {
     border-color: var(--border-info);
   }
-  .border-info-strong {
+  .ui-border-info-strong {
     border-color: var(--border-info-strong);
   }
-  .border-info-weak {
+  .ui-border-info-weak {
     border-color: var(--border-info-weak);
   }
 
-  /* ==========================================================================
-       Overlay
-       ========================================================================== */
+  /* Ring Colors */
+  /* Neutral Ring Colors */
+  .ui-ring-neutral {
+    --tw-ring-color: var(--border-base);
+  }
+  .ui-ring-neutral-strong {
+    --tw-ring-color: var(--border-strong);
+  }
+  .ui-ring-neutral-weak {
+    --tw-ring-color: var(--border-weak);
+  }
 
-  /* Overlay Basics */
-  .overlay-basics {
-    position: fixed;
-    inset: 0;
-    background-color: var(--background-overlay);
-    backdrop-filter: blur(var(--overlay-blur));
-    z-index: var(--z-modal);
+  /* State Ring Colors */
+  .ui-ring-primary {
+    --tw-ring-color: var(--ring-primary);
+  }
+  .ui-ring-danger {
+    --tw-ring-color: var(--ring-danger);
   }
 
   /* ==========================================================================
-       Dialog (used in multiple components)
-       ========================================================================== */
+ Form Elements
+ ========================================================================== */
 
-  /* Dialog Basics */
-  .dialog-basics {
+  /* Base Form Styles */
+  .ui-form-base {
+    @apply bg-input text-foreground leading-none tracking-tight
+  border rounded-base
+  placeholder:text-muted
+  transition-all;
+    border-color: var(--border-base);
+    transition-timing-function: var(--ease-out);
+    transition-duration: var(--duration-normal);
+
+    &:hover {
+      border-color: var(--border-strong);
+    }
+
+    &:focus {
+      border-color: var(--border-primary);
+      outline: none;
+      --tw-ring-width: 2px;
+      --tw-ring-offset-width: 2px;
+      --tw-ring-color: var(--ring-primary);
+      --tw-ring-offset-color: var(--background-surface);
+    }
+
+    &:disabled {
+      @apply cursor-not-allowed;
+      opacity: var(--disabled-opacity);
+      background-color: var(--background-disabled);
+    }
+  }
+
+  /* Form Element Layout */
+  .ui-form-layout {
+    @apply flex flex-col w-full;
+
+    &[data-has-label="true"] {
+      @apply gap-xxs;
+    }
+  }
+
+  /* Form Element Sizes */
+  .ui-form-element {
+    @apply relative w-full flex items-center cursor-pointer bg-input text-foreground font-medium leading-none tracking-tight rounded gap-sm border ui-border-neutral;
+
+    &[data-size="sm"] {
+      height: var(--height-controls-sm);
+      font-size: var(--font-size-sm);
+      padding: 0 var(--space-sm);
+    }
+
+    &[data-size="base"] {
+      height: var(--height-controls-base);
+      font-size: var(--font-size-base);
+      padding: 0 var(--space-sm);
+    }
+
+    &[data-size="lg"] {
+      height: var(--height-controls-lg);
+      font-size: var(--font-size-lg);
+      padding: 0 var(--space-sm);
+    }
+
+    /* Error State */
+    &[data-error="true"] {
+      border-color: var(--border-danger);
+
+      &:hover {
+        border-color: var(--border-danger-strong);
+      }
+
+      &:focus {
+        border-color: var(--border-danger-strong);
+        --tw-ring-color: var(--ring-danger);
+      }
+    }
+  }
+
+  /* Form Helper Text */
+  .ui-form-helper {
+    @apply mt-xxs;
+    color: var(--text-weak);
+
+    &[data-error="true"] {
+      color: var(--text-danger);
+    }
+  }
+
+  /* Form Icon */
+  .ui-form-icon {
+    @apply absolute flex items-center h-full pointer-events-none text-weak z-10;
+
+    &[data-size="sm"] {
+      @apply left-sm;
+      svg {
+        @apply size-sm;
+      }
+    }
+
+    &[data-size="base"] {
+      @apply left-sm;
+      svg {
+        @apply size-base;
+      }
+    }
+
+    &[data-size="lg"] {
+      @apply left-base;
+      svg {
+        @apply size-md;
+      }
+    }
+
+    &[data-error="true"] {
+      color: var(--text-danger);
+    }
+
+    &[data-disabled="true"] {
+      opacity: var(--disabled-opacity);
+    }
+  }
+
+  /* ==========================================================================
+ Overlay Components
+ ========================================================================== */
+
+  .ui-overlay {
+    @apply fixed inset-0;
+    background-color: var(--background-overlay);
+    backdrop-filter: blur(var(--overlay-blur));
+    z-index: var(--z-overlay);
+  }
+
+  /* Dialog Base */
+  .ui-dialog {
+    @apply fixed top-1/2 left-1/2 bg-surface rounded-lg shadow-md p-lg gap-md w-full;
     transform: translate(-50%, -50%);
     display: grid;
     transition-property: all;
     transition-duration: var(--duration-normal);
     transition-timing-function: var(--ease-out);
     z-index: var(--z-modal);
-    @apply fixed top-1/2 left-1/2 bg-surface rounded-lg shadow-md p-lg gap-md w-full;
   }
 
   /* ==========================================================================
-       Form
-       ========================================================================== */
+ Popcard Components
+ ========================================================================== */
 
-  /* Form Basics */
-  .form-basics {
-    /* border-color: var(--border-base); */
-    transition-property: all;
-    transition-timing-function: var(--ease-out);
-    transition-duration: var(--duration-normal);
-    @apply bg-input text-foreground leading-none tracking-tight
-    border border-neutral-base rounded-base
-    placeholder:text-muted;
-  }
-  .form-basics:hover {
-    border-color: var(--border-strong);
-  }
-  .form-basics:focus {
-    border-color: var(--border-primary);
-    outline: none;
-    --tw-ring-width: 2px;
-    --tw-ring-offset-width: 2px;
-    --tw-ring-color: var(--ring-primary);
-    --tw-ring-offset-color: var(--background-surface);
-  }
-  .form-basics:disabled {
-    cursor: not-allowed;
-    opacity: var(--disabled-opacity);
-    background-color: var(--background-disabled);
-  }  
-
-  /* Shared Form Element Styles */
-  .form-element-shared {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-
-  /* Form Element Sizes */
-  .form-element-sm {
-    height: var(--space-xl); /* 32px */
-    font-size: var(--font-size-sm);
-    padding: 0 var(--space-sm);
-  }
-
-  .form-element-base {
-    height: var(--space-2xl); /* 40px */
-    font-size: var(--font-size-base);
-    padding: 0 var(--space-sm);
-  }
-
-  .form-element-lg {
-    height: var(--space-3xl); /* 48px */
-    font-size: var(--font-size-lg);
-    padding: 0 var(--space-sm);
-  }
-
-  /* Form Element Error State */
-  .form-element-error {
-    border-color: var(--border-danger);
-  }
-  .form-element-error:hover {
-    border-color: var(--border-danger-strong);
-  }
-  .form-element-error:focus {
-    border-color: var(--border-danger-strong);
-    --tw-ring-color: var(--ring-danger);
-  }
-
-  /* Form Layout Icon */
-  .form-layout-icon {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    pointer-events: none;
-    color: var(--text-weak);
-    z-index: 1;
-  }
-  .form-layout-icon[data-size="sm"] {
-    left: var(--space-xs);
-  }
-  .form-layout-icon[data-size="base"] {
-    left: var(--space-sm);
-  }
-  .form-layout-icon[data-size="lg"] {
-    left: var(--space-base);
-  }
-  .form-layout-icon[data-error="true"] {
-    color: var(--text-danger);
-  }
-  .form-layout-icon[data-disabled="true"] {
-    opacity: var(--disabled-opacity);
-  }
-  .form-layout-icon svg[data-size="sm"] {
-    width: var(--space-sm);
-    height: var(--space-sm);
-  }
-  .form-layout-icon svg[data-size="base"] {
-    width: var(--space-base);
-    height: var(--space-base);
-  }
-  .form-layout-icon svg[data-size="lg"] {
-    width: var(--space-md);
-    height: var(--space-md);
-  }
-
-  /* Form Layout */
-  .form-layout {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .form-layout-label {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xxs);
-  }
-
-  .form-layout-field {
-    position: relative;
-    width: 100%;
-  }
-
-  .form-layout-helper {
-    /* margin-bottom: var(--space-xxs);
-    font-size: var(--font-size-sm);
-    color: var(--text-weak); */
-    @apply text-helper mb-xxs -mt-xxs pb-[2px];
-  }
-  .form-layout-helper[data-error="true"] {
-    color: var(--text-danger);
-  }
-
-  /* ==========================================================================
-       Popcard
-       ========================================================================== */
-
-  /* Popcard Basics */
-  .popcard-basics {
+  .ui-popcard {
     @apply overflow-hidden border rounded-base bg-surface-raised text-foreground p-xxs shadow;
     border-color: var(--border-base);
     z-index: var(--z-dropdown);
     animation-duration: var(--duration-normal);
     animation-timing-function: var(--ease-out);
-  }
 
-  /* Popcard List Group */
-  .popcard-list-group {
-    overflow: hidden;
-    color: var(--text-foreground);
-  }
+    /* List Group */
+    &-list-group {
+      @apply overflow-hidden text-foreground;
+    }
 
-  .popcard-list-group-title {
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-medium);
-    padding: var(--space-xs);
-    padding-top: var(--space-xxs);
-    color: var(--text-muted);
-  }
+    &-list-title {
+      @apply text-xs font-medium px-xs pt-xxs pb-xs text-muted;
+    }
 
-  .popcard-list-separator {
-    margin-left: -0.25rem;
-    margin-right: -0.25rem;
-    margin-top: var(--space-xxs);
-    margin-bottom: var(--space-xxs);
-    height: 1px;
-    background-color: var(--border-weak);
-  }
+    &-list-separator {
+      @apply -mx-1 my-xxs h-px;
+      background-color: var(--border-weak);
+    }
 
-  /* Popcard List Item */
-  .popcard-list-item {
-    @apply cursor-pointer;
-    position: relative;
-    display: flex;
-    cursor: default;
-    user-select: none;
-    align-items: center;
-    gap: var(--space-sm);
-    border-radius: var(--radius-sm);
-    padding: 0.375rem 0.5rem;
-    outline: none;
-    color: var(--text-foreground);
-    font-size: var(--font-size-sm);
-    line-height: var(--line-height-tight);
-  }
-  .popcard-list-item[data-disabled="true"] {
-    pointer-events: none;
-    opacity: var(--disabled-opacity);
-  }
-  .popcard-list-item[data-selected="true"] {
-    background-color: var(--background-primary-weakest);
-    color: var(--text-primary);
-  }
-  .popcard-list-item:focus,
-  .popcard-list-item:hover {
-    @apply bg-base-hover text-strong;
-  }
+    /* List Items */
+    &-list-item {
+      @apply relative flex cursor-pointer select-none items-center gap-sm 
+    rounded-sm outline-none py-1.5 px-2 text-sm leading-tight;
 
-  /* Popcard List Shortcut */
-  .popcard-list-shortcut {
-    margin-left: auto;
-    font-size: var(--font-size-xs);
-    letter-spacing: var(--letter-spacing-widest);
-    color: var(--text-muted);
-  }
+      &[data-disabled="true"] {
+        @apply pointer-events-none;
+        opacity: var(--disabled-opacity);
+      }
 
-  /* Popcard List Indicator */
-  .popcard-list-indicator {
-    position: absolute;
-    left: 0.5rem;
-    display: flex;
-    height: 0.875rem;
-    width: 0.875rem;
-    align-items: center;
-    justify-content: center;
-  }
+      &[data-selected="true"] {
+        background-color: var(--background-primary-weakest);
+        color: var(--text-primary);
+      }
 
-  /* Checkbox and Radio Items */
-  .popcard-checkbox-item,
-  .popcard-radio-item {
-    position: relative;
-    padding-left: var(--space-xl);
-  }
-  .popcard-checkbox-item:focus,
-  .popcard-checkbox-item:hover,
-  .popcard-radio-item:focus,
-  .popcard-radio-item:hover {
-    @apply bg-base-hover;
-  }
+      &:focus,
+      &:hover {
+        @apply text-strong;
+        background-color: var(--background-surface-sunken);
+      }
+    }
 
-  /* Destructive Item */
-  .popcard-item-destructive {
-    color: var(--text-danger);
-  }
-  .popcard-item-destructive:hover {
-    background-color: var(--background-danger-weak);
+    /* Variants */
+    &-checkbox-item,
+    &-radio-item {
+      @apply relative pl-xl;
+
+      &:focus,
+      &:hover {
+        background-color: var(--background-weak);
+      }
+    }
+
+    &-destructive {
+      color: var(--text-danger);
+
+      &:hover {
+        background-color: var(--background-danger-weak);
+      }
+    }
   }
 
   /* ==========================================================================
-       Icons
-       ========================================================================== */
+ Icons
+ ========================================================================== */
 
-  /* General SVG styles */
-  svg {
+  .ui-icon {
     @apply size-base;
-  }
 
-  /* Chevron Right Icon */
-  .icon-chevron-right {
-    @apply text-icon ml-auto;
-  }
+    &[data-variant="chevron-right"] {
+      @apply ui-icon-base ml-auto;
+    }
 
-  /* Checked Icon */
-  .icon-checked {
-    @apply text-primary size-base;
-  }
+    &[data-variant="checked"] {
+      @apply ui-icon-base;
+      color: var(--text-primary);
+    }
 
-  /* Circle Selected Icon */
-  .icon-circle-selected {
-    @apply size-xs text-primary fill-primary;
+    &[data-variant="circle-selected"] {
+      @apply size-xs;
+      color: var(--text-primary);
+      fill: var(--background-primary);
+    }
+  }
+  .ui-icon-sm {
+    width: var(--size-icon-sm);
+    height: var(--size-icon-sm);
+  }
+  .ui-icon-base {
+    width: var(--size-icon-base);
+    height: var(--size-icon-base);
+  }
+  .ui-icon-lg {
+    width: var(--size-icon-lg);
+    height: var(--size-icon-lg);
   }
 
   /* ==========================================================================
-  List
-  ========================================================================== */
+ Lists
+ ========================================================================== */
 
-  ul.list-disc,
-  ul.list-none {
+  .ui-list {
     @apply list-inside text-base space-y-1;
-  }
 
-  ul.list-disc.list-small {
-    @apply text-sm font-normal space-y-0;
-  }
+    &[data-size="small"] {
+      @apply text-sm font-normal space-y-0;
 
-  ul.list-disc.list-small li {
-    @apply text-sm font-normal space-y-0;
+      li {
+        @apply text-sm font-normal space-y-0;
+      }
+    }
+
+    &[data-variant="disc"] {
+      @apply list-disc;
+    }
+
+    &[data-variant="none"] {
+      @apply list-none;
+    }
   }
 }
 
 @tailwind utilities;
-
-

@@ -2,13 +2,10 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Card,
   CardHeader,
-  CardHeaderWithActions,
-  CardFooter,
   CardTitle,
   CardDescription,
   CardContent,
-  type CardProps,
-  type CardSize,
+  CardFooter,
 } from './index';
 import React from 'react';
 
@@ -20,12 +17,23 @@ type StoryProps = {
   showHeaderActions?: boolean;
 };
 
+type CardSize = 'sm' | 'base' | 'lg' | 'xl';
+
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  size?: CardSize;
+  shadow?: 'none' | 'sm' | 'base' | 'lg' | 'xl';
+  noBorder?: boolean;
+  noBackground?: boolean;
+  interactive?: boolean;
+  clickable?: boolean;
+  align?: 'left' | 'center';
+}
+
 type CombinedProps = CardProps & StoryProps;
 
 const meta: Meta<CombinedProps> = {
   title: 'Components/Card',
-  
-  component: Card as typeof Card,
+  component: Card,
   parameters: {
     layout: 'centered',
   },
@@ -33,11 +41,11 @@ const meta: Meta<CombinedProps> = {
   args: {
     size: 'base',
     shadow: 'base',
-    border: true,
-    background: true,
+    noBorder: false,
+    noBackground: false,
     interactive: false,
     clickable: false,
-    contentAlignment: 'base',
+    align: 'left',
     showTitle: true,
     showDescription: false,
     showFooter: false,
@@ -50,7 +58,7 @@ const meta: Meta<CombinedProps> = {
       description: 'Size of the card padding and title',
       table: {
         category: 'Component',
-        defaultValue: { summary: 'default' },
+        defaultValue: { summary: 'base' },
       },
     },
     shadow: {
@@ -61,16 +69,16 @@ const meta: Meta<CombinedProps> = {
         category: 'Component',
       },
     },
-    border: {
+    noBorder: {
       control: 'boolean',
-      description: 'Whether to show the card border',
+      description: 'Remove card border',
       table: {
         category: 'Component',
       },
     },
-    background: {
+    noBackground: {
       control: 'boolean',
-      description: 'Whether to show the card background',
+      description: 'Remove card background',
       table: {
         category: 'Component',
       },
@@ -89,9 +97,9 @@ const meta: Meta<CombinedProps> = {
         category: 'Component',
       },
     },
-    contentAlignment: {
+    align: {
       control: 'radio',
-      options: ['base', 'center'],
+      options: ['left', 'center'],
       description: 'Alignment of card content',
       table: {
         category: 'Component',
@@ -132,7 +140,7 @@ export default meta;
 
 type Story = StoryObj<CombinedProps>;
 
-const handleClick: React.MouseEventHandler<HTMLButtonElement> = () => {
+const handleClick = () => {
   console.log('Card clicked');
 };
 
@@ -143,13 +151,8 @@ export const Default: Story = {
       showDescription, 
       showFooter, 
       showHeaderActions,
-      clickable,
       size,
-      shadow,
-      border,
-      background,
-      interactive,
-      contentAlignment
+      ...cardProps
     } = args;
     
     const hasHeader = showTitle || showDescription;
@@ -157,28 +160,23 @@ export const Default: Story = {
     const renderHeader = () => {
       if (!hasHeader) return null;
       
-      if (showHeaderActions) {
-        return (
-          <CardHeaderWithActions>
-            <div className="flex justify-between items-start gap-[var(--space-xl)]">
-              <div className='space-y-[var(--space-xs)]'>
-                {showTitle && <CardTitle>Card Title ({size})</CardTitle>}
-                {showDescription && <CardDescription>Card Description goes here</CardDescription>}
-              </div>
-              <div className="flex items-center justify-end">
-                <div className="flex items-center gap-[var(--space)]">
-                  Action
-                </div>
-              </div>
-            </div>
-          </CardHeaderWithActions>
-        );
-      }
-      
       return (
-        <CardHeader>
-          {showTitle && <CardTitle>Card Title</CardTitle>}
-          {showDescription && <CardDescription>Card Description goes here</CardDescription>}
+        <CardHeader data-has-actions={showHeaderActions}>
+          <div className={showHeaderActions ? "flex justify-between items-start gap-xl" : undefined}>
+            <div className={showHeaderActions ? "flex flex-col gap-xs" : undefined}>
+              {showTitle && <CardTitle data-size={size}>Card Title ({size})</CardTitle>}
+              {showDescription && (
+                <CardDescription data-variant="helper">
+                  Card Description goes here
+                </CardDescription>
+              )}
+            </div>
+            {showHeaderActions && (
+              <div className="flex items-center gap-base">
+                Action
+              </div>
+            )}
+          </div>
         </CardHeader>
       );
     };
@@ -186,45 +184,23 @@ export const Default: Story = {
     const cardContent = (
       <>
         {renderHeader()}
-        <CardContent>
+        <CardContent data-variant="base">
           This is the main content area of the card. You can put any content here.
         </CardContent>
         {showFooter && (
-          <CardFooter>
-            <p className="text-muted">Footer actions</p>
+          <CardFooter data-color="neutral-weak">
+            <p className="ui-text" data-color="muted">Footer actions</p>
           </CardFooter>
         )}
       </>
     );
 
-    if (clickable) {
-      return (
-        <Card 
-          className="w-full max-w-md"
-          size={size}
-          shadow={shadow}
-          border={border}
-          background={background}
-          interactive={interactive}
-          contentAlignment={contentAlignment}
-          clickable={true}
-          onClick={handleClick}
-        >
-          {cardContent}
-        </Card>
-      );
-    }
-
     return (
       <Card 
         className="w-full max-w-md"
-        size={size}
-        shadow={shadow}
-        border={border}
-        background={background}
-        interactive={interactive}
-        contentAlignment={contentAlignment}
-        clickable={false}
+        {...cardProps}
+        data-size={size}
+        onClick={cardProps.clickable ? handleClick : undefined}
       >
         {cardContent}
       </Card>
@@ -237,72 +213,40 @@ export const AllSizes: Story = {
     const sizes: CardSize[] = ['sm', 'base', 'lg', 'xl'];
     const { 
       showDescription, 
-      showFooter, 
-      clickable,
-      shadow,
-      border,
-      background,
-      interactive,
-      contentAlignment
+      showFooter,
+      ...cardProps
     } = args;
     
     return (
-      <div className="space-y-4">
-        {sizes.map((size) => {
-          const cardContent = (
-            <>
-              <CardHeader>
-                <CardTitle>Card Title</CardTitle>
-                {showDescription && (
-                  <CardDescription>Description for {size} size card</CardDescription>
-                )}
-              </CardHeader>
-              <CardContent>
-                Content for {size} size card
-              </CardContent>
-              {showFooter && (
-                <CardFooter>
-                  <p className="text-muted">Footer for {size} size card</p>
-                </CardFooter>
+      <div className="space-y-base">
+        {sizes.map((size) => (
+          <Card
+            key={size}
+            className="w-full max-w-md"
+            {...cardProps}
+            data-size={size}
+            onClick={cardProps.clickable ? handleClick : undefined}
+          >
+            <CardHeader>
+              <CardTitle data-size={size}>Card Title</CardTitle>
+              {showDescription && (
+                <CardDescription data-variant="helper">
+                  Description for {size} size card
+                </CardDescription>
               )}
-            </>
-          );
-
-          if (clickable) {
-            return (
-              <Card
-                key={size}
-                className="w-full max-w-md"
-                size={size}
-                shadow={shadow}
-                border={border}
-                background={background}
-                interactive={interactive}
-                contentAlignment={contentAlignment}
-                clickable={true}
-                onClick={handleClick}
-              >
-                {cardContent}
-              </Card>
-            );
-          }
-
-          return (
-            <Card
-              key={size}
-              className="w-full max-w-md"
-              size={size}
-              shadow={shadow}
-              border={border}
-              background={background}
-              interactive={interactive}
-              contentAlignment={contentAlignment}
-              clickable={false}
-            >
-              {cardContent}
-            </Card>
-          );
-        })}
+            </CardHeader>
+            <CardContent data-variant={size === 'sm' ? 'small' : 'base'}>
+              Content for {size} size card
+            </CardContent>
+            {showFooter && (
+              <CardFooter data-color="neutral-weak">
+                <p className="ui-text" data-color="muted">
+                  Footer for {size} size card
+                </p>
+              </CardFooter>
+            )}
+          </Card>
+        ))}
       </div>
     );
   },

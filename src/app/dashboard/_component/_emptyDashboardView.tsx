@@ -35,12 +35,12 @@ const EmptyDashboardView = ({ onCreateTeam }: EmptyDashboardViewProps) => {
     <CardContent className="py-xl">
       <div className="text-center space-y-xl">
         <div className="space-y-base">
-          <div className="mx-auto size-12 rounded-pill bg-primary-weakest p-sm">
+          <div className="mx-auto size-12 rounded-pill ui-background-primary-weakest p-sm">
             <Users className="size-6 text-primary" />
           </div>
           <div className="space-y-sm">
-            <h1 className="text-display-1">Welcome to UpScore</h1>
-            <p className="text-copy-large max-w-xl mx-auto">
+            <h1 className="ui-text-display-1">Welcome to UpScore</h1>
+            <p className="ui-text-copy-large max-w-xl mx-auto">
               Get started by following these steps:
             </p>
           </div>
@@ -75,12 +75,12 @@ const EmptyDashboardView = ({ onCreateTeam }: EmptyDashboardViewProps) => {
               <Card key={title} size="sm">
                 <CardContent>
                   <div className="flex flex-col items-center space-y-sm">
-                    <div className="size-8 rounded-pill bg-primary-weakest p-xs">
-                      <Icon className="text-primary" />
+                    <div className="size-8 rounded-pill ui-background-primary-weakest p-xs">
+                      <Icon className="ui-text-primary" />
                     </div>
                     <div className="space-y-xxs">
-                      <h3 className="text-heading-4">{title}</h3>
-                      <p className="text-helper text-center">{description}</p>
+                      <h3 className="ui-text-heading-4">{title}</h3>
+                      <p className="ui-text-helper text-center">{description}</p>
                     </div>
                   </div>
                 </CardContent>

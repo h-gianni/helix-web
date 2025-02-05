@@ -22,7 +22,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof Label>;
 
-// Basic label with controls
 export const Default: Story = {
   args: {
     children: 'Label Text',
@@ -32,10 +31,9 @@ export const Default: Story = {
     htmlFor: 'default-input',
   },
   render: (args) => (
-    <div className="space-y-0.5">
+    <div className="ui-form-layout">
       <Label {...args} />
       <Input
-        withLabel={false}
         id={args.htmlFor}
         type="text"
         placeholder="Enter text"
@@ -47,169 +45,144 @@ export const Default: Story = {
   ),
 };
 
-// Standalone Label Examples
 export const StandaloneLabels: Story = {
   render: () => (
-    <div className="flex flex-col space-y-4">
-      <Label>Default Label</Label>
-      <Label required>Required Label</Label>
-      <Label error>Error Label</Label>
-      <Label disabled>Disabled Label</Label>
+    <div className="ui-form-layout">
+      <Label className="ui-text-body">Default Label</Label>
+      <Label className="ui-text-body" required>Required Label</Label>
+      <Label className="ui-text-body" error>Error Label</Label>
+      <Label className="ui-text-body" disabled>Disabled Label</Label>
     </div>
   ),
 };
 
-// Input with Built-in Label
 export const InputWithLabel: Story = {
   render: () => (
-    <div className="space-y-4">
+    <div className="ui-form-layout">
       <Input
-        withLabel
         label="Default Input"
         placeholder="Enter text"
-        inputSize="base"
+        className="ui-form-element"
+        data-size="base"
       />
       <Input
-        withLabel
         label="Required Input"
         placeholder="Required field"
         required
-        inputSize="base"
+        className="ui-form-element"
+        data-size="base"
       />
       <Input
-        withLabel
         label="Error Input"
         placeholder="Error field"
         error
         helperText="This field contains an error"
-        inputSize="base"
+        className="ui-form-element"
+        data-size="base"
       />
       <Input
-        withLabel
         label="Disabled Input"
         placeholder="Disabled field"
         disabled
-        inputSize="base"
+        className="ui-form-element"
+        data-size="base"
       />
     </div>
   ),
 };
 
-// With checkbox example
 export const WithCheckbox: Story = {
   render: () => (
-    <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="remember"
-          withLabel={true}
-          label="Remember me"
-        />
+    <div className="ui-form-layout">
+      <div className="ui-checkbox-label-wrapper">
+        <Checkbox id="remember" />
+        <Label htmlFor="remember">Remember me</Label>
       </div>
       
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="terms"
-          withLabel={true}
-          label="Accept terms"
-          required
-        />
+      <div className="ui-checkbox-label-wrapper">
+        <Checkbox id="terms" required />
+        <Label htmlFor="terms" required>Accept terms</Label>
       </div>
       
-      <div className="flex items-center gap-2">
-        <Checkbox
-          id="disabled"
-          withLabel={true}
-          label="Disabled option"
-          disabled
-        />
+      <div className="ui-checkbox-label-wrapper">
+        <Checkbox id="disabled" disabled />
+        <Label htmlFor="disabled" disabled>Disabled option</Label>
       </div>
 
-      <Checkbox
-        withLabel
-        label="With built-in label"
-        description="This checkbox uses the built-in label functionality"
-      />
-
-      <Checkbox
-        withLabel
-        label="Required with description"
-        description="This is a required field with a description"
-        required
-      />
+      <div className="ui-checkbox-label-wrapper">
+        <Checkbox id="with-description" />
+        <div>
+          <Label htmlFor="with-description">With description</Label>
+          <p className="ui-text-body-helper">This checkbox uses the built-in label functionality</p>
+        </div>
+      </div>
     </div>
   ),
 };
 
-// Form group example
 export const FormExample: Story = {
   render: () => (
-    <form className="space-y-4">
+    <form className="ui-form-layout">
       <Input
-        withLabel
         label="Username"
         placeholder="Enter username"
         required
-        inputSize="base"
+        className="ui-form-element"
+        data-size="base"
       />
       <Input
-        withLabel
         label="Email"
         type="email"
         placeholder="Enter email"
         required
-        inputSize="base"
+        className="ui-form-element"
+        data-size="base"
       />
       <Input
-        withLabel
         label="Password"
         type="password"
         placeholder="Enter password"
         required
         error
         helperText="Password must be at least 8 characters"
-        inputSize="base"
+        className="ui-form-element"
+        data-size="base"
       />
-      <div className="flex items-center gap-2 pt-2">
-        <Checkbox
-          id="form-terms"
-          withLabel={true}
-          label="I accept the terms and conditions"
-          required
-        />
+      <div className="ui-checkbox-label-wrapper">
+        <Checkbox id="form-terms" required />
+        <Label htmlFor="form-terms" required>I accept the terms and conditions</Label>
       </div>
     </form>
   ),
 };
 
-// Helper Text Examples
 export const WithHelperText: Story = {
   render: () => (
-    <div className="space-y-4">
+    <div className="ui-form-layout">
       <Input
-        withLabel
         label="Username"
         placeholder="Enter username"
         helperText="Choose a unique username"
-        inputSize="base"
+        className="ui-form-element"
+        data-size="base"
       />
       <Input
-        withLabel
         label="Password"
         type="password"
         placeholder="Enter password"
         error
         helperText="Password is too weak"
-        inputSize="base"
+        className="ui-form-element"
+        data-size="base"
       />
       <Input
-        withLabel
         label="Email"
         type="email"
         placeholder="Enter email"
         disabled
         helperText="Contact admin to change email"
-        inputSize="base"
+        className="ui-form-element"
+        data-size="base"
       />
     </div>
   ),

@@ -10,7 +10,6 @@ const meta = {
   args: {
     children: 'Button',
     variant: 'neutral',
-    appearance: 'strong',
     size: 'base',
     shape: 'beveled',
   },
@@ -18,12 +17,12 @@ const meta = {
     variant: {
       control: 'select',
       options: ['primary', 'neutral', 'warning', 'danger'],
-      description: 'Color variant of the button',
+      description: 'Base variant of the button',
     },
-    appearance: {
+    volume: {
       control: 'select',
-      options: ['strong', 'outline', 'text', 'icon-only'],
-      description: 'Visual style of the button',
+      options: ['loud', 'moderate', 'soft'],
+      description: 'Visual emphasis of the button',
     },
     size: {
       control: 'select',
@@ -34,6 +33,10 @@ const meta = {
       control: 'select',
       options: ['beveled', 'rounded'],
       description: 'Shape of the button corners',
+    },
+    iconOnly: { 
+      control: 'boolean',
+      description: 'Whether the button shows only an icon'
     },
     disabled: { control: 'boolean' },
     isLoading: { control: 'boolean' },
@@ -53,7 +56,7 @@ type Story = StoryObj<typeof Button>;
 
 export const Variants: Story = {
   render: (args) => {
-    if (args.appearance === 'icon-only') {
+    if (args.iconOnly) {
       return (
         <Button {...args} leadingIcon={<Plus />} aria-label="Add item" />
       );
@@ -64,27 +67,21 @@ export const Variants: Story = {
 
 export const AllVariants: Story = {
   render: () => (
-    <div className="flex flex-col gap-[var(--space-lg)]">
+    <div className="flex flex-col gap-lg">
       {(['neutral', 'primary', 'warning', 'danger'] as const).map(variant => (
-        <div key={variant} className="space-y-[var(--space-base)]">
-          <h3 className="text-sm font-medium capitalize">{variant}</h3>
-          <div className="grid grid-cols-4 gap-[var(--space-base)]">
-            {(['strong', 'outline', 'text'] as const).map(appearance => (
-              <Button 
-                key={`${variant}-${appearance}`}
-                variant={variant}
-                appearance={appearance}
-              >
-                {appearance}
-              </Button>
-            ))}
+        <div key={variant} className="space-y-base">
+          <h3 className="ui-text-body" data-variant="small">{variant}</h3>
+          <div className="grid grid-cols-3 gap-base">
+            <Button variant={variant} volume="loud">Loud</Button>
+            <Button variant={variant} volume="moderate">Moderate</Button>
+            <Button variant={variant} volume="soft">Soft</Button>
           </div>
-          <div className="flex gap-[var(--space-base)]">
+          <div className="flex gap-base">
             {[Plus, Search, Settings].map((Icon, idx) => (
               <Button
                 key={idx}
                 variant={variant}
-                appearance="icon-only"
+                iconOnly
                 leadingIcon={<Icon />}
                 aria-label={`${Icon.name} action`}
               />
@@ -98,7 +95,7 @@ export const AllVariants: Story = {
 
 export const Sizes: Story = {
   render: () => (
-    <div className="flex items-center gap-[var(--space-base)]">
+    <div className="flex items-center gap-base">
       <Button size="sm">Small</Button>
       <Button size="base">Base</Button>
       <Button size="lg">Large</Button>
@@ -106,9 +103,19 @@ export const Sizes: Story = {
   )
 };
 
+export const IconSizes: Story = {
+  render: () => (
+    <div className="flex items-center gap-base">
+      <Button size="sm" iconOnly leadingIcon={<Plus />} aria-label="Add small" />
+      <Button size="base" iconOnly leadingIcon={<Plus />} aria-label="Add base" />
+      <Button size="lg" iconOnly leadingIcon={<Plus />} aria-label="Add large" />
+    </div>
+  )
+};
+
 export const Shapes: Story = {
   render: () => (
-    <div className="flex gap-[var(--space-base)]">
+    <div className="flex gap-base">
       <Button shape="beveled">Beveled Button</Button>
       <Button shape="rounded">Rounded Button</Button>
     </div>
@@ -117,7 +124,7 @@ export const Shapes: Story = {
 
 export const States: Story = {
   render: () => (
-    <div className="flex gap-[var(--space-base)]">
+    <div className="flex gap-base">
       <Button>Default</Button>
       <Button disabled>Disabled</Button>
       <Button isLoading>Loading</Button>
@@ -127,18 +134,18 @@ export const States: Story = {
 
 export const Icons: Story = {
   render: () => (
-    <div className="flex gap-[var(--space-base)]">
+    <div className="flex gap-base">
       <Button leadingIcon={<Mail />}>
         With Leading Icon
       </Button>
       <Button trailingIcon={<ArrowRight />}>
         With Trailing Icon
       </Button>
-      <div className="flex gap-[var(--space-xs)]">
+      <div className="flex gap-xs">
         {[Plus, Search, Settings].map((Icon, idx) => (
           <Button 
             key={idx}
-            appearance="icon-only" 
+            iconOnly 
             leadingIcon={<Icon />}
             aria-label={`${Icon.name} action`} 
           />

@@ -95,7 +95,7 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
         <Table size="sm">
           <TableHeader>
             <TableRow>
-              {showAvatar && <TableHead className="members-table-sr-only">Avatar</TableHead>}
+              {showAvatar && <TableHead className="members-table-sr-only w-0"></TableHead>}
               <TableHead className="members-table-col-name">Name</TableHead>
               <TableHead className="members-table-col-team">Team</TableHead>
               <TableHead className="members-table-col-title">Job Title</TableHead>
@@ -168,7 +168,7 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
-                            appearance="icon-only"
+                            iconOnly
                             aria-label="Member actions"
                             leadingIcon={<MoreVertical className="members-table-action-icon" />}
                             size="sm"

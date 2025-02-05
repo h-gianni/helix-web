@@ -17,6 +17,7 @@ const meta = {
   args: {
     withLabel: true,
     width: 'inline',
+    size: 'base',
   },
   argTypes: {
     withLabel: {
@@ -32,6 +33,12 @@ const meta = {
       control: 'select',
       options: ['inline', 'full'],
       description: 'Width of the select component',
+    },
+    size: {
+      control: 'select',
+      options: ['sm', 'base', 'lg'],
+      description: 'Size of the select component',
+      defaultValue: 'base',
     },
     error: {
       control: 'boolean',
@@ -49,22 +56,28 @@ const meta = {
       control: 'text',
       description: 'Helper text below the select',
     },
+    showItemIndicator: {
+      control: 'boolean',
+      description: 'Whether to show check mark indicator for selected item',
+      defaultValue: true,
+    },
   },
 } satisfies Meta<typeof Select>;
 
 export default meta;
 type Story = StoryObj<typeof Select>;
 
-// Configurable story
 export const Configurator: Story = {
   args: {
     withLabel: true,
     label: 'Select an option',
     width: 'inline',
+    size: 'base',
     error: false,
     disabled: false,
     required: false,
     helperText: '',
+    showItemIndicator: true,
   },
   render: (args) => (
     <div className="w-[320px]">
@@ -89,22 +102,24 @@ export const Sizes: Story = {
       <Select
         label="Small Select"
         withLabel
+        size="sm"
       >
-        <SelectTrigger size="sm">
+        <SelectTrigger>
           <SelectValue placeholder="Small size" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="option1" size="sm">Option 1</SelectItem>
-          <SelectItem value="option2" size="sm">Option 2</SelectItem>
-          <SelectItem value="option3" size="sm">Option 3</SelectItem>
+          <SelectItem value="option1">Option 1</SelectItem>
+          <SelectItem value="option2">Option 2</SelectItem>
+          <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
       </Select>
 
       <Select
         label="Base Select"
         withLabel
+        size="base"
       >
-        <SelectTrigger size="base">
+        <SelectTrigger>
           <SelectValue placeholder="Base size" />
         </SelectTrigger>
         <SelectContent>
@@ -117,14 +132,15 @@ export const Sizes: Story = {
       <Select
         label="Large Select"
         withLabel
+        size="lg"
       >
-        <SelectTrigger size="lg">
+        <SelectTrigger>
           <SelectValue placeholder="Large size" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="option1" size="lg">Option 1</SelectItem>
-          <SelectItem value="option2" size="lg">Option 2</SelectItem>
-          <SelectItem value="option3" size="lg">Option 3</SelectItem>
+          <SelectItem value="option1">Option 1</SelectItem>
+          <SelectItem value="option2">Option 2</SelectItem>
+          <SelectItem value="option3">Option 3</SelectItem>
         </SelectContent>
       </Select>
     </div>
@@ -239,6 +255,43 @@ export const States: Story = {
       >
         <SelectTrigger>
           <SelectValue placeholder="Disabled state" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="option1">Option 1</SelectItem>
+          <SelectItem value="option2">Option 2</SelectItem>
+          <SelectItem value="option3">Option 3</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  ),
+};
+
+// New story for indicator variations
+export const IndicatorVariations: Story = {
+  render: () => (
+    <div className="flex flex-col items-start gap-4">
+      <Select
+        label="With Indicator"
+        withLabel
+        showItemIndicator={true}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="With check mark" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="option1">Option 1</SelectItem>
+          <SelectItem value="option2">Option 2</SelectItem>
+          <SelectItem value="option3">Option 3</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select
+        label="Without Indicator"
+        withLabel
+        showItemIndicator={false}
+      >
+        <SelectTrigger>
+          <SelectValue placeholder="No check mark" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="option1">Option 1</SelectItem>

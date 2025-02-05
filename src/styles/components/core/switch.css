@@ -1,0 +1,55 @@
+/* Switch Root */
+.ui-switch {
+       @apply inline-flex shrink-0 h-5 w-9
+              cursor-pointer items-center rounded-full
+              border-2 border-transparent;
+     
+       &:disabled {
+         @apply cursor-not-allowed;
+         opacity: var(--disabled-opacity);
+       }
+     
+       &:focus-visible {
+         @apply outline-none;
+         --tw-ring-width: 2px;
+         --tw-ring-offset-width: 2px;
+         --tw-ring-color: var(--ring-primary);
+         --tw-ring-offset-color: var(--background-surface);
+       }
+     
+       &[data-state="checked"] {
+         background-color: var(--background-primary);
+       }
+     
+       &[data-state="unchecked"] {
+         background-color: var(--background-surface-hollowed);
+       }
+     
+       transition-property: background-color, border-color;
+       transition-duration: var(--duration-normal);
+       transition-timing-function: var(--ease-out);
+     }
+     
+     /* Switch Thumb */
+     .ui-switch-thumb {
+       @apply pointer-events-none block size-4 rounded-full ui-background-surface shadow-md;
+     
+       &[data-state="checked"] {
+         @apply translate-x-4;
+       }
+     
+       &[data-state="unchecked"] {
+         @apply translate-x-0;
+       }
+     
+       transition-property: transform;
+       transition-duration: var(--duration-normal);
+       transition-timing-function: var(--ease-out);
+     }
+     
+     /* Print Styles */
+     @media print {
+       .ui-switch {
+         @apply shadow-none ui-border-neutral;
+       }
+     }

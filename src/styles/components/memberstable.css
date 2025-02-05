@@ -1,58 +1,71 @@
-/* members-table.css */
-
-/* Container */
-.members-table-container {
+/* Members Table */
+.ui-members-table {
   @apply w-full;
- }
- 
- /* Table Column Widths */
- .members-table-col-name {
+}
+
+/* Column Widths */
+.ui-members-table[data-col="name"] {
   @apply w-[20%];
- }
- 
- .members-table-col-team {
+}
+
+.ui-members-table[data-col="team"] {
   @apply w-[15%];
- }
- 
- .members-table-col-title {
+}
+
+.ui-members-table[data-col="title"] {
   @apply w-[15%];
- }
- 
- .members-table-col-seniority {
+}
+
+.ui-members-table[data-col="seniority"] {
   @apply w-[15%];
- }
- 
- .members-table-col-performance {
+}
+
+.ui-members-table[data-col="performance"] {
   @apply w-[15%];
- }
- 
- /* Screen Reader Only */
- .members-table-sr-only {
+}
+
+/* Accessibility */
+.ui-members-table[data-sr-only="true"] {
   @apply sr-only;
- }
- 
- /* Member Name Link */
- .members-table-name-link {
-  @apply font-semibold cursor-pointer no-underline
-         text-primary hover:underline hover:text-primary;
- }
- 
- /* Cell Content */
- .members-table-cell-nowrap {
+}
+
+/* Name Link */
+.members-table-name-link {
+  @apply ui-text-strong font-semibold cursor-pointer;
+  
+  &:hover {
+    @apply underline;
+    color: var(--text-primary);
+  }
+}
+
+/* Cell Content */
+.ui-members-table-cell[data-nowrap="true"] {
   @apply whitespace-nowrap;
- }
- 
- /* Performance Indicator */
- .members-table-performance-container {
+}
+
+/* Performance Container */
+.ui-members-table-performance {
   @apply flex items-center gap-sm;
- }
- 
- /* Delete Action */
- .members-table-delete-action {
-  @apply text-danger focus:text-danger focus:focus-ring-danger;
- }
- 
- /* Action Icon */
- .members-table-action-icon {
+}
+
+.members-table-performance-container {
+  @apply flex gap-xs items-center;
+}
+.members-table-performance-icon {
+  @apply ui-icon-base;
+}
+
+/* Actions */
+.ui-members-table-action[data-variant="delete"] {
+  @apply ui-text-danger;
+  
+  &:focus {
+    color: var(--text-danger);
+    --tw-ring-color: var(--ring-danger);
+  }
+}
+
+.ui-members-table-action-icon {
   @apply mr-sm;
- }
+}

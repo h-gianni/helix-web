@@ -1,6 +1,8 @@
-import * as React from "react"
-import * as LabelPrimitive from "@radix-ui/react-label"
-import { cn } from "@/lib/utils"
+"use client";
+
+import * as React from "react";
+import * as LabelPrimitive from "@radix-ui/react-label";
+import { cn } from "@/lib/utils";
 
 export interface LabelProps
   extends React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> {
@@ -18,10 +20,10 @@ const Label = React.forwardRef<
     data-required={required ? true : undefined}
     data-error={error ? true : undefined}
     data-disabled={disabled ? true : undefined}
-    className={cn("label-base", className)}
+    className={cn("ui-label-base", className)}
     {...props}
   />
-))
-Label.displayName = LabelPrimitive.Root.displayName
+));
+Label.displayName = LabelPrimitive.Root.displayName;
 
-export { Label }
+export { Label };

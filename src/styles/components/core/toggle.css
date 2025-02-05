@@ -1,0 +1,62 @@
+/* Toggle */
+.ui-toggle {
+  @apply inline-flex items-center justify-center rounded-md ui-text-body font-medium;
+  font-size: var(--font-size-sm);
+  color: var(--text-weak);
+  transition: background-color, color, border-color var(--duration-normal) var(--ease-out);
+
+  &:hover {
+    @apply ui-background-surface-hollowed ui-text-neutral;
+  }
+
+  &:focus-visible {
+    @apply outline-none;
+    --tw-ring-width: 2px;
+    --tw-ring-offset-width: 2px;
+    --tw-ring-color: var(--ring-primary);
+    --tw-ring-offset-color: var(--background-surface);
+  }
+
+  &:disabled {
+    @apply pointer-events-none;
+    opacity: var(--disabled-opacity);
+  }
+
+  &[data-state="on"] {
+    @apply ui-background-primary-weakest ui-text-strong;
+  }
+
+  /* Icon */
+  & svg {
+    @apply size-4 flex-shrink-0 pointer-events-none;
+  }
+}
+
+/* Variants */
+.ui-toggle[data-variant="default"] {
+  @apply bg-transparent;
+}
+
+.ui-toggle[data-variant="outline"] {
+  @apply ui-border-neutral-weak bg-transparent hover:ui-background-surface-sunken hover:ui-text-neutral;
+}
+
+/* Sizes */
+.ui-toggle[data-size="base"] {
+  @apply h-9 px-xs min-w-9;
+}
+
+.ui-toggle[data-size="sm"] {
+  @apply h-8 px-xs min-w-8;
+}
+
+.ui-toggle[data-size="lg"] {
+  @apply h-10 px-sm min-w-10;
+}
+
+/* Print */
+@media print {
+  .ui-toggle {
+    @apply ui-border-neutral shadow-none;
+  }
+}

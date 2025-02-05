@@ -1,0 +1,138 @@
+/* Base Card */
+.ui-card {
+  @apply rounded-lg border outline-none space-y-base px-lg py-md bg-surface text-foreground;
+}
+
+/* Size Variants */
+.ui-card[data-size="sm"] {
+  @apply space-y-xxs px-base py-sm;
+}
+
+.ui-card[data-size="base"] {
+  @apply space-y-xs px-lg py-md;
+}
+
+.ui-card[data-size="lg"] {
+  @apply space-y-sm px-xl py-lg;
+}
+
+.ui-card[data-size="xl"] {
+  @apply space-y-base px-2xl py-xl;
+}
+
+/* Shadow Variants */
+.ui-card[data-shadow="sm"] {
+  box-shadow: var(--shadow-sm);
+}
+
+.ui-card[data-shadow="base"] {
+  box-shadow: var(--shadow-base);
+}
+
+.ui-card[data-shadow="lg"] {
+  box-shadow: var(--shadow-lg);
+}
+
+.ui-card[data-shadow="xl"] {
+  box-shadow: var(--shadow-2xl);
+}
+
+/* Alignment */
+.ui-card[data-align="center"] {
+  @apply text-center;
+}
+
+/* Variants */
+.ui-card[data-no-border="true"] {
+  @apply border-none;
+}
+
+.ui-card[data-no-background="true"] {
+  @apply bg-transparent;
+}
+
+.ui-card[data-interactive="true"] {
+  @apply transition-colors;
+
+  &:hover {
+    background-color: var(--background-surface-sunken);
+    border-color: var(--border-base);
+  }
+  &:active {
+    @apply bg-surface-sunken;
+  }
+}
+
+.ui-card[data-clickable="true"] {
+  @apply cursor-pointer transition-colors;
+  
+  &:hover {
+    border-color: var(--border-base);
+  }
+  
+  &:active {
+    @apply bg-surface-sunken;
+  }
+
+  &:focus-visible {
+    @apply outline-none ring-2 ring-offset-2 ring-offset-surface;
+    ring-color: var(--border-primary);
+  }
+}
+
+/* Card Header */
+.ui-card-header {
+  @apply flex flex-col gap-xxs;
+}
+
+.ui-card-header[data-has-actions="true"] {
+  @apply flex flex-col gap-xs;
+}
+
+/* Card Title */
+.ui-card-title {
+  @apply ui-text-heading-3;
+}
+
+.ui-card-title[data-size="sm"] {
+  @apply ui-text-heading-4;
+}
+
+.ui-card-title[data-size="base"] {
+  @apply ui-text-heading-3;
+}
+
+.ui-card-title[data-size="lg"] {
+  @apply ui-text-heading-2;
+}
+
+.ui-card-title[data-size="xl"] {
+  @apply ui-text-heading-1;
+}
+
+/* Card Description */
+.ui-card-description {
+  @apply ui-text-body-small text-weak py-xxs;
+}
+
+.ui-card[data-size="sm"] .ui-card-description {
+  @apply text-sm;
+}
+
+.ui-card[data-size="xl"] .ui-card-description {
+  @apply mt-0 pb-xs;
+}
+
+/* Card Content */
+.ui-card-content {
+  @apply ui-text-body text-foreground pb-md;
+}
+
+.ui-card[data-size="sm"] .ui-card-content {
+  @apply ui-text-body-small;
+}
+
+/* Card Footer */
+.ui-card-footer {
+  @apply flex flex-col-reverse sm:flex-row sm:justify-end pt-lg mt-lg border-t gap-sm;
+}

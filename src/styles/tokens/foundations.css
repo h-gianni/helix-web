@@ -6,90 +6,105 @@
       ========================================================================== */
 
   /* Base Colors */
-  --color-white: 255 255 255; /* #FFFFFF */
-  --color-black: 0 0 0; /* #000000 */
+  --color-white: 0 0% 100%; /* #FFFFFF */
+  --color-black: 0 0% 0%; /* #000000 */
 
-  --color-strongest: 19 25 29; /* #E7E7E7 / primarily for strong text */
-  --color-stronger: 43 57 68; /* #D0D0D0 / primarily for base text */
-  --color-strong: 81 106 127; /* #B8B8B8 / primarily for light text */
-  --color-medium: 109 139 162; /* #B8B8B8 / primarily for muted text */
-  --color-inverted: 255 255 255; /* #B8B8B8 / primarily for white text */
-  --color-weak: 187 201 212; /* #8D8D8D / primarily for strong strokes */
-  --color-weaker: 206 216 224; /* #767676 / primarily for base strokes */
-  --color-weakest: 226 232 236; /* #616161 / primarily for light strokes */
-  --color-muted: 245 247 249; /* #4F4F4F / primarily for fills and hover bg */
-  --color-background: 245 247 249; /* #3B3B3B */
+  --color-strongest: 206 21% 9%; /* #131923 */
+  --color-stronger: 206 23% 22%; /* #2B3944 */
+  --color-strong: 206 22% 41%; /* #516A7F */
+  --color-medium: 206 22% 53%; /* #6D8BA2 */
+  --color-weak: 206 23% 78%; /* #BBC9D4 */
+  --color-weaker: 206 22% 84%; /* #CED8E0 */
+  --color-weakest: 206 21% 91%; /* #E2E8EC */
+  --color-muted: 206 25% 97%; /* #F5F7F9 */
+  
+  --color-background: 206 25% 97%; /* #F5F7F9 */
+  --color-inverted: 0 0% 100%; /* #FFFFFF */
 
-  --color-primary-strongest: 0 71 146; /* #005AB9 */
-  --color-primary-stronger: 0 86 176; /* #006ADA */
-  --color-primary-strong: 0 104 212; /* #017DFF */
-  --color-primary-medium: 1 125 255; /* #2E94FF BASE */
-  --color-primary-weak: 96 173 255; /* #60ADFF */
-  --color-primary-weaker: 156 204 255; /* #9CCCFF */
-  --color-primary-weakest: 226 240 255; /* #E2F0FF */
+  --color-primary-strongest: 211 100% 29%; /* #004792 */
+  --color-primary-stronger: 211 100% 35%; /* #0056B0 */
+  --color-primary-strong: 211 100% 42%; /* #0068D4 */
+  --color-primary-medium: 211 100% 50%; /* #017DFF */
+  --color-primary-weak: 211 100% 69%; /* #60ADFF */
+  --color-primary-weaker: 211 100% 81%; /* #9CCCFF */
+  --color-primary-weakest: 211 100% 94%; /* #E2F0FF */
 
-  --color-warning-strongest: 146 85 0; /* #925500 */
-  --color-warning-stronger: 176 103 0; /* #B06700 */
-  --color-warning-strong: 212 124 0; /* #D47C00 */
-  --color-warning-medium: 255 149 0; /* #FF9500 BASE */
-  --color-warning-weak: 255 188 94; /* #FFBC5E */
-  --color-warning-weaker: 255 213 153; /* #FFD599 */
-  --color-warning-weakest: 255 242 222; /* #FFF2DE */
+  --color-warning-strongest: 35 100% 29%; /* #925500 */
+  --color-warning-stronger: 35 100% 35%; /* #B06700 */
+  --color-warning-strong: 35 100% 42%; /* #D47C00 */
+  --color-warning-medium: 35 100% 50%; /* #FF9500 */
+  --color-warning-weak: 35 100% 68%; /* #FFBC5E */
+  --color-warning-weaker: 35 100% 80%; /* #FFD599 */
+  --color-warning-weakest: 35 100% 93%; /* #FFF2DE */
 
-  --color-danger-strongest: 173 9 0; /* #AD0900 */
-  --color-danger-stronger: 208 11 0; /* #D00B00 */
-  --color-danger-strong: 251 13 0; /* #FB0D00 */
-  --color-danger-medium: 255 59 48; /* #FF3B30 BASE */
-  --color-danger-weak: 255 108 100; /* #FF6C64 */
-  --color-danger-weaker: 255 165 160; /* #FFA5A0 */
-  --color-danger-weakest: 255 232 231; /* #FFE8E7 */
+  --color-danger-strongest: 3 100% 34%; /* #AD0900 */
+  --color-danger-stronger: 3 100% 41%; /* #D00B00 */
+  --color-danger-strong: 3 100% 49%; /* #FB0D00 */
+  --color-danger-medium: 3 100% 59%; /* #FF3B30 */
+  --color-danger-weak: 3 100% 70%; /* #FF6C64 */
+  --color-danger-weaker: 3 100% 81%; /* #FFA5A0 */
+  --color-danger-weakest: 3 100% 95%; /* #FFE8E7 */
 
-  --color-success-strongest: 30 114 51; /* #1E7233 */
-  --color-success-stronger: 36 137 61; /* #24893D */
-  --color-success-strong: 43 165 74; /* #2BA54A */
-  --color-success-medium: 52 199 89; /* #34C759 BASE */
-  --color-success-weak: 122 220 147; /* #7ADC93 */
-  --color-success-weaker: 168 232 184; /* #A8E8B8 */
-  --color-success-weakest: 222 246 228; /* #DEF6E4 */
+  --color-success-strongest: 135 59% 28%; /* #1E7233 */
+  --color-success-stronger: 135 59% 34%; /* #24893D */
+  --color-success-strong: 135 59% 41%; /* #2BA54A */
+  --color-success-medium: 135 59% 49%; /* #34C759 */
+  --color-success-weak: 135 59% 67%; /* #7ADC93 */
+  --color-success-weaker: 135 59% 78%; /* #A8E8B8 */
+  --color-success-weakest: 135 59% 92%; /* #DEF6E4 */
 
-  --color-accent-strongest: 106 27 146; /* #6A1B92 */
-  --color-accent-stronger: 128 33 176; /* #8021B0 */
-  --color-accent-strong: 154 40 212; /* #9A28D4 */
-  --color-accent-medium: 175 82 222; /* #AF52DE BASE */
-  --color-accent-weak: 195 125 230; /* #C37DE6 */
-  --color-accent-weaker: 218 176 240; /* #DAB0F0 */
-  --color-accent-weakest: 246 235 251; /* #F6EBFB */
+  --color-accent-strongest: 280 68% 34%; /* #6A1B92 */
+  --color-accent-stronger: 280 68% 41%; /* #8021B0 */
+  --color-accent-strong: 280 68% 49%; /* #9A28D4 */
+  --color-accent-medium: 280 68% 60%; /* #AF52DE */
+  --color-accent-weak: 280 68% 70%; /* #C37DE6 */
+  --color-accent-weaker: 280 68% 81%; /* #DAB0F0 */
+  --color-accent-weakest: 280 68% 95%; /* #F6EBFB */
 
-  --color-info-strongest: 93 76 54; /* #5D4C36 */
-  --color-info-stronger: 112 91 65; /* #705B41 */
-  --color-info-strong: 135 110 78; /* #876E4E */
-  --color-info-medium: 162 132 94; /* #A2845E BASE */
-  --color-info-weak: 197 178 154; /* #C5B29A */
-  --color-info-weaker: 219 207 192; /* #DBCFC0 */
-  --color-info-weakest: 244 241 236; /* #F4F1EC */
+  --color-info-strongest: 34 27% 29%; /* #5D4C36 */
+  --color-info-stronger: 34 27% 35%; /* #705B41 */
+  --color-info-strong: 34 27% 42%; /* #876E4E */
+  --color-info-medium: 34 27% 50%; /* #A2845E */
+  --color-info-weak: 34 27% 69%; /* #C5B29A */
+  --color-info-weaker: 34 27% 81%; /* #DBCFC0 */
+  --color-info-weakest: 34 27% 94%; /* #F4F1EC */
 
   /* ==========================================================================
       Spacing System
       ========================================================================== */
-  --space-xxs: 0.25rem; /*  4px */
-  --space-xs: 0.5rem; /*  8px */
-  --space-sm: 0.75rem; /* 12px */
-  --space-base: 1rem; /* 16px */
-  --space-md: 1.25rem; /* 20px */
-  --space-lg: 1.5rem; /* 24px */
-  --space-xl: 2rem; /* 32px */
-  --space-2xl: 2.5rem; /* 40px */
-  --space-3xl: 3rem; /* 48px */
-  --space-4xl: 4rem; /* 64px */
+  --space-xxs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-base: 16px;
+  --space-md: 20px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 40px;
+  --space-3xl: 48px;
+  --space-4xl: 64px;
+
+  /* ==========================================================================
+      Heights System
+      ========================================================================== */
+  --height-controls-sm: 32px;
+  --height-controls-base: 38px;
+  --height-controls-lg: 44px;
+
+  /* ==========================================================================
+      Size System
+      ========================================================================== */
+  --size-icon-sm: 12px;
+  --size-icon-base: 14px;
+  --size-icon-lg: 16px;
 
   /* ==========================================================================
       Border Radius
       ========================================================================== */
-  --radius-sm: 0.125rem; /*  2px */
-  --radius-base: 0.25rem; /*  4px */
-  --radius-md: 0.375rem; /*  6px */
-  --radius-lg: 0.5rem; /*  8px */
-  --radius-xl: 0.75rem; /* 12px */
+  --radius-sm: 2px;
+  --radius-base: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
   --radius-pill: 9999px;
 
   /* ==========================================================================
@@ -171,8 +186,5 @@
 
 /* Dark theme color adjustments */
 [data-theme="dark"] {
-  /* You can override specific foundation values for dark theme if needed */
-  /* Example:
-   --shadow-sm: 0px 1px 2px rgba(0, 0, 0, 0.4);
-   */
+
 }

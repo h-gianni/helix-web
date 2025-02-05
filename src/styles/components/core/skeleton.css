@@ -1,0 +1,71 @@
+/* Base Skeleton */
+.ui-skeleton {
+  @apply rounded-md animate-pulse ui-background-surface-hollowed;
+}
+
+/* Sizes */
+.ui-skeleton[data-size="xs"] {
+  @apply h-md;
+}
+
+.ui-skeleton[data-size="sm"] {
+  @apply h-md;
+}
+
+.ui-skeleton[data-size="base"] {
+  @apply h-lg;
+}
+
+.ui-skeleton[data-size="lg"] {
+  @apply h-xl;
+}
+
+.ui-skeleton[data-size="xl"] {
+  @apply h-2xl;
+}
+
+/* Effects */
+.ui-skeleton[data-effect="shimmer"] {
+  @apply relative overflow-hidden;
+  
+  &::before {
+    @apply absolute inset-0 -translate-x-full;
+    background: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in srgb, var(--background-surface) 5%, transparent),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+    content: '';
+  }
+}
+
+/* Variants */
+.ui-skeleton[data-variant="avatar"] {
+  @apply rounded-full;
+}
+
+.ui-skeleton[data-variant="card"] {
+  @apply rounded-lg p-md ui-border-neutral gap-sm;
+}
+
+/* Table Layout */
+.ui-skeleton[data-variant="table"] {
+  @apply flex flex-col gap-md;
+}
+
+.ui-skeleton-table-row {
+  @apply flex gap-md;
+}
+
+/* Group Layout */
+.ui-skeleton[data-variant="group"] {
+  @apply flex flex-col gap-md;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}

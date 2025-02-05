@@ -51,29 +51,32 @@ const TeamsContent = ({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <div className="flex justify-between items-end">
+        <h1 className="ui-text-heading-1">Dashboard</h1>
         <div className="flex items-center gap-4">
           <Button
-            appearance="outline"
+            volume="moderate"
+            iconOnly={false}
+            leadingIcon={<MessageSquare />}
             onClick={() => router.push("/dashboard/feedback")}
-            className="gap-2"
           >
-            <MessageSquare />
             Add Feedback
           </Button>
+
           <Button
             variant="primary"
+            volume="loud"
+            iconOnly={false}
+            leadingIcon={<Star />}
             onClick={onAddRating}
           >
-            <Star />
             Rate Performance
           </Button>
         </div>
       </div>
 
       <div className="space-y-4">
-        <div className="flex justify-end bg-surface-hollowed rounded-base p-sm border-t border-neutral-weak">
+        <div className="flex justify-end bg-surface-hollowed rounded-base p-xs border-t border-neutral-weak">
           <ViewSwitcher viewType={viewType} onViewChange={setViewType} />
         </div>
         {performanceCategories.map((category) => (
@@ -140,15 +143,15 @@ export default function DashboardPage() {
       const response = await fetch("/api/teams", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           name,
-          teamFunctionId,  // Updated from businessFunctionId to teamFunctionId
+          teamFunctionId, // Updated from businessFunctionId to teamFunctionId
         }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create team');
+        throw new Error(errorData.error || "Failed to create team");
       }
 
       const data = await response.json();
@@ -156,7 +159,7 @@ export default function DashboardPage() {
         setIsCreateModalOpen(false);
         router.push("/dashboard/teams");
       } else {
-        throw new Error(data.error || 'Failed to create team');
+        throw new Error(data.error || "Failed to create team");
       }
     } catch (error) {
       console.error("Error creating team:", error);
@@ -179,22 +182,22 @@ export default function DashboardPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             activityId: data.activityId,
-            value: data.rating, 
+            value: data.rating,
             feedback: data.feedback,
           }),
         }
       );
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Failed to save rating");
       }
-  
+
       const responseData = await response.json();
       if (!responseData.success) {
         throw new Error(responseData.error || "Failed to save rating");
       }
-  
+
       await fetchPerformers();
       setIsRatingModalOpen(false);
     } catch (error) {

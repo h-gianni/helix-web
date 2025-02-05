@@ -45,7 +45,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Top Performers",
     minRating: 4.6,
     maxRating: 5,
-    className: "text-success bg-success-weakest",
+    className: "ui-text-success ui-background-success-weakest",
     Icon: Gem,
     description: "Outstanding performance across all activities",
   },
@@ -53,7 +53,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Strong Performers",
     minRating: 4,
     maxRating: 4.5,
-    className: "text-success bg-success-weakest",
+    className: "ui-text-success ui-background-success-weakest",
     Icon: Sparkles,
     description: "Consistently exceeding expectations",
   },
@@ -61,7 +61,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Solid Performers",
     minRating: 3,
     maxRating: 3.9,
-    className: "text-info bg-info-weakest",
+    className: "ui-text-info ui-background-info-weakest",
     Icon: Sparkle,
     description: "Meeting expectations consistently",
   },
@@ -69,7 +69,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Weak Performers",
     minRating: 2.1,
     maxRating: 2.9,
-    className: "text-warning bg-warning-weakest",
+    className: "ui-text-warning ui-background-warning-weakest",
     Icon: Footprints,
     description: "Need support to improve performance",
   },
@@ -77,7 +77,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Poor Performers",
     minRating: 1,
     maxRating: 2,
-    className: "text-danger bg-danger-weakest",
+    className: "ui-text-danger ui-background-danger-weakest",
     Icon: LifeBuoy,
     description: "Requires immediate attention and support",
   },
@@ -85,7 +85,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Not Rated",
     minRating: 0,
     maxRating: 0,
-    className: "text-neutral bg-neutral-weakest",
+    className: "ui-text-neutral ui-background-neutral-weakest",
     Icon: MinusCircle,
     description: "Members awaiting their first performance rating",
   },
@@ -104,6 +104,7 @@ export const ViewSwitcher = ({
       value={viewType} 
       onValueChange={onViewChange}
       width="inline"
+       size="sm"
     >
       <SelectTrigger>
         <SelectValue placeholder="Select view" />
@@ -146,13 +147,13 @@ export function PerformersByCategory({
     });
 
   const EmptyState = () => (
-    <div className="flex flex-col items-center justify-center py-sm">
-      <div className={`p-sm rounded-full ${category.className} mb-sm`}>
-        <category.Icon className="size-5" />
+    <div className="flex flex-col items-center justify-center">
+      <div className={`p-xs rounded-full ${category.className} mb-xs`}>
+        <category.Icon className="size-4" />
       </div>
       <div className="text-center">
-        <h3 className="text-heading-5 text-text-strong">No {category.label}</h3>
-        <p className="text-helper max-w-copy mx-auto">
+        <h3 className="ui-text-heading-5">No {category.label}</h3>
+        <p className="ui-text-body-helper max-w-copy mx-auto">
           {category.label === "Not Rated"
             ? "All team members have received at least one rating."
             : category.label === "Poor Performers" ||
@@ -181,13 +182,13 @@ export function PerformersByCategory({
             <category.Icon className={`size-5 ${category.className}`} />
             <span>{category.label}</span>
             {category.description && (
-              <span className="text-helper">
+              <span className="ui-text-body-helper">
                <span className="pr-xs text-muted"> / </span> {category.description}
               </span>
             )}
           </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0 pt-xxs">
         <TeamPerformanceView
           members={categoryPerformers}
           teams={teams}

@@ -60,16 +60,15 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
       <div className="flex items-center gap-4">
         <Button
           variant="neutral"
-          appearance="icon-only"
+          volume="soft"
+          shape="rounded"
+          iconOnly
           size="sm"
-          leadingIcon={<Bell className="size-4" />}
+          leadingIcon={<Bell />}
           aria-label="Notifications"
         />
         <Avatar size="sm">
-          <AvatarImage 
-            src="https://github.com/shadcn.png" 
-            alt="User avatar" 
-          />
+          <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
           <AvatarFallback>GF</AvatarFallback>
         </Avatar>
       </div>

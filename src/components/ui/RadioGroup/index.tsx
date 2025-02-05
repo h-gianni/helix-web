@@ -1,10 +1,12 @@
-import * as React from "react"
-import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
-import { Circle } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Label } from "@/components/ui/Label"
+"use client";
 
-interface RadioGroupProps 
+import * as React from "react";
+import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
+import { Circle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/Label";
+
+export interface RadioGroupProps
   extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> {
   error?: boolean;
   orientation?: "horizontal" | "vertical";
@@ -18,26 +20,32 @@ const RadioGroup = React.forwardRef<
   return (
     <RadioGroupPrimitive.Root
       className={cn(
-        "radio-group-base",
-        variant === "default" && orientation === "vertical" && "radio-group-vertical",
-        variant === "default" && orientation === "horizontal" && "radio-group-horizontal",
-        variant === "blocks" && orientation === "vertical" && "radio-group-blocks-vertical",
-        variant === "blocks" && orientation === "horizontal" && "radio-group-blocks-horizontal",
+        "ui-radio-group-base",
+        variant === "default" &&
+          (orientation === "vertical"
+            ? "ui-radio-group-vertical"
+            : "ui-radio-group-horizontal"),
+        variant === "blocks" &&
+          (orientation === "vertical"
+            ? "ui-radio-group-blocks-vertical"
+            : "ui-radio-group-blocks-horizontal"),
         variant === "compact" && [
-          "radio-group-compact",
-          orientation === "vertical" ? "radio-group-compact-vertical" : "radio-group-compact-horizontal"
+          "ui-radio-group-compact",
+          orientation === "vertical"
+            ? "ui-radio-group-compact-vertical"
+            : "ui-radio-group-compact-horizontal",
         ],
-        error && "radio-group-error",
+        error && "ui-radio-group-error",
         className
       )}
       {...props}
       ref={ref}
     />
-  )
-})
-RadioGroup.displayName = RadioGroupPrimitive.Root.displayName
+  );
+});
+RadioGroup.displayName = RadioGroupPrimitive.Root.displayName;
 
-interface RadioGroupItemProps 
+export interface RadioGroupItemProps
   extends React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item> {
   label?: React.ReactNode;
   description?: React.ReactNode;
@@ -48,60 +56,69 @@ const RadioGroupItem = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Item>,
   RadioGroupItemProps
 >(({ className, children, label, description, variant = "default", ...props }, ref) => {
-  const { disabled, required, "aria-invalid": ariaInvalid } = props
-  const error = ariaInvalid === true || ariaInvalid === "true"
-  const orientation = props["aria-orientation"]
+  const { disabled, required, "aria-invalid": ariaInvalid } = props;
+  const error = ariaInvalid === true || ariaInvalid === "true";
+  const orientation = props["aria-orientation"];
   
+  // The radio button itself (wrapped in a container)
   const radio = (
-    <div className="radio-container">
+    <div className="ui-radio-container">
       <RadioGroupPrimitive.Item
         ref={ref}
         className={cn(
-          "radio-base",
-          !props['aria-invalid'] ? "radio-default" : "radio-error",
-          !props['aria-invalid'] ? "radio-focus" : "radio-focus-error",
-          props.disabled && "radio-disabled",
+          "ui-radio-base",
+          !props["aria-invalid"] ? "radio-default" : "ui-radio-error",
+          !props["aria-invalid"] ? "ui-radio-focus" : "ui-radio-focus-error",
+          props.disabled && "ui-radio-disabled",
           className
         )}
         {...props}
       >
-        <RadioGroupPrimitive.Indicator className="radio-indicator">
+        <RadioGroupPrimitive.Indicator className="ui-radio-indicator">
           <Circle />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
     </div>
-  )
+  );
 
+  // If variant is blocks or compact, wrap the radio with a label element
   if (variant === "blocks" || variant === "compact") {
     return (
       <label
         className={cn(
-          "radio-label-wrapper group",
-          variant === "blocks" && "radio-label-wrapper-blocks",
-          variant === "compact" && orientation === "vertical" && "radio-label-wrapper-compact-vertical",
-          variant === "compact" && orientation === "horizontal" && "radio-label-wrapper-compact-horizontal",
-          props.disabled && "radio-disabled"
+          "ui-radio-label-wrapper group",
+          variant === "blocks" && "ui-radio-label-wrapper-blocks",
+          variant === "compact" &&
+            orientation === "vertical" &&
+            "ui-radio-label-wrapper-compact-vertical",
+          variant === "compact" &&
+            orientation === "horizontal" &&
+            "ui-radio-label-wrapper-compact-horizontal",
+          props.disabled && "ui-radio-disabled"
         )}
         data-state={props.checked ? "checked" : "unchecked"}
       >
-        <div className={cn(
-          "radio-content-wrapper",
-          orientation === "horizontal" && "radio-content-wrapper-horizontal"
-        )}>
+        <div
+          className={cn(
+            "ui-radio-content-wrapper",
+            orientation === "horizontal" && "ui-radio-content-wrapper-horizontal"
+          )}
+        >
           {radio}
-          <div className="radio-label-content">
-            {label && <div className="radio-label-text">{label}</div>}
-            {description && <div className="radio-description">{description}</div>}
+          <div className="ui-radio-label-content">
+            {label && <div className="ui-radio-label-text">{label}</div>}
+            {description && <div className="ui-radio-description">{description}</div>}
             {children}
           </div>
         </div>
       </label>
-    )
+    );
   }
 
+  // If a label is provided outside of blocks/compact variants, wrap with a row layout
   if (label) {
     return (
-      <div className="radio-label-row">
+      <div className="ui-radio-label-row">
         {radio}
         <Label
           htmlFor={props.id}
@@ -112,12 +129,13 @@ const RadioGroupItem = React.forwardRef<
           {label}
         </Label>
       </div>
-    )
+    );
   }
 
-  return radio
-})
-RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName
+  // Otherwise, return just the radio element
+  return radio;
+});
+RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName;
 
-export { RadioGroup, RadioGroupItem }
-export type { RadioGroupProps, RadioGroupItemProps }
+export { RadioGroup, RadioGroupItem };
+// export type { RadioGroupProps, RadioGroupItemProps };

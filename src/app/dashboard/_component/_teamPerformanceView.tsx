@@ -88,7 +88,7 @@ const getPerformanceCategory = (
       label: "No Ratings",
       minRating: 0,
       maxRating: 0,
-      className: "text-muted-foreground",
+      className: "text-muted",
       Icon: TrendingUp,
     };
   }
@@ -100,7 +100,7 @@ const getPerformanceCategory = (
       label: "Unknown",
       minRating: 0,
       maxRating: 0,
-      className: "text-muted-foreground",
+      className: "text-muted",
       Icon: TrendingUp,
     }
   );
@@ -138,7 +138,7 @@ export function TeamPerformanceView({
     return (
       <Card>
         <CardContent className="flex items-center justify-center py-8">
-          <p className="text-muted-foreground">No team members found.</p>
+          <p className="text-muted">No team members found.</p>
         </CardContent>
       </Card>
     );
