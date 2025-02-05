@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as MenubarPrimitive from "@radix-ui/react-menubar";
-import { Check, ChevronRight, Circle } from "lucide-react";
+import { Check, ChevronRight, Circle, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type RootElement = React.ElementRef<typeof MenubarPrimitive.Root>;

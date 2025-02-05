@@ -234,3 +234,5 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
     );
   }
 );
+
+ListItem.displayName = "ListItem";

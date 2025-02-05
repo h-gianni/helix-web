@@ -66,6 +66,8 @@ export const GET = async (request: Request) => {
       },
     });
 
+   
+
     if (!user) {
       console.log("❌ User not found - Please complete registration");
       return NextResponse.json<ApiResponse<never>>(

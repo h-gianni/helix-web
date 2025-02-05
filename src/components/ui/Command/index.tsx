@@ -33,6 +33,8 @@ const ListItem = React.forwardRef<HTMLDivElement, BaseItemProps>(
   )
 );
 
+ListItem.displayName = "ListItem";
+
 const ListGroup = React.forwardRef<
   HTMLDivElement,
   ListGroupProps & React.HTMLAttributes<HTMLDivElement>
@@ -42,6 +44,8 @@ const ListGroup = React.forwardRef<
     {children}
   </div>
 ));
+
+ListGroup.displayName = "ListGroup";
 
 // Command Components
 type CommandPrimitiveElement = React.ElementRef<typeof CommandPrimitive>;

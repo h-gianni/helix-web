@@ -57,6 +57,13 @@ enum AuditAction {
   STATUS_CHANGE
 }
 
+// Add subscription enum
+enum SubscriptionTier {
+  FREE
+  PREMIUM
+  ENTERPRISE
+}
+
 /// @description Stores user authentication and basic profile information
 model AppUser {
   id        String    @id @default(cuid())
@@ -65,6 +72,9 @@ model AppUser {
   name      String?   @db.VarChar(100)
   /// @description Unique identifier from Clerk authentication service
   clerkId   String?   @unique
+  subscriptionTier  SubscriptionTier @default(FREE)
+    subscriptionStart DateTime?
+  subscriptionEnd   DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -77,6 +87,7 @@ model AppUser {
 
   @@map("app_users")
   @@index([deletedAt])
+  @@index([subscriptionTier])
 }
 
 model TeamFunction {
@@ -92,7 +103,7 @@ model TeamFunction {
   jobTitles   JobTitle[]
   teams       GTeam[]
 
-  @@map("team_functions")
+  @@map("team_functions") 
   @@index([deletedAt])
 }
 
