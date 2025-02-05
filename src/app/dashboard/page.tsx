@@ -75,8 +75,8 @@ const TeamsContent = ({
         </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex justify-end bg-surface-hollowed rounded-base p-xs border-t border-neutral-weak">
+      <div className="ui-main-content">
+        <div className="ui-view-controls-bar">
           <ViewSwitcher viewType={viewType} onViewChange={setViewType} />
         </div>
         {performanceCategories.map((category) => (

@@ -64,7 +64,7 @@
  }
  
  .ui-star-rating-value {
-  @apply ml-xs ui-text-heading-5;
+  @apply ml-xs text-sm font-semibold;
  }
  
  .ui-star-rating-count {

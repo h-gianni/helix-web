@@ -63,12 +63,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
          disabled={disabled}
          required={required}
          aria-invalid={error}
+         data-error={error || undefined}
          data-size={size}
          aria-describedby={helperText ? `${inputId}-helper` : undefined}
          className={cn(
            "ui-input",
            leadingIcon && "ui-input-with-icon",
-           error && "ui-input-error",
            className
          )}
          onFocus={(e) => {
@@ -88,15 +88,15 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
    if (!withLabel || !label) {
      return (
        <>
-         {helperElement}
          {inputElement}
+         {helperElement}
        </>
      );
    }
 
    return (
      <div className="ui-input-control">
-       <div className="ui-input-label-wrapper">
+       <div className="ui-input-wrapper">
          <Label
            htmlFor={inputId}
            data-error={error}
@@ -106,8 +106,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
          >
            {label}
          </Label>
-         {helperElement}
          {inputElement}
+         {helperElement}
        </div>
      </div>
    );

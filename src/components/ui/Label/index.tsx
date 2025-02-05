@@ -17,10 +17,10 @@ const Label = React.forwardRef<
 >(({ className, error, required, disabled, ...props }, ref) => (
   <LabelPrimitive.Root
     ref={ref}
-    data-required={required ? true : undefined}
-    data-error={error ? true : undefined}
-    data-disabled={disabled ? true : undefined}
-    className={cn("ui-label-base", className)}
+    data-required={required || undefined}
+    data-error={error || undefined}
+    data-disabled={disabled || undefined}
+    className={cn("ui-label", className)}
     {...props}
   />
 ));

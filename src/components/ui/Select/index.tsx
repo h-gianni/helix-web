@@ -27,7 +27,7 @@ const Select = React.forwardRef<
   children, 
   width = "full",
   size = "base",
-  withLabel, 
+  withLabel = false, 
   label, 
   error,
   helperText,
@@ -36,65 +36,62 @@ const Select = React.forwardRef<
   showItemIndicator = true,
   ...props 
 }, ref) => {
-  const selectId = React.useId();
-  const helperId = React.useId();
+  const elementId = React.useId();
 
-  const content = (
-    <div className="ui-form-field">
-      <div className={cn("ui-select", className)} data-width={width} data-size={size}>
-        <SelectPrimitive.Root disabled={disabled} required={required} {...props}>
-          {React.Children.map(children, child => {
-            if (!React.isValidElement(child)) return child;
-            
-            if ((child.type as any).displayName === SelectTrigger.displayName) {
-              return React.cloneElement(child as React.ReactElement<any>, {
-                error,
-                size,
-                'aria-describedby': helperText ? helperId : undefined,
-                'aria-labelledby': label ? selectId : undefined,
-              });
-            }
-            if ((child.type as any).displayName === SelectContent.displayName) {
-              return React.cloneElement(child as React.ReactElement<any>, {
-                size,
-              });
-            }
-            if ((child.type as any).displayName === SelectItem.displayName) {
-              return React.cloneElement(child as React.ReactElement<any>, {
-                size,
-                'data-show-indicator': showItemIndicator,
-              });
-            }
-            return child;
-          })}
-        </SelectPrimitive.Root>
-      </div>
+  const selectElement = (
+    <div className={cn("ui-select", className)} data-width={width} data-size={size}>
+      <SelectPrimitive.Root disabled={disabled} required={required} {...props}>
+        {React.Children.map(children, child => {
+          if (!React.isValidElement(child)) return child;
+          
+          if ((child.type as any).displayName === SelectTrigger.displayName) {
+            return React.cloneElement(child as React.ReactElement<any>, {
+              error,
+              size,
+              'aria-describedby': helperText ? `${elementId}-helper` : undefined,
+              'aria-labelledby': label ? elementId : undefined,
+            });
+          }
+          if ((child.type as any).displayName === SelectContent.displayName) {
+            return React.cloneElement(child as React.ReactElement<any>, {
+              size,
+            });
+          }
+          if ((child.type as any).displayName === SelectItem.displayName) {
+            return React.cloneElement(child as React.ReactElement<any>, {
+              size,
+              'data-show-indicator': showItemIndicator,
+            });
+          }
+          return child;
+        })}
+      </SelectPrimitive.Root>
+    </div>
+  );
+ 
+  if (!withLabel || !label) {
+    return selectElement;
+  }
+ 
+  return (
+    <div className="ui-form-element-wrapper">
+      <Label
+        htmlFor={elementId}
+        data-error={error || undefined}
+        data-disabled={disabled}
+        required={required}
+      >
+        {label}
+      </Label>
+      {selectElement}
       {helperText && (
-        <p id={helperId} className="ui-form-helper" data-error={error}>
+        <p id={`${elementId}-helper`} className="ui-form-helper" data-error={error}>
           {helperText}
         </p>
       )}
     </div>
   );
-
-  if (!withLabel || !label) return content;
-
-  return (
-    <div className="ui-form-layout">
-      <div className="ui-form-label">
-        <Label
-          htmlFor={selectId}
-          data-error={error}
-          data-disabled={disabled}
-          required={required}
-        >
-          {label}
-        </Label>
-        {content}
-      </div>
-    </div>
-  );
-});
+ });
 Select.displayName = SelectPrimitive.Root.displayName;
 
 const SelectTrigger = React.forwardRef<

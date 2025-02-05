@@ -8,7 +8,6 @@ import { Label } from "@/components/ui/Label";
 
 export interface CheckboxProps
   extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> {
-  withLabel?: boolean;
   label?: string;
   description?: string;
 }
@@ -18,49 +17,38 @@ const Checkbox = React.forwardRef<
   CheckboxProps
 >(
   (
-    { className, withLabel = false, label, description, id, disabled, required, ...props },
+    { className, label, description, id, disabled, required, ...props },
     ref
   ) => {
-    const generatedId = React.useId();
-    const checkboxId = id || generatedId;
-
-    // Base checkbox element
-    const checkboxElement = (
-      <CheckboxPrimitive.Root
-        id={checkboxId}
-        ref={ref}
-        disabled={disabled}
-        required={required}
-        className={cn("ui-checkbox-base peer", className)}
-        {...props}
-      >
-        <CheckboxPrimitive.Indicator
-          className={cn("ui-checkbox-indicator ui-checkbox-animation")}
-        >
-          <Check className="size-3.5" />
-        </CheckboxPrimitive.Indicator>
-      </CheckboxPrimitive.Root>
-    );
-
-    // Description element if provided
-    const descriptionElement = description && (
-      <p className="ui-checkbox-description">{description}</p>
-    );
-
-    // Return just the checkbox if no label is required
-    if (!withLabel || !label) {
-      return checkboxElement;
-    }
+    const elementId = id || React.useId();
 
     // Return checkbox with label and optional description
     return (
-      <div className="ui-checkbox-label-wrapper">
-        {checkboxElement}
-        <div>
-          <Label htmlFor={checkboxId} disabled={disabled} required={required}>
-            {label}
-          </Label>
-          {descriptionElement}
+      <div className="ui-form-layout">
+        <div className="ui-checkbox-label-wrapper">
+          <CheckboxPrimitive.Root
+            ref={ref}
+            id={elementId}
+            disabled={disabled}
+            required={required}
+            className={cn("ui-checkbox-base peer", className)}
+            {...props}
+          >
+            <CheckboxPrimitive.Indicator className="ui-checkbox-indicator">
+              <Check className="size-3.5" />
+            </CheckboxPrimitive.Indicator>
+          </CheckboxPrimitive.Root>
+          <div className="ui-checkbox-text-wrapper">
+            <Label
+              htmlFor={elementId}
+              data-disabled={disabled || undefined}
+              data-required={required || undefined}
+              className="ui-form-checkbox"
+            >
+              {label}
+            </Label>
+            {description && <p className="ui-form-helper">{description}</p>}
+          </div>
         </div>
       </div>
     );

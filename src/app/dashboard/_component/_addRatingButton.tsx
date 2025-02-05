@@ -182,7 +182,7 @@ export default function PerformanceRatingModal({
         <DialogFooter>
           <Button
             variant="neutral"
-            appearance="outline"
+            volume="soft"
             onClick={handleReset}
             disabled={saving}
           >

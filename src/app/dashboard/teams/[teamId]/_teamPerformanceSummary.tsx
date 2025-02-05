@@ -62,8 +62,8 @@ export function TeamPerformanceSummary({
  };
 
  return (
-   <>
-     <div className="flex justify-end mb-4">
+  <div className="ui-main-content">
+     <div className="ui-view-controls-bar">
        <ViewSwitcher viewType={viewType} onViewChange={onViewChange} />
      </div>
      <TeamPerformanceView
@@ -95,6 +95,6 @@ export function TeamPerformanceSummary({
          </AlertDialogFooter>
        </AlertDialogContent>
      </AlertDialog>
-   </>
+   </div>
  );
 }

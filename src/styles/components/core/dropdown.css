@@ -33,6 +33,10 @@
   }
 }
 
+.ui-popcard-list-indicator {
+ @apply w-sm;
+}
+
 /* Print styles */
 @media print {
   .ui-dropdown-content,

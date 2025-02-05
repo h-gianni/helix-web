@@ -102,7 +102,7 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
               <TableHead className="members-table-col-seniority">Seniority</TableHead>
               <TableHead className="members-table-col-performance">Performance</TableHead>
               <TableHead>Ratings</TableHead>
-              {showActions && <TableHead className="members-table-sr-only">Actions</TableHead>}
+              {showActions && <TableHead className="members-table-sr-only w-0">Actions</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>

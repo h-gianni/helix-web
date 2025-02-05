@@ -4,10 +4,11 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/Label";
 
+// index.tsx
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   error?: boolean;
-  inputSize?: "sm" | "base" | "lg";
+  "data-size"?: "sm" | "base" | "lg"; // Changed from inputSize
   maxLength?: number;
   showCount?: boolean;
   withLabel?: boolean;
@@ -16,52 +17,43 @@ export interface TextareaProps
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  (
-    {
-      className,
-      error,
-      inputSize = "base",
-      maxLength,
-      showCount,
-      withLabel = false,
-      label,
-      helperText,
-      required,
-      disabled,
-      id,
-      value,
-      onChange,
-      ...props
-    },
-    ref
-  ) => {
+  ({
+    className,
+    error,
+    "data-size": size = "base",
+    maxLength,
+    showCount,
+    withLabel = false,
+    label,
+    helperText,
+    required,
+    disabled,
+    id,
+    value,
+    onChange,
+    ...props
+  }, ref) => {
     const [charCount, setCharCount] = React.useState(0);
     const [focused, setFocused] = React.useState(false);
     const generatedId = React.useId();
-    const textareaId = id || generatedId;
+    const elementId = id || generatedId;
 
-    // Update character count on change
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setCharCount(e.target.value.length);
       onChange?.(e);
     };
 
-    // Initialize character count on mount/update
     React.useEffect(() => {
       setCharCount(String(value || "").length);
     }, [value]);
 
-    // Base textarea element
     const textareaElement = (
       <div className="ui-textarea-wrapper">
         <textarea
-          id={textareaId}
-          className={cn(
-            "ui-textarea",
-            `ui-textarea-${inputSize}`,
-            error && "ui-textarea-error",
-            className
-          )}
+          id={elementId}
+          className={cn("ui-textarea", className)}
+          data-size={size}
+          data-error={error || undefined}
           ref={ref}
           maxLength={maxLength}
           value={value}
@@ -77,58 +69,53 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           disabled={disabled}
           required={required}
           aria-invalid={error}
-          aria-describedby={helperText ? `${textareaId}-helper` : undefined}
+          aria-describedby={helperText ? `${elementId}-helper` : undefined}
           {...props}
         />
       </div>
     );
 
-    // Footer element: helper text and character count
-    const textareaFooter =
-      (helperText || showCount) && (
-        <div className="ui-textarea-footer">
-          {helperText && (
-            <p
-              id={`${textareaId}-helper`}
-              className={cn(
-                "ui-textarea-helper",
-                error && "ui-textarea-helper-error"
-              )}
-            >
-              {helperText}
-            </p>
-          )}
-          {showCount && (
-            <div
-              className={cn(
-                "ui-textarea-counter",
-                error && "ui-textarea-counter-error",
-                !helperText && "ui-textarea-counter-solo"
-              )}
-            >
-              {charCount}
-              {maxLength && ` / ${maxLength}`}
-            </div>
-          )}
-        </div>
-      );
+    const textareaFooter = (helperText || showCount) && (
+      <div className="ui-textarea-footer">
+        {helperText && (
+          <p
+            id={`${elementId}-helper`}
+            className="ui-form-helper"
+            data-error={error || undefined}
+          >
+            {helperText}
+          </p>
+        )}
+        {showCount && (
+          <div 
+            className="ui-textarea-counter"
+            data-error={error || undefined}
+            data-solo={!helperText || undefined}
+          >
+            {charCount}
+            {maxLength && ` / ${maxLength}`}
+          </div>
+        )}
+      </div>
+    );
 
-    // If no label is required, return the textarea and footer within a control container
     if (!withLabel || !label) {
       return (
-        <div className="ui-textarea-control">
+        <div className="ui-textarea-wrapper">
           {textareaElement}
           {textareaFooter}
         </div>
       );
     }
 
-    // If a label is provided, wrap with a label wrapper and include the label
     return (
-      <div className="ui-textarea-label-wrapper">
+      <div 
+        className="ui-textarea-wrapper"
+        data-has-label={true}
+      >
         <Label
-          htmlFor={textareaId}
-          data-error={error}
+          htmlFor={elementId}
+          data-error={error || undefined}
           data-focused={focused}
           data-disabled={disabled}
           required={required}
@@ -141,6 +128,5 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     );
   }
 );
-Textarea.displayName = "Textarea";
 
 export { Textarea };

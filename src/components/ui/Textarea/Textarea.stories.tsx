@@ -3,117 +3,110 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Textarea } from './index';
 
 const meta = {
-  title: 'Components/Textarea',
-  component: Textarea,
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
-  args: {
-    placeholder: 'Type your message here...',
-    inputSize: 'base',
-    withLabel: true,
-  },
-  argTypes: {
-    withLabel: {
-      control: 'boolean',
-      description: 'Whether to show the label',
-      defaultValue: true,
-    },
-    label: {
-      control: 'text',
-      description: 'Label text (requires withLabel to be true)',
-    },
-    inputSize: {
-      control: 'select',
-      options: ['sm', 'base', 'lg'],
-      description: 'Size of the textarea field',
-    },
-    disabled: {
-      control: 'boolean',
-      description: 'Disabled state',
-    },
-    required: {
-      control: 'boolean',
-      description: 'Required state',
-    },
-    error: {
-      control: 'boolean',
-      description: 'Error state',
-    },
-    helperText: {
-      control: 'text',
-      description: 'Helper text below the textarea',
-    },
-    showCount: {
-      control: 'boolean',
-      description: 'Show character count',
-    },
-    maxLength: {
-      control: 'number',
-      description: 'Maximum character length',
-    },
-    placeholder: {
-      control: 'text',
-      description: 'Placeholder text',
-    },
-  },
+ title: 'Components/Textarea',
+ component: Textarea,
+ parameters: {
+   layout: 'centered',
+ },
+ tags: ['autodocs'],
+ args: {
+   placeholder: 'Type your message here...',
+   'data-size': 'base' as const,
+   withLabel: true,
+   className: 'w-[320px]',
+ },
+ argTypes: {
+   withLabel: {
+     control: 'boolean',
+     description: 'Whether to show the label',
+     defaultValue: true,
+   },
+   label: {
+     control: 'text', 
+     description: 'Label text (requires withLabel to be true)',
+   },
+   'data-size': {
+     control: 'select',
+     options: ['sm', 'base', 'lg'],
+     description: 'Size of the textarea field',
+   },
+   error: {
+     control: 'boolean',
+     description: 'Whether to show error state',
+   },
+   disabled: {
+     control: 'boolean', 
+     description: 'Whether the textarea is disabled',
+   },
+   required: {
+     control: 'boolean',
+     description: 'Whether the textarea is required', 
+   },
+   helperText: {
+     control: 'text',
+     description: 'Helper text below the textarea',
+   },
+   showCount: {
+     control: 'boolean',
+     description: 'Show character count',
+   },
+   maxLength: {
+     control: 'number',
+     description: 'Maximum character length',
+   },
+   placeholder: {
+     control: 'text',
+     description: 'Placeholder text',
+   },
+ },
 } satisfies Meta<typeof Textarea>;
 
 export default meta;
-type Story = StoryObj<typeof Textarea>;
+type Story = StoryObj<typeof meta>;
 
-// Default with controls
-export const Default: Story = {
+export const Configurator: Story = {
   args: {
+    withLabel: true,
     label: 'Message',
     placeholder: 'Type your message here...',
     helperText: 'Enter your message above',
   },
-  render: (args) => (
-    <div className="w-[320px]">
-      <Textarea {...args} />
-    </div>
-  ),
 };
 
-// Size variants
 export const Sizes: Story = {
   render: () => (
-    <div className="w-[320px] space-y-6">
+    <div className="flex flex-col items-start gap-4">
       <Textarea
         withLabel
         label="Small textarea"
-        inputSize="sm"
+        data-size="sm"
         placeholder="Small size..."
       />
       <Textarea
         withLabel
         label="Default textarea"
-        inputSize="base"
+        data-size="base"
         placeholder="Default size..."
       />
       <Textarea
         withLabel
         label="Large textarea"
-        inputSize="lg"
+        data-size="lg"
         placeholder="Large size..."
       />
     </div>
   ),
 };
 
-// States example
 export const States: Story = {
   render: () => (
-    <div className="w-[320px] space-y-6">
+    <div className="flex flex-col items-start gap-4">
       <Textarea
         withLabel
         label="Default state"
         placeholder="Default state..."
         helperText="This is a helper text"
       />
-
       <Textarea
         withLabel
         label="Error state"
@@ -121,7 +114,6 @@ export const States: Story = {
         error
         helperText="This field is required"
       />
-
       <Textarea
         withLabel
         label="Disabled state"
@@ -129,7 +121,6 @@ export const States: Story = {
         disabled
         helperText="This field is disabled"
       />
-
       <Textarea
         withLabel
         label="Required state"
@@ -141,17 +132,15 @@ export const States: Story = {
   ),
 };
 
-// With character count
 export const WithCharacterCount: Story = {
   render: () => (
-    <div className="w-[320px] space-y-6">
+    <div className="flex flex-col items-start gap-4">
       <Textarea
         withLabel
         label="With character count"
         placeholder="Type to see counter..."
         showCount
       />
-
       <Textarea
         withLabel
         label="With max length"
@@ -159,7 +148,6 @@ export const WithCharacterCount: Story = {
         maxLength={100}
         showCount
       />
-
       <Textarea
         withLabel
         label="Error state with count"
@@ -173,35 +161,31 @@ export const WithCharacterCount: Story = {
   ),
 };
 
-// Auto-resizing
 export const AutoResizing: Story = {
-  render: function AutoResizing() {
+  render: () => {
     const [value, setValue] = React.useState('');
     
     return (
-      <div className="w-[320px]">
-        <Textarea
-          withLabel
-          label="Auto-resizing textarea"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onInput={(e) => {
-            const target = e.target as HTMLTextAreaElement;
-            target.style.height = 'auto';
-            target.style.height = `${target.scrollHeight}px`;
-          }}
-          placeholder="Start typing to see the textarea grow..."
-          helperText="This textarea will grow as you type"
-        />
-      </div>
+      <Textarea
+        withLabel
+        label="Auto-resizing textarea"
+        value={value}
+        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setValue(e.target.value)}
+        onInput={(e: React.FormEvent<HTMLTextAreaElement>) => {
+          const target = e.currentTarget;
+          target.style.height = 'auto';
+          target.style.height = `${target.scrollHeight}px`;
+        }}
+        placeholder="Start typing to see the textarea grow..."
+        helperText="This textarea will grow as you type"
+      />
     );
   },
 };
 
-// Form example
 export const FormExample: Story = {
   render: () => (
-    <form className="w-[320px] space-y-4">
+    <div className="w-[400px] p-6 border rounded-lg space-y-4">
       <div className="space-y-4">
         <Textarea
           withLabel
@@ -212,16 +196,15 @@ export const FormExample: Story = {
           showCount
           helperText="Briefly describe your request (max 100 characters)"
         />
-        
         <Textarea
           withLabel
           label="Detailed feedback"
           placeholder="Please provide detailed feedback..."
           required
-          inputSize="lg"
+          data-size="lg"
           helperText="Share your thoughts in detail"
         />
       </div>
-    </form>
+    </div>
   ),
 };

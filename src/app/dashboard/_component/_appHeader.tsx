@@ -13,7 +13,25 @@ import {
 import { SidebarTrigger } from "@/components/ui/Sidebar";
 import { Button } from "@/components/ui/Button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
-import { Bell } from "lucide-react";
+import { 
+  Bell, 
+  Star, 
+  Settings, 
+  CreditCard,
+  LogOut,
+  Sun,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  IconWrapper,
+} from "@/components/ui/DropdownMenu";
+import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
+import { UserButton } from '@clerk/nextjs';
 
 export interface BreadcrumbItem {
   href?: string;
@@ -23,6 +41,47 @@ export interface BreadcrumbItem {
 interface PageBreadcrumbsProps {
   items: BreadcrumbItem[];
 }
+
+const UserNav = () => {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Avatar size="sm" className="cursor-pointer">
+          <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
+          <AvatarFallback>GF</AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="end">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuItem>
+        <IconWrapper><Star /></IconWrapper>
+          Upgrade to Pro
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+        <IconWrapper><Settings /></IconWrapper>
+          Account
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+        <IconWrapper><CreditCard /></IconWrapper>
+          Billing
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+        <IconWrapper><Bell /></IconWrapper>
+          Notifications
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Theme</DropdownMenuLabel>
+        <IconWrapper><ThemeSwitcher /></IconWrapper>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem destructive>
+        <IconWrapper><LogOut /></IconWrapper>
+          Log out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
   return (
@@ -67,10 +126,7 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
           leadingIcon={<Bell />}
           aria-label="Notifications"
         />
-        <Avatar size="sm">
-          <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-          <AvatarFallback>GF</AvatarFallback>
-        </Avatar>
+        <UserNav />
       </div>
     </div>
   );

@@ -586,13 +586,13 @@
   }
 
   /* Form Element Layout */
-  .ui-form-layout {
+  /* .ui-form-layout {
     @apply flex flex-col w-full;
 
     &[data-has-label="true"] {
       @apply gap-xxs;
     }
-  }
+  } */
 
   /* Form Element Sizes */
   .ui-form-element {
@@ -631,9 +631,13 @@
     }
   }
 
+  .ui-form-element-wrapper {
+    @apply relative flex flex-col w-full gap-xxs;
+  }
+
   /* Form Helper Text */
   .ui-form-helper {
-    @apply mt-xxs;
+    @apply ui-text-body-helper;
     color: var(--text-weak);
 
     &[data-error="true"] {
@@ -747,7 +751,7 @@
     /* Variants */
     &-checkbox-item,
     &-radio-item {
-      @apply relative pl-xl;
+      @apply relative pl-sm;
 
       &:focus,
       &:hover {
@@ -756,11 +760,7 @@
     }
 
     &-destructive {
-      color: var(--text-danger);
-
-      &:hover {
-        background-color: var(--background-danger-weak);
-      }
+      @apply ui-text-danger hover:ui-text-danger-strong hover:ui-background-danger-weakest;
     }
   }
 
@@ -768,24 +768,29 @@
  Icons
  ========================================================================== */
 
-  .ui-icon {
-    @apply size-base;
-
-    &[data-variant="chevron-right"] {
-      @apply ui-icon-base ml-auto;
-    }
-
-    &[data-variant="checked"] {
-      @apply ui-icon-base;
-      color: var(--text-primary);
-    }
-
-    &[data-variant="circle-selected"] {
-      @apply size-xs;
-      color: var(--text-primary);
-      fill: var(--background-primary);
-    }
-  }
+ .ui-icon, 
+ .ui-icon svg {
+   @apply size-base -mt-px;
+ }
+ 
+ .ui-icon[data-variant="chevron-right"],
+ .ui-icon[data-variant="chevron-right"] svg {
+   @apply ui-icon-base ml-auto;
+ }
+ 
+ .ui-icon[data-variant="checked"],
+ .ui-icon[data-variant="checked"] svg {
+   @apply ui-icon-base;
+   color: var(--text-primary);
+ }
+ 
+ .ui-icon[data-variant="circle-selected"],
+ .ui-icon[data-variant="circle-selected"] svg {
+   @apply size-xs;
+   color: var(--text-primary);
+   fill: var(--background-primary);
+ }
+ 
   .ui-icon-sm {
     width: var(--size-icon-sm);
     height: var(--size-icon-sm);
@@ -822,6 +827,23 @@
       @apply list-none;
     }
   }
+
+  /* ==========================================================================
+ Shared extras
+ ========================================================================== */
+
+.ui-view-controls-bar {
+  @apply flex justify-end bg-surface-hollowed rounded-base p-xs border-t ui-border-neutral;
+}
+
+  /* ==========================================================================
+ Layouts
+ ========================================================================== */
+
+ .ui-main-content {
+  @apply space-y-base;
+}
+
 }
 
 @tailwind utilities;

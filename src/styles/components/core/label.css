@@ -1,54 +1,43 @@
 .ui-label {
-  @apply text-sm font-medium ui-text-strong select-none cursor-default whitespace-nowrap transition-all;
-  
-  &[data-variant="button"] {
-    color: var(--text-foreground);
-  }
-
+  @apply text-sm font-medium text-strong select-none cursor-default whitespace-nowrap transition-all;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
-
+ 
   /* Checkbox/Radio states */
   .ui-form-checkbox + &,
   *:has(> .ui-form-checkbox) &,
   .ui-form-radio + &,
   *:has(> .ui-form-radio) & {
-    @apply font-normal cursor-pointer;
-    font-size: var(--font-size-base);
+    @apply font-normal text-base cursor-pointer;
   }
-
-  /* States */
+ 
   &[data-required="true"]::after {
     content: "*";
     @apply ml-xxs;
     color: var(--text-primary);
   }
-
+ 
   &[data-error="true"] {
     color: var(--text-danger);
     &::after {
       color: var(--text-danger);
     }
   }
-
+ 
   &[data-disabled="true"] {
     @apply cursor-not-allowed;
     opacity: var(--disabled-opacity);
   }
-
+ 
   &[data-focused="true"] {
     color: var(--text-primary);
   }
-}
-
-@media print {
+ }
+ 
+ @media print {
   .ui-label {
-    &[data-color="neutral"] {
-      color: var(--text-foreground);
-    }
-    
     &[data-required="true"]::after {
       color: var(--text-danger);
     }
   }
-}
+ }

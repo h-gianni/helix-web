@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent } from "@/components/ui/Card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/Card";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Plus, AlertCircle } from "lucide-react";
@@ -13,10 +19,10 @@ import TeamCreateModal from "./_teamCreateModal";
 import EmptyTeamsView from "./_emptyTeamsView";
 import { useTeams } from "@/lib/context/teams-context";
 
-const TeamsContent = ({ 
-  teams, 
-  onCreateTeam 
-}: { 
+const TeamsContent = ({
+  teams,
+  onCreateTeam,
+}: {
   teams: TeamResponse[];
   onCreateTeam: () => void;
 }) => {
@@ -25,11 +31,11 @@ const TeamsContent = ({
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Teams</h1>
         <Button
-          variant="primary"
           onClick={onCreateTeam}
-          className="gap-2"
+          leadingIcon={<Plus />}
+          size="base"
+          variant="primary"
         >
-          <Plus className="size-4" />
           Create Team
         </Button>
       </div>
@@ -37,13 +43,34 @@ const TeamsContent = ({
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {teams.map((team) => (
           <Link key={team.id} href={`/dashboard/teams/${team.id}`}>
-            <Card className="hover:bg-accent transition-colors">
-              <CardContent className="p-4">
-                <h3 className="font-medium">{team.name}</h3>
+            {/* <Card className="hover:bg-accent transition-colors">
+              <CardContent>
+                <h3 className="ui-text-heading-3">{team.name}</h3>
                 <p className="text-sm text-primary-600">{team.name}</p>
                 <p className="text-sm text-muted-foreground">
                   Created: {new Date(team.createdAt).toLocaleDateString()}
                 </p>
+              </CardContent>
+            </Card> */}
+
+            <Card
+              clickable
+              data-size="lg"
+              onClick={() => {}}
+              shadow="base"
+            >
+              <CardHeader>
+                <div>
+                  <div>
+                    <CardTitle data-size="lg">{team.name}</CardTitle>
+                    <CardDescription data-variant="helper">
+                    #members | Team function | Created: {new Date(team.createdAt).toLocaleDateString()}
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent data-variant="base">
+                To be added: Overal perfromance of the team based on the members performance
               </CardContent>
             </Card>
           </Link>
@@ -55,10 +82,10 @@ const TeamsContent = ({
 
 export default function TeamsPage() {
   const router = useRouter();
-  const { teams, fetchTeams, isLoading } = useTeams() as { 
-    teams: TeamResponse[]; 
-    fetchTeams: () => Promise<void>; 
-    isLoading: boolean; 
+  const { teams, fetchTeams, isLoading } = useTeams() as {
+    teams: TeamResponse[];
+    fetchTeams: () => Promise<void>;
+    isLoading: boolean;
   };
   const [error, setError] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -72,9 +99,9 @@ export default function TeamsPage() {
       const response = await fetch("/api/teams", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           name,
-          teamFunctionId
+          teamFunctionId,
         }),
       });
 
@@ -94,7 +121,9 @@ export default function TeamsPage() {
   if (isLoading) {
     return (
       <>
-        <PageBreadcrumbs items={[{ href: "/dashboard/teams", label: "Teams" }]} />
+        <PageBreadcrumbs
+          items={[{ href: "/dashboard/teams", label: "Teams" }]}
+        />
         <div className="text-muted-foreground p-4">Loading teams...</div>
       </>
     );
@@ -103,9 +132,11 @@ export default function TeamsPage() {
   if (error) {
     return (
       <>
-        <PageBreadcrumbs items={[{ href: "/dashboard/teams", label: "Teams" }]} />
+        <PageBreadcrumbs
+          items={[{ href: "/dashboard/teams", label: "Teams" }]}
+        />
         <Alert variant="danger">
-          <AlertCircle className="size-4" />
+          <AlertCircle />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
         <Button variant="neutral" onClick={() => fetchTeams()}>
@@ -122,9 +153,9 @@ export default function TeamsPage() {
       {teams.length === 0 ? (
         <EmptyTeamsView onCreateTeam={() => setIsCreateModalOpen(true)} />
       ) : (
-        <TeamsContent 
-          teams={teams} 
-          onCreateTeam={() => setIsCreateModalOpen(true)} 
+        <TeamsContent
+          teams={teams}
+          onCreateTeam={() => setIsCreateModalOpen(true)}
         />
       )}
 

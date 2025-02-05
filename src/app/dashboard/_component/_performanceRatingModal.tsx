@@ -268,7 +268,7 @@ export default function PerformanceRatingModal({
             onChange={(e) => setFeedback(e.target.value)}
             placeholder="Enter feedback..."
             rows={3}
-            inputSize="base"
+            data-size="base"
             showCount
             maxLength={1000}
             withLabel
@@ -279,7 +279,7 @@ export default function PerformanceRatingModal({
         <DialogFooter>
           <Button
             variant="neutral"
-            appearance="text"
+            volume="soft"
             onClick={handleReset}
             disabled={saving}
           >

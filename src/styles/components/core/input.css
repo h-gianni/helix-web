@@ -3,7 +3,7 @@
  }
  
  .ui-input-wrapper {
-  @apply relative w-full;
+  @apply ui-form-element-wrapper;
  }
  
  .ui-input {
@@ -111,8 +111,7 @@
  }
  
  .ui-input-helper {
-  @apply mt-xxs;
-  color: var(--text-weak);
+  @apply ui-form-helper;
  }
  
  .ui-input-helper[data-error="true"] {

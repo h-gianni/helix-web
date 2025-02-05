@@ -21,14 +21,13 @@ import {
   Sidebar,
   SidebarHeader,
   SidebarContent,
-  SidebarFooter,
+  SidebarGroup,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
-  SidebarGroup,
   useSidebar,
   SidebarInset,
 } from "@/components/ui/Sidebar";
@@ -37,16 +36,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/Collapsible";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/Popover";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
-import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 import { useTeams } from '@/lib/context/teams-context';
-import {UserButton} from '@clerk/nextjs'
 
 interface Team {
   id: string;
@@ -93,86 +83,6 @@ const mainNavItems: NavItem[] = [
   },
 ];
 
-const UserNav = () => {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="neutral"
-          className="w-full justify-start p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-        >
-          <div className="flex items-center justify-between gap-4 w-full">
-            <div className="flex items-center gap-2">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" />
-                <AvatarFallback>SC</AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col items-start text-left">
-                {/* <span className="text-sm font-medium">shadcn</span>
-                <span className="text-xs text-muted-foreground">
-                  m@example.com
-                </span> */}
-                <UserButton />
-              </div>
-            </div>
-            <ChevronRight className="h-4 w-4" />
-          </div>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-56 p-1" align="start" side="right">
-        <div className="space-y-0.5">
-          <Button
-            variant="neutral"
-            className="w-full justify-start gap-2 text-sm"
-          >
-            <Star className="h-4 w-4" />
-            Upgrade to Pro
-          </Button>
-          <Button
-            variant="neutral"
-            className="w-full justify-start gap-2 text-sm"
-          >
-            <Settings className="h-4 w-4" />
-            Account
-          </Button>
-          <Button
-            variant="neutral"
-            className="w-full justify-start gap-2 text-sm"
-          >
-            <CreditCard className="h-4 w-4" />
-            Billing
-          </Button>
-          <Button
-            variant="neutral"
-            className="w-full justify-start gap-2 text-sm"
-          >
-            <Bell className="h-4 w-4" />
-            Notifications
-          </Button>
-
-          <div className="px-2 py-1.5">
-            <div className="flex items-center text-sm">
-              <Sun className="mr-2 h-4 w-4" />
-              <span>Theme</span>
-            </div>
-            <div className="ml-6 mt-1">
-              <ThemeSwitcher />
-            </div>
-          </div>
-
-          <Button
-            variant="neutral"
-            className="w-full justify-start gap-2 text-sm text-destructive hover:text-destructive hover:bg-destructive/10"
-          >
-            <LogOut className="h-4 w-4" />
-            Log out
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-};
-
 const AppSidebar = () => {
   const { teams, isLoading, fetchTeams } = useTeams();
   const pathname = usePathname();
@@ -213,7 +123,6 @@ const AppSidebar = () => {
 
         <SidebarContent>
           <SidebarGroup>
-            {/* <div className="px-2 text-xs font-medium text-sidebar-foreground/70">Navigation</div> */}
             <SidebarMenu>
               {renderNavItems().map((item) => (
                 <NavMenuItem key={item.label} item={item} />
@@ -221,21 +130,13 @@ const AppSidebar = () => {
             </SidebarMenu>
           </SidebarGroup>
         </SidebarContent>
-
-        <SidebarFooter>
-          <UserNav />
-        </SidebarFooter>
       </Sidebar>
-      {/* <SidebarInset>
-        Main content will be rendered here by the layout
-      </SidebarInset> */}
     </>
   );
 };
 
 const NavMenuItem: React.FC<NavMenuItemProps> = ({ item }) => {
   const pathname = usePathname();
-  // Initialize isOpen based on whether any subitems match the current pathname
   const [isOpen, setIsOpen] = React.useState(() => {
     if (item.subItems) {
       return item.subItems.some(subItem => pathname.startsWith(subItem.to));
@@ -258,7 +159,6 @@ const NavMenuItem: React.FC<NavMenuItemProps> = ({ item }) => {
               isActive={isActive}
               tooltip={item.label}
               onClick={(e) => {
-                // Prevent the default behavior that might interfere with collapse
                 e.preventDefault();
                 setIsOpen(!isOpen);
               }}

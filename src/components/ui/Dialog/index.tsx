@@ -171,7 +171,7 @@ const DialogWithConfig = React.forwardRef<
             {footer === "three-actions" && footerConfig.textAction && (
               <Button
                 variant="neutral"
-                appearance="text"
+                volume="soft"
                 onClick={footerConfig.textAction.onClick}
                 isLoading={footerConfig.textAction.isLoading}
               >
@@ -182,7 +182,7 @@ const DialogWithConfig = React.forwardRef<
               footerConfig.secondaryAction && (
                 <Button
                   variant="neutral"
-                  appearance="outline"
+                  volume="moderate"
                   onClick={footerConfig.secondaryAction.onClick}
                   isLoading={footerConfig.secondaryAction.isLoading}
                 >

@@ -4,16 +4,18 @@ import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
 import { ProfileSection } from "./_components/_profileSelection";
 
 export default function ProfileSettingsPage() {
- return (
-   <div className="space-y-6">
-     <PageBreadcrumbs 
-       items={[
-         { label: "Settings", href: "/dashboard/settings" },
-         { label: "Profile" }
-       ]} 
-     />
-     <h1 className="text-3xl font-semibold">Profile Settings</h1>
-     <ProfileSection />
-   </div>
- );
+  return (
+    <>
+      <PageBreadcrumbs
+        items={[
+          { label: "Settings", href: "/dashboard/settings" },
+          { label: "Profile" },
+        ]}
+      />
+      <div className="ui-main-content">
+        <h1 className="ui-text-heading-1">Profile</h1>
+        <ProfileSection />
+      </div>
+    </>
+  );
 }

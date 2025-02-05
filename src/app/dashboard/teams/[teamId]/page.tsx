@@ -9,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  IconWrapper,
 } from "@/components/ui/DropdownMenu";
 import {
   AlertDialog,
@@ -165,13 +166,13 @@ export default function TeamDetailsPage({
     return (
       <>
         <Alert variant="danger">
-          <AlertCircle className="size-4" />
+          <AlertCircle />
           <AlertDescription>{error}</AlertDescription>
         </Alert>
         <Button
-          variant="primary"
+          iconOnly
           onClick={() => router.back()}
-          leadingIcon={<ArrowLeft className="size-4" />}
+          leadingIcon={<ArrowLeft />}
         >
           Go Back
         </Button>
@@ -183,13 +184,13 @@ export default function TeamDetailsPage({
     return (
       <>
         <Alert variant="warning">
-          <AlertCircle className="size-4" />
+          <AlertCircle />
           <AlertDescription>Team not found</AlertDescription>
         </Alert>
         <Button
           variant="primary"
           onClick={() => router.back()}
-          leadingIcon={<ArrowLeft className="size-4" />}
+          leadingIcon={<ArrowLeft />}
         >
           Go Back
         </Button>
@@ -201,23 +202,23 @@ export default function TeamDetailsPage({
     <>
       <PageBreadcrumbs items={breadcrumbItems} />
       
-      <div className="mb-6">
+      <div className="mb-base">
         <div className="flex items-center justify-between">
           <div className="flex gap-4">
             <Button
               variant="neutral"
-              appearance="icon-only"
+              iconOnly
               size="sm"
               onClick={() => router.push("/dashboard/teams")}
-              leadingIcon={<ArrowLeft className="size-4" />}
+              leadingIcon={<ArrowLeft />}
             />
             <div>
               <h1 className="text-2xl font-semibold">{team.name}</h1>
               {team.description && (
                 <p className="text-muted-foreground mt-1">{team.description}</p>
               )}
-              <p className="text-sm text-muted-foreground mt-1">
-                Created: {new Date(team.createdAt).toLocaleDateString()}
+              <p className="ui-text-body-caption">
+                Team function | #members
               </p>
             </div>
           </div>
@@ -225,33 +226,34 @@ export default function TeamDetailsPage({
             <Button
               variant="primary"
               onClick={() => setIsAddMemberDialogOpen(true)}
-              leadingIcon={<UserPlus className="size-4" />}
+              leadingIcon={<UserPlus />}
             >
               Add Member
             </Button>
   
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="neutral"
-                  appearance="icon-only"
-                  leadingIcon={<EllipsisVertical className="size-4" />}
-                />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
-                  <PenSquare className="size-4 mr-2" />
-                  Edit Team
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-danger-600"
-                  onClick={() => setIsDeleteDialogOpen(true)}
-                >
-                  <Trash2 className="size-4 mr-2" />
-                  Delete Team
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+ <DropdownMenuTrigger asChild>
+   <Button 
+     variant="neutral"
+     volume="soft"
+     iconOnly
+     leadingIcon={<IconWrapper><EllipsisVertical /></IconWrapper>}
+   />
+ </DropdownMenuTrigger>
+ <DropdownMenuContent align="end">
+   <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
+     <IconWrapper><PenSquare /></IconWrapper>
+     Team Settings
+   </DropdownMenuItem>
+   <DropdownMenuItem 
+     destructive
+     onClick={() => setIsDeleteDialogOpen(true)}
+   >
+     <IconWrapper><Trash2 /></IconWrapper>
+     Delete Team
+   </DropdownMenuItem>
+ </DropdownMenuContent>
+</DropdownMenu>
           </div>
         </div>
       </div>
