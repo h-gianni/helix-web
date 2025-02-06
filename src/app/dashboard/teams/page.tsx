@@ -11,7 +11,8 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import type { TeamResponse } from "@/lib/types/api";
 import TeamCreateModal from "./_teamCreateModal";
 import EmptyTeamsView from "./_emptyTeamsView";
-import { useTeams } from "@/lib/context/teams-context";
+import { useTeams, useCreateTeam, useTeamStore } from '@/store/team-store';
+
 
 const TeamsContent = ({ 
   teams, 
@@ -54,43 +55,31 @@ const TeamsContent = ({
 };
 
 export default function TeamsPage() {
-  const router = useRouter();
-  const { teams, fetchTeams, isLoading } = useTeams() as { 
-    teams: TeamResponse[]; 
-    fetchTeams: () => Promise<void>; 
-    isLoading: boolean; 
-  };
-  const [error, setError] = useState<string | null>(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  useEffect(() => {
-    fetchTeams();
-  }, [fetchTeams]);
+  const router = useRouter();
+   // Get teams data from React Query
+   const { data: teams = [], isLoading, error, refetch } = useTeams();
+   
+    // Get modal state from Zustand
+  const { isTeamModalOpen, toggleTeamModal } = useTeamStore();
+
+  // Get create team mutation
+  const { mutateAsync: createTeam } = useCreateTeam();
+
+ 
+
+
 
   const handleCreateTeam = async (name: string, teamFunctionId: string) => {
     try {
-      const response = await fetch("/api/teams", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          name,
-          teamFunctionId
-        }),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setIsCreateModalOpen(false);
-        router.push(`/dashboard/teams/${data.data.id}`);
-      } else {
-        throw new Error(data.error || "Failed to create team");
-      }
+      const newTeam = await createTeam({ name, teamFunctionId });
+      toggleTeamModal(); // Close modal
+      router.push(`/dashboard/teams/${newTeam.id}`);
     } catch (error) {
       console.error("Error creating team:", error);
       throw error;
     }
   };
-
   if (isLoading) {
     return (
       <>
@@ -106,9 +95,9 @@ export default function TeamsPage() {
         <PageBreadcrumbs items={[{ href: "/dashboard/teams", label: "Teams" }]} />
         <Alert variant="danger">
           <AlertCircle className="size-4" />
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription> {error instanceof Error ? error.message : 'An error occurred'}</AlertDescription>
         </Alert>
-        <Button variant="neutral" onClick={() => fetchTeams()}>
+        <Button variant="neutral" onClick={() => refetch()}>
           Retry
         </Button>
       </>
@@ -120,17 +109,17 @@ export default function TeamsPage() {
       <PageBreadcrumbs items={[{ href: "/dashboard/teams", label: "Teams" }]} />
 
       {teams.length === 0 ? (
-        <EmptyTeamsView onCreateTeam={() => setIsCreateModalOpen(true)} />
+        <EmptyTeamsView onCreateTeam={() => toggleTeamModal()} />
       ) : (
         <TeamsContent 
           teams={teams} 
-          onCreateTeam={() => setIsCreateModalOpen(true)} 
+          onCreateTeam={() => toggleTeamModal()} 
         />
       )}
 
-      <TeamCreateModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+<TeamCreateModal
+        isOpen={isTeamModalOpen}
+        onClose={() => toggleTeamModal()}
         onCreateTeam={handleCreateTeam}
       />
     </>

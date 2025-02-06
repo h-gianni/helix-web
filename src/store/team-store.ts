@@ -1,46 +1,40 @@
 import axios from 'axios'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, QueryClient } from '@tanstack/react-query'
 import { create } from 'zustand'
 import type { TeamResponse } from '@/lib/types/api'
+import { apiClient } from '@/lib/api/api-client'
 
-const queryClient =  useQueryClient();
+const queryClient =  new QueryClient();
 
 
-// Create axios instance with default config
-const api = axios.create({
-    baseURL: '/api',
-    timeout: 5000,
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
+
 
   // API functions using axios
 const teamsApi = {
     getTeams: async () => {
-      const { data } = await api.get<{ success: boolean; data: TeamResponse[] }>('/teams')
+      const { data } = await apiClient.get<{ success: boolean; data: TeamResponse[] }>('/teams')
       if (!data.success) throw new Error('Failed to fetch teams')
       return data.data
     },
   
     createTeam: async (newTeam: Partial<TeamResponse>) => {
-      const { data } = await api.post('/teams', newTeam)
+      const { data } = await apiClient.post('/teams', newTeam)
       return data.data
     },
   
     updateTeam: async ({ id, ...updateData }: Partial<TeamResponse> & { id: string }) => {
-      const { data } = await api.put(`/teams/${id}`, updateData)
+      const { data } = await apiClient.put(`/teams/${id}`, updateData)
       return data.data
     },
   
     deleteTeam: async (id: string) => {
-      await api.delete(`/teams/${id}`)
+      await apiClient.delete(`/teams/${id}`)
       return id
     }
   }
 
   // Axios interceptors for global error handling
-api.interceptors.response.use(
+  apiClient.interceptors.response.use(
     response => response,
     error => {
       if (error.response?.status === 401) {
@@ -111,3 +105,5 @@ interface TeamsStore {
     })),
     setSelectedTeamId: (id) => set({ selectedTeamId: id })
   }))
+
+
