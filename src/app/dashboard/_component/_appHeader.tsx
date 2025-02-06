@@ -69,10 +69,9 @@ const UserNav = () => {
         <IconWrapper><Bell /></IconWrapper>
           Notifications
         </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
+        {/* <DropdownMenuSeparator />
         <DropdownMenuLabel>Theme</DropdownMenuLabel>
-        <IconWrapper><ThemeSwitcher /></IconWrapper>
+        <IconWrapper><ThemeSwitcher /></IconWrapper> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem destructive>
         <IconWrapper><LogOut /></IconWrapper>
