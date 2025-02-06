@@ -4,6 +4,7 @@ import "../styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { TeamsProvider } from "@/lib/context/teams-context";
+import Providers from "./_components/Provider";
 
 const robotoFlex = Roboto_Flex({
   subsets: ['latin'],
@@ -22,6 +23,7 @@ const robotoFlex = Roboto_Flex({
   ]
 });
 
+
 export const metadata: Metadata = {
   title: "UpScore",
   description: "Performance Management Platform",
@@ -32,17 +34,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <ClerkProvider>
+     
       <html lang="en" suppressHydrationWarning style={{ fontSize: "14px" }}>
         <body className={`${robotoFlex.variable} antialiased`}>
           <ThemeProvider defaultTheme="system" storageKey="ui-theme">
             <TeamsProvider>
-              {children}
+              <Providers>{children}</Providers>
+            
             </TeamsProvider>
           </ThemeProvider>
         </body>
       </html>
+     
     </ClerkProvider>
   );
 }
