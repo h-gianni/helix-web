@@ -24,7 +24,6 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import {
   UserPlus,
   Trash2,
-  RotateCcw,
   PenSquare,
   AlertCircle,
   ArrowLeft,
@@ -37,6 +36,7 @@ import TeamEditModal from "./_teamEditModal";
 import type { ApiResponse, TeamDetailsResponse } from "@/lib/types/api";
 import { useTeams } from "@/lib/context/teams-context";
 import { MemberPerformance } from "@/app/dashboard/types/member";
+import { useAddTeamMember, useDeleteTeam, useTeamDetails, useTeamDetailsStore, useTeamPerformance, useUpdateTeam } from "@/store/team-store";
 
 export default function TeamDetailsPage({
   params,
@@ -45,128 +45,59 @@ export default function TeamDetailsPage({
 }) {
   const router = useRouter();
   const { fetchTeams } = useTeams();
-  const [team, setTeam] = useState<TeamDetailsResponse | null>(null);
-  const [performanceData, setPerformanceData] = useState<{ members: MemberPerformance[] }>({ members: [] });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [viewType, setViewType] = useState<"table" | "grid">("table");
+
+  const {
+    isAddMemberModalOpen,
+    isEditModalOpen,
+    isDeleteDialogOpen,
+    viewType,
+    setAddMemberModalOpen,
+    setEditModalOpen,
+    setDeleteDialogOpen,
+    setViewType
+  } = useTeamDetailsStore();
+
+  const { 
+    data: team, 
+    isLoading, 
+    error 
+  } = useTeamDetails(params.teamId);
+  
+  const { data: performanceData } = useTeamPerformance(params.teamId);
+  const { mutate: updateTeam } = useUpdateTeam();
+  const { mutate: addMember } = useAddTeamMember();
+  const { mutate: deleteTeam } = useDeleteTeam();
 
   const breadcrumbItems = [
     { href: "/dashboard/teams", label: "Teams" },
     { label: team?.name || "Team Details" },
   ];
 
-  const fetchTeamPerformance = async () => {
-    try {
-      const response = await fetch(`/api/teams/${params.teamId}/performance`);
-      const data = await response.json();
-      if (data.success) setPerformanceData(data.data);
-    } catch (error) {
-      console.error("Error fetching performance data:", error);
-    }
+  const handleSaveTeamDetails = (name: string, description: string | null) => {
+    updateTeam({ id: params.teamId, name, description });
   };
 
-  const fetchTeamDetails = useCallback(async (showRefreshIndicator = true) => {
-    if (!params.teamId) {
-      setError("Team ID is missing");
-      return;
-    }
-
-    try {
-      if (showRefreshIndicator) setIsRefreshing(true);
-      setError(null);
-
-      const response = await fetch(`/api/teams/${params.teamId}?t=${Date.now()}`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-      const data: ApiResponse<TeamDetailsResponse> = await response.json();
-      if (!data.success) throw new Error(data.error || "Failed to fetch team details");
-
-      setTeam(data.data || null);
-      fetchTeamPerformance();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
-      setIsRefreshing(false);
-    }
-  }, [params.teamId]);
-
-  const handleSaveTeamDetails = async (name: string, description: string | null) => {
-    try {
-      const response = await fetch(`/api/teams/${params.teamId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, description }),
-      });
-
-      if (!response.ok) throw new Error("Failed to update team");
-
-      const data = await response.json();
-      if (data.success) await fetchTeamDetails();
-    } catch (error) {
-      console.error("Error updating team:", error);
-      throw error;
-    }
+  const handleAddMember = (data: { teamId: string; email: string; title?: string }) => {
+    addMember(data);
   };
 
-  const handleAddMember = async (data: { teamId: string; email: string; title?: string; }) => {
-    try {
-      const response = await fetch(`/api/teams/${data.teamId}/members`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.email, title: data.title }),
-      });
-
-      const responseData = await response.json();
-      if (!response.ok || !responseData.success) {
-        throw new Error(responseData.error || "Failed to add member");
+  const handleDeleteTeam = () => {
+    deleteTeam(params.teamId, {
+      onSuccess: () => {
+        fetchTeams();
+        router.push('/dashboard/teams');
       }
-
-      await fetchTeamDetails();
-    } catch (err) {
-      console.error("Error adding member:", err);
-      throw err;
-    }
+    });
   };
 
-  const handleDeleteTeam = async () => {
-    try {
-      const response = await fetch(`/api/teams/${params.teamId}`, {
-        method: "DELETE",
-      });
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error || "Failed to delete team");
-
-      await fetchTeams();
-      router.push("/dashboard/teams");
-    } catch (error) {
-      console.error("Error deleting team:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchTeamDetails(false);
-  }, [fetchTeamDetails]);
-
-  useEffect(() => {
-    const handleFocus = () => fetchTeamDetails(false);
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
-  }, [fetchTeamDetails]);
-
-  if (loading) return <div className="p-4">Loading team details...</div>;
+  if (isLoading) return <div className="p-4">Loading team details...</div>;
 
   if (error) {
     return (
       <>
         <Alert variant="danger">
           <AlertCircle className="size-4" />
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription>{error.message}</AlertDescription>
         </Alert>
         <Button
           variant="primary"
@@ -224,7 +155,7 @@ export default function TeamDetailsPage({
           <div className="flex items-center gap-4">
             <Button
               variant="primary"
-              onClick={() => setIsAddMemberDialogOpen(true)}
+              onClick={() => setAddMemberModalOpen(true)}
               leadingIcon={<UserPlus className="size-4" />}
             >
               Add Member
@@ -239,13 +170,13 @@ export default function TeamDetailsPage({
                 />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
+                <DropdownMenuItem onClick={() => setEditModalOpen(true)}>
                   <PenSquare className="size-4 mr-2" />
                   Edit Team
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   className="text-danger-600"
-                  onClick={() => setIsDeleteDialogOpen(true)}
+                  onClick={() => setDeleteDialogOpen(true)}
                 >
                   <Trash2 className="size-4 mr-2" />
                   Delete Team
@@ -256,8 +187,8 @@ export default function TeamDetailsPage({
         </div>
       </div>
   
-      {!team.members?.length || !performanceData.members?.length ? (
-        <EmptyTeamView onAddMember={() => setIsAddMemberDialogOpen(true)} />
+      {!team.members?.length || !performanceData?.members?.length ? (
+        <EmptyTeamView onAddMember={() => setAddMemberModalOpen(true)} />
       ) : (
         <TeamPerformanceSummary
           teamId={team.id}
@@ -269,23 +200,23 @@ export default function TeamDetailsPage({
       )}
   
       <AddMemberModal
-        isOpen={isAddMemberDialogOpen}
-        onClose={() => setIsAddMemberDialogOpen(false)}
+        isOpen={isAddMemberModalOpen}
+        onClose={() => setAddMemberModalOpen(false)}
         teamId={params.teamId}
-        onSubmit={handleAddMember}
+        // onSubmit={handleAddMember}
       />
 
       <TeamEditModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={() => setEditModalOpen(false)}
         teamName={team.name}
         teamDescription={team.description}
-        onSave={handleSaveTeamDetails}
+        // onSave={handleSaveTeamDetails}
       />
   
       <AlertDialog
         open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
       >
         <AlertDialogContent>
           <AlertDialogHeader>

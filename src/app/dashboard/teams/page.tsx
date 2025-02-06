@@ -11,7 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import type { TeamResponse } from "@/lib/types/api";
 import TeamCreateModal from "./_teamCreateModal";
 import EmptyTeamsView from "./_emptyTeamsView";
-import { useTeams, useCreateTeam, useTeamStore } from '@/store/team-store';
+import { useTeams, useCreateTeam, useTeamStore } from '@/store/teams-store';
 
 
 const TeamsContent = ({ 

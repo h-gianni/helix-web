@@ -20,7 +20,7 @@ interface TeamEditModalProps {
  onClose: () => void;
  teamName: string;
  teamDescription?: string | null;
- onSave: (name: string, description: string | null) => Promise<void>;
+ onSave?: (name: string, description: string | null) => Promise<void>;
 }
 
 export default function TeamEditModal({
