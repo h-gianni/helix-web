@@ -12,11 +12,11 @@
  
  /* Variants */
  .ui-toast[data-variant="default"] {
-  @apply ui-background-surface ui-text-neutral;
+  @apply ui-background-surface text-foreground;
  }
  
  .ui-toast[data-variant="destructive"] {
-  @apply ui-border-danger ui-background-danger ui-text-inverse;
+  @apply ui-border-danger ui-background-danger text-inverse;
  }
 
 /* Swipe Animations */
@@ -63,16 +63,16 @@
   }
  
   .ui-toast[data-variant="destructive"] & {
-    @apply ui-border-danger hover:ui-background-danger hover:ui-text-inverse focus:ui-ring-danger;
+    @apply ui-border-danger hover:ui-background-danger hover:text-inverse focus:ui-ring-danger;
   }
  }
  
  .ui-toast-close {
-  @apply absolute right-1 top-1 rounded-md p-xs ui-text-weak opacity-0;
+  @apply absolute right-1 top-1 rounded-md p-xs text-weak opacity-0;
   transition: opacity, color var(--duration-normal) var(--ease-out);
  
   &:hover {
-    @apply ui-text-neutral;
+    @apply text-foreground;
   }
  
   &:focus {
@@ -84,7 +84,7 @@
   }
  
   .ui-toast[data-variant="destructive"] & {
-    @apply ui-text-danger hover:ui-text-inverse focus:ui-ring-danger;
+    @apply ui-text-danger hover:text-inverse focus:ui-ring-danger;
   }
  }
  
@@ -100,16 +100,16 @@
   }
  
   .ui-toast[data-variant="destructive"] & {
-    @apply ui-text-inverse;
+    @apply text-inverse;
     
     & + div {
-      @apply ui-text-inverse;
+      @apply text-inverse;
     }
   }
  }
  
  .ui-toast-description {
-  @apply ui-text-body-small ui-text-weak;
+  @apply ui-text-body-small text-weak;
  }
  
  @media print {

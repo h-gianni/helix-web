@@ -8,21 +8,21 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/Dialog";
-import { Button } from "@/components/ui/Button";
-import { Textarea } from "@/components/ui/Textarea";
+} from "@/components/ui/core/Dialog";
+import { Button } from "@/components/ui/core/Button";
+import { Textarea } from "@/components/ui/core/Textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/Select";
-import StarRating from "@/components/ui/StarRating";
+} from "@/components/ui/core/Select";
+import StarRating from "@/components/ui/core/StarRating";
 import type { BusinessActivityResponse } from "@/lib/types/api";
-import { Label } from "@/components/ui/Label";
+import { Label } from "@/components/ui/core/Label";
 import { AlertCircle, User } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 
 interface PerformanceRatingModalProps {
   isOpen: boolean;

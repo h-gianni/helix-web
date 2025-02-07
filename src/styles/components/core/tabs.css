@@ -17,7 +17,7 @@
  }
  
  .ui-tabs-list[data-appearance="base"] {
-  border-bottom: 1px solid var(--border-base);
+  border-bottom: 1px solid var(--border-weak);
  }
  
  .ui-tabs-list[data-appearance="compact"] {
@@ -94,7 +94,7 @@
  
  /* Content */
  .ui-tabs-content {
-  @apply mt-md;
+  @apply mt-md w-full;
   --tw-ring-offset-color: var(--background-surface);
  
   &:focus-visible {

@@ -1,4 +1,3 @@
-// .storybook/preview.tsx
 import React from 'react';
 import type { Preview } from "@storybook/react";
 import { withThemeByDataAttribute } from '@storybook/addon-themes';
@@ -20,6 +19,11 @@ const preview: Preview = {
       matchers: {
         color: /(background|color)$/i,
         date: /Date$/i,
+      },
+    },
+    options: {
+      storySort: {
+        order: ['Core', 'Composite', 'Patterns', 'Template'],
       },
     },
   },

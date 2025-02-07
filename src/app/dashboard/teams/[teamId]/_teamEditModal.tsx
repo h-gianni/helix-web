@@ -8,11 +8,11 @@ import {
  DialogDescription,
  DialogFooter,
  DialogWithConfig
-} from "@/components/ui/Dialog";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+} from "@/components/ui/core/Dialog";
+import { Button } from "@/components/ui/core/Button";
+import { Input } from "@/components/ui/core/Input";
+import { Textarea } from "@/components/ui/core/Textarea";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { AlertCircle } from "lucide-react";
 
 interface TeamEditModalProps {
@@ -91,7 +91,7 @@ export default function TeamEditModal({
          onChange={(e) => setName(e.target.value)}
          placeholder="Enter team name"
          required
-         inputSize="base"
+         data-size="base"
          withLabel
          label="Team Name"
        />
@@ -101,7 +101,7 @@ export default function TeamEditModal({
          onChange={(e) => setDescription(e.target.value)}
          placeholder="Enter team description"
          rows={3}
-         inputSize="base"
+         data-size="base"
          withLabel
          label="Description"
        />

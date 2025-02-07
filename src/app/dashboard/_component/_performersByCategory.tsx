@@ -7,14 +7,14 @@ import {
   PerformanceCategory,
 } from "@/app/dashboard/types/member";
 import { TeamPerformanceView } from "./_teamPerformanceView";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/core/Card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/Select";
+} from "@/components/ui/core/Select";
 import {
   Gem,
   Sparkles,

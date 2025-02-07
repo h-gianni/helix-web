@@ -1,6 +1,6 @@
 import React from "react";
 import AppSidebar from "./_component/_appSidebar";
-import { SidebarProvider } from "@/components/ui/Sidebar";
+import { SidebarProvider } from "@/components/ui/composite/Sidebar";
 
 export default function DashboardLayout({
   children,

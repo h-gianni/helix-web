@@ -125,7 +125,7 @@
 
 /* Card Content */
 .ui-card-content {
-  @apply ui-text-body text-foreground pb-md;
+  @apply ui-text-body text-foreground;
 }
 
 .ui-card[data-size="sm"] .ui-card-content {

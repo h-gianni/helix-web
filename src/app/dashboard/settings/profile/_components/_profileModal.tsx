@@ -1,10 +1,10 @@
 // app/dashboard/settings/_profileModal.tsx
 import { useState, useEffect } from 'react';
 import { useUser } from "@clerk/nextjs";
-import { DialogWithConfig } from "@/components/ui/Dialog";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { DialogWithConfig } from "@/components/ui/core/Dialog";
+import { Button } from "@/components/ui/core/Button";
+import { Input } from "@/components/ui/core/Input";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Save, AlertCircle } from "lucide-react";
 
 interface ProfileModalProps {
@@ -123,7 +123,7 @@ export function ProfileModal({
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             placeholder="Enter first name"
-            inputSize="base"
+            data-size="base"
             withLabel
             label="First Name"
           />
@@ -132,7 +132,7 @@ export function ProfileModal({
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             placeholder="Enter last name"
-            inputSize="base"
+            data-size="base"
             withLabel
             label="Last Name"
           />
@@ -141,7 +141,7 @@ export function ProfileModal({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g., Senior Developer"
-            inputSize="base"
+            data-size="base"
             withLabel
             label="Job Title"
           />

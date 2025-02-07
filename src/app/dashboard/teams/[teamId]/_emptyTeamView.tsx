@@ -1,7 +1,7 @@
 // EmptyTeamView.tsx
 import { UserPlus } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent } from "@/components/ui/Card";
+import { Button } from "@/components/ui/core/Button";
+import { Card, CardContent } from "@/components/ui/core/Card";
 
 interface EmptyTeamViewProps {
  onAddMember: () => void;
@@ -9,7 +9,7 @@ interface EmptyTeamViewProps {
 
 export default function EmptyTeamView({ onAddMember }: EmptyTeamViewProps) {
  return (
-   <Card contentAlignment="center">
+   <Card align="center">
      <CardContent className="py-8">
        <div className="space-y-8 text-center">
          <div className="space-y-4">
@@ -27,7 +27,7 @@ export default function EmptyTeamView({ onAddMember }: EmptyTeamViewProps) {
            variant="primary"
            size="lg"
            onClick={onAddMember}
-           leadingIcon={<UserPlus className="h-4 w-4" />}
+           leadingIcon={<UserPlus />}
          >
            Add First Member
          </Button>

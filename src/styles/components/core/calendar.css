@@ -57,7 +57,7 @@
  }
  
  .calendar-head-cell {
-  @apply ui-text-body ui-text-weak rounded-md w-9 font-normal;
+  @apply ui-text-body text-weak rounded-md w-9 font-normal;
   &[data-variant="footnote"] {
     font-size: var(--font-size-xxs);
   }
@@ -103,28 +103,28 @@
  }
  
  .calendar-day-selected {
-  @apply ui-background-primary ui-text-inverse;
+  @apply ui-background-primary text-inverse;
 
   &:hover, &:focus {
-    @apply ui-background-primary ui-text-inverse;
+    @apply ui-background-primary text-inverse;
   }
  }
  
  .calendar-day-today {
-  @apply ui-background-accent ui-text-strong;
+  @apply ui-background-accent text-strong;
  }
  
  .calendar-day-outside {
-  @apply ui-text-weak opacity-disabled;
+  @apply text-weak opacity-disabled;
  }
  
  .calendar-day-disabled {
-  @apply ui-text-weak opacity-disabled;
+  @apply text-weak opacity-disabled;
  }
  
  .calendar-day-range-middle {
   &[aria-selected="true"] {
-    @apply ui-background-accent ui-text-strong;
+    @apply ui-background-accent text-strong;
   }
  }
  

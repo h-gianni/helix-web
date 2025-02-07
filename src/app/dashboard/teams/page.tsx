@@ -2,18 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/core/Button";
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
-} from "@/components/ui/Card";
+} from "@/components/ui/core/Card";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Plus, AlertCircle } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import type { TeamResponse } from "@/lib/types/api";
 import TeamCreateModal from "./_teamCreateModal";
 import EmptyTeamsView from "./_emptyTeamsView";

@@ -9,10 +9,10 @@ import {
   BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/Breadcrumb";
-import { SidebarTrigger } from "@/components/ui/Sidebar";
-import { Button } from "@/components/ui/Button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
+} from "@/components/ui/core/Breadcrumb";
+import { SidebarTrigger } from "@/components/ui/composite/Sidebar";
+import { Button } from "@/components/ui/core/Button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/core/Avatar";
 import { 
   Bell, 
   Star, 
@@ -29,7 +29,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   IconWrapper,
-} from "@/components/ui/DropdownMenu";
+} from "@/components/ui/core/DropdownMenu";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
 import { UserButton } from '@clerk/nextjs';
 

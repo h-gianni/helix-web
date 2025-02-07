@@ -3,14 +3,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/core/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   IconWrapper,
-} from "@/components/ui/DropdownMenu";
+} from "@/components/ui/core/DropdownMenu";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -20,8 +20,8 @@ import {
   AlertDialogTitle,
   AlertDialogAction,
   AlertDialogCancel,
-} from "@/components/ui/AlertDialog";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+} from "@/components/ui/core/AlertDialog";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import {
   UserPlus,
   Trash2,
@@ -47,7 +47,9 @@ export default function TeamDetailsPage({
   const router = useRouter();
   const { fetchTeams } = useTeams();
   const [team, setTeam] = useState<TeamDetailsResponse | null>(null);
-  const [performanceData, setPerformanceData] = useState<{ members: MemberPerformance[] }>({ members: [] });
+  const [performanceData, setPerformanceData] = useState<{
+    members: MemberPerformance[];
+  }>({ members: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
@@ -71,33 +73,43 @@ export default function TeamDetailsPage({
     }
   };
 
-  const fetchTeamDetails = useCallback(async (showRefreshIndicator = true) => {
-    if (!params.teamId) {
-      setError("Team ID is missing");
-      return;
-    }
+  const fetchTeamDetails = useCallback(
+    async (showRefreshIndicator = true) => {
+      if (!params.teamId) {
+        setError("Team ID is missing");
+        return;
+      }
 
-    try {
-      if (showRefreshIndicator) setIsRefreshing(true);
-      setError(null);
+      try {
+        if (showRefreshIndicator) setIsRefreshing(true);
+        setError(null);
 
-      const response = await fetch(`/api/teams/${params.teamId}?t=${Date.now()}`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const response = await fetch(
+          `/api/teams/${params.teamId}?t=${Date.now()}`
+        );
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
 
-      const data: ApiResponse<TeamDetailsResponse> = await response.json();
-      if (!data.success) throw new Error(data.error || "Failed to fetch team details");
+        const data: ApiResponse<TeamDetailsResponse> = await response.json();
+        if (!data.success)
+          throw new Error(data.error || "Failed to fetch team details");
 
-      setTeam(data.data || null);
-      fetchTeamPerformance();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
-      setIsRefreshing(false);
-    }
-  }, [params.teamId]);
+        setTeam(data.data || null);
+        fetchTeamPerformance();
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
+        setIsRefreshing(false);
+      }
+    },
+    [params.teamId]
+  );
 
-  const handleSaveTeamDetails = async (name: string, description: string | null) => {
+  const handleSaveTeamDetails = async (
+    name: string,
+    description: string | null
+  ) => {
     try {
       const response = await fetch(`/api/teams/${params.teamId}`, {
         method: "PATCH",
@@ -115,7 +127,11 @@ export default function TeamDetailsPage({
     }
   };
 
-  const handleAddMember = async (data: { teamId: string; email: string; title?: string; }) => {
+  const handleAddMember = async (data: {
+    teamId: string;
+    email: string;
+    title?: string;
+  }) => {
     try {
       const response = await fetch(`/api/teams/${data.teamId}/members`, {
         method: "POST",
@@ -201,7 +217,7 @@ export default function TeamDetailsPage({
   return (
     <>
       <PageBreadcrumbs items={breadcrumbItems} />
-      
+
       <div className="mb-base">
         <div className="flex items-center justify-between">
           <div className="flex gap-4">
@@ -217,9 +233,7 @@ export default function TeamDetailsPage({
               {team.description && (
                 <p className="text-muted-foreground mt-1">{team.description}</p>
               )}
-              <p className="ui-text-body-caption">
-                Team function | #members
-              </p>
+              <p className="ui-text-body-caption">Team function | #members</p>
             </div>
           </div>
           <div className="flex items-center gap-4">
@@ -230,34 +244,42 @@ export default function TeamDetailsPage({
             >
               Add Member
             </Button>
-  
+
             <DropdownMenu>
- <DropdownMenuTrigger asChild>
-   <Button 
-     variant="neutral"
-     volume="soft"
-     iconOnly
-     leadingIcon={<IconWrapper><EllipsisVertical /></IconWrapper>}
-   />
- </DropdownMenuTrigger>
- <DropdownMenuContent align="end">
-   <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
-     <IconWrapper><PenSquare /></IconWrapper>
-     Team Settings
-   </DropdownMenuItem>
-   <DropdownMenuItem 
-     destructive
-     onClick={() => setIsDeleteDialogOpen(true)}
-   >
-     <IconWrapper><Trash2 /></IconWrapper>
-     Delete Team
-   </DropdownMenuItem>
- </DropdownMenuContent>
-</DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="neutral"
+                  volume="soft"
+                  iconOnly
+                  leadingIcon={
+                    <IconWrapper>
+                      <EllipsisVertical />
+                    </IconWrapper>
+                  }
+                />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
+                  <IconWrapper>
+                    <PenSquare />
+                  </IconWrapper>
+                  Team Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  destructive
+                  onClick={() => setIsDeleteDialogOpen(true)}
+                >
+                  <IconWrapper>
+                    <Trash2 />
+                  </IconWrapper>
+                  Delete Team
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
-  
+
       {!team.members?.length || !performanceData.members?.length ? (
         <EmptyTeamView onAddMember={() => setIsAddMemberDialogOpen(true)} />
       ) : (
@@ -269,7 +291,7 @@ export default function TeamDetailsPage({
           onViewChange={setViewType}
         />
       )}
-  
+
       <AddMemberModal
         isOpen={isAddMemberDialogOpen}
         onClose={() => setIsAddMemberDialogOpen(false)}
@@ -284,7 +306,7 @@ export default function TeamDetailsPage({
         teamDescription={team.description}
         onSave={handleSaveTeamDetails}
       />
-  
+
       <AlertDialog
         open={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
@@ -294,12 +316,12 @@ export default function TeamDetailsPage({
             <AlertDialogTitle>Delete Team</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this team? This action cannot be
-              undone. All team members, activites, and performance data will
-              be permanently deleted.
+              undone. All team members, activites, and performance data will be
+              permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Keep Team</AlertDialogCancel>
             <AlertDialogAction variant="danger" onClick={handleDeleteTeam}>
               Delete Team
             </AlertDialogAction>

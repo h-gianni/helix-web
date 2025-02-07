@@ -8,25 +8,25 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/components/ui/Dialog";
-import { Button } from "@/components/ui/Button";
-import { Textarea } from "@/components/ui/Textarea";
+} from "@/components/ui/core/Dialog";
+import { Button } from "@/components/ui/core/Button";
+import { Textarea } from "@/components/ui/core/Textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/Select";
-import { Label } from "@/components/ui/Label";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+} from "@/components/ui/core/Select";
+import { Label } from "@/components/ui/core/Label";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import type {
   BusinessActivityResponse,
   TeamResponse,
   TeamMemberResponse,
 } from "@/lib/types/api";
 import { TeamActivity } from "@/lib/types/business-activities";
-import StarRating from '@/components/ui/StarRating';
+import StarRating from '@/components/ui/core/StarRating';
 
 interface PerformanceRatingModalProps {
   isOpen: boolean;
@@ -167,7 +167,7 @@ export default function PerformanceRatingModal({
         <DialogHeader>
           <DialogTitle>Add Performance Rating</DialogTitle>
           <DialogDescription>
-            Rate team member performance and provide feedback.
+            Rate team member performance with feedback.
           </DialogDescription>
         </DialogHeader>
 
@@ -270,7 +270,7 @@ export default function PerformanceRatingModal({
             rows={3}
             data-size="base"
             showCount
-            maxLength={1000}
+            maxLength={250}
             withLabel
             label="Feedback (Optional)"
           />

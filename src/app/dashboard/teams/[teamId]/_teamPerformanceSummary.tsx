@@ -13,8 +13,8 @@ import {
  AlertDialogFooter,
  AlertDialogHeader,
  AlertDialogTitle,
-} from "@/components/ui/AlertDialog";
-import { Button } from "@/components/ui/Button";
+} from "@/components/ui/core/AlertDialog";
+import { Button } from "@/components/ui/core/Button";
 
 interface TeamPerformanceSummaryProps {
  teamId: string;

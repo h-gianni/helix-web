@@ -177,11 +177,13 @@
   /* ==========================================================================
       Dialog
       ========================================================================== */
-  --dialog-width: 32rem;
   --dialog-z-index: 999;
   --dialog-enter-duration: var(--duration-normal);
   --dialog-exit-duration: var(--duration-fast);
   --dialog-timing: var(--ease-out);
+  --dialog-width-base: 30rem;
+  --dialog-width-lg: 40rem;
+  --dialog-width-xl: 52.5rem;
 }
 
 /* Dark theme color adjustments */

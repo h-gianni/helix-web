@@ -170,7 +170,7 @@
      ========================================================================== */
 
   /* Base Text Colors */
-  .ui-text-neutral {
+  /* .ui-text-neutral {
     color: var(--text-foreground);
   }
   .ui-text-weak {
@@ -184,7 +184,7 @@
   }
   .ui-text-inverse {
     color: var(--text-inverse);
-  }
+  } */
 
   /* Primary Colors */
   .ui-text-primary {

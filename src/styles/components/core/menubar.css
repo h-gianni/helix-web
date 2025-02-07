@@ -1,5 +1,5 @@
 .ui-menubar-root {
-  @apply flex h-9 items-center gap-xxs rounded ui-border-neutral ui-background-surface ui-text-weak p-xxs;
+  @apply flex h-9 items-center gap-xxs rounded ui-border-neutral ui-background-surface text-weak p-xxs;
  }
  
  .ui-menubar-trigger {
@@ -40,7 +40,7 @@
  }
  
  .ui-menubar-group-title {
-  @apply ui-text-body-base ui-text-neutral;
+  @apply ui-text-body-base text-foreground;
  }
  
  .ui-menubar-separator {
@@ -48,7 +48,7 @@
  }
  
  .ui-menubar-shortcut {
-  @apply ui-text-body-caption ui-text-muted;
+  @apply ui-text-body-caption text-muted;
  }
  
  @media print {

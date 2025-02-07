@@ -3,13 +3,13 @@
 
 import * as React from 'react';
 import { useTheme } from './ThemeProvider';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/core/Button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/DropdownMenu';
+} from '@/components/ui/core/DropdownMenu';
 import { Monitor, Moon, Sun } from 'lucide-react';
 
 export function ThemeSwitcher() {

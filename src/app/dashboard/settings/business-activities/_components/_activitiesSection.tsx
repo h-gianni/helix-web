@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/core/Button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from "@/components/ui/Card";
+} from "@/components/ui/core/Card";
 import {
   Table,
   TableHeader,
@@ -14,8 +14,8 @@ import {
   TableHead,
   TableCell,
   TableBody,
-} from "@/components/ui/Table";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+} from "@/components/ui/core/Table";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import {
   Target,
   PlusCircle,
@@ -33,7 +33,7 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/AlertDialog";
+} from "@/components/ui/core/AlertDialog";
 // import type { ApiResponse, BusinessActivityResponse as InitiativeResponse } from "@/lib/types/api";
 import { ActivityModal } from "./_activityModal";
 import type { ApiResponse, BusinessActivityResponse } from "@/lib/types/api";

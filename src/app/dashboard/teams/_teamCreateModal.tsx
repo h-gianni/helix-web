@@ -5,10 +5,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/Dialog";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+} from "@/components/ui/core/Dialog";
+import { Button } from "@/components/ui/core/Button";
+import { Input } from "@/components/ui/core/Input";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { AlertCircle } from "lucide-react";
 import {
   Select,
@@ -16,7 +16,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/Select";
+} from "@/components/ui/core/Select";
 import type { TeamFunctionResponse } from "@/lib/types/api";
 
 interface TeamCreateModalProps {
@@ -161,7 +161,7 @@ export default function TeamCreateModal({
           <DialogFooter>
             <Button
               variant="neutral"
-              appearance="text"
+              volume="soft"
               onClick={onClose}
               disabled={saving}
             >

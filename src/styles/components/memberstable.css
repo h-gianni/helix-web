@@ -31,7 +31,7 @@
 
 /* Name Link */
 .members-table-name-link {
-  @apply ui-text-strong font-semibold cursor-pointer;
+  @apply text-strong font-semibold cursor-pointer;
   
   &:hover {
     @apply underline;
@@ -66,6 +66,6 @@
   }
 }
 
-.ui-members-table-action-icon {
+/* .ui-members-table-action-icon {
   @apply mr-sm;
-}
+} */

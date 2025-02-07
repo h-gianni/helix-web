@@ -1,6 +1,6 @@
 import { Users, UserPlus, Plus } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent } from "@/components/ui/Card";
+import { Button } from "@/components/ui/core/Button";
+import { Card, CardContent } from "@/components/ui/core/Card";
 
 interface EmptyTeamsViewProps {
   onCreateTeam: () => void;

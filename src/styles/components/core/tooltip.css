@@ -1,6 +1,6 @@
 /* Tooltip Content */
 .ui-tooltip {
-  @apply overflow-hidden rounded-md ui-background-surface ui-text-body-small ui-text-weak border ui-border-neutral-weak px-sm py-xs shadow;
+  @apply overflow-hidden rounded-md ui-background-surface ui-text-body-small text-weak border ui-border-neutral-weak px-sm py-xs shadow;
   z-index: var(--z-tooltip);
   animation-duration: var(--duration-normal);
   animation-timing-function: var(--ease-out);

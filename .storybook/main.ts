@@ -3,7 +3,13 @@ import type { StorybookConfig } from "@storybook/nextjs";
 import path from 'path';
 
 const config: StorybookConfig = {
-  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  // stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  stories: [
+    '../src/components/ui/core/**/*.stories.@(js|jsx|ts|tsx)',       // Core components (e.g., Button, Input)
+    '../src/components/ui/composite/**/*.stories.@(js|jsx|ts|tsx)',  // Composite components (e.g., Sidebar, Modal)
+    '../src/components/ui/pattern/**/*.stories.@(js|jsx|ts|tsx)',   // Pattern components (e.g., Forms, Cards)
+    '../src/components/ui/layout/**/*.stories.@(js|jsx|ts|tsx)',   // Layout components (e.g., Page layouts)
+  ],
   addons: [
     "@storybook/addon-onboarding",
     "@storybook/addon-essentials",
@@ -13,6 +19,7 @@ const config: StorybookConfig = {
     name: "@storybook/nextjs",
     options: {},
   },
+  
   webpackFinal: async (config) => {
     if (!config.module?.rules) {
       return config;

@@ -30,12 +30,12 @@ import {
   SidebarMenuSubButton,
   useSidebar,
   SidebarInset,
-} from "@/components/ui/Sidebar";
+} from "@/components/ui/composite/Sidebar";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/Collapsible";
+} from "@/components/ui/core/Collapsible";
 import { useTeams } from '@/lib/context/teams-context';
 
 interface Team {

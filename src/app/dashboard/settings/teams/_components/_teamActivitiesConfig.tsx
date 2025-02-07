@@ -6,12 +6,12 @@ import {
   CardContent,
   CardDescription,
   CardFooter,
-} from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Checkbox } from "@/components/ui/Checkbox"; 
-import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { Label } from "@/components/ui/Label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/Select";
+} from "@/components/ui/core/Card";
+import { Button } from "@/components/ui/core/Button";
+import { Checkbox } from "@/components/ui/core/Checkbox"; 
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
+import { Label } from "@/components/ui/core/Label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/core/Select";
 import { RotateCcw, Save, AlertCircle } from "lucide-react";
 import type { BusinessActivityResponse as ActivityResponse, TeamResponse } from "@/lib/types/api";
 
@@ -178,7 +178,7 @@ export default function TeamActivitiesConfig({ onUpdate }: TeamActivitiesConfigP
                 <div className="flex gap-2">
                   <Button
                     variant="neutral"
-                    appearance="outline"
+                    volume="moderate"
                     size="sm"
                     onClick={() => setSelectedActivityIds(activities.map(i => i.id))}
                     disabled={activitiesLoading}
@@ -187,7 +187,7 @@ export default function TeamActivitiesConfig({ onUpdate }: TeamActivitiesConfigP
                   </Button>
                   <Button
                     variant="neutral"
-                    appearance="outline"
+                    volume="moderate"
                     size="sm"
                     onClick={() => setSelectedActivityIds([])}
                     disabled={activitiesLoading}

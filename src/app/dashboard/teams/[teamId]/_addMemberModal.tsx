@@ -9,10 +9,10 @@ import {
  DialogDescription,
  DialogFooter,
  DialogWithConfig
-} from "@/components/ui/Dialog";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+} from "@/components/ui/core/Dialog";
+import { Button } from "@/components/ui/core/Button";
+import { Input } from "@/components/ui/core/Input";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { UserPlus } from "lucide-react";
 import {
  Select,
@@ -20,7 +20,7 @@ import {
  SelectItem,
  SelectTrigger,
  SelectValue,
-} from "@/components/ui/Select";
+} from "@/components/ui/core/Select";
 
 interface JobGrade {
  id: string;
@@ -166,7 +166,7 @@ export default function AddMemberModal({
          value={email}
          onChange={(e) => setEmail(e.target.value)}
          placeholder="member@example.com"
-         inputSize="base"
+         data-size="base"
          withLabel
          label="Company Email*"
          required
@@ -177,7 +177,7 @@ export default function AddMemberModal({
          value={fullName}
          onChange={(e) => setFullName(e.target.value)}
          placeholder="John Doe"
-         inputSize="base"
+         data-size="base"
          withLabel
          label="Full Name*"
          required
@@ -188,7 +188,7 @@ export default function AddMemberModal({
          value={title}
          onChange={(e) => setTitle(e.target.value)}
          placeholder="e.g., Developer"
-         inputSize="base"
+         data-size="base"
          withLabel
          label="Job Title"
        />
@@ -216,7 +216,7 @@ export default function AddMemberModal({
          type="date"
          value={joinedDate}
          onChange={(e) => setJoinedDate(e.target.value)}
-         inputSize="base"
+         data-size="base"
          withLabel
          label="Joined Date"
        />
@@ -228,7 +228,7 @@ export default function AddMemberModal({
              setProfilePhoto(e.target.files[0]);
            }
          }}
-         inputSize="base"
+         data-size="base"
          withLabel
          label="Profile Photo"
          accept="image/*"

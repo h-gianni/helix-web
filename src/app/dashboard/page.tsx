@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/core/Button";
 import { MessageSquare, Star } from "lucide-react";
 import TeamCreateModal from "../dashboard/teams/_teamCreateModal";
 import PerformanceRatingModal from "./_component/_performanceRatingModal";

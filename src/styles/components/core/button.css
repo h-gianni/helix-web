@@ -1,5 +1,5 @@
 .ui-button {
-  @apply inline-flex items-center justify-center gap-sm whitespace-nowrap rounded-base cursor-pointer capitalize text-base font-medium leading-none;
+  @apply inline-flex items-center justify-center gap-sm whitespace-nowrap rounded-base cursor-pointer capitalize text-base font-semibold leading-none;
   
   &:focus-visible {
     @apply outline-none ui-ring-primary;
@@ -25,28 +25,28 @@
 @layer components {
   /* Neutral */
   .ui-button[data-variant="neutral"] {
-    @apply ui-background-neutral-strong ui-text-inverse 
+    @apply ui-background-neutral-strong text-inverse 
     hover:ui-background-neutral-stronger active:ui-background-neutral-strongest;
     
     &[data-icon="true"] {
-      @apply bg-transparent ui-text-neutral
+      @apply bg-transparent text-foreground
       hover:ui-background-neutral-weakest active:ui-background-neutral-weaker;
     }
   }
 
   .ui-button[data-variant="neutral-moderate"] {
-    @apply border ui-border-neutral-strong ui-text-neutral hover:ui-text-strong hover:ui-background-neutral-weakest 
+    @apply border ui-border-neutral-strong text-foreground hover:text-strong hover:ui-background-neutral-weakest 
     active:ui-background-neutral-weaker;
   }
 
   .ui-button[data-variant="neutral-soft"] {
-    @apply ui-text-neutral bg-transparent
+    @apply text-foreground bg-transparent
     hover:ui-background-neutral-weakest active:ui-background-neutral-weaker;
   }
 
   /* Primary */
   .ui-button[data-variant="primary"] {
-    @apply ui-background-primary-strong ui-text-inverse
+    @apply ui-background-primary-strong text-inverse
     hover:ui-background-primary-stronger active:ui-background-primary-strongest;
     
     &[data-icon="true"] {
@@ -68,7 +68,7 @@
 
   /* Warning */
   .ui-button[data-variant="warning"] {
-    @apply ui-background-warning ui-text-inverse
+    @apply ui-background-warning text-inverse
     hover:ui-background-warning-strong active:ui-background-warning-stronger;
     
     &[data-icon="true"] {
@@ -90,7 +90,7 @@
 
   /* Danger */
   .ui-button[data-variant="danger"] {
-    @apply ui-background-danger ui-text-inverse
+    @apply ui-background-danger text-inverse
     hover:ui-background-danger-strong active:ui-background-danger-stronger;
     
     &[data-icon="true"] {

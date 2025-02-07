@@ -3,9 +3,9 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { TrendingUp, LucideIcon } from "lucide-react";
-import { MemberCard } from "@/components/ui/MemberCard";
-import { MembersTable } from "@/components/ui/MembersTable";
-import { Card, CardContent } from "@/components/ui/Card";
+import { MemberCard } from "@/components/ui/composite/MemberCard";
+import { MembersTable } from "@/components/ui/composite/MembersTable";
+import { Card, CardContent } from "@/components/ui/core/Card";
 
 interface Team {
   id: string;

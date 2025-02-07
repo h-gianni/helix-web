@@ -1,8 +1,4 @@
-:root {
-  --dialog-width-base: 30rem;
-  --dialog-width-lg: 40rem;
-  --dialog-width-xl: 52.5rem;
- }
+
  
  .ui-dialog-container {
   @apply fixed inset-0 flex items-center justify-center;
@@ -51,7 +47,7 @@
  }
  
  .ui-dialog-footer {
-  @apply flex flex-col-reverse sm:flex-row sm:justify-end gap-sm pt-lg mt-lg;
+  @apply flex flex-col-reverse sm:flex-row sm:justify-end gap-sm pt-lg;
  }
  
  .ui-dialog-close {
@@ -86,8 +82,6 @@
  
   .ui-dialog-footer {
     @apply fixed bottom-0 left-0 right-0 p-md;
-    background-color: var(--background-surface);
-    border-top-color: var(--border-base);
   }
  
   .ui-dialog-close {

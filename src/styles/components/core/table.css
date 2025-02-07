@@ -18,7 +18,7 @@
  
   &[data-size="base"] {
     .ui-table-cell {
-      @apply py-sm px-base ui-text-body-base;
+      @apply py-sm px-base text-base;
     }
  
     .ui-table-head {
@@ -28,11 +28,11 @@
  
   &[data-size="sm"] {
     .ui-table-cell {
-      @apply py-xs px-sm ui-text-body-small;
+      @apply py-xs px-sm text-sm;
     }
  
     .ui-table-head {
-      @apply h-xl px-sm ui-text-heading-6 ui-text-weak;
+      @apply h-xl px-sm ui-text-heading-6 text-weak;
     }
   }
  
@@ -66,7 +66,7 @@
  }
  
  .ui-table-head {
-  @apply text-left align-middle whitespace-nowrap transition-colors ui-text-heading-6 ui-text-weak;
+  @apply text-left align-middle whitespace-nowrap transition-colors ui-text-heading-6 text-weak;
  
   &:has([role="checkbox"]) {
     @apply w-[calc(1rem+2rem)] pr-0 pl-4;
@@ -76,10 +76,10 @@
     @apply p-0;
  
     & > button:not([role="checkbox"]) {
-      @apply w-full flex items-center justify-between px-sm py-xs gap-sm ui-text-heading-6 ui-text-weak;
+      @apply w-full flex items-center justify-between px-sm py-xs gap-sm ui-text-heading-6 text-weak;
  
       & > svg {
-        @apply opacity-0 ui-text-weak;
+        @apply opacity-0 text-weak;
       }
  
       &[data-sort-direction="asc"] > svg {
@@ -94,7 +94,7 @@
  }
  
  .ui-table-cell {
-  @apply align-middle max-w-[20rem] overflow-hidden text-ellipsis transition-colors ui-text-body-base;
+  @apply align-middle max-w-[20rem] overflow-hidden text-ellipsis transition-colors text-base;
  
   &:has([role="checkbox"]) {
     @apply w-[calc(1rem+2rem)] pr-0 pl-sm;

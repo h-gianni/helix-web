@@ -6,10 +6,10 @@ import {
   CardTitle,
   CardContent,
   CardDescription,
-} from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Label } from "@/components/ui/Label";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/Avatar";
+} from "@/components/ui/core/Card";
+import { Button } from "@/components/ui/core/Button";
+import { Label } from "@/components/ui/core/Label";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/core/Avatar";
 import { User, Mail, Building, PenSquare } from "lucide-react";
 import { ProfileModal } from "./_profileModal";
 

@@ -6,7 +6,7 @@
   transition: background-color, color, border-color var(--duration-normal) var(--ease-out);
 
   &:hover {
-    @apply ui-background-surface-hollowed ui-text-neutral;
+    @apply ui-background-surface-hollowed text-foreground;
   }
 
   &:focus-visible {
@@ -23,7 +23,7 @@
   }
 
   &[data-state="on"] {
-    @apply ui-background-primary-weakest ui-text-strong;
+    @apply ui-background-primary-weakest text-strong;
   }
 
   /* Icon */
@@ -38,7 +38,7 @@
 }
 
 .ui-toggle[data-variant="outline"] {
-  @apply ui-border-neutral-weak bg-transparent hover:ui-background-surface-sunken hover:ui-text-neutral;
+  @apply ui-border-neutral-weak bg-transparent hover:ui-background-surface-sunken hover:text-foreground;
 }
 
 /* Sizes */

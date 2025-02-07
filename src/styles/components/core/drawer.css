@@ -65,7 +65,7 @@
 }
 
 .ui-drawer-close {
-  @apply absolute right-lg top-lg rounded-sm ui-text-weak transition-all focus-visible:outline-none;
+  @apply absolute right-lg top-lg rounded-sm text-weak transition-all focus-visible:outline-none;
 
   &:hover {
     opacity: 1;
@@ -94,7 +94,7 @@
 }
 
 .ui-drawer-body {
-  @apply flex-1 overflow-auto p-lg ui-text-body-base ui-text-neutral;
+  @apply flex-1 overflow-auto p-lg ui-text-body-base text-foreground;
 }
 
 .ui-drawer-footer {

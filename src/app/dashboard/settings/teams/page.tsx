@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
 import TeamActivitiesConfig from "./_components/_teamActivitiesConfig";
 import { useTeams } from '@/lib/context/teams-context';
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { AlertCircle } from "lucide-react";
 import type { TeamDetailsResponse } from "@/lib/types/api";
 

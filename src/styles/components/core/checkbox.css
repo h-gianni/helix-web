@@ -15,7 +15,7 @@
  
   /* Checked States */
   &[data-state="checked"] {
-    @apply ui-background-primary ui-border-primary ui-text-inverse;
+    @apply ui-background-primary ui-border-primary text-inverse;
     &:hover {
       @apply ui-background-primary-strong ui-border-primary-strong;
     }
@@ -40,7 +40,7 @@
  
 /* Description */
 .ui-checkbox-description {
-  @apply ui-text-body ui-text-weak;
+  @apply ui-text-body text-weak;
   &[data-variant="small"] {
     font-size: var(--font-size-sm);
   }

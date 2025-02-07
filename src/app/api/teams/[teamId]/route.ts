@@ -341,53 +341,67 @@ export const DELETE = async (
 
     // Soft delete all related records in a transaction
     await prisma.$transaction(async (tx: TransactionClient) => {
-      // Soft delete all ratings for this team's members
-      await tx.memberRating.updateMany({
+      // Get all team members first
+      const teamMembers = await tx.teamMember.findMany({
         where: {
-          teamMember: {
-            teamId: params.teamId,
-          },
+          teamId: params.teamId,
         },
-        data: {
-          deletedAt: now,
-        },
+        select: {
+          id: true
+        }
       });
 
-      // Soft delete all structured feedback
-      await tx.structuredFeedback.updateMany({
-        where: {
-          teamMember: {
-            teamId: params.teamId,
-          },
-        },
-        data: {
-          deletedAt: now,
-        },
-      });
+      const memberIds = teamMembers.map((member: { id: string }) => member.id);
 
-      // Soft delete all comments
-      await tx.memberComment.updateMany({
-        where: {
-          teamMember: {
-            teamId: params.teamId,
+      // Soft delete all ratings
+      if (memberIds.length > 0) {
+        await tx.memberRating.updateMany({
+          where: {
+            teamMemberId: {
+              in: memberIds
+            }
           },
-        },
-        data: {
-          deletedAt: now,
-        },
-      });
+          data: {
+            deletedAt: now,
+          },
+        });
 
-      // Soft delete all performance reviews
-      await tx.performanceReview.updateMany({
-        where: {
-          teamMember: {
-            teamId: params.teamId,
+        // Soft delete all structured feedback
+        await tx.structuredFeedback.updateMany({
+          where: {
+            teamMemberId: {
+              in: memberIds
+            }
           },
-        },
-        data: {
-          deletedAt: now,
-        },
-      });
+          data: {
+            deletedAt: now,
+          },
+        });
+
+        // Soft delete all comments
+        await tx.memberComment.updateMany({
+          where: {
+            teamMemberId: {
+              in: memberIds
+            }
+          },
+          data: {
+            deletedAt: now,
+          },
+        });
+
+        // Soft delete all performance reviews
+        await tx.performanceReview.updateMany({
+          where: {
+            teamMemberId: {
+              in: memberIds
+            }
+          },
+          data: {
+            deletedAt: now,
+          },
+        });
+      }
 
       // Soft delete all members
       await tx.teamMember.updateMany({
@@ -426,10 +440,13 @@ export const DELETE = async (
     });
   } catch (error) {
     console.error("Error deleting team:", error);
+    
+    // More detailed error response
+    const errorMessage = error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json<ApiResponse<never>>(
       {
         success: false,
-        error: "Internal server error",
+        error: errorMessage,
       },
       { status: 500 }
     );

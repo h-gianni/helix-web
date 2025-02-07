@@ -1,5 +1,5 @@
 .ui-label {
-  @apply text-sm font-medium text-strong select-none cursor-default whitespace-nowrap transition-all;
+  @apply text-sm font-semibold text-strong select-none cursor-default whitespace-nowrap transition-all;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
  

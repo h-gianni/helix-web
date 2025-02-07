@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/core/Card";
 import { Users, Target, User } from "lucide-react";
 
 const settingsGroups = [

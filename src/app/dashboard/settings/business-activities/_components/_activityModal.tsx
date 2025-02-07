@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { DialogWithConfig } from "@/components/ui/Dialog";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { DialogWithConfig } from "@/components/ui/core/Dialog";
+import { Button } from "@/components/ui/core/Button";
+import { Input } from "@/components/ui/core/Input";
+import { Textarea } from "@/components/ui/core/Textarea";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Save, AlertCircle } from "lucide-react";
 import type { BusinessActivityResponse } from "@/lib/types/api";
 
@@ -122,7 +122,7 @@ export function ActivityModal({
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter activity name"
             required
-            inputSize="base"
+            data-size="base"
             withLabel
             label="Name"
           />
@@ -132,7 +132,7 @@ export function ActivityModal({
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter activity description"
             rows={3}
-            inputSize="base"
+            data-size="base"
             withLabel
             label="Description"
           />
