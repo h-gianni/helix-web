@@ -33,7 +33,7 @@ interface AddMemberModalProps {
  isOpen: boolean;
  onClose: () => void;
  teamId?: string;
- onSubmit: (data: {
+ onSubmit?: (data: {
    teamId: string;
    email: string;
    fullName: string;

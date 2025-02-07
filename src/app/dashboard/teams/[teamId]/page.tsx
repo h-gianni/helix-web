@@ -25,7 +25,6 @@ import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import {
   UserPlus,
   Trash2,
-  RotateCcw,
   PenSquare,
   AlertCircle,
   ArrowLeft,
@@ -38,6 +37,7 @@ import TeamEditModal from "./_teamEditModal";
 import type { ApiResponse, TeamDetailsResponse } from "@/lib/types/api";
 import { useTeams } from "@/lib/context/teams-context";
 import { MemberPerformance } from "@/app/dashboard/types/member";
+import { useAddTeamMember, useDeleteTeam, useTeamDetails, useTeamDetailsStore, useTeamPerformance, useUpdateTeam } from "@/store/team-store";
 
 export default function TeamDetailsPage({
   params,
@@ -166,17 +166,7 @@ export default function TeamDetailsPage({
     }
   };
 
-  useEffect(() => {
-    fetchTeamDetails(false);
-  }, [fetchTeamDetails]);
-
-  useEffect(() => {
-    const handleFocus = () => fetchTeamDetails(false);
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
-  }, [fetchTeamDetails]);
-
-  if (loading) return <div className="p-4">Loading team details...</div>;
+  if (isLoading) return <div className="p-4">Loading team details...</div>;
 
   if (error) {
     return (
@@ -293,23 +283,23 @@ export default function TeamDetailsPage({
       )}
 
       <AddMemberModal
-        isOpen={isAddMemberDialogOpen}
-        onClose={() => setIsAddMemberDialogOpen(false)}
+        isOpen={isAddMemberModalOpen}
+        onClose={() => setAddMemberModalOpen(false)}
         teamId={params.teamId}
-        onSubmit={handleAddMember}
+        // onSubmit={handleAddMember}
       />
 
       <TeamEditModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
+        onClose={() => setEditModalOpen(false)}
         teamName={team.name}
         teamDescription={team.description}
-        onSave={handleSaveTeamDetails}
+        // onSave={handleSaveTeamDetails}
       />
 
       <AlertDialog
         open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
