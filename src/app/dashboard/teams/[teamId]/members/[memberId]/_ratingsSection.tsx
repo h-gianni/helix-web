@@ -73,35 +73,8 @@ export default function RatingsSection({
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Submitted Ratings</CardTitle>
-            <div className="mt-1 flex items-center gap-2">
-              <StarRating 
-                value={stats.average}
-                disabled={true}
-                size="sm"
-                ratingsCount={stats.count}
-              />
-            </div>
-          </div>
-          <div>
-            <Button
-              variant="primary"
-              volume="moderate"
-              onClick={onAddRating}
-              leadingIcon={<Plus />}
-            >
-              Add Rating
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-
-      <CardContent>
-        {error ? (
+    <>
+    {error ? (
           <div className="space-y-base">
             <Alert variant="danger">
               <AlertCircle />
@@ -155,7 +128,6 @@ export default function RatingsSection({
             </TableBody>
           </Table>
         )}
-      </CardContent>
-    </Card>
+    </>
   );
 }

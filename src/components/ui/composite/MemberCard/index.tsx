@@ -33,6 +33,7 @@ export interface Member {
   averageRating: number;
   ratingsCount: number;
   teamId: string;
+  teamName: string;
 }
 
 export interface PerformanceCategory {

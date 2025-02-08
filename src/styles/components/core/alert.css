@@ -1,185 +1,151 @@
 /* Base Alert Styles */
 .ui-alert {
-  @apply relative rounded flex items-start outline-none shadow-sm p-sm gap-sm;
+  @apply relative rounded flex items-start outline-none shadow-sm p-sm gap-sm border;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
   transition-property: all;
   animation: fade-in-0 var(--duration-normal) var(--ease-out);
  }
- 
- /* Alert Variants */
- .ui-alert[data-variant="default"] {
-  background-color: var(--background-surface);
-  border-color: var(--border-weak);
- }
- 
- .ui-alert[data-variant="primary"] {
-  background-color: var(--background-primary-weakest); 
-  border-color: var(--border-primary-weak);
- 
-  &:focus-visible {
-    outline: none;
-    --tw-ring-width: 2px;
-    --tw-ring-offset-width: 2px;
-    --tw-ring-color: var(--ring-primary);
-    --tw-ring-offset-color: var(--background-surface);
-  }
- }
- 
- .ui-alert[data-variant="danger"] {
-  background-color: var(--background-danger-weakest);
-  border-color: var(--border-danger-weak);
- 
-  &:focus-visible {
-    outline: none;
-    --tw-ring-width: 2px;
-    --tw-ring-offset-width: 2px;
-    --tw-ring-color: var(--ring-danger);
-    --tw-ring-offset-color: var(--background-surface);
-  }
- }
- 
- .ui-alert[data-variant="warning"] {
-  background-color: var(--background-warning-weakest);
-  border-color: var(--border-warning-weak);
- 
-  &:focus-visible {
-    outline: none;
-    --tw-ring-width: 2px;
-    --tw-ring-offset-width: 2px;
-    --tw-ring-color: var(--ring-neutral-base);
-    --tw-ring-offset-color: var(--background-surface);
-  }
- }
- 
- .ui-alert[data-variant="success"] {
-  background-color: var(--background-success-weakest);
-  border-color: var(--border-success-weak);
- 
-  &:focus-visible {
-    outline: none;
-    --tw-ring-width: 2px;
-    --tw-ring-offset-width: 2px;
-    --tw-ring-color: var(--ring-neutral-base);
-    --tw-ring-offset-color: var(--background-surface);
-  }
- }
- 
- /* Icon Container */
- .ui-alert-icon {
+
+/* Alert Variants */
+.ui-alert[data-variant="default"] {
+  @apply ui-background-surface ui-border-neutral;
+}
+
+.ui-alert[data-variant="primary"] {
+  @apply ui-background-primary-weakest ui-border-primary-weak focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ui-ring-primary;
+  --tw-ring-offset-color: var(--background-surface);
+}
+
+.ui-alert[data-variant="danger"] {
+  @apply ui-background-danger-weakest ui-border-danger-weak focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ui-ring-danger;
+  --tw-ring-offset-color: var(--background-surface);
+}
+
+.ui-alert[data-variant="warning"] {
+  @apply ui-background-warning-weakest ui-border-warning-weak focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ui-ring-warning;
+  --tw-ring-offset-color: var(--background-surface);
+}
+
+.ui-alert[data-variant="success"] {
+  @apply ui-background-success-weakest ui-border-success-weak focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ui-ring-primary;
+  --tw-ring-offset-color: var(--background-surface);
+}
+
+/* Icon Container */
+.ui-alert-icon {
   @apply flex-shrink-0 mt-px ml-px;
- }
- 
- .ui-alert-icon[data-size="base"] svg {
+}
+
+.ui-alert-icon[data-size="base"] svg {
   @apply size-5;
- }
- 
- .ui-alert-icon[data-size="sm"] svg {
+}
+
+.ui-alert-icon[data-size="sm"] svg {
   @apply size-4;
- }
- 
- .ui-alert-icon[data-variant="default"] svg {
-  color: var(--text-foreground);
- }
- 
- .ui-alert-icon[data-variant="primary"] svg {
-  color: var(--text-primary);
- }
- 
- .ui-alert-icon[data-variant="danger"] svg {
-  color: var(--text-danger);
- }
- 
- .ui-alert-icon[data-variant="warning"] svg {
-  color: var(--text-warning);
- }
- 
- .ui-alert-icon[data-variant="success"] svg {
-  color: var(--text-success);
- }
- 
- /* Content Container */
- .ui-alert-content {
+}
+
+.ui-alert-icon[data-variant="default"] svg {
+  @apply text-foreground;
+}
+
+.ui-alert-icon[data-variant="primary"] svg {
+  @apply ui-text-primary;
+}
+
+.ui-alert-icon[data-variant="danger"] svg {
+  @apply ui-text-danger;
+}
+
+.ui-alert-icon[data-variant="warning"] svg {
+  @apply ui-text-warning;
+}
+
+.ui-alert-icon[data-variant="success"] svg {
+  @apply ui-text-success;
+}
+
+/* Content Container */
+.ui-alert-content {
   @apply flex-grow min-w-0 relative;
- }
- 
- .ui-alert-content > div {
+}
+
+.ui-alert-content > div {
   @apply space-y-0;
- }
- 
- .ui-alert[data-size="sm"] .ui-alert-content > div {
+}
+
+.ui-alert[data-size="sm"] .ui-alert-content > div {
   @apply space-y-xxs;
- }
- 
- /* Alert Title */
- .ui-alert-title {
-  @apply ui-text-heading;
- }
- 
- .ui-alert-title[data-size="base"] {
-  font-size: var(--font-size-sm);
- }
- 
- .ui-alert-title[data-size="sm"] {
-  font-size: var(--font-size-xs);
- }
- 
- .ui-alert-title[data-variant="default"] {
-  color: var(--text-foreground);
- }
- 
- .ui-alert-title[data-variant="primary"] {
-  color: var(--text-primary);
- }
- 
- .ui-alert-title[data-variant="danger"] {
-  color: var(--text-danger);
- }
- 
- .ui-alert-title[data-variant="warning"] {
-  color: var(--text-warning);
- }
- 
- .ui-alert-title[data-variant="success"] {
-  color: var(--text-success);
- }
- 
- /* Alert Description */
- .ui-alert-description {
-  @apply ui-text-body;
- }
- 
- .ui-alert-description[data-size="base"] {
-  font-size: var(--font-size-base);
- }
- 
- .ui-alert-description[data-size="sm"] {
-  font-size: var(--font-size-sm);
- }
- 
- .ui-alert-description[data-variant="default"] {
-  color: var(--text-weak);
- }
- 
- .ui-alert-description[data-variant="primary"] {
-  color: var(--text-primary);
- }
- 
- .ui-alert-description[data-variant="danger"] {
-  color: var(--text-danger);
- }
- 
- .ui-alert-description[data-variant="warning"] {
-  color: var(--text-warning);
- }
- 
- .ui-alert-description[data-variant="success"] {
-  color: var(--text-success);
- }
- 
- @media print {
+}
+
+/* Alert Title */
+.ui-alert-title {
+  @apply font-semibold;
+}
+
+.ui-alert-title[data-size="base"] {
+  @apply text-base;
+}
+
+.ui-alert-title[data-size="sm"] {
+  @apply text-sm;
+}
+
+.ui-alert-title[data-variant="default"] {
+  @apply text-foreground;
+}
+
+.ui-alert-title[data-variant="primary"] {
+  @apply ui-text-primary;
+}
+
+.ui-alert-title[data-variant="danger"] {
+  @apply ui-text-danger;
+}
+
+.ui-alert-title[data-variant="warning"] {
+  @apply ui-text-warning;
+}
+
+.ui-alert-title[data-variant="success"] {
+  @apply ui-text-success;
+}
+
+/* Alert Description */
+.ui-alert-description {
+  @apply text-sm;
+}
+
+.ui-alert-description[data-size="base"] {
+  @apply text-base;
+}
+
+.ui-alert-description[data-size="sm"] {
+  @apply text-sm;
+}
+
+.ui-alert-description[data-variant="default"] {
+  @apply text-weak;
+}
+
+.ui-alert-description[data-variant="primary"] {
+  @apply ui-text-primary;
+}
+
+.ui-alert-description[data-variant="danger"] {
+  @apply ui-text-danger;
+}
+
+.ui-alert-description[data-variant="warning"] {
+  @apply ui-text-warning;
+}
+
+.ui-alert-description[data-variant="success"] {
+  @apply ui-text-success;
+}
+
+@media print {
   .ui-alert {
-    @apply shadow-none print:break-inside-avoid;
-    border-color: var(--border-base);
+    @apply shadow-none print:break-inside-avoid ui-border-neutral;
   }
- }
+}

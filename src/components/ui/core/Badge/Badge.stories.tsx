@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Badge } from "./index";
+import { Check } from "lucide-react";
 
 const meta = {
   title: "Core/Badge",
@@ -17,20 +18,20 @@ const meta = {
         defaultValue: { summary: "default" }
       }
     },
-    appearance: {
+    volume: {
       control: "select",
-      options: ["default", "light", "outline"],
-      description: "Visual style of the badge",
+      options: ["loud", "moderate", "soft"],
+      description: "Visual style of the badge (loud = solid, moderate = outline, soft = light)",
       table: {
-        defaultValue: { summary: "default" }
+        defaultValue: { summary: "loud" }
       }
     },
     size: {
       control: "select",
-      options: ["default", "lg"],
+      options: ["sm", "base", "lg"],
       description: "Size of the badge",
       table: {
-        defaultValue: { summary: "default" }
+        defaultValue: { summary: "base" }
       }
     },
     children: {
@@ -40,6 +41,10 @@ const meta = {
     className: {
       control: "text",
       description: "Additional CSS classes"
+    },
+    icon: {
+      control: "boolean",
+      description: "Optional icon element"
     }
   },
 } satisfies Meta<typeof Badge>;
@@ -50,9 +55,9 @@ type Story = StoryObj<typeof Badge>;
 // Main configuration preview
 export const Default: Story = {
   args: {
-    variant: "primary",
-    appearance: "default",
-    size: "default",
+    variant: "default",
+    volume: "loud",
+    size: "base",
     children: "Badge"
   }
 };
@@ -60,55 +65,55 @@ export const Default: Story = {
 // All variants
 export const AllVariants: Story = {
   render: () => (
-    <div className="space-y-4">
+    <div className="space-y-base">
       <div className="grid grid-cols-[auto_1fr] gap-8 items-start">
-        <div className="text-body-small">Default</div>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="default" appearance="default">Default</Badge>
-          <Badge variant="default" appearance="light">Light</Badge>
-          <Badge variant="default" appearance="outline">Outline</Badge>
+        <div className="ui-text-body-small text-weak">Default</div>
+        <div className="flex flex-wrap gap-sm">
+          <Badge variant="default" volume="loud">Default</Badge>
+          <Badge variant="default" volume="soft">Moderate</Badge>
+          <Badge variant="default" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="text-body-small">Primary</div>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="primary" appearance="default">Default</Badge>
-          <Badge variant="primary" appearance="light">Light</Badge>
-          <Badge variant="primary" appearance="outline">Outline</Badge>
+        <div className="ui-text-body-small text-weak">Primary</div>
+        <div className="flex flex-wrap gap-sm">
+          <Badge variant="primary" volume="loud">Default</Badge>
+          <Badge variant="primary" volume="soft">Moderate</Badge>
+          <Badge variant="primary" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="text-body-small">Accent</div>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="accent" appearance="default">Default</Badge>
-          <Badge variant="accent" appearance="light">Light</Badge>
-          <Badge variant="accent" appearance="outline">Outline</Badge>
+        <div className="ui-text-body-small text-weak">Accent</div>
+        <div className="flex flex-wrap gap-sm">
+          <Badge variant="accent" volume="loud">Default</Badge>
+          <Badge variant="accent" volume="soft">Moderate</Badge>
+          <Badge variant="accent" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="text-body-small">Danger</div>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="danger" appearance="default">Default</Badge>
-          <Badge variant="danger" appearance="light">Light</Badge>
-          <Badge variant="danger" appearance="outline">Outline</Badge>
+        <div className="ui-text-body-small text-weak">Danger</div>
+        <div className="flex flex-wrap gap-sm">
+          <Badge variant="danger" volume="loud">Default</Badge>
+          <Badge variant="danger" volume="soft">Moderate</Badge>
+          <Badge variant="danger" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="text-body-small">Success</div>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="success" appearance="default">Default</Badge>
-          <Badge variant="success" appearance="light">Light</Badge>
-          <Badge variant="success" appearance="outline">Outline</Badge>
+        <div className="ui-text-body-small text-weak">Success</div>
+        <div className="flex flex-wrap gap-sm">
+          <Badge variant="success" volume="loud">Default</Badge>
+          <Badge variant="success" volume="soft">Moderate</Badge>
+          <Badge variant="success" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="text-body-small">Warning</div>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="warning" appearance="default">Default</Badge>
-          <Badge variant="warning" appearance="light">Light</Badge>
-          <Badge variant="warning" appearance="outline">Outline</Badge>
+        <div className="ui-text-body-small text-weak">Warning</div>
+        <div className="flex flex-wrap gap-sm">
+          <Badge variant="warning" volume="loud">Default</Badge>
+          <Badge variant="warning" volume="soft">Moderate</Badge>
+          <Badge variant="warning" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="text-body-small">Info</div>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="info" appearance="default">Default</Badge>
-          <Badge variant="info" appearance="light">Light</Badge>
-          <Badge variant="info" appearance="outline">Outline</Badge>
+        <div className="ui-text-body-small text-weak">Info</div>
+        <div className="flex flex-wrap gap-sm">
+          <Badge variant="info" volume="loud">Default</Badge>
+          <Badge variant="info" volume="soft">Moderate</Badge>
+          <Badge variant="info" volume="moderate">Soft</Badge>
         </div>
       </div>
     </div>
@@ -118,8 +123,8 @@ export const AllVariants: Story = {
 // Sizes
 export const Sizes: Story = {
   render: () => (
-    <div className="flex gap-2 items-center">
-      <Badge>Default size</Badge>
+    <div className="flex gap-sm items-center">
+      <Badge size="base">Default size</Badge>
       <Badge size="lg">Large size</Badge>
     </div>
   )
@@ -128,44 +133,35 @@ export const Sizes: Story = {
 // Examples
 export const Examples: Story = {
   render: () => (
-    <div className="space-y-4">
+    <div className="space-y-base">
       {/* Status badges */}
-      <div className="flex gap-2">
-        <Badge variant="success" appearance="light">Active</Badge>
-        <Badge variant="warning" appearance="light">Pending</Badge>
-        <Badge variant="danger" appearance="light">Failed</Badge>
+      <div className="flex gap-sm">
+        <Badge variant="success" volume="moderate">Active</Badge>
+        <Badge variant="warning" volume="moderate">Pending</Badge>
+        <Badge variant="danger" volume="moderate">Failed</Badge>
       </div>
 
       {/* Categories */}
-      <div className="flex gap-2">
-        <Badge variant="primary" appearance="default">Design</Badge>
-        <Badge variant="primary" appearance="light">Development</Badge>
-        <Badge variant="primary" appearance="outline">Marketing</Badge>
+      <div className="flex gap-sm">
+        <Badge variant="primary" volume="loud">Design</Badge>
+        <Badge variant="primary" volume="moderate">Development</Badge>
+        <Badge variant="primary" volume="soft">Marketing</Badge>
       </div>
 
       {/* With icon */}
-      <Badge variant="success" appearance="light" className="gap-[var(--space-xxs)]">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="w-[var(--size-xxs)] h-[var(--size-xxs)]"
-        >
-          <path d="M20 6 9 17l-5-5" />
-        </svg>
+      <Badge 
+        variant="success" 
+        volume="moderate" 
+        className="gap-[var(--space-xxs)]"
+        icon={<Check className="w-[var(--size-xxs)] h-[var(--size-xxs)]" />}
+      >
         Verified
       </Badge>
 
       {/* Notification */}
-      <div className="flex gap-2">
-        <Badge variant="danger" appearance="default" className="rounded-full">14</Badge>
-        <Badge variant="primary" appearance="light" className="rounded-full">New</Badge>
+      <div className="flex gap-sm">
+        <Badge variant="danger" volume="loud" className="rounded-full">14</Badge>
+        <Badge variant="primary" volume="moderate" className="rounded-full">New</Badge>
       </div>
     </div>
   )

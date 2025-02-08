@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
+import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
+import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { Button } from "@/components/ui/core/Button";
 import {
   DropdownMenu,
@@ -34,161 +35,108 @@ import AddMemberModal from "./_addMemberModal";
 import { TeamPerformanceSummary } from "./_teamPerformanceSummary";
 import EmptyTeamView from "./_emptyTeamView";
 import TeamEditModal from "./_teamEditModal";
-import type { ApiResponse, TeamDetailsResponse } from "@/lib/types/api";
-import { useTeams } from "@/lib/context/teams-context";
-import { MemberPerformance } from "@/app/dashboard/types/member";
-import { useAddTeamMember, useDeleteTeam, useTeamDetails, useTeamDetailsStore, useTeamPerformance, useUpdateTeam } from "@/store/team-store";
+import {
+  useTeamStore,
+  useTeamDetails,
+  useTeamPerformance,
+  useUpdateTeam,
+  useDeleteTeam,
+  useAddTeamMember,
+} from "@/store/team-store";
 
-export default function TeamDetailsPage({
-  params,
-}: {
+interface TeamDetailsPageProps {
   params: { teamId: string };
-}) {
+}
+
+export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
   const router = useRouter();
-  const { fetchTeams } = useTeams();
-  const [team, setTeam] = useState<TeamDetailsResponse | null>(null);
-  const [performanceData, setPerformanceData] = useState<{
-    members: MemberPerformance[];
-  }>({ members: [] });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isAddMemberDialogOpen, setIsAddMemberDialogOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [viewType, setViewType] = useState<"table" | "grid">("table");
+  const {
+    isAddMemberModalOpen,
+    isEditModalOpen,
+    isDeleteDialogOpen,
+    viewType,
+    setAddMemberModalOpen,
+    setEditModalOpen,
+    setDeleteDialogOpen,
+    setViewType,
+  } = useTeamStore();
 
-  const breadcrumbItems = [
-    { href: "/dashboard/teams", label: "Teams" },
-    { label: team?.name || "Team Details" },
-  ];
+  // Queries
+  const {
+    data: team,
+    isLoading: isTeamLoading,
+    error: teamError,
+  } = useTeamDetails(params.teamId);
 
-  const fetchTeamPerformance = async () => {
+  const {
+    data: performanceData,
+    isLoading: isPerformanceLoading,
+  } = useTeamPerformance(params.teamId);
+
+  // Mutations
+  const updateTeam = useUpdateTeam();
+  const deleteTeam = useDeleteTeam();
+  const addMember = useAddTeamMember();
+
+  const isLoading = isTeamLoading || isPerformanceLoading;
+  const error = teamError;
+
+  const handleSaveTeamDetails = async (name: string, description: string | null) => {
     try {
-      const response = await fetch(`/api/teams/${params.teamId}/performance`);
-      const data = await response.json();
-      if (data.success) setPerformanceData(data.data);
-    } catch (error) {
-      console.error("Error fetching performance data:", error);
-    }
-  };
-
-  const fetchTeamDetails = useCallback(
-    async (showRefreshIndicator = true) => {
-      if (!params.teamId) {
-        setError("Team ID is missing");
-        return;
-      }
-
-      try {
-        if (showRefreshIndicator) setIsRefreshing(true);
-        setError(null);
-
-        const response = await fetch(
-          `/api/teams/${params.teamId}?t=${Date.now()}`
-        );
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-
-        const data: ApiResponse<TeamDetailsResponse> = await response.json();
-        if (!data.success)
-          throw new Error(data.error || "Failed to fetch team details");
-
-        setTeam(data.data || null);
-        fetchTeamPerformance();
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-        setIsRefreshing(false);
-      }
-    },
-    [params.teamId]
-  );
-
-  const handleSaveTeamDetails = async (
-    name: string,
-    description: string | null
-  ) => {
-    try {
-      const response = await fetch(`/api/teams/${params.teamId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, description }),
-      });
-
-      if (!response.ok) throw new Error("Failed to update team");
-
-      const data = await response.json();
-      if (data.success) await fetchTeamDetails();
+      await updateTeam.mutateAsync({ teamId: params.teamId, name, description });
+      setEditModalOpen(false);
     } catch (error) {
       console.error("Error updating team:", error);
       throw error;
     }
   };
 
-  const handleAddMember = async (data: {
-    teamId: string;
-    email: string;
-    title?: string;
-  }) => {
+  const handleAddMember = async (data: { teamId: string; email: string; title?: string }) => {
     try {
-      const response = await fetch(`/api/teams/${data.teamId}/members`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.email, title: data.title }),
-      });
-
-      const responseData = await response.json();
-      if (!response.ok || !responseData.success) {
-        throw new Error(responseData.error || "Failed to add member");
-      }
-
-      await fetchTeamDetails();
-    } catch (err) {
-      console.error("Error adding member:", err);
-      throw err;
+      await addMember.mutateAsync(data);
+      setAddMemberModalOpen(false);
+    } catch (error) {
+      console.error("Error adding member:", error);
+      throw error;
     }
   };
 
   const handleDeleteTeam = async () => {
     try {
-      const response = await fetch(`/api/teams/${params.teamId}`, {
-        method: "DELETE",
-      });
-      const data = await response.json();
-      if (!data.success) throw new Error(data.error || "Failed to delete team");
-
-      await fetchTeams();
+      await deleteTeam.mutateAsync(params.teamId);
       router.push("/dashboard/teams");
     } catch (error) {
       console.error("Error deleting team:", error);
     }
   };
 
-  if (isLoading) return <div className="p-4">Loading team details...</div>;
+  if (isLoading) {
+    return <div className="ui-loader">Loading team details...</div>;
+  }
 
   if (error) {
     return (
-      <>
+      <div className="ui-loader-error">
         <Alert variant="danger">
           <AlertCircle />
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription>
+            {error instanceof Error ? error.message : "An error occurred"}
+          </AlertDescription>
         </Alert>
         <Button
-          iconOnly
+          variant="primary"
           onClick={() => router.back()}
           leadingIcon={<ArrowLeft />}
         >
           Go Back
         </Button>
-      </>
+      </div>
     );
   }
 
   if (!team) {
     return (
-      <>
+      <div className="ui-loader-error">
         <Alert variant="warning">
           <AlertCircle />
           <AlertDescription>Team not found</AlertDescription>
@@ -200,41 +148,33 @@ export default function TeamDetailsPage({
         >
           Go Back
         </Button>
-      </>
+      </div>
     );
   }
 
   return (
     <>
-      <PageBreadcrumbs items={breadcrumbItems} />
-
-      <div className="mb-base">
-        <div className="flex items-center justify-between">
-          <div className="flex gap-4">
-            <Button
-              variant="neutral"
-              iconOnly
-              size="sm"
-              onClick={() => router.push("/dashboard/teams")}
-              leadingIcon={<ArrowLeft />}
-            />
-            <div>
-              <h1 className="text-2xl font-semibold">{team.name}</h1>
-              {team.description && (
-                <p className="text-muted-foreground mt-1">{team.description}</p>
-              )}
-              <p className="ui-text-body-caption">Team function | #members</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
+      <PageBreadcrumbs
+        items={[
+          { href: "/dashboard/teams", label: "Teams" },
+          { label: team.name },
+        ]}
+      />
+      <PageHeader
+        title={team.name}
+        caption={`${team.teamFunction?.name || 'No function'} | ${team.members?.length || 0} members`}
+        backButton={{
+          onClick: () => router.push("/dashboard/teams"),
+        }}
+        actions={
+          <>
             <Button
               variant="primary"
-              onClick={() => setIsAddMemberDialogOpen(true)}
+              onClick={() => setAddMemberModalOpen(true)}
               leadingIcon={<UserPlus />}
             >
               Add Member
             </Button>
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -249,7 +189,7 @@ export default function TeamDetailsPage({
                 />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>
+                <DropdownMenuItem onClick={() => setEditModalOpen(true)}>
                   <IconWrapper>
                     <PenSquare />
                   </IconWrapper>
@@ -257,7 +197,7 @@ export default function TeamDetailsPage({
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   destructive
-                  onClick={() => setIsDeleteDialogOpen(true)}
+                  onClick={() => setDeleteDialogOpen(true)}
                 >
                   <IconWrapper>
                     <Trash2 />
@@ -266,21 +206,23 @@ export default function TeamDetailsPage({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
-      {!team.members?.length || !performanceData.members?.length ? (
-        <EmptyTeamView onAddMember={() => setIsAddMemberDialogOpen(true)} />
-      ) : (
-        <TeamPerformanceSummary
-          teamId={team.id}
-          teamName={team.name}
-          members={performanceData.members}
-          viewType={viewType}
-          onViewChange={setViewType}
-        />
-      )}
+      <main className="ui-layout-page-main">
+        {!team.members?.length || !performanceData?.members?.length ? (
+          <EmptyTeamView onAddMember={() => setAddMemberModalOpen(true)} />
+        ) : (
+          <TeamPerformanceSummary
+            teamId={team.id}
+            teamName={team.name}
+            members={performanceData.members}
+            viewType={viewType}
+            onViewChange={setViewType}
+          />
+        )}
+      </main>
 
       <AddMemberModal
         isOpen={isAddMemberModalOpen}
@@ -306,7 +248,7 @@ export default function TeamDetailsPage({
             <AlertDialogTitle>Delete Team</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete this team? This action cannot be
-              undone. All team members, activites, and performance data will be
+              undone. All team members, activities, and performance data will be
               permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>

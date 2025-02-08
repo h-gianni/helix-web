@@ -1,6 +1,7 @@
+// src/app/dashboard/_component/_performanceRatingModal.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,149 +21,99 @@ import {
 } from "@/components/ui/core/Select";
 import { Label } from "@/components/ui/core/Label";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import type {
-  BusinessActivityResponse,
-  TeamResponse,
-  TeamMemberResponse,
-} from "@/lib/types/api";
-import { TeamActivity } from "@/lib/types/business-activities";
+import { User } from "lucide-react";
 import StarRating from '@/components/ui/core/StarRating';
+import { 
+  usePerformanceRatingStore, 
+  useTeams, 
+  useTeamMembers, 
+  useTeamActivities,
+  useSubmitRating 
+} from "@/store/performance-rating-store";
 
 interface PerformanceRatingModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   teamId?: string;
   memberId?: string;
   memberName?: string;
   memberTitle?: string | null;
-  onSubmit: (data: {
-    teamId: string;
-    memberId: string;
-    activityId: string;
-    rating: number;
-    feedback?: string;
-  }) => Promise<void>;
 }
 
 export default function PerformanceRatingModal({
-  isOpen,
-  onClose,
-  teamId: initialTeamId,
-  memberId: initialMemberId,
-  memberName: initialMemberName,
-  memberTitle: initialMemberTitle,
-  onSubmit,
+  teamId,
+  memberId,
+  memberName,
+  memberTitle,
 }: PerformanceRatingModalProps) {
-  const [teams, setTeams] = useState<TeamResponse[]>([]);
-  const [selectedTeamId, setSelectedTeamId] = useState<string>(initialTeamId || "");
-  const [members, setMembers] = useState<TeamMemberResponse[]>([]);
-  const [selectedMemberId, setSelectedMemberId] = useState<string>(initialMemberId || "");
-  const [activities, setActivities] = useState<BusinessActivityResponse[]>([]);
-  const [selectedActivityId, setSelectedActivityId] = useState<string>("");
-  const [rating, setRating] = useState<number>(0);
-  const [feedback, setFeedback] = useState<string>("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
+  const {
+    isOpen,
+    selectedTeamId,
+    selectedMemberId,
+    selectedActivityId,
+    rating,
+    feedback,
+    setIsOpen,
+    setSelectedTeamId,
+    setSelectedMemberId,
+    setSelectedActivityId,
+    setRating,
+    setFeedback,
+    reset,
+  } = usePerformanceRatingStore();
 
+  // Queries with proper type handling
+  const { data: teams = [], isLoading: teamsLoading } = useTeams();
+  const { data: members = [], isLoading: membersLoading } = useTeamMembers(
+    selectedTeamId || teamId || ''
+  );
+  const { data: activities = [], isLoading: activitiesLoading } = useTeamActivities(
+    selectedTeamId || teamId || ''
+  );
+  const submitRating = useSubmitRating();
+
+  // Initialize with props when the modal opens
   useEffect(() => {
     if (isOpen) {
-      fetchTeams();
+      if (teamId) setSelectedTeamId(teamId);
+      if (memberId) setSelectedMemberId(memberId);
     }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (selectedTeamId) {
-      fetchMembers(selectedTeamId);
-      fetchActivities(selectedTeamId);
-    }
-  }, [selectedTeamId]);
-
-  const fetchTeams = async () => {
-    try {
-      const response = await fetch("/api/teams");
-      const data = await response.json();
-      if (data.success) {
-        setTeams(data.data);
-        if (!initialTeamId && data.data.length === 1) {
-          setSelectedTeamId(data.data[0].id);
-        }
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Failed to fetch teams");
-    }
-  };
-
-  const fetchMembers = async (teamId: string) => {
-    try {
-      const response = await fetch(`/api/teams/${teamId}/members`);
-      const data = await response.json();
-      if (data.success) {
-        setMembers(data.data);
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Failed to fetch team members");
-    }
-  };
-
-  const fetchActivities = async (teamId: string) => {
-    try {
-      setLoading(true);
-      console.log("Fetching activities for team:", teamId); // Debug log
-      const response = await fetch(`/api/teams/${teamId}/activities`);
-      const data = await response.json();
-      console.log("Activities response:", data); // Debug log
-      if (data.success) {
-        setActivities(data.data);
-      }
-    } catch (err) {
-      console.error("Error fetching activities:", err);
-      setError("Failed to fetch activities");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [isOpen, teamId, memberId, setSelectedTeamId, setSelectedMemberId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const currentTeamId = selectedTeamId || teamId;
+    const currentMemberId = selectedMemberId || memberId;
+
+    if (!currentTeamId || !currentMemberId || !selectedActivityId || rating === 0) return;
+
     try {
-      setSaving(true);
-      setError(null);
-      console.log("Submitting rating with data:", {  // Debug log
-        teamId: selectedTeamId,
-        memberId: selectedMemberId,
+      await submitRating.mutateAsync({
+        teamId: currentTeamId,
+        memberId: currentMemberId,
         activityId: selectedActivityId,
         rating,
-        feedback,
+        feedback: feedback.trim() || undefined
       });
-      await onSubmit({
-        teamId: selectedTeamId,
-        memberId: selectedMemberId,
-        activityId: selectedActivityId,
-        rating,
-        feedback: feedback.trim() || undefined,
-      });
+
       handleReset();
-      onClose();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setSaving(false);
+      setIsOpen(false);
+    } catch (error) {
+      console.error('Failed to submit rating:', error);
     }
   };
 
   const handleReset = () => {
-    if (!initialTeamId) setSelectedTeamId("");
-    if (!initialMemberId) setSelectedMemberId("");
-    setSelectedActivityId("");
-    setRating(0);
-    setFeedback("");
+    reset();
+    // Preserve initial values if they exist
+    if (teamId) setSelectedTeamId(teamId);
+    if (memberId) setSelectedMemberId(memberId);
   };
 
+  const currentTeamId = selectedTeamId || teamId;
+  const currentMemberId = selectedMemberId || memberId;
+  const hasTeams = teams && teams.length > 0;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Performance Rating</DialogTitle>
@@ -171,23 +122,44 @@ export default function PerformanceRatingModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form className="space-y-4">
-          {error && (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {submitRating.error && (
             <Alert variant="danger">
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>
+                {submitRating.error instanceof Error 
+                  ? submitRating.error.message 
+                  : 'Failed to submit rating'}
+              </AlertDescription>
             </Alert>
           )}
 
-          {!initialTeamId && teams.length > 1 && (
+          {memberName && (
+            <div className="space-y-2">
+              <Label>Member</Label>
+              <div className="flex items-center gap-2 p-3 rounded-md border bg-muted">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span>
+                  {memberName}
+                  {memberTitle && (
+                    <span className="text-muted-foreground ml-1">
+                      - {memberTitle}
+                    </span>
+                  )}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {!teamId && hasTeams && (
             <Select 
-              value={selectedTeamId} 
+              value={selectedTeamId ?? undefined}
               onValueChange={setSelectedTeamId}
               width="full"
               withLabel
               label="Select Team"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a team" />
+              <SelectTrigger disabled={teamsLoading}>
+                <SelectValue placeholder={teamsLoading ? "Loading teams..." : "Select a team"} />
               </SelectTrigger>
               <SelectContent>
                 {teams.map((team) => (
@@ -199,16 +171,16 @@ export default function PerformanceRatingModal({
             </Select>
           )}
 
-          {!initialMemberId && selectedTeamId && (
+          {!memberId && currentTeamId && (
             <Select 
-              value={selectedMemberId} 
+              value={selectedMemberId ?? undefined}
               onValueChange={setSelectedMemberId}
               width="full"
               withLabel
               label="Select Member"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a member" />
+              <SelectTrigger disabled={membersLoading}>
+                <SelectValue placeholder={membersLoading ? "Loading members..." : "Select a member"} />
               </SelectTrigger>
               <SelectContent>
                 {members.map((member) => (
@@ -221,27 +193,25 @@ export default function PerformanceRatingModal({
           )}
 
           <Select
-            value={selectedActivityId}
+            value={selectedActivityId ?? undefined}
             onValueChange={setSelectedActivityId}
             width="full"
             withLabel
             label="Select activity"
           >
-            <SelectTrigger disabled={loading || !selectedTeamId || !selectedMemberId}>
-              <SelectValue
-                placeholder={
-                  loading
-                    ? "Loading activities..."
-                    : !selectedTeamId || !selectedMemberId
-                    ? "Select team and member first"
-                    : "Select an activity"
-                }
-              />
+            <SelectTrigger disabled={activitiesLoading || !currentTeamId || !currentMemberId}>
+              <SelectValue placeholder={
+                activitiesLoading 
+                  ? "Loading activities..." 
+                  : !currentTeamId || !currentMemberId
+                  ? "Select team and member first"
+                  : "Select an activity"
+              } />
             </SelectTrigger>
             <SelectContent>
               {activities.length === 0 ? (
                 <div className="p-2 text-sm text-muted-foreground">
-                  {loading ? "Loading..." : "No activities available for this team"}
+                  {activitiesLoading ? "Loading..." : "No activities available"}
                 </div>
               ) : (
                 activities.map((activity) => (
@@ -255,12 +225,14 @@ export default function PerformanceRatingModal({
 
           <div className="space-y-2">
             <Label>Rating</Label>
-            <StarRating 
-              value={rating} 
-              onChange={setRating} 
-              size="lg"
-              showValue={true}
-            />
+            <div className="flex justify-center py-2">
+              <StarRating 
+                value={rating} 
+                onChange={setRating} 
+                size="lg"
+                showValue={true}
+              />
+            </div>
           </div>
 
           <Textarea
@@ -274,26 +246,33 @@ export default function PerformanceRatingModal({
             withLabel
             label="Feedback (Optional)"
           />
-        </form>
 
-        <DialogFooter>
-          <Button
-            variant="neutral"
-            volume="soft"
-            onClick={handleReset}
-            disabled={saving}
-          >
-            Reset
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            disabled={saving || !selectedTeamId || !selectedMemberId || !selectedActivityId || rating === 0}
-            isLoading={saving}
-          >
-            Save Rating
-          </Button>
-        </DialogFooter>
+          <DialogFooter>
+            <Button
+              variant="neutral"
+              volume="soft"
+              onClick={handleReset}
+              disabled={submitRating.isPending}
+              type="button"
+            >
+              Reset
+            </Button>
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={
+                submitRating.isPending || 
+                !currentTeamId || 
+                !currentMemberId || 
+                !selectedActivityId || 
+                rating === 0
+              }
+              isLoading={submitRating.isPending}
+            >
+              Save Rating
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
