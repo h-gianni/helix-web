@@ -1,6 +1,6 @@
 "use client";
 
-import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
+import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import { ProfileSection } from "./_components/_profileSelection";
 
 export default function ProfileSettingsPage() {
@@ -12,10 +12,10 @@ export default function ProfileSettingsPage() {
           { label: "Profile" },
         ]}
       />
-      <div className="ui-main-content">
+      <main className="ui-layout-page-main">
         <h1 className="ui-text-heading-1">Profile</h1>
         <ProfileSection />
-      </div>
+      </main>
     </>
   );
 }

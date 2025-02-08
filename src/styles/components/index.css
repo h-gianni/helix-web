@@ -26,7 +26,6 @@
 @import './core/input.css';
 @import './core/label.css';
 @import './core/menubar.css';
-@import './core/navigationmenu.css';
 @import './core/pagination.css';
 @import './core/popover.css';
 @import './core/progress.css';
@@ -47,10 +46,14 @@
 @import './core/tooltip.css';
 
 /* Composite - Components built from core components */
-@import './memberstable.css';
+@import './composite/memberstable.css';
+@import './composite/navigationmenu.css';
+@import './composite/pageheader.css';
+@import './composite/profilecard.css';
 
 /* Layout - Layout components */
 
 /* Patterns - Complex UI patterns */
 
+/* Main custom classes repository */
 @import './../globals.css'

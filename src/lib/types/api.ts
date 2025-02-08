@@ -27,6 +27,9 @@ export type TeamResponse = {
   updatedAt: Date;
   deletedAt?: Date | null;
   customFields?: JsonValue;
+  // Add optional fields for UI display
+  totalMembers?: number;
+  averagePerformance?: number;
 };
 
 export type TeamMemberResponse = {
@@ -54,16 +57,15 @@ export type TeamMemberResponse = {
 
 export type TeamDetailsResponse = TeamResponse & {
   members: TeamMemberResponse[];
-  
   businessActivities: BusinessActivityResponse[];
-  teamFunction?: {
+  teamFunction: {
     id: string;
     name: string;
     description: string | null;
     jobTitles: JobTitleResponse[];
     createdAt: Date;
     updatedAt: Date;
-  };
+  } | null;
 };
 
 // BusinessActivity types

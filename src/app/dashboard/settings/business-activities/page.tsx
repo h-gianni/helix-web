@@ -1,6 +1,6 @@
 "use client";
 
-import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
+import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import { ActivitiesSection } from "./_components/_activitiesSection";
 
 export default function BusinessActivitiesSettingsPage() {
@@ -12,9 +12,9 @@ export default function BusinessActivitiesSettingsPage() {
           { label: "Business Activities" },
         ]}
       />
-      <div className="ui-main-content">
+      <main className="ui-layout-page-main">
         <ActivitiesSection onUpdate={() => {}} />
-      </div>
+      </main>
     </>
   );
 }

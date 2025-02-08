@@ -1,132 +1,24 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
-import {
-  MemberPerformance,
-  PerformanceCategory,
-} from "@/app/dashboard/types/member";
+import { Member, PerformanceCategory } from "@/store/member";
 import { TeamPerformanceView } from "./_teamPerformanceView";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/core/Card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/core/Select";
-import {
-  Gem,
-  Sparkles,
-  Sparkle,
-  Footprints,
-  LifeBuoy,
-  MinusCircle,
-  LayoutGrid,
-  Table as TableIcon,
-} from "lucide-react";
-
-interface Team {
-  id: string;
-  name: string;
-}
+import type { TeamResponse } from "@/lib/types/api";
+import { usePerformersStore } from "@/store/performers-store";
 
 interface PerformersByCategoryProps {
+  performers: Member[];
+  teams: TeamResponse[];
   category: PerformanceCategory;
-  performers: MemberPerformance[];
-  teams: Team[];
-  isLoading?: boolean;
-  viewType: "table" | "grid";
-  onViewChange: (value: "table" | "grid") => void;
 }
-
-export const performanceCategories: PerformanceCategory[] = [
-  {
-    label: "Top Performers",
-    minRating: 4.6,
-    maxRating: 5,
-    className: "ui-text-success ui-background-success-weakest",
-    Icon: Gem,
-    description: "Outstanding performance across all activities",
-  },
-  {
-    label: "Strong Performers",
-    minRating: 4,
-    maxRating: 4.5,
-    className: "ui-text-success ui-background-success-weakest",
-    Icon: Sparkles,
-    description: "Consistently exceeding expectations",
-  },
-  {
-    label: "Solid Performers",
-    minRating: 3,
-    maxRating: 3.9,
-    className: "ui-text-info ui-background-info-weakest",
-    Icon: Sparkle,
-    description: "Meeting expectations consistently",
-  },
-  {
-    label: "Weak Performers",
-    minRating: 2.1,
-    maxRating: 2.9,
-    className: "ui-text-warning ui-background-warning-weakest",
-    Icon: Footprints,
-    description: "Need support to improve performance",
-  },
-  {
-    label: "Poor Performers",
-    minRating: 1,
-    maxRating: 2,
-    className: "ui-text-danger ui-background-danger-weakest",
-    Icon: LifeBuoy,
-    description: "Requires immediate attention and support",
-  },
-  {
-    label: "Not Rated",
-    minRating: 0,
-    maxRating: 0,
-    className: "ui-text-neutral ui-background-neutral-weakest",
-    Icon: MinusCircle,
-    description: "Members awaiting their first performance rating",
-  },
-];
-
-export const ViewSwitcher = ({ 
-  viewType, 
-  onViewChange 
-}: { 
-  viewType: 'table' | 'grid';
-  onViewChange: (value: 'table' | 'grid') => void;
-}) => {
-  return (
-    <div className="w-fit">
-    <Select 
-      value={viewType} 
-      onValueChange={onViewChange}
-      width="inline"
-       size="sm"
-    >
-      <SelectTrigger>
-        <SelectValue placeholder="Select view" />
-      </SelectTrigger>
-      <SelectContent align="end">
-        <SelectItem value="table">Table View</SelectItem>
-        <SelectItem value="grid">Card View</SelectItem>
-      </SelectContent>
-    </Select>
-    </div>
-  );
-};
 
 export function PerformersByCategory({
   category,
   performers,
   teams,
-  isLoading,
-  viewType,
-  onViewChange,
 }: PerformersByCategoryProps) {
-  const router = useRouter();
+  const { viewType } = usePerformersStore();
 
   const categoryPerformers = performers
     .filter((performer) => {
@@ -147,17 +39,16 @@ export function PerformersByCategory({
     });
 
   const EmptyState = () => (
-    <div className="flex flex-col items-center justify-center">
-      <div className={`p-xs rounded-full ${category.className} mb-xs`}>
-        <category.Icon className="size-4" />
+    <div className="flex flex-col items-center justify-center p-8">
+      <div className={`p-2 rounded-full ${category.className} mb-4`}>
+        <category.Icon className="h-6 w-6" />
       </div>
       <div className="text-center">
-        <h3 className="ui-text-heading-5">No {category.label}</h3>
-        <p className="ui-text-body-helper max-w-copy mx-auto">
+        <h3 className="text-lg font-semibold mb-2">{`No ${category.label}`}</h3>
+        <p className="text-sm text-muted-foreground max-w-md">
           {category.label === "Not Rated"
             ? "All team members have received at least one rating."
-            : category.label === "Poor Performers" ||
-              category.label === "Weak Performers"
+            : category.label.includes("Poor") || category.label.includes("Weak")
             ? "Great news! You don't have any team members performing below expectations."
             : `No team members currently fall into the ${category.label.toLowerCase()} category.`}
         </p>
@@ -178,24 +69,24 @@ export function PerformersByCategory({
   return (
     <Card>
       <CardHeader>
-          <CardTitle className="flex items-center gap-sm">
-            <category.Icon className={`size-5 ${category.className}`} />
-            <span>{category.label}</span>
-            {category.description && (
-              <span className="ui-text-body-helper">
-               <span className="pr-xs text-muted"> / </span> {category.description}
-              </span>
-            )}
-          </CardTitle>
+        <CardTitle className="flex items-center gap-3">
+          <category.Icon className={`h-5 w-5 ${category.className}`} />
+          <span>{category.label}</span>
+          {category.description && (
+            <span className="text-sm text-muted-foreground">
+              <span className="px-2 text-muted-foreground">/</span>
+              {category.description}
+            </span>
+          )}
+        </CardTitle>
       </CardHeader>
-      <CardContent className="p-0 pt-xxs">
+      <CardContent className="pt-0">
         <TeamPerformanceView
           members={categoryPerformers}
           teams={teams}
           showAvatar={true}
           mode="compact"
           viewType={viewType}
-          onViewChange={onViewChange}
         />
       </CardContent>
     </Card>

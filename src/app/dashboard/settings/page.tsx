@@ -1,40 +1,46 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/app/dashboard/_component/_appHeader";
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/core/Card";
+import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
+import { PageHeader } from "@/components/ui/composite/PageHeader";
+import {
+ Card,
+ CardHeader,
+ CardTitle,
+ CardDescription,
+} from "@/components/ui/core/Card";
 import { Users, Target, User } from "lucide-react";
 
 const settingsGroups = [
-  {
-    title: "Team Management",
-    items: [
-      {
-        title: "Teams",
-        description: "Manage team settings and configurations",
-        icon: Users,
-        href: "/dashboard/settings/teams",
-      },
-      {
-        title: "Business Activities", 
-        description: "Configure and track team activities and performance", 
-        icon: Target,
-        href: "/dashboard/settings/business-activities",
-      },
-    ],
-  },
-  {
-    title: "Personal Settings",
-    items: [
-      {
-        title: "Profile",
-        description: "Manage your personal information and preferences",
-        icon: User,
-        href: "/dashboard/settings/profile",
-      },
-    ],
-  },
- ];
+ {
+   title: "Team Management",
+   items: [
+     {
+       title: "Teams",
+       description: "Manage team settings and configurations",
+       icon: Users,
+       href: "/dashboard/settings/teams",
+     },
+     {
+       title: "Business Activities",
+       description: "Configure and track team activities and performance",
+       icon: Target,
+       href: "/dashboard/settings/business-activities",
+     },
+   ],
+ },
+ {
+   title: "Personal Settings",
+   items: [
+     {
+       title: "Profile",
+       description: "Manage your personal information and preferences",
+       icon: User,
+       href: "/dashboard/settings/profile",
+     },
+   ],
+ },
+];
 
 export default function SettingsPage() {
  const router = useRouter();
@@ -42,9 +48,9 @@ export default function SettingsPage() {
  return (
    <>
      <PageBreadcrumbs items={[{ label: "Settings" }]} />
-     <h1 className="text-3xl font-semibold">Settings</h1>
+     <PageHeader title="Settings" />
 
-     <div className="space-y-8">
+     <main className="ui-layout-page-main">
        {settingsGroups.map((group) => (
          <div key={group.title} className="space-y-4">
            <h2 className="text-xl font-medium">{group.title}</h2>
@@ -75,7 +81,7 @@ export default function SettingsPage() {
            </div>
          </div>
        ))}
-     </div>
+     </main>
    </>
  );
 }

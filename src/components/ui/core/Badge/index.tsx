@@ -1,34 +1,57 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-export type BadgeVariant = 'default' | 'primary' | 'accent' | 'danger' | 'success' | 'warning' | 'info';
-export type BadgeAppearance = 'default' | 'light' | 'outline';
-export type BadgeSize = 'default' | 'lg';
+export type BadgeVariant = 
+  | 'default'  // Changed back to 'default' to match CSS
+  | 'primary' 
+  | 'accent' 
+  | 'danger' 
+  | 'success' 
+  | 'warning' 
+  | 'info';
+
+export type BadgeVolume = 'loud' | 'moderate' | 'soft';
+export type BadgeSize = 'sm' | 'base' | 'lg';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: BadgeVariant;
-  appearance?: BadgeAppearance;
+  volume?: BadgeVolume;
   size?: BadgeSize;
+  icon?: React.ReactNode;
 }
 
 function Badge({
   className,
-  variant = 'default',
-  appearance = 'default',
-  size = 'default',
+  variant = 'default',  // Changed back to 'default'
+  volume = 'loud',
+  size = 'base',
+  icon,
+  children,
   ...props
 }: BadgeProps) {
-  // For the new design system, a "default" appearance corresponds to the solid/strong style.
-  // If a different appearance is passed (e.g. "light" or "outline"), we combine it with the variant.
-  const computedVariant = appearance === 'default' ? variant : `${variant}-${appearance}`;
+  // Compute the variant based on volume
+  // - loud = solid/strong (default)
+  // - moderate = outline
+  // - soft = light background
+  const computedVariant = volume === 'loud' 
+    ? variant 
+    : volume === 'moderate'
+    ? `${variant}-moderate`
+    : `${variant}-soft`;
+
+  // Map sizes to match the CSS
+  const mappedSize = size === 'base' ? 'default' : size;
 
   return (
     <div
       className={cn("ui-badge", className)}
       data-variant={computedVariant}
-      data-size={size}
+      data-size={mappedSize}
       {...props}
-    />
+    >
+      {icon && <span className="ui-badge-icon">{icon}</span>}
+      {children}
+    </div>
   );
 }
 

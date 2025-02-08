@@ -1,4 +1,5 @@
-import { useState } from "react";
+// _editMemberModal.tsx
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,14 +11,11 @@ import { Button } from "@/components/ui/core/Button";
 import { Input } from "@/components/ui/core/Input";
 import { Checkbox } from "@/components/ui/core/Checkbox";
 import { Alert, AlertIconContainer, AlertDescription } from "@/components/ui/core/Alert";
-import type { ApiResponse } from "@/lib/types/api";
+import { useMemberStore, useUpdateMember } from "@/store/member-store";
 
 interface EditMemberModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   memberId: string;
   teamId: string;
-  onUpdate: () => void;
 }
 
 interface MemberUpdateData {
@@ -28,68 +26,56 @@ interface MemberUpdateData {
 }
 
 export const EditMemberModal = ({
-  isOpen,
-  onClose,
   memberId,
   teamId,
-  onUpdate,
 }: EditMemberModalProps) => {
+  const { isEditModalOpen, setEditModalOpen } = useMemberStore();
+  const updateMember = useUpdateMember();
   const [formData, setFormData] = useState<MemberUpdateData>({
     firstName: "",
     lastName: "",
     title: "",
     isAdmin: false,
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   // Fetch current member data when modal opens
-  const fetchMemberData = async () => {
-    try {
-      const response = await fetch(`/api/teams/${teamId}/members/${memberId}`);
-      const data: ApiResponse<any> = await response.json();
+  useEffect(() => {
+    const fetchMemberData = async () => {
+      if (!isEditModalOpen) return;
+      
+      try {
+        const response = await fetch(`/api/teams/${teamId}/members/${memberId}`);
+        const data = await response.json();
 
-      if (!data.success || !data.data) {
-        throw new Error(data.error || "Failed to fetch member details");
+        if (!data.success || !data.data) {
+          throw new Error(data.error || "Failed to fetch member details");
+        }
+
+        setFormData({
+          firstName: data.data.firstName || "",
+          lastName: data.data.lastName || "",
+          title: data.data.title || "",
+          isAdmin: data.data.isAdmin || false,
+        });
+      } catch (err) {
+        console.error("Error fetching member:", err);
       }
+    };
 
-      setFormData({
-        firstName: data.data.firstName || "",
-        lastName: data.data.lastName || "",
-        title: data.data.title || "",
-        isAdmin: data.data.isAdmin || false,
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    }
-  };
+    fetchMemberData();
+  }, [teamId, memberId, isEditModalOpen]);
 
   // Handle form submission
   const handleSubmit = async () => {
     try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(`/api/teams/${teamId}/members/${memberId}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      await updateMember.mutateAsync({
+        teamId,
+        memberId,
+        ...formData
       });
-
-      const data: ApiResponse<any> = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.error || "Failed to update member");
-      }
-
-      onUpdate();
-      onClose();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
+      setEditModalOpen(false);
+    } catch (error) {
+      console.error("Error updating member:", error);
     }
   };
 
@@ -103,17 +89,21 @@ export const EditMemberModal = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isEditModalOpen} onOpenChange={() => setEditModalOpen(false)}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Member</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          {error && (
+          {updateMember.error && (
             <Alert variant="danger">
               <AlertIconContainer />
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>
+                {updateMember.error instanceof Error 
+                  ? updateMember.error.message 
+                  : "Failed to update member"}
+              </AlertDescription>
             </Alert>
           )}
 
@@ -162,15 +152,15 @@ export const EditMemberModal = ({
           <Button
             variant="neutral"
             volume="moderate"
-            onClick={onClose}
-            disabled={loading}
+            onClick={() => setEditModalOpen(false)}
+            disabled={updateMember.isPending}
           >
             Cancel
           </Button>
           <Button
             variant="primary"
             onClick={handleSubmit}
-            isLoading={loading}
+            isLoading={updateMember.isPending}
           >
             Save Changes
           </Button>

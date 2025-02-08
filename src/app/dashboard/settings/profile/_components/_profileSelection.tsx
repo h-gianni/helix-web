@@ -1,16 +1,6 @@
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardDescription,
-} from "@/components/ui/core/Card";
-import { Button } from "@/components/ui/core/Button";
-import { Label } from "@/components/ui/core/Label";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/core/Avatar";
-import { User, Mail, Building, PenSquare } from "lucide-react";
+import { ProfileCard } from "@/components/ui/composite/ProfileCard";
 import { ProfileModal } from "./_profileModal";
 
 interface UserProfile {
@@ -50,60 +40,31 @@ export function ProfileSection() {
   }
 
   return (
-    <div className="ui-main-content">
-      <Card>
-        <CardContent className="relative pb-0">
-          <div className="flex gap-lg p-base">
-            <div className="w-content">
-              <Avatar className="!size-48">
-                <AvatarImage
-                  alt="@shadcn"
-                  src="https://github.com/shadcn.png"
-                />
-                <AvatarFallback>?</AvatarFallback>
-              </Avatar>
-            </div>
-
-            <div className="p-base space-y-base">
-              <div className="">
-                <Label className="ui-text-body-helper">
-                  Full Name
-                </Label>
-                <p className="ui-text-heading-2">
-                  {profile.firstName} {profile.lastName}
-                </p>
-              </div>
-              <div className="">
-                <Label className="ui-text-body-helper">
-                  Email (account ID)
-                </Label>
-                <p className="ui-text-body-strong">{profile.email}</p>
-              </div>
-              <div className="">
-                <Label className="ui-text-body-helper">
-                  Job Title
-                </Label>
-                <p className="ui-text-body">
-                  {profile.title || (
-                    <span className="ui-text-body-helper">Not set</span>
-                  )}
-                </p>
-              </div>
-            </div>
-
-          <div className="absolute top-0 right-0">
-            <Button
-              variant="neutral"
-              volume="soft"
-              onClick={() => setIsEditModalOpen(true)}
-              leadingIcon={<PenSquare />}
-            >
-              Edit
-            </Button>
-          </div>
-          </div>
-        </CardContent>
-      </Card>
+    <main className="ui-layout-page-main">
+      <ProfileCard
+        align="horizontal"
+        fields={[
+          {
+            label: "Full Name",
+            value: `${profile.firstName} ${profile.lastName}`,
+            variant: "title",
+          },
+          {
+            label: "Email (account ID)",
+            value: profile.email,
+            variant: "strong",
+          },
+          {
+            label: "Job Title",
+            value: profile.title || (
+              <span className="ui-text-body-helper">Not set</span>
+            ),
+          },
+        ]}
+        onEdit={() => setIsEditModalOpen(true)}
+        editButtonPosition="topRight"
+        editButtonText="Edit"
+      />
 
       <ProfileModal
         isOpen={isEditModalOpen}
@@ -111,6 +72,6 @@ export function ProfileSection() {
         profile={profile}
         onUpdate={handleProfileUpdate}
       />
-    </div>
+    </main>
   );
 }

@@ -1,109 +1,147 @@
-import axios from 'axios'
-import { useQuery, useMutation, QueryClient } from '@tanstack/react-query'
-import { create } from 'zustand'
-import type { TeamResponse } from '@/lib/types/api'
-import { apiClient } from '@/lib/api/api-client'
+// src/store/team-store.ts
+import { create } from 'zustand';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiClient } from '@/lib/api/api-client';
+import type { 
+  ApiResponse, 
+  TeamResponse, 
+  TeamDetailsResponse,
+  CreateTeamInput 
+} from '@/lib/types/api';
+import type { MemberPerformance } from '@/store/member';
 
-const queryClient =  new QueryClient();
+interface TeamState {
+  isAddMemberModalOpen: boolean;
+  isEditModalOpen: boolean;
+  isDeleteDialogOpen: boolean;
+  isTeamModalOpen: boolean;
+  viewType: 'table' | 'grid';
+  setAddMemberModalOpen: (isOpen: boolean) => void;
+  setEditModalOpen: (isOpen: boolean) => void;
+  setDeleteDialogOpen: (isOpen: boolean) => void;
+  toggleTeamModal: () => void;
+  setViewType: (type: 'table' | 'grid') => void;
+}
 
+const teamApi = {
+  getTeams: async () => {
+    const { data } = await apiClient.get<ApiResponse<TeamResponse[]>>('/teams');
+    if (!data.success) throw new Error(data.error || 'Failed to fetch teams');
+    return data.data;
+  },
 
+  getTeamDetails: async (teamId: string): Promise<TeamDetailsResponse> => {
+    const { data } = await apiClient.get<ApiResponse<TeamDetailsResponse>>(`/teams/${teamId}`);
+    if (!data.success) throw new Error(data.error || 'Failed to fetch team details');
+    return data.data;
+  },
 
+  getTeamPerformance: async (teamId: string): Promise<{ members: MemberPerformance[] }> => {
+    const { data } = await apiClient.get<ApiResponse<{ members: MemberPerformance[] }>>(`/teams/${teamId}/performance`);
+    if (!data.success) throw new Error(data.error || 'Failed to fetch team performance');
+    return data.data;
+  },
 
-  // API functions using axios
-const teamsApi = {
-    getTeams: async () => {
-      const { data } = await apiClient.get<{ success: boolean; data: TeamResponse[] }>('/teams')
-      if (!data.success) throw new Error('Failed to fetch teams')
-      return data.data
-    },
-  
-    createTeam: async (newTeam: Partial<TeamResponse>) => {
-      const { data } = await apiClient.post('/teams', newTeam)
-      return data.data
-    },
-  
-    updateTeam: async ({ id, ...updateData }: Partial<TeamResponse> & { id: string }) => {
-      const { data } = await apiClient.put(`/teams/${id}`, updateData)
-      return data.data
-    },
-  
-    deleteTeam: async (id: string) => {
-      await apiClient.delete(`/teams/${id}`)
-      return id
+  createTeam: async (input: CreateTeamInput): Promise<TeamResponse> => {
+    const { data } = await apiClient.post<ApiResponse<TeamResponse>>('/teams', input);
+    if (!data.success) throw new Error(data.error || 'Failed to create team');
+    return data.data;
+  },
+
+  updateTeam: async ({ teamId, ...updateData }: { teamId: string; name: string; description?: string | null }) => {
+    const { data } = await apiClient.patch<ApiResponse<TeamDetailsResponse>>(`/teams/${teamId}`, updateData);
+    if (!data.success) throw new Error(data.error || 'Failed to update team');
+    return data.data;
+  },
+
+  deleteTeam: async (teamId: string) => {
+    const { data } = await apiClient.delete<ApiResponse<void>>(`/teams/${teamId}`);
+    if (!data.success) throw new Error(data.error || 'Failed to delete team');
+    return data.data;
+  },
+
+  addMember: async ({ teamId, email, title }: { teamId: string; email: string; title?: string }) => {
+    const { data } = await apiClient.post(`/teams/${teamId}/members`, { email, title });
+    if (!data.success) throw new Error(data.error || 'Failed to add member');
+    return data.data;
+  }
+};
+
+export const useTeamStore = create<TeamState>((set) => ({
+  isAddMemberModalOpen: false,
+  isEditModalOpen: false,
+  isDeleteDialogOpen: false,
+  isTeamModalOpen: false,
+  viewType: 'table',
+  setAddMemberModalOpen: (isOpen) => set({ isAddMemberModalOpen: isOpen }),
+  setEditModalOpen: (isOpen) => set({ isEditModalOpen: isOpen }),
+  setDeleteDialogOpen: (isOpen) => set({ isDeleteDialogOpen: isOpen }),
+  toggleTeamModal: () => set((state) => ({ isTeamModalOpen: !state.isTeamModalOpen })),
+  setViewType: (type) => set({ viewType: type })
+}));
+
+// Query Hooks
+export const useTeams = () => {
+  return useQuery({
+    queryKey: ['teams'],
+    queryFn: teamApi.getTeams
+  });
+}
+
+export const useTeamDetails = (teamId: string) => {
+  return useQuery({
+    queryKey: ['team', teamId],
+    queryFn: () => teamApi.getTeamDetails(teamId),
+    enabled: !!teamId
+  });
+}
+
+export const useTeamPerformance = (teamId: string) => {
+  return useQuery({
+    queryKey: ['team-performance', teamId],
+    queryFn: () => teamApi.getTeamPerformance(teamId),
+    enabled: !!teamId
+  });
+}
+
+// Mutation Hooks
+export const useCreateTeam = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: teamApi.createTeam,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
     }
-  }
+  });
+}
 
-  // Axios interceptors for global error handling
-  apiClient.interceptors.response.use(
-    response => response,
-    error => {
-      if (error.response?.status === 401) {
-        // Handle unauthorized
-        useTeamStore.getState().setAuthError('Session expired')
-      }
-      return Promise.reject(error)
+export const useUpdateTeam = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: teamApi.updateTeam,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['team', variables.teamId] });
     }
-  )
+  });
+}
 
-  // TanStack Query Hooks
-export function useTeams() {
-    return useQuery({
-      queryKey: ['teams'],
-      queryFn: teamsApi.getTeams,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    })
-  }
+export const useDeleteTeam = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: teamApi.deleteTeam,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['teams'] });
+    }
+  });
+}
 
-  export function useCreateTeam() {
-    return useMutation({
-      mutationFn: teamsApi.createTeam,
-      onSuccess: (newTeam) => {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['teams'] })
-      }
-    })
-  }
-
-  export function useUpdateTeam() {
-    return useMutation({
-      mutationFn: teamsApi.updateTeam,
-      // Optimistic update
-      onMutate: async (updatedTeam) => {
-        await queryClient.cancelQueries({ queryKey: ['teams'] })
-        const previousTeams = queryClient.getQueryData<TeamResponse[]>(['teams'])
-        
-        queryClient.setQueryData(['teams'], (old: TeamResponse[] = []) =>
-          old.map(team => team.id === updatedTeam.id ? { ...team, ...updatedTeam } : team)
-        )
-  
-        return { previousTeams }
-      },
-      onError: (err, variables, context) => {
-        if (context?.previousTeams) {
-          queryClient.setQueryData(['teams'], context.previousTeams)
-        }
-      }
-    })
-  }
-
-interface TeamsStore {
-    isTeamModalOpen: boolean
-  selectedTeamId: string | null
-  authError: string | null
-  setAuthError: (error: string | null) => void
-  toggleTeamModal: () => void
-  setSelectedTeamId: (id: string | null) => void
-  }
-
-  export const useTeamStore = create<TeamsStore>((set) => ({
-    isTeamModalOpen: false,
-    selectedTeamId: null,
-    authError: null,
-    setAuthError: (error) => set({ authError: error }),
-    toggleTeamModal: () => set((state) => ({ 
-      isTeamModalOpen: !state.isTeamModalOpen 
-    })),
-    setSelectedTeamId: (id) => set({ selectedTeamId: id })
-  }))
-
-
+export const useAddTeamMember = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: teamApi.addMember,
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['team', variables.teamId] });
+      queryClient.invalidateQueries({ queryKey: ['team-performance', variables.teamId] });
+    }
+  });
+}

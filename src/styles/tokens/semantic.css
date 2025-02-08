@@ -141,6 +141,8 @@
    --ring-default: hsl(var(--color-weak));
    --ring-primary: hsl(var(--color-primary-strong));
    --ring-danger: hsl(var(--color-danger-500));
+   --ring-warning: hsl(var(--color-danger-500));
+   --ring-success: hsl(var(--color-danger-500));
  
    /* ==========================================================================
       Component Specific

@@ -1,164 +1,120 @@
 /* Base Badge Styles */
 .ui-badge {
-  @apply inline-flex items-center rounded-full font-normal;
+  @apply inline-flex items-center rounded-full font-normal text-xs py-px px-xs border;
   transition-property: all;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
  
   &:focus-visible {
-    outline: none;
+    moderate: none;
     --tw-ring-width: 2px;
     --tw-ring-offset-width: 2px;
     --tw-ring-color: var(--ring-primary);
     --tw-ring-offset-color: var(--background-surface);
   }
  }
- 
- /* Size Variants */
- .ui-badge[data-size="default"] {
-  font-size: var(--font-size-xs);
-  padding: var(--space-px) var(--space-xs);
- }
- 
- .ui-badge[data-size="lg"] {
-  font-size: var(--font-size-xs);
-  padding: var(--space-xxs) var(--space-sm);
- }
- 
- /* Default Variants */
- .ui-badge[data-variant="default"] {
-  color: var(--text-inverse);
-  background-color: var(--background-neutral-strong);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="default-light"] {
-  color: var(--text-foreground);
-  background-color: var(--background-neutral-weakest);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="default-outline"] {
-  color: var(--text-foreground);
-  background-color: transparent;
-  border-color: var(--border-strong);
- }
- 
- /* Primary Variants */
- .ui-badge[data-variant="primary"] {
-  color: var(--text-inverse);
-  background-color: var(--background-primary-strong);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="primary-light"] {
-  color: var(--text-primary);
-  background-color: var(--background-primary-weakest);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="primary-outline"] {
-  color: var(--text-primary);
-  background-color: transparent;
-  border-color: var(--border-primary-strong);
- }
- 
- /* Accent Variants */
- .ui-badge[data-variant="accent"] {
-  color: var(--text-inverse);
-  background-color: var(--background-accent-strong);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="accent-light"] {
-  color: var(--text-accent);
-  background-color: var(--background-accent-weakest);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="accent-outline"] {
-  color: var(--text-accent);
-  background-color: transparent;
-  border-color: var(--border-accent-strong);
- }
- 
- /* Danger Variants */
- .ui-badge[data-variant="danger"] {
-  color: var(--text-inverse);
-  background-color: var(--background-danger-strong);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="danger-light"] {
-  color: var(--text-danger);
-  background-color: var(--background-danger-weakest);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="danger-outline"] {
-  color: var(--text-danger);
-  background-color: transparent;
-  border-color: var(--border-danger-strong);
- }
- 
- /* Success Variants */
- .ui-badge[data-variant="success"] {
-  color: var(--text-inverse);
-  background-color: var(--background-success-strong);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="success-light"] {
-  color: var(--text-success);
-  background-color: var(--background-success-weakest);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="success-outline"] {
-  color: var(--text-success);
-  background-color: transparent;
-  border-color: var(--border-success-strong);
- }
- 
- /* Warning Variants */
- .ui-badge[data-variant="warning"] {
-  color: var(--text-inverse);
-  background-color: var(--background-warning-strong);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="warning-light"] {
-  color: var(--text-warning);
-  background-color: var(--background-warning-weakest);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="warning-outline"] {
-  color: var(--text-warning);
-  background-color: transparent;
-  border-color: var(--border-warning-strong);
- }
- 
- /* Info Variants */
- .ui-badge[data-variant="info"] {
-  color: var(--text-inverse);
-  background-color: var(--background-info-strong);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="info-light"] {
-  color: var(--text-info);
-  background-color: var(--background-info-weakest);
-  border-color: transparent;
- }
- 
- .ui-badge[data-variant="info-outline"] {
-  color: var(--text-info);
-  background-color: transparent;
-  border-color: var(--border-info-strong);
- }
- 
- /* Icon Styles */
- .ui-badge svg {
+
+/* Size Variants */
+.ui-badge[data-size="default"] {
+  @apply text-xs py-px px-xs;
+}
+
+.ui-badge[data-size="lg"] {
+  @apply text-xs py-xxs px-sm;
+}
+
+/* Default Variants */
+.ui-badge[data-variant="default"] {
+  @apply text-inverse ui-background-neutral-strong border-transparent;
+}
+
+.ui-badge[data-variant="default-moderate"] {
+  @apply text-foreground ui-background-neutral-weakest border-transparent;
+}
+
+.ui-badge[data-variant="default-soft"] {
+  @apply text-foreground bg-transparent ui-border-neutral-strong;
+}
+
+/* Primary Variants */
+.ui-badge[data-variant="primary"] {
+  @apply text-inverse ui-background-primary-strong border-transparent;
+}
+
+.ui-badge[data-variant="primary-moderate"] {
+  @apply ui-text-primary ui-background-primary-weakest border-transparent;
+}
+
+.ui-badge[data-variant="primary-soft"] {
+  @apply ui-text-primary ui-border-primary-strong bg-transparent;
+}
+
+/* Accent Variants */
+.ui-badge[data-variant="accent"] {
+  @apply text-inverse ui-background-accent-strong border-transparent;
+}
+
+.ui-badge[data-variant="accent-moderate"] {
+  @apply ui-text-accent ui-background-accent-weakest border-transparent;
+}
+
+.ui-badge[data-variant="accent-soft"] {
+  @apply ui-text-accent bg-transparent ui-border-accent-strong;
+}
+
+/* Danger Variants */
+.ui-badge[data-variant="danger"] {
+  @apply text-inverse ui-background-danger-strong border-transparent;
+}
+
+.ui-badge[data-variant="danger-moderate"] {
+  @apply ui-text-danger ui-background-danger-weakest border-transparent;
+}
+
+.ui-badge[data-variant="danger-soft"] {
+  @apply ui-text-danger bg-transparent ui-border-danger-strong;
+}
+
+/* Success Variants */
+.ui-badge[data-variant="success"] {
+  @apply text-inverse ui-background-success-strong border-transparent;
+}
+
+.ui-badge[data-variant="success-moderate"] {
+  @apply ui-text-success ui-background-success-weakest border-transparent;
+}
+
+.ui-badge[data-variant="success-soft"] {
+  @apply ui-text-success bg-transparent ui-border-success-strong;
+}
+
+/* Warning Variants */
+.ui-badge[data-variant="warning"] {
+  @apply text-inverse ui-background-warning-strong border-transparent;
+}
+
+.ui-badge[data-variant="warning-moderate"] {
+  @apply ui-text-warning ui-background-warning-weakest border-transparent;
+}
+
+.ui-badge[data-variant="warning-soft"] {
+  @apply ui-text-warning bg-transparent ui-border-warning-strong;
+}
+
+/* Info Variants */
+.ui-badge[data-variant="info"] {
+  @apply text-inverse ui-background-info-strong border-transparent;
+}
+
+.ui-badge[data-variant="info-moderate"] {
+  @apply ui-text-info ui-background-info-weakest border-transparent;
+}
+
+.ui-badge[data-variant="info-soft"] {
+  @apply ui-text-info bg-transparent ui-border-info-strong;
+}
+
+/* Icon Styles */
+.ui-badge svg {
   @apply size-4;
- }
+}

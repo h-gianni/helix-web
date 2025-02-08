@@ -136,3 +136,4 @@
 .ui-card-footer {
   @apply flex flex-col-reverse sm:flex-row sm:justify-end pt-lg mt-lg border-t gap-sm;
 }
+

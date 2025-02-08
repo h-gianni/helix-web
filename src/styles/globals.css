@@ -7,9 +7,19 @@
     @apply bg-body font-sans text-base;
     font-optical-sizing: auto;
   }
-  main {
-    @apply w-full p-base;
-  }
+
+  /* ==========================================================================
+     Layouts
+     ========================================================================== */
+
+
+     div.ui-layout-page {
+      @apply w-full p-base;
+    }
+     main.ui-layout-page-main{
+      @apply space-y-base w-full;
+    }
+
 
   :root {
     --sidebar-background: 0 0% 98%;
@@ -38,12 +48,6 @@
 
 /* Add your custom components after @tailwind components */
 @layer components {
-  /* ==========================================================================
-     Layout
-     ========================================================================== */
-  .ui-main {
-    @apply space-y-4 p-4 w-full;
-  }
 
   /* ==========================================================================
      Typography System
@@ -551,6 +555,22 @@
     --tw-ring-color: var(--ring-danger);
   }
 
+  /* State Ring Colors */
+  .ui-ring-warning {
+    --tw-ring-color: var(--ring-warning);
+  }
+  .ui-ring-warning {
+    --tw-ring-color: var(--ring-warning);
+  }
+
+  /* State Ring Colors */
+  .ui-ring-success {
+    --tw-ring-color: var(--ring-success);
+  }
+  .ui-ring-success {
+    --tw-ring-color: var(--ring-success);
+  }
+
   /* ==========================================================================
  Form Elements
  ========================================================================== */
@@ -834,14 +854,6 @@
 
 .ui-view-controls-bar {
   @apply flex justify-end bg-surface-hollowed rounded-base p-xs border-t ui-border-neutral;
-}
-
-  /* ==========================================================================
- Layouts
- ========================================================================== */
-
- .ui-main-content {
-  @apply space-y-base;
 }
 
 }
