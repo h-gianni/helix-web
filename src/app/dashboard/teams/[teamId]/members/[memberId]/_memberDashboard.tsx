@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import StarRating from "@/components/ui/core/StarRating";
@@ -8,7 +7,6 @@ import {
   TrendingUp,
   TrendingDown,
   Trophy,
-  Activity,
   MessageSquare,
   AlertCircle,
 } from "lucide-react";
@@ -20,19 +18,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
-interface BusinessActivityRating {
-  id: string;
-  name: string;
-  averageRating: number;
-  ratingsCount: number;
-}
-
-interface QuarterlyPerformance {
-  quarter: string;
-  averageRating: number;
-  totalRatings: number;
-}
+import { useMemberDashboard } from "@/store/member-store";
 
 interface MemberDashboardProps {
   teamId: string;
@@ -43,44 +29,13 @@ export default function MemberDashboard({
   teamId,
   memberId,
 }: MemberDashboardProps) {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [dashboardData, setDashboardData] = useState<{
-    currentRating: number;
-    totalRatings: number;
-    currentQuarterRating: number;
-    quarterlyTrend: "up" | "down" | "stable";
-    totalFeedbacks: number;
-    teamPosition: number;
-    teamPositionTrend: "up" | "down" | "stable";
-    topActivities: BusinessActivityRating[];
-    quarterlyPerformance: QuarterlyPerformance[];
-  } | null>(null);
+  const { 
+    data: dashboardData,
+    isLoading,
+    error 
+  } = useMemberDashboard({ teamId, memberId });
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        const response = await fetch(
-          `/api/teams/${teamId}/members/${memberId}/dashboard`
-        );
-        const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.error || "Failed to fetch dashboard data");
-        }
-
-        setDashboardData(data.data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
-  }, [teamId, memberId]);
-
-  if (loading) {
+  if (isLoading) {
     return <div className="p-base text-foreground">Loading dashboard...</div>;
   }
 
@@ -89,7 +44,7 @@ export default function MemberDashboard({
       <Alert variant="danger">
         <AlertCircle />
         <AlertDescription>
-          {error || "Failed to load dashboard"}
+          {error instanceof Error ? error.message : "Failed to load dashboard"}
         </AlertDescription>
       </Alert>
     );
@@ -249,9 +204,8 @@ export default function MemberDashboard({
         </div>
       </div>
 
-      {/* Top Activities & Feedback */}
+      {/* Strengths and Improvements */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-base">
-        {/* Feedback Count */}
         <Card>
           <CardHeader>
             <CardTitle data-size="sm">Strengths</CardTitle>
@@ -261,7 +215,6 @@ export default function MemberDashboard({
           </CardContent>
         </Card>
 
-        {/* Top Activities */}
         <Card>
           <CardHeader>
             <CardTitle data-size="sm">Need to improve</CardTitle>

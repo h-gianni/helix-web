@@ -1,15 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { ProfileCard } from "@/components/ui/composite/ProfileCard";
 import { Button } from "@/components/ui/core/Button";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/core/Card";
+import { Card, CardContent } from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import {
   PenSquare,
@@ -21,49 +17,31 @@ import {
   Plus,
 } from "lucide-react";
 import Link from "next/link";
-import type { ApiResponse } from "@/lib/types/api";
 import { EditMemberModal } from "./_editMemberModal";
 import PerformanceRatingModal from "@/app/dashboard/_component/_performanceRatingModal";
 import RatingsSection from "./_ratingsSection";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/core/Tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/core/Tabs";
 import MemberDashboard from "./_memberDashboard";
-import { useMemberStore } from "@/store/member-store";
-
-interface Goal {
-  id: string;
-  description: string;
-  year: number;
-}
-
-interface MemberDetails {
-  id: string;
-  firstName: string | null;
-  lastName: string | null;
-  title: string | null;
-  isAdmin: boolean;
-  user: {
-    email: string;
-    name: string | null;
-  };
-  goals: Goal[];
-  team: {
-    id: string;
-    name: string;
-  };
-}
+import { useMemberDetails, useMemberStore } from "@/store/member-store";
 
 export default function MemberDetailsPage() {
   const params = useParams() as { teamId: string; memberId: string };
   const router = useRouter();
-  const { setEditModalOpen, setRatingModalOpen } = useMemberStore();
-  const [member, setMember] = useState<MemberDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  
+  const { 
+    selectedTab,
+    isEditModalOpen,
+    isRatingModalOpen,
+    setSelectedTab,
+    setEditModalOpen,
+    setRatingModalOpen 
+  } = useMemberStore();
+
+  const { 
+    data: member,
+    isLoading,
+    error
+  } = useMemberDetails({ teamId: params.teamId, memberId: params.memberId });
 
   const breadcrumbItems = [
     { href: "/dashboard/teams", label: "Teams" },
@@ -72,42 +50,13 @@ export default function MemberDetailsPage() {
       label: member?.team?.name || "Team",
     },
     {
-      label:
-        member?.firstName && member?.lastName
-          ? `${member.firstName} ${member.lastName}`
-          : member?.user?.email || "Member Details",
+      label: member?.firstName && member?.lastName
+        ? `${member.firstName} ${member.lastName}`
+        : member?.user?.email || "Member Details",
     },
   ];
 
-  const fetchMemberDetails = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `/api/teams/${params.teamId}/members/${params.memberId}`
-      );
-      const data: ApiResponse<MemberDetails> = await response.json();
-
-      if (!data.success || !data.data) {
-        throw new Error(data.error || "Failed to fetch member details");
-      }
-
-      setMember(data.data);
-    } catch (err) {
-      console.error("Error fetching member:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMemberDetails();
-    const handleFocus = () => fetchMemberDetails();
-    window.addEventListener("focus", handleFocus);
-    return () => window.removeEventListener("focus", handleFocus);
-  }, [params.teamId, params.memberId]);
-
-  if (loading) {
+  if (isLoading) {
     return <div className="ui-loader">Loading member details...</div>;
   }
 
@@ -116,7 +65,9 @@ export default function MemberDetailsPage() {
       <div className="ui-loader-error">
         <Alert variant="danger">
           <AlertCircle />
-          <AlertDescription>{error || "Member not found"}</AlertDescription>
+          <AlertDescription>
+            {error instanceof Error ? error.message : "Member not found"}
+          </AlertDescription>
         </Alert>
         <Button
           variant="neutral"
@@ -168,10 +119,9 @@ export default function MemberDetailsPage() {
               fields={[
                 {
                   label: "Full Name",
-                  value:
-                    member.firstName && member.lastName
-                      ? `${member.firstName} ${member.lastName}`
-                      : "Not set",
+                  value: member.firstName && member.lastName
+                    ? `${member.firstName} ${member.lastName}`
+                    : "Not set",
                 },
                 {
                   label: "Email",
@@ -190,9 +140,7 @@ export default function MemberDetailsPage() {
                   value: (
                     <>
                       {member.isAdmin ? "Admin" : "Member"}
-                      {member.isAdmin && (
-                        <Crown className="h-4 w-4 text-warning-400" />
-                      )}
+                      {member.isAdmin && <Crown className="h-4 w-4 text-warning-400" />}
                     </>
                   ),
                 },
@@ -203,7 +151,7 @@ export default function MemberDetailsPage() {
           </div>
 
           <div className="w-full -mt-base">
-            <Tabs defaultValue="dashboard" width="full">
+            <Tabs value={selectedTab} onValueChange={(value) => setSelectedTab(value as any)}>
               <TabsList>
                 <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                 <TabsTrigger value="ratings">Ratings</TabsTrigger>
