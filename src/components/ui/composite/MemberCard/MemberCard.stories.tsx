@@ -19,7 +19,8 @@ const meta: Meta<typeof MemberCard> = {
       title: 'Senior Developer',
       averageRating: 4.5,
       ratingsCount: 12,
-      teamId: 'team-1'
+      teamId: 'team-1',
+      teamName: 'Engineering'
     },
     teams: [
       { id: 'team-1', name: 'Engineering' },
@@ -106,7 +107,8 @@ export const PerformanceCategories: Story = {
             title: 'Senior Engineer',
             averageRating: 4.8,
             ratingsCount: 15,
-            teamId: 'team-1'
+            teamId: 'team-1',
+            teamName: 'Engineering'
           }}
         />
       </div>
@@ -126,7 +128,8 @@ export const PerformanceCategories: Story = {
             title: 'Product Manager',
             averageRating: 3.5,
             ratingsCount: 8,
-            teamId: 'team-2'
+            teamId: 'team-2',
+            teamName: 'Design'
           }}
         />
       </div>
@@ -146,7 +149,8 @@ export const PerformanceCategories: Story = {
             title: 'Developer',
             averageRating: 2.5,
             ratingsCount: 6,
-            teamId: 'team-1'
+            teamId: 'team-1',
+            teamName: 'Engineering'
           }}
         />
       </div>
@@ -163,7 +167,8 @@ export const NoRatings: Story = {
       title: 'Junior Developer',
       averageRating: 0,
       ratingsCount: 0,
-      teamId: 'team-1'
+      teamId: 'team-1',
+      teamName: 'Engineering'
     },
     category: {
       label: 'No Ratings',
@@ -189,7 +194,8 @@ export const WithoutTitle: Story = {
       title: null,
       averageRating: 4.5,
       ratingsCount: 12,
-      teamId: 'team-1'
+      teamId: 'team-1',
+      teamName: 'Engineering'
     }
   },
   render: (args) => (

@@ -2,10 +2,11 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
   try {
-    // Using the exact model name from schema.prisma
-    const jobGrades = await prisma.$queryRaw`
-      SELECT * FROM "JobGrade" ORDER BY level ASC
-    `;
+    const jobGrades = await prisma.jobGrade.findMany({
+      orderBy: {
+        level: 'asc'
+      }
+    });
 
     return Response.json({
       success: true,

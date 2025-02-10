@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/core/Label";
 import { Button } from "@/components/ui/core/Button";
 import { PenSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from 'next/image';
 
 export interface ProfileField {
   label: string;
@@ -70,7 +71,7 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
         {align === 'vertical' ? (
           <>
             <div className="profile-card-image-container">
-              <img
+              <Image
                 src={imageUrl}
                 alt="Profile background"
                 className="profile-card-image"
@@ -88,7 +89,7 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
         ) : (
           <CardContent className="profile-card-content">
             <div className="profile-card-image-container">
-              <img
+              <Image
                 src={imageUrl}
                 alt="Profile background"
                 className="profile-card-image"

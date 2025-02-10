@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { MembersTable } from './index';
 import { TrendingUp } from 'lucide-react';
+import { te } from 'date-fns/locale';
 
 const performanceCategories = [
   {
@@ -71,7 +72,8 @@ const defaultMembers = [
     title: 'Senior Developer',
     averageRating: 4.8,
     ratingsCount: 15,
-    teamId: 'team-1'
+    teamId: 'team-1',
+    teamName: 'Engineering'
   },
   {
     id: '2',
@@ -79,7 +81,8 @@ const defaultMembers = [
     title: 'Product Manager',
     averageRating: 4.2,
     ratingsCount: 10,
-    teamId: 'team-2'
+    teamId: 'team-2',
+    teamName: 'Product'
   },
   {
     id: '3',
@@ -87,7 +90,8 @@ const defaultMembers = [
     title: 'UX Designer',
     averageRating: 3.5,
     ratingsCount: 8,
-    teamId: 'team-1'
+    teamId: 'team-1',
+    teamName: 'Design'
   }
 ];
 
@@ -109,7 +113,7 @@ const meta: Meta<typeof MembersTable> = {
     showAvatar: true,
     showActions: true,
     performanceCategories,
-    getPerformanceCategory
+    getPerformanceCategory,
   },
   argTypes: {
           showAvatar: {
@@ -185,7 +189,8 @@ export const WithNoRatings: Story = {
         title: 'Junior Developer',
         averageRating: 0,
         ratingsCount: 0,
-        teamId: 'team-1'
+        teamId: 'team-1',
+        teamName: 'Engineering'
       },
       ...defaultMembers
     ]

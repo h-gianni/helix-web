@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import TeamActivitiesConfig from "./_components/_teamActivitiesConfig";
@@ -27,34 +27,33 @@ export default function TeamsSettingsPage() {
    if (teams.length > 0 && !selectedTeamId) {
      setSelectedTeamId(teams[0].id);
    }
- }, [teams]);
+ }, [teams, selectedTeamId]);
 
- const fetchTeamDetails = async () => {
-   if (!selectedTeamId) return;
+ const fetchTeamDetails = useCallback(async () => {
+  if (!selectedTeamId) return;
 
-   try {
-     setIsLoading(true);
-     setError(null);
+  try {
+    setIsLoading(true);
+    setError(null);
 
-     const response = await fetch(`/api/teams/${selectedTeamId}`);
-     const data = await response.json();
+    const response = await fetch(`/api/teams/${selectedTeamId}`);
+    const data = await response.json();
 
-     if (!data.success) {
-       throw new Error(data.error || "Failed to fetch team settings");
-     }
+    if (!data.success) {
+      throw new Error(data.error || "Failed to fetch team settings");
+    }
 
-     setTeamDetails(data.data);
-   } catch (err) {
-     console.error("Error fetching team details:", err);
-     setError(err instanceof Error ? err.message : "An error occurred");
-   } finally {
-     setIsLoading(false);
-   }
- };
-
+    setTeamDetails(data.data);
+  } catch (err) {
+    console.error("Error fetching team details:", err);
+    setError(err instanceof Error ? err.message : "An error occurred");
+  } finally {
+    setIsLoading(false);
+  }
+}, [selectedTeamId]); // Add dependencies used inside the function
  useEffect(() => {
    fetchTeamDetails();
- }, [selectedTeamId]);
+ }, [selectedTeamId, fetchTeamDetails]);
 
  if (isTeamsLoading || isLoading) {
    return <div className="ui-loader">Loading team settings...</div>;

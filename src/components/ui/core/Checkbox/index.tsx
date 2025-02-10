@@ -20,7 +20,8 @@ const Checkbox = React.forwardRef<
     { className, label, description, id, disabled, required, ...props },
     ref
   ) => {
-    const elementId = id || React.useId();
+    const generatedId = React.useId();
+    const elementId = id || generatedId;
 
     // Return checkbox with label and optional description
     return (

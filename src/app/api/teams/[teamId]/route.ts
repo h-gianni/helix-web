@@ -171,6 +171,21 @@ export const GET = async (
       updatedAt: team.updatedAt,
       deletedAt: team.deletedAt,
       customFields: team.customFields as JsonValue | undefined,
+      teamFunction: team.teamFunction ? {
+        id: team.teamFunction.id,
+        name: team.teamFunction.name,
+        description: team.teamFunction.description,
+        jobTitles: team.teamFunction.jobTitles.map(jobTitle => ({
+          id: jobTitle.id,
+          name: jobTitle.name,
+          teamFunctionId: jobTitle.teamFunctionId, // Added missing property
+          deletedAt: jobTitle.deletedAt,          // Added missing property
+          createdAt: jobTitle.createdAt,
+          updatedAt: jobTitle.updatedAt
+        })),
+        createdAt: team.teamFunction.createdAt,
+        updatedAt: team.teamFunction.updatedAt
+      } : null,
       members: team.teamMembers.map((member) => ({
         id: member.id,
         userId: member.userId,

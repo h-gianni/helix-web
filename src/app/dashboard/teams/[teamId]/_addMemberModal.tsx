@@ -101,6 +101,10 @@ export default function AddMemberModal({
        throw new Error("Team ID is required");
      }
 
+     if (!onSubmit) {
+      throw new Error("onSubmit handler is required");
+    }
+
      await onSubmit({
        teamId,
        email: trimmedEmail,

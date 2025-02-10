@@ -161,6 +161,8 @@ AlertDialogDescription.displayName =
   />
 ));
 
+AlertDialogCancel.displayName = "AlertDialogCancel";
+
 const AlertDialogAction = React.forwardRef<
   React.ElementRef<typeof AlertDialogPrimitive.Action>,
   React.ComponentPropsWithoutRef<typeof AlertDialogPrimitive.Action> & {
@@ -175,6 +177,8 @@ const AlertDialogAction = React.forwardRef<
     {...props}
   />
 ));
+
+AlertDialogAction.displayName = "AlertDialogAction";
 
 const AlertDialogFooter = ({
   className,

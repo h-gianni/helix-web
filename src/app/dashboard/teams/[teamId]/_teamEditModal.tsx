@@ -37,6 +37,10 @@ export default function TeamEditModal({
 
  const handleSubmit = async () => {
    try {
+
+    if (!onSave) {
+      throw new Error("Save handler is not defined");
+    }
      setSaving(true);
      setError(null);
      await onSave(name.trim(), description.trim() || null);

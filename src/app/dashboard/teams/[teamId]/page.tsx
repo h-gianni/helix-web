@@ -228,7 +228,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         isOpen={isAddMemberModalOpen}
         onClose={() => setAddMemberModalOpen(false)}
         teamId={params.teamId}
-        // onSubmit={handleAddMember}
+        onSubmit={handleAddMember}
       />
 
       <TeamEditModal
