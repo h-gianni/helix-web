@@ -12,15 +12,15 @@
     }
   
     .profile-card-image-container {
-      @apply relative overflow-hidden;
+      @apply relative overflow-hidden ui-background-info-weak;
     }
   
     .profile-card[data-align="vertical"] .profile-card-image-container {
-      @apply h-40 rounded-t-lg;
+      @apply h-40 w-full rounded-t-lg;
     }
   
     .profile-card[data-align="horizontal"] .profile-card-image-container {
-      @apply w-80 rounded-l-lg;
+      @apply w-80 h-full rounded-l-lg;
     }
   
     .profile-card-image {

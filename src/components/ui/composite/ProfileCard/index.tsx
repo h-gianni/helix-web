@@ -28,7 +28,7 @@ export interface ProfileCardProps extends React.HTMLAttributes<HTMLDivElement> {
 const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
   ({
     align = 'vertical',
-    imageUrl = "https://images.unsplash.com/flagged/photo-1570612861542-284f4c12e75f?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    imageUrl = "",
     fields,
     onEdit,
     editButtonPosition = 'topRight',
@@ -61,6 +61,18 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
       </div>
     );
 
+    const ProfileImage = () => (
+      <div className="profile-card-image-container relative h-24 w-24">
+        <Image
+          src={imageUrl}
+          alt="Profile"
+          width={96}
+          height={96}
+          className="profile-card-image rounded-full object-cover"
+        />
+      </div>
+    );
+
     return (
       <Card
         ref={ref}
@@ -70,13 +82,7 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
       >
         {align === 'vertical' ? (
           <>
-            <div className="profile-card-image-container">
-              <Image
-                src={imageUrl}
-                alt="Profile background"
-                className="profile-card-image"
-              />
-            </div>
+            <ProfileImage />
             <CardContent className="profile-card-content">
               {renderFields()}
             </CardContent>
@@ -88,14 +94,10 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
           </>
         ) : (
           <CardContent className="profile-card-content">
-            <div className="profile-card-image-container">
-              <Image
-                src={imageUrl}
-                alt="Profile background"
-                className="profile-card-image"
-              />
+            <div className="flex items-center gap-4">
+              <ProfileImage />
+              {renderFields()}
             </div>
-            {renderFields()}
           </CardContent>
         )}
         {onEdit && editButtonPosition === 'topRight' && (

@@ -1,6 +1,6 @@
 /* Toggle */
 .ui-toggle {
-  @apply inline-flex items-center justify-center rounded-md ui-text-body font-medium;
+  @apply inline-flex items-center justify-center rounded-md ui-text-body font-medium bg-surface-sunken;
   font-size: var(--font-size-sm);
   color: var(--text-weak);
   transition: background-color, color, border-color var(--duration-normal) var(--ease-out);
@@ -38,15 +38,15 @@
 }
 
 .ui-toggle[data-variant="outline"] {
-  @apply ui-border-neutral-weak bg-transparent hover:ui-background-surface-sunken hover:text-foreground;
+  @apply ui-border-neutral bg-transparent hover:ui-background-surface-sunken hover:text-foreground;
 }
 
 /* Sizes */
-.ui-toggle[data-size="base"] {
+.ui-toggle[data-size="base"], .ui-toggle-base {
   @apply h-9 px-xs min-w-9;
 }
 
-.ui-toggle[data-size="sm"] {
+.ui-toggle[data-size="sm"], .ui-toggle-size-sm {
   @apply h-8 px-xs min-w-8;
 }
 

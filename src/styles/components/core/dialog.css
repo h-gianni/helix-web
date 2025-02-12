@@ -1,66 +1,76 @@
-
- 
- .ui-dialog-container {
+.ui-dialog-container {
   @apply fixed inset-0 flex items-center justify-center;
   z-index: var(--z-modal);
- }
- 
- .ui-dialog-overlay {
+}
+
+.ui-dialog-overlay {
   @apply ui-overlay;
- }
- 
- .ui-dialog-content {
+}
+
+.ui-dialog-content {
   max-width: var(--dialog-width-base);
   @apply ui-dialog;
   
   &[data-size="lg"] {
     max-width: var(--dialog-width-lg);
   }
- 
+
   &[data-size="xl"] {
     max-width: var(--dialog-width-xl);
   }
- 
+
+  &[data-full-height="true"] {
+    @apply h-[90vh] flex flex-col;
+  }
+
   @apply data-[state=open]:animate-in data-[state=closed]:animate-out
          data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
          data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95
          data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%]
          data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%];
- }
- 
- .ui-dialog-body > div {
-  @apply space-y-md;
- }
- 
- .ui-dialog-header {
+}
+
+.ui-dialog-body {
+  @apply flex-1;
+  
+  &[data-full-height="true"] {
+    @apply overflow-y-auto;
+  }
+  
+  & > div {
+    @apply space-y-md;
+  }
+}
+
+.ui-dialog-header {
   @apply flex flex-col gap-xs text-center sm:text-left;
- }
- 
- .ui-dialog-title {
+}
+
+.ui-dialog-title {
   @apply ui-text-heading;
   font-size: var(--font-size-xl);
- }
- 
- .ui-dialog-description {
+}
+
+.ui-dialog-description {
   @apply ui-text-body -mt-xs;
   color: var(--text-weak);
- }
- 
- .ui-dialog-footer {
+}
+
+.ui-dialog-footer {
   @apply flex flex-col-reverse sm:flex-row sm:justify-end gap-sm pt-lg;
- }
- 
- .ui-dialog-close {
+}
+
+.ui-dialog-close {
   @apply absolute right-lg top-lg rounded-sm;
   color: var(--text-icon);
   transition-property: all;
   transition-duration: var(--duration-normal);
   transition-timing-function: var(--ease-out);
- 
+
   &:hover {
     opacity: 1;
   }
- 
+
   &:focus-visible {
     outline: none;
     --tw-ring-width: 2px;
@@ -68,23 +78,23 @@
     --tw-ring-color: var(--ring-primary);
     --tw-ring-offset-color: var(--background-surface);
   }
- 
+
   &:disabled {
     @apply pointer-events-none;
     opacity: var(--disabled-opacity);
   }
- }
- 
- @media (max-width: 639px) {
+}
+
+@media (max-width: 639px) {
   .ui-dialog-content {
     @apply h-full border-none rounded-none p-md;
   }
- 
+
   .ui-dialog-footer {
     @apply fixed bottom-0 left-0 right-0 p-md;
   }
- 
+
   .ui-dialog-close {
     @apply right-md top-md;
   }
- }
+}

@@ -1,12 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/core/Button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/core/Card";
 import {
   Table,
   TableHeader,
@@ -18,11 +11,10 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import {
   Target,
-  PlusCircle,
   Edit,
   Trash2,
-  RotateCcw,
   AlertCircle,
+  Heart,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -34,34 +26,35 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/core/AlertDialog";
-// import type { ApiResponse, BusinessActivityResponse as InitiativeResponse } from "@/lib/types/api";
+import { Card, CardContent } from "@/components/ui/core/Card";
 import { ActivityModal } from "./_activityModal";
 import type { ApiResponse, BusinessActivityResponse } from "@/lib/types/api";
 
 interface ActivitiesSectionProps {
-  onUpdate: () => void;
+  onUpdate: () => Promise<void>;
+  shouldRefresh: boolean;
+  onRefreshComplete: () => void;
 }
 
-export function ActivitiesSection({ onUpdate }: ActivitiesSectionProps) {
+export function ActivitiesSection({ 
+  onUpdate, 
+  shouldRefresh,
+  onRefreshComplete 
+}: ActivitiesSectionProps) {
   const [activities, setActivities] = useState<BusinessActivityResponse[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedActivity, setSelectedActivity] =
-    useState<BusinessActivityResponse | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState<BusinessActivityResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchActivities = async (showRefreshIndicator = true) => {
+  const fetchActivities = useCallback(async () => {
     try {
-      if (showRefreshIndicator) {
-        setIsRefreshing(true);
-      }
-
+      setIsLoading(true);
       setError(null);
 
       const response = await fetch(`/api/business-activities?t=${Date.now()}`);
-      const data: ApiResponse<BusinessActivityResponse[]> =
-        await response.json();
+      const data: ApiResponse<BusinessActivityResponse[]> = await response.json();
 
       if (!data.success) {
         throw new Error(data.error || "Failed to fetch business activities");
@@ -71,18 +64,27 @@ export function ActivitiesSection({ onUpdate }: ActivitiesSectionProps) {
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
-      setIsRefreshing(false);
+      setIsLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchActivities(false);
   }, []);
 
-  const handleDelete = async () => {
+  useEffect(() => {
+    fetchActivities();
+  }, [fetchActivities]);
+
+  useEffect(() => {
+    if (shouldRefresh) {
+      fetchActivities().then(() => {
+        onRefreshComplete();
+      });
+    }
+  }, [shouldRefresh, fetchActivities, onRefreshComplete]);
+
+  const handleDelete = useCallback(async () => {
     if (!selectedActivity) return;
 
     try {
+      setIsLoading(true);
       const response = await fetch(
         `/api/business-activities/${selectedActivity.id}`,
         {
@@ -91,36 +93,52 @@ export function ActivitiesSection({ onUpdate }: ActivitiesSectionProps) {
       );
 
       const data = await response.json();
-      if (data.success) {
-        await fetchActivities();
-        onUpdate();
+      if (!data.success) {
+        throw new Error(data.error || "Failed to delete activity");
       }
-    } catch (error) {
-      console.error("Error deleting business activity:", error);
-    } finally {
+
+      await fetchActivities();
+      await onUpdate();
       setIsDeleteDialogOpen(false);
       setSelectedActivity(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete activity");
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [selectedActivity, fetchActivities, onUpdate]);
+
+  const handleModalClose = useCallback(() => {
+    setIsEditModalOpen(false);
+    setSelectedActivity(null);
+  }, []);
+
+  if (isLoading && !activities.length) {
+    return (
+      <div className="ui-loader">Loading activities...</div>
+    );
+  }
+
+  if (activities.length === 0) {
+    return (
+      <Card>
+        <CardContent>
+          <div className="space-y-base text-center">
+            <Target className="mx-auto h-12 w-12 ui-text-body-muted" />
+            <div className="space-y-2">
+              <h3 className="text-lg font-medium">No business activities yet</h3>
+              <p className="ui-text-body-small">
+                Create business activities to track team performance.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <div className="space-y-base">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-sm">
-          <h2 className="ui-text-heading-1">Business Activities</h2>
-        </div>
-        <Button
-          variant="primary"
-          onClick={() => {
-            setSelectedActivity(null);
-            setIsModalOpen(true);
-          }}
-          leadingIcon={<PlusCircle />}
-        >
-          Add Activity
-        </Button>
-      </div>
-
       {error && (
         <Alert variant="danger">
           <AlertCircle />
@@ -131,6 +149,7 @@ export function ActivitiesSection({ onUpdate }: ActivitiesSectionProps) {
               volume="moderate"
               size="sm"
               onClick={() => fetchActivities()}
+              disabled={isLoading}
             >
               Retry
             </Button>
@@ -138,86 +157,66 @@ export function ActivitiesSection({ onUpdate }: ActivitiesSectionProps) {
         </Alert>
       )}
 
-      {activities.length === 0 ? (
-        <Card>
-          <CardContent>
-            <div className="space-y-base text-center">
-              <Target className="mx-auto h-12 w-12 ui-text-body-muted" />
-              <div className="space-y-2">
-                <CardTitle>No business activities yet</CardTitle>
-                <CardDescription>
-                  Create business activities to track team performance.
-                </CardDescription>
-              </div>
-              <Button
-                variant="primary"
-                onClick={() => setIsModalOpen(true)}
-                leadingIcon={<PlusCircle />}
-              >
-                Create Activity
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ) : (
-          <Table size="sm">
-            <TableHeader>
-              <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Ratings</TableHead>
-                <TableHead className="w-0">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {activities.map((activity) => (
-                <TableRow key={activity.id}>
-                  <TableCell className="font-medium">{activity.name}</TableCell>
-                  <TableCell className="text-muted">
-                    {activity.description || "No description"}
-                  </TableCell>
-                  <TableCell>{activity._count?.ratings || 0}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-sm">
-                      <Button
-                        variant="neutral"
-                        volume="soft"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedActivity(activity);
-                          setIsModalOpen(true);
-                        }}
-                        leadingIcon={<Edit />}
-                      />
-                      <Button
-                        variant="danger"
-                        volume="soft"
-                        size="sm"
-                        onClick={() => {
-                          setSelectedActivity(activity);
-                          setIsDeleteDialogOpen(true);
-                        }}
-                        leadingIcon={<Trash2 />}
-                      />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-      )}
+      <Table size="sm">
+        <TableHeader>
+          <TableRow>
+          <TableHead>Category</TableHead>
+            <TableHead>Activity</TableHead>
+            <TableHead>Description</TableHead>
+            <TableHead className="w-0 whitespace-nowrap">Impact</TableHead>
+            <TableHead className="w-0">Ratings</TableHead>
+            <TableHead className="w-0">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {activities.map((activity) => (
+            <TableRow key={activity.id}>
+              <TableCell className="text-weak w-0 whitespace-nowrap">Category</TableCell>
+              <TableCell className="font-medium">{activity.name}</TableCell>
+              <TableCell className="text-weak">
+                {activity.description || "No description"}
+              </TableCell>
+              <TableCell className="text-center">18</TableCell>
+              <TableCell className="text-center">{activity._count?.ratings || 0}</TableCell>
+              <TableCell>
+                <div className="flex items-center gap-sm">
+                  <Button
+                    variant="neutral"
+                    volume="soft"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedActivity(activity);
+                      setIsEditModalOpen(true);
+                    }}
+                    disabled={isLoading}
+                    leadingIcon={<Edit />}
+                  />
+                  <Button
+                    variant="danger"
+                    volume="soft"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedActivity(activity);
+                      setIsDeleteDialogOpen(true);
+                    }}
+                    disabled={isLoading}
+                    leadingIcon={<Trash2 />}
+                  />
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
-      {/* Activity Modal */}
+      {/* Edit Modal */}
       <ActivityModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setSelectedActivity(null);
-        }}
+        isOpen={isEditModalOpen}
+        onClose={handleModalClose}
         activity={selectedActivity}
         onUpdate={async () => {
           await fetchActivities();
-          onUpdate();
+          await onUpdate();
         }}
       />
 
@@ -237,12 +236,20 @@ export function ActivitiesSection({ onUpdate }: ActivitiesSectionProps) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="neutral" volume="moderate">
+              <Button 
+                variant="neutral" 
+                volume="moderate"
+                disabled={isLoading}
+              >
                 Cancel
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button variant="danger" onClick={handleDelete}>
+              <Button 
+                variant="danger" 
+                onClick={handleDelete}
+                isLoading={isLoading}
+              >
                 Delete Activity
               </Button>
             </AlertDialogAction>

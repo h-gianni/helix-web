@@ -18,21 +18,23 @@ interface DialogFooterConfig {
   textAction?: ActionConfig;
 }
 
+export interface DialogContentProps
+  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
+  size?: "base" | "lg" | "xl";
+  hideClose?: boolean;
+  fullHeight?: boolean;
+}
+
 export interface DialogConfigProps
   extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root> {
   title?: string;
   hideClose?: boolean;
   size?: "base" | "lg" | "xl";
+  fullHeight?: boolean;
   footer?: "one-action" | "two-actions" | "three-actions";
   footerConfig?: DialogFooterConfig;
   className?: string;
   children: React.ReactNode;
-}
-
-export interface DialogContentProps
-  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
-  size?: "base" | "lg" | "xl";
-  hideClose?: boolean;
 }
 
 const DEFAULT_FOOTER_CONFIG: DialogFooterConfig = {
@@ -63,7 +65,14 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DialogContentProps
->(({ className, children, size = "base", hideClose = false, ...props }, ref) => (
+>(({ 
+  className, 
+  children, 
+  size = "base", 
+  hideClose = false,
+  fullHeight = false,
+  ...props 
+}, ref) => (
   <DialogPortal>
     <div className="ui-dialog-container">
       <DialogOverlay />
@@ -71,6 +80,7 @@ const DialogContent = React.forwardRef<
         ref={ref}
         className={cn("ui-dialog-content", className)}
         data-size={size}
+        data-full-height={fullHeight}
         {...props}
       >
         {children}
@@ -137,6 +147,7 @@ const DialogWithConfig = React.forwardRef<
       title,
       hideClose = false,
       size = "base",
+      fullHeight = false,
       footer = "one-action",
       footerConfig = DEFAULT_FOOTER_CONFIG,
       className,
@@ -158,13 +169,19 @@ const DialogWithConfig = React.forwardRef<
 
     return (
       <Dialog {...props}>
-        <DialogContent ref={ref} size={size} hideClose={hideClose} className={className}>
+        <DialogContent 
+          ref={ref} 
+          size={size} 
+          hideClose={hideClose} 
+          fullHeight={fullHeight}
+          className={className}
+        >
           {title && (
             <DialogHeader>
               <DialogTitle>{title}</DialogTitle>
             </DialogHeader>
           )}
-          <div className="ui-dialog-body">
+          <div className="ui-dialog-body" data-full-height={fullHeight}>
             {children}
           </div>
           <DialogFooter>

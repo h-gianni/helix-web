@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { ProfileCard } from "@/components/ui/composite/ProfileCard";
 import { ProfileModal } from "./_profileModal";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
+import { AlertCircle } from "lucide-react";
 
 interface UserProfile {
   id: string;
@@ -14,35 +16,67 @@ interface UserProfile {
 export function ProfileSection() {
   const { user, isLoaded } = useUser();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [profile, setProfile] = useState<UserProfile>({
-    id: user?.id || "",
-    email: user?.emailAddresses[0]?.emailAddress || "",
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
-    title: (user?.unsafeMetadata.title as string) || "",
+    id: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    title: null
   });
 
-  const handleProfileUpdate = async () => {
-    if (user) {
-      await user.reload();
+  useEffect(() => {
+    if (isLoaded && user) {
       setProfile({
         id: user.id,
         email: user.emailAddresses[0]?.emailAddress || "",
         firstName: user.firstName || "",
         lastName: user.lastName || "",
-        title: (user.unsafeMetadata.title as string) || "",
+        title: (user.unsafeMetadata.title as string) || null
       });
+      setIsLoading(false);
+    }
+  }, [isLoaded, user]);
+
+  const handleProfileUpdate = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      
+      if (user) {
+        await user.reload();
+        setProfile({
+          id: user.id,
+          email: user.emailAddresses[0]?.emailAddress || "",
+          firstName: user.firstName || "",
+          lastName: user.lastName || "",
+          title: (user.unsafeMetadata.title as string) || null
+        });
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update profile");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  if (!isLoaded) {
-    return <div className="text-muted">Loading profile...</div>;
+  if (isLoading) {
+    return <div className="ui-loader">Loading profile...</div>;
   }
 
   return (
-    <main className="ui-layout-page-main">
+    <div className="space-y-6">
+      {error && (
+        <Alert variant="danger">
+          <AlertCircle />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       <ProfileCard
         align="horizontal"
+        imageUrl="/api/placeholder/96/96"
         fields={[
           {
             label: "Full Name",
@@ -72,6 +106,6 @@ export function ProfileSection() {
         profile={profile}
         onUpdate={handleProfileUpdate}
       />
-    </main>
+    </div>
   );
 }

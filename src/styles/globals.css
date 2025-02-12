@@ -12,14 +12,12 @@
      Layouts
      ========================================================================== */
 
-
-     div.ui-layout-page {
-      @apply w-full p-base;
-    }
-     main.ui-layout-page-main{
-      @apply space-y-base w-full;
-    }
-
+  div.ui-layout-page {
+    @apply w-full p-base;
+  }
+  main.ui-layout-page-main {
+    @apply space-y-base w-full;
+  }
 
   :root {
     --sidebar-background: 0 0% 98%;
@@ -48,7 +46,6 @@
 
 /* Add your custom components after @tailwind components */
 @layer components {
-
   /* ==========================================================================
      Typography System
      ========================================================================== */
@@ -788,29 +785,29 @@
  Icons
  ========================================================================== */
 
- .ui-icon, 
- .ui-icon svg {
-   @apply size-base -mt-px;
- }
- 
- .ui-icon[data-variant="chevron-right"],
- .ui-icon[data-variant="chevron-right"] svg {
-   @apply ui-icon-base ml-auto;
- }
- 
- .ui-icon[data-variant="checked"],
- .ui-icon[data-variant="checked"] svg {
-   @apply ui-icon-base;
-   color: var(--text-primary);
- }
- 
- .ui-icon[data-variant="circle-selected"],
- .ui-icon[data-variant="circle-selected"] svg {
-   @apply size-xs;
-   color: var(--text-primary);
-   fill: var(--background-primary);
- }
- 
+  .ui-icon,
+  .ui-icon svg {
+    @apply size-base -mt-px;
+  }
+
+  .ui-icon[data-variant="chevron-right"],
+  .ui-icon[data-variant="chevron-right"] svg {
+    @apply ui-icon-base ml-auto;
+  }
+
+  .ui-icon[data-variant="checked"],
+  .ui-icon[data-variant="checked"] svg {
+    @apply ui-icon-base;
+    color: var(--text-primary);
+  }
+
+  .ui-icon[data-variant="circle-selected"],
+  .ui-icon[data-variant="circle-selected"] svg {
+    @apply size-xs;
+    color: var(--text-primary);
+    fill: var(--background-primary);
+  }
+
   .ui-icon-sm {
     width: var(--size-icon-sm);
     height: var(--size-icon-sm);
@@ -852,10 +849,12 @@
  Shared extras
  ========================================================================== */
 
-.ui-view-controls-bar {
-  @apply flex justify-end bg-surface-hollowed rounded-base p-xs border-t ui-border-neutral;
-}
-
+  .ui-view-controls-bar {
+    @apply flex justify-between items-center gap-lg bg-surface-hollowed rounded-base p-xs border-t ui-border-neutral;
+  }
+  .ui-view-controls-bar div.ui-view-controls-right {
+    @apply flex justify-end;
+  }
 }
 
 @tailwind utilities;
