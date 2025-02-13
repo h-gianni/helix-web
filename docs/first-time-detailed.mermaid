@@ -19,49 +19,32 @@ flowchart TD
     PasswordError --> SetPassword
     ValidatePassword -->|Yes| CreateAccount[Create Account]
     
-    %% Account Creation
-    CreateAccount --> SendVerification[Send Verification Email]
-    SendVerification --> VerificationSent{Email Sent?}
-    VerificationSent -->|No| RetryOption[Show Retry Option]
-    RetryOption --> SendVerification
-    VerificationSent -->|Yes| AwaitVerification[Await Verification]
-    
-    %% Email Verification
-    AwaitVerification --> Verified{Email Verified?}
-    Verified -->|No| ResendOption[Show Resend Option]
-    ResendOption --> SendVerification
-    Verified -->|Yes| Login[Login]
-    
-    %% Login Process
+    %% Account Creation & Login
+    CreateAccount --> Login[Login]
     Login --> ValidateCredentials{Valid Credentials?}
     ValidateCredentials -->|No| LoginError[Show Login Error]
     LoginError --> Login
-    ValidateCredentials -->|Yes| SetupContext[Team Context Setup]
+    ValidateCredentials -->|Yes| SetupGuide[Show Setup Guide]
     
-    %% Context Setup
-    SetupContext --> ValidateContext{Context Valid?}
-    ValidateContext -->|No| ContextError[Show Context Error]
-    ContextError --> SetupContext
-    ValidateContext -->|Yes| CreateTeam[Create Team]
+    %% Setup Guide Flow
+    SetupGuide --> Step1[Step 1: Add Org Activities]
+    Step1 --> ActivityModal[Open Activity Dialog]
+    ActivityModal -->|Done| Step2[Step 2: Create Team]
     
-    %% Team Creation
-    CreateTeam --> ValidateTeam{Team Valid?}
-    ValidateTeam -->|No| TeamError[Show Team Error]
-    TeamError --> CreateTeam
-    ValidateTeam -->|Yes| AddMembers[Add Team Members]
+    Step2 --> TeamModal[Open Team Create Modal]
+    TeamModal -->|Team Created| Step3[Step 3: Configure Team Activities]
     
-    %% Member Addition
-    AddMembers --> ValidateMembers{Members Valid?}
-    ValidateMembers -->|No| MemberError[Show Member Error]
-    MemberError --> AddMembers
-    ValidateMembers -->|Yes| Dashboard[Access Dashboard]
+    Step3 --> ConfigModal[Open Team Activities Config]
+    ConfigModal -->|Configure Complete| Step4[Step 4: Add Team Members]
     
-    %% Data Dependencies
-    Dashboard --> SaveData[Save All Settings]
-    SaveData --> SaveSuccess{Save Successful?}
-    SaveSuccess -->|No| RetryData[Retry Save]
-    RetryData --> SaveData
-    SaveSuccess -->|Yes| Complete([Setup Complete])
+    Step4 --> MemberModal[Open Add Member Modal]
+    MemberModal -->|Member Added| Complete([Setup Complete])
+    
+    %% Each step can navigate to respective settings
+    Step1 -->|Go to Settings| ActivitiesSettings[Activities Settings Page]
+    Step2 -->|Go to Teams| TeamsPage[Teams Page]
+    Step3 -->|Go to Settings| TeamSettings[Team Settings Page]
+    Step4 -->|Add More| TeamDetails[Team Details Page]
     
     %% Styling
     classDef start fill:#ff9999,stroke:#333,stroke-width:2px,color:#000000
@@ -71,6 +54,6 @@ flowchart TD
     classDef success fill:#90EE90,stroke:#333,stroke-width:1px,color:#000000
     
     class Start,Complete start
-    class ValidateEmail,EmailExists,ValidatePassword,VerificationSent,Verified,ValidateCredentials,ValidateContext,ValidateTeam,ValidateMembers,SaveSuccess decision
-    class EmailError,PasswordError,LoginError,ContextError,TeamError,MemberError error
-    class Dashboard,SaveData success
+    class ValidateEmail,EmailExists,ValidatePassword,ValidateCredentials decision
+    class EmailError,PasswordError,LoginError error
+    class Step1,Step2,Step3,Step4 process

@@ -1,6 +1,7 @@
 flowchart TD
-    %% Entry Point
+    %% Entry Points
     Start([Access Settings]) --> CheckPermissions{Has Admin Rights?}
+    SetupGuide([Setup Guide]) --> Step1
     
     %% Access Control
     CheckPermissions -->|No| PermissionError[Show Permission Error]
@@ -16,9 +17,29 @@ flowchart TD
     %% Main Menu Selection
     ConfigMenu --> ConfigType{Select Config Type}
     
-    %% Team Settings Branch
-    ConfigType -->|Team| TeamSettings[Team Settings]
+    %% Step 1: Activities Branch
+    Step1[Step 1: Activities] --> BusinessContext[Business Context]
+    BusinessContext --> ContextOptions{Select Action}
+    ConfigType -->|Context| BusinessContext
+    
+    %% Context Updates
+    ContextOptions -->|Update| UpdateContext[Update Business Context]
+    UpdateContext --> ValidateContext{Valid Context?}
+    ValidateContext -->|No| ContextError[Show Context Error]
+    ContextError --> UpdateContext
+    ValidateContext -->|Yes| CheckMetrics[Check Metrics Impact]
+    
+    %% Metrics Configuration
+    ContextOptions -->|Metrics| ConfigureMetrics[Configure Metrics]
+    ConfigureMetrics --> ValidateMetrics{Valid Metrics?}
+    ValidateMetrics -->|No| MetricsError[Show Metrics Error]
+    MetricsError --> ConfigureMetrics
+    ValidateMetrics -->|Yes| SaveMetrics[Save Metrics]
+    
+    %% Step 2: Team Creation Branch
+    Step2[Step 2: Team] --> TeamSettings[Team Settings]
     TeamSettings --> TeamOptions{Select Action}
+    ConfigType -->|Team| TeamSettings
     
     %% Team Structure Updates
     TeamOptions -->|Structure| UpdateStructure[Update Team Structure]
@@ -27,8 +48,12 @@ flowchart TD
     StructureError --> UpdateStructure
     ValidateStructure -->|Yes| CheckImpact[Check Data Impact]
     
-    %% Member Management
-    TeamOptions -->|Members| ManageMembers[Manage Team Members]
+    %% Step 3: Configure Team Activities
+    Step3[Step 3: Activities Config] --> TeamOptions
+    
+    %% Step 4: Member Management
+    Step4[Step 4: Add Members] --> ManageMembers[Manage Team Members]
+    TeamOptions -->|Members| ManageMembers
     ManageMembers --> MemberAction{Select Action}
     MemberAction -->|Add| AddMember[Add New Member]
     MemberAction -->|Remove| RemoveMember[Remove Member]
@@ -47,24 +72,6 @@ flowchart TD
     CheckDependencies -->|No| ConfirmRemove
     ConfirmRemove -->|Yes| ProcessRemoval[Process Removal]
     ConfirmRemove -->|No| ManageMembers
-    
-    %% Business Context Branch
-    ConfigType -->|Context| BusinessContext[Business Context]
-    BusinessContext --> ContextOptions{Select Action}
-    
-    %% Context Updates
-    ContextOptions -->|Update| UpdateContext[Update Business Context]
-    UpdateContext --> ValidateContext{Valid Context?}
-    ValidateContext -->|No| ContextError[Show Context Error]
-    ContextError --> UpdateContext
-    ValidateContext -->|Yes| CheckMetrics[Check Metrics Impact]
-    
-    %% Metrics Configuration
-    ContextOptions -->|Metrics| ConfigureMetrics[Configure Metrics]
-    ConfigureMetrics --> ValidateMetrics{Valid Metrics?}
-    ValidateMetrics -->|No| MetricsError[Show Metrics Error]
-    MetricsError --> ConfigureMetrics
-    ValidateMetrics -->|Yes| SaveMetrics[Save Metrics]
     
     %% Impact Analysis
     CheckImpact & CheckMetrics --> ImpactAnalysis{Changes Safe?}
@@ -100,8 +107,10 @@ flowchart TD
     classDef error fill:#ff9999,stroke:#333,stroke-width:1px,color:#000000
     classDef warning fill:#ffcc99,stroke:#333,stroke-width:1px,color:#000000
     classDef success fill:#90EE90,stroke:#333,stroke-width:1px,color:#000000
+    classDef setup fill:#DDA0DD,stroke:#333,stroke-width:2px,color:#000000
     
-    class Start,Complete start
+    class Start,Complete,SetupGuide start
+    class Step1,Step2,Step3,Step4 setup
     class CheckPermissions,ConfigLoad,ConfigType,TeamOptions,ValidateStructure,MemberAction,ValidateMember,CheckDependencies,ConfirmRemove,ContextOptions,ValidateContext,ValidateMetrics,ImpactAnalysis,ConfirmChanges,SaveSuccess,NotifySuccess,CacheSuccess decision
     class PermissionError,StructureError,MemberError,ContextError,MetricsError error
     class ShowWarning,ShowImpact warning
