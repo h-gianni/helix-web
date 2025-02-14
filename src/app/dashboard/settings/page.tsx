@@ -50,7 +50,7 @@ export default function SettingsPage() {
      <PageBreadcrumbs items={[{ label: "Settings" }]} />
      <PageHeader title="Settings" />
 
-     <main className="ui-layout-page-main">
+     <main className="layout-page-main">
        {settingsGroups.map((group) => (
          <div key={group.title} className="space-y-4">
            <h2 className="text-xl font-medium">{group.title}</h2>
@@ -60,8 +60,6 @@ export default function SettingsPage() {
                return (
                  <Card
                    key={item.title}
-                   clickable
-                   interactive
                    onClick={() => router.push(item.href)}
                  >
                    <CardHeader>

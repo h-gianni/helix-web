@@ -68,7 +68,7 @@ export function ProfileSection() {
   return (
     <div className="space-y-6">
       {error && (
-        <Alert variant="danger">
+        <Alert variant="destructive">
           <AlertCircle />
           <AlertDescription>{error}</AlertDescription>
         </Alert>

@@ -10,7 +10,7 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <div className="ui-layout-page">
+      <div className="layout-page">
         {children}
       </div>
     </SidebarProvider>

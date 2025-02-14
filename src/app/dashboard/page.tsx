@@ -39,27 +39,22 @@ const TeamsContent = ({ performers, teams, router }: TeamsContentProps) => {
        actions={
          <>
            <Button
-             volume="moderate"
-             iconOnly={false}
-             leadingIcon={<MessageSquare />}
+             variant="secondary"
              onClick={() => router.push("/dashboard/feedback")}
            >
-             Add Feedback
+             <MessageSquare /> Add Feedback
            </Button>
            <Button
-             variant="primary"
-             volume="loud"
-             iconOnly={false}
-             leadingIcon={<Star />}
+             variant="default"
              onClick={() => openRatingModal(true)}
            >
-             Rate Performance
+             <Star /> Rate Performance
            </Button>
          </>
        }
      />
 
-     <main className="ui-layout-page-main">
+     <main className="layout-page-main">
        <div className="ui-view-controls-bar">
          <ViewSwitcher viewType={viewType} onViewChange={setViewType} />
        </div>
@@ -119,21 +114,20 @@ export default function DashboardPage() {
  if (error) {
    return (
      <div className="ui-loader-error">
-       <Alert variant="danger">
+       <Alert variant="destructive">
          <AlertCircle />
          <AlertDescription>
            {error instanceof Error ? error.message : "An error occurred"}
          </AlertDescription>
        </Alert>
        <Button
-         variant="neutral"
+         variant="secondary"
          onClick={() => {
            refetchTeams();
            refetchPerformers();
          }}
-         leadingIcon={<RotateCcw />}
        >
-         Retry
+         <RotateCcw /> Retry
        </Button>
      </div>
    );

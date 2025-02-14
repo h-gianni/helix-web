@@ -1,4 +1,5 @@
-// _editMemberModal.tsx
+"use client";
+
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -10,7 +11,9 @@ import {
 import { Button } from "@/components/ui/core/Button";
 import { Input } from "@/components/ui/core/Input";
 import { Checkbox } from "@/components/ui/core/Checkbox";
-import { Alert, AlertIconContainer, AlertDescription } from "@/components/ui/core/Alert";
+import { Alert } from "@/components/ui/core/Alert";
+import { Label } from "@/components/ui/core/Label";
+import { AlertCircle } from "lucide-react";
 import { useMemberStore, useUpdateMember } from "@/store/member-store";
 
 interface EditMemberModalProps {
@@ -25,10 +28,7 @@ interface MemberUpdateData {
   isAdmin: boolean;
 }
 
-export const EditMemberModal = ({
-  memberId,
-  teamId,
-}: EditMemberModalProps) => {
+export function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
   const { isEditModalOpen, setEditModalOpen } = useMemberStore();
   const updateMember = useUpdateMember();
   const [formData, setFormData] = useState<MemberUpdateData>({
@@ -38,11 +38,10 @@ export const EditMemberModal = ({
     isAdmin: false,
   });
 
-  // Fetch current member data when modal opens
   useEffect(() => {
-    const fetchMemberData = async () => {
-      if (!isEditModalOpen) return;
-      
+    if (!isEditModalOpen) return;
+    
+    async function fetchMemberData() {
       try {
         const response = await fetch(`/api/teams/${teamId}/members/${memberId}`);
         const data = await response.json();
@@ -57,16 +56,15 @@ export const EditMemberModal = ({
           title: data.data.title || "",
           isAdmin: data.data.isAdmin || false,
         });
-      } catch (err) {
-        console.error("Error fetching member:", err);
+      } catch (error) {
+        console.error("Error fetching member:", error);
       }
-    };
+    }
 
     fetchMemberData();
   }, [teamId, memberId, isEditModalOpen]);
 
-  // Handle form submission
-  const handleSubmit = async () => {
+  async function handleSubmit() {
     try {
       await updateMember.mutateAsync({
         teamId,
@@ -77,19 +75,18 @@ export const EditMemberModal = ({
     } catch (error) {
       console.error("Error updating member:", error);
     }
-  };
+  }
 
-  // Handle input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-  };
+  }
 
   return (
-    <Dialog open={isEditModalOpen} onOpenChange={() => setEditModalOpen(false)}>
+    <Dialog open={isEditModalOpen} onOpenChange={setEditModalOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Member</DialogTitle>
@@ -97,75 +94,81 @@ export const EditMemberModal = ({
 
         <div className="grid gap-4 py-4">
           {updateMember.error && (
-            <Alert variant="danger">
-              <AlertIconContainer />
-              <AlertDescription>
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <p className="text-sm">
                 {updateMember.error instanceof Error 
                   ? updateMember.error.message 
                   : "Failed to update member"}
-              </AlertDescription>
+              </p>
             </Alert>
           )}
 
-          <Input
-            withLabel
-            label="First Name"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            data-size="base"
-            required
-          />
+          <div className="grid gap-2">
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              id="firstName"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <Input
-            withLabel
-            label="Last Name"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            data-size="base"
-            required
-          />
+          <div className="grid gap-2">
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
+              id="lastName"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <Input
-            withLabel
-            label="Job Title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            data-size="base"
-          />
+          <div className="grid gap-2">
+            <Label htmlFor="title">Job Title</Label>
+            <Input
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+            />
+          </div>
 
-          <Checkbox
-            label="Admin Access"
-            description="Grant admin privileges to this member"
-            id="isAdmin"
-            name="isAdmin"
-            checked={formData.isAdmin}
-            onCheckedChange={(checked) => 
-              setFormData(prev => ({ ...prev, isAdmin: checked === true }))
-            }
-          />
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="isAdmin"
+              checked={formData.isAdmin}
+              onCheckedChange={(checked) => 
+                setFormData(prev => ({ ...prev, isAdmin: checked === true }))
+              }
+            />
+            <div className="grid gap-1.5 leading-none">
+              <Label htmlFor="isAdmin">Admin Access</Label>
+              <p className="text-sm text-muted-foreground">
+                Grant admin privileges to this member
+              </p>
+            </div>
+          </div>
         </div>
 
         <DialogFooter>
           <Button
-            variant="neutral"
-            volume="moderate"
+            variant="outline"
             onClick={() => setEditModalOpen(false)}
             disabled={updateMember.isPending}
           >
             Cancel
           </Button>
           <Button
-            variant="primary"
             onClick={handleSubmit}
-            isLoading={updateMember.isPending}
+            disabled={updateMember.isPending}
           >
-            Save Changes
+            {updateMember.isPending ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-};
+}

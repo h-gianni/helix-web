@@ -1,182 +1,118 @@
+"use client"
+
 import * as React from "react"
 import { Drawer as DrawerPrimitive } from "vaul"
+
 import { cn } from "@/lib/utils"
-import { Button, type ButtonProps } from "@/components/ui/core/Button"
-import { X } from "lucide-react"
-
-type Position = 'top' | 'right' | 'bottom' | 'left'
-type Size = 'sm' | 'base' | 'lg' | 'xl'
-type HeaderVariant = 'none' | 'base' | 'full'
-type FooterVariant = 'none' | 'one-action' | 'two-actions'
-
-interface ActionConfig extends Pick<ButtonProps, 'variant' | 'volume' | 'isLoading'> {
-  label: string
-  onClick: () => void
-}
-
-interface FooterConfig {
-  primaryAction?: ActionConfig
-  secondaryAction?: ActionConfig
-}
-
-interface DrawerProps {
-  position?: Position
-  size?: Size
-  header?: HeaderVariant
-  withOverlay?: boolean
-  footer?: FooterVariant
-  footerConfig?: FooterConfig
-  title?: string
-  description?: string
-  children?: React.ReactNode
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
-}
 
 const Drawer = ({
-  position = 'right',
-  // size = 'base',
-  // header = 'base',
-  // withOverlay = true,
-  // footer = 'none',
-  // footerConfig,
-  // title,
-  // description,
-  children,
+  shouldScaleBackground = true,
   ...props
-}: DrawerProps) => (
-  <DrawerPrimitive.Root 
-    direction={position === 'top' ? 'top' : position === 'bottom' ? 'bottom' : position === 'left' ? 'left' : 'right'}
+}: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
+  <DrawerPrimitive.Root
+    shouldScaleBackground={shouldScaleBackground}
     {...props}
-  >
-    {children}
-  </DrawerPrimitive.Root>
+  />
 )
+Drawer.displayName = "Drawer"
 
 const DrawerTrigger = DrawerPrimitive.Trigger
-const DrawerClose = DrawerPrimitive.Close
+
 const DrawerPortal = DrawerPrimitive.Portal
+
+const DrawerClose = DrawerPrimitive.Close
 
 const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay> & {
-    withOverlay?: boolean
-  }
->(({ className, withOverlay = true, ...props }, ref) => {
-  if (!withOverlay) return null;
-
-  return (
-    <DrawerPrimitive.Overlay
-      ref={ref}
-      className={cn("drawer-overlay", className)}
-      {...props}
-    />
-  );
-})
+  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
+>(({ className, ...props }, ref) => (
+  <DrawerPrimitive.Overlay
+    ref={ref}
+    className={cn("fixed inset-0 z-50 bg-black/80", className)}
+    {...props}
+  />
+))
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName
-
-interface DrawerContentProps extends React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> {
-  position?: Position
-  size?: Size
-  header?: HeaderVariant
-  footer?: FooterVariant
-  footerConfig?: FooterConfig
-  title?: string
-  description?: string
-  withOverlay?: boolean
-}
 
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
-  DrawerContentProps
->(({
-  className,
-  position = 'right',
-  size = 'base',
-  header = 'base',
-  footer = 'none',
-  footerConfig,
-  title,
-  description,
-  withOverlay = true,
-  children,
-  ...props
-}, ref) => (
+  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
   <DrawerPortal>
-    <DrawerOverlay withOverlay={withOverlay} />
+    <DrawerOverlay />
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(
-        "drawer-content",
-        // Remove default Vaul animations
-        "!duration-300 !transition-transform",
+        "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
         className
       )}
-      data-position={position}
-      data-size={size}
-      style={{
-        // Override Vaul's transform with our own based on position
-        transform: undefined,
-        transition: 'transform 300ms ease-in-out'
-      }}
       {...props}
     >
-      {position === 'bottom' && <div className="drawer-handle" />}
-      
-      {header !== 'none' && (
-        <div className="drawer-header">
-          <div className="space-y-1.5">
-            {(header === 'base' || header === 'full') && title && (
-              <h2 className="drawer-title">{title}</h2>
-            )}
-            {header === 'full' && description && (
-              <p className="drawer-description">{description}</p>
-            )}
-          </div>
-          <DrawerClose className="drawer-close">
-            <X />
-            <span className="sr-only">Close</span>
-          </DrawerClose>
-        </div>
-      )}
-
-      <div className="drawer-body">{children}</div>
-
-      {footer !== 'none' && (
-        <div className="drawer-footer">
-          {footer === 'two-actions' && footerConfig?.secondaryAction && (
-            <Button
-              variant={footerConfig.secondaryAction.variant || 'neutral'}
-              volume={footerConfig.secondaryAction.volume || 'soft'}
-              isLoading={footerConfig.secondaryAction.isLoading}
-              onClick={footerConfig.secondaryAction.onClick}
-            >
-              {footerConfig.secondaryAction.label || 'Cancel'}
-            </Button>
-          )}
-          {footerConfig?.primaryAction && (
-            <Button
-              variant={footerConfig.primaryAction.variant || 'primary'}
-              volume={footerConfig.primaryAction.volume || 'loud'}
-              isLoading={footerConfig.primaryAction.isLoading}
-              onClick={footerConfig.primaryAction.onClick}
-            >
-              {footerConfig.primaryAction.label || 'Confirm'}
-            </Button>
-          )}
-        </div>
-      )}
+      <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
+      {children}
     </DrawerPrimitive.Content>
   </DrawerPortal>
 ))
-DrawerContent.displayName = DrawerPrimitive.Content.displayName
+DrawerContent.displayName = "DrawerContent"
+
+const DrawerHeader = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn("grid gap-1.5 p-4 text-center sm:text-left", className)}
+    {...props}
+  />
+)
+DrawerHeader.displayName = "DrawerHeader"
+
+const DrawerFooter = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn("mt-auto flex flex-col gap-2 p-4", className)}
+    {...props}
+  />
+)
+DrawerFooter.displayName = "DrawerFooter"
+
+const DrawerTitle = React.forwardRef<
+  React.ElementRef<typeof DrawerPrimitive.Title>,
+  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Title>
+>(({ className, ...props }, ref) => (
+  <DrawerPrimitive.Title
+    ref={ref}
+    className={cn(
+      "text-lg font-semibold leading-none tracking-tight",
+      className
+    )}
+    {...props}
+  />
+))
+DrawerTitle.displayName = DrawerPrimitive.Title.displayName
+
+const DrawerDescription = React.forwardRef<
+  React.ElementRef<typeof DrawerPrimitive.Description>,
+  React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Description>
+>(({ className, ...props }, ref) => (
+  <DrawerPrimitive.Description
+    ref={ref}
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+))
+DrawerDescription.displayName = DrawerPrimitive.Description.displayName
 
 export {
-  type DrawerProps,
-  type FooterConfig,
-  type ActionConfig,
   Drawer,
+  DrawerPortal,
+  DrawerOverlay,
   DrawerTrigger,
   DrawerClose,
   DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
 }

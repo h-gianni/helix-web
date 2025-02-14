@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/core/Button";
 import { Input } from "@/components/ui/core/Input";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Loader } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/core/Select";
 import type { TeamFunctionResponse } from "@/lib/types/api";
+import { cn } from "@/lib/utils";
 
 interface TeamCreateModalProps {
   isOpen: boolean;
@@ -110,66 +111,84 @@ export default function TeamCreateModal({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <Alert variant="danger">
+            <Alert variant="destructive">
               <AlertCircle className="size-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
           <div className="space-y-4">
-            <Select
-              label="Team function"
-              withLabel
-              error={!!error && !teamFunctionId}
-              value={teamFunctionId}
-              onValueChange={(value) => {
-                console.log("Selected value:", value);
-                setTeamFunctionId(value);
-                setError(null);
-              }}
-              name="teamFunction"
-            >
-              <SelectTrigger className="w-full" disabled={loading}>
-                <SelectValue
-                  placeholder={
-                    loading ? "Loading functions..." : "Select a function"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {teamFunctions.map((teamFunction) => (
-                  <SelectItem key={teamFunction.id} value={teamFunction.id}>
-                    {teamFunction.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col gap-2">
+  <label className="text-sm font-medium text-foreground" htmlFor="teamFunction">
+    Team Function
+  </label>
+  <Select
+    value={teamFunctionId ?? ""}
+    onValueChange={(value) => {
+      console.log("Selected value:", value);
+      setTeamFunctionId(value);
+      setError(null);
+    }}
+    name="teamFunction"
+    disabled={loading}
+  >
+    <SelectTrigger className={cn("w-full", error && !teamFunctionId && "border-red-500")}>
+      <SelectValue placeholder={loading ? "Loading functions..." : "Select a function"} />
+    </SelectTrigger>
+    <SelectContent>
+      {teamFunctions.map((teamFunction) => (
+        <SelectItem key={teamFunction.id} value={teamFunction.id}>
+          {teamFunction.name}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+  {error && !teamFunctionId && (
+    <p className="text-sm text-red-500">Please select a team function.</p>
+  )}
+</div>
 
-            <Input
-              value={teamName}
-              onChange={(e) => {
-                setTeamName(e.target.value);
-                setError(null);
-              }}
-              placeholder="Enter team name"
-              label="Team Name"
-              withLabel
-              error={!!error && !teamName.trim()}
-            />
+
+<div className="flex flex-col gap-2">
+  <label className="text-sm font-medium text-foreground" htmlFor="teamName">
+    Team Name
+  </label>
+  <Input
+    id="teamName"
+    value={teamName}
+    onChange={(e) => {
+      setTeamName(e.target.value);
+      setError(null);
+    }}
+    placeholder="Enter team name"
+    className={cn("w-full", error && !teamName.trim() && "border-red-500")}
+  />
+  {error && !teamName.trim() && (
+    <p className="text-sm text-red-500">Team name is required.</p>
+  )}
+</div>
+
           </div>
 
           <DialogFooter>
             <Button
-              variant="neutral"
-              volume="soft"
+              variant="secondary"
               onClick={onClose}
               disabled={saving}
             >
               Cancel
             </Button>
-            <Button variant="primary" type="submit" isLoading={saving}>
-              Create Team
-            </Button>
+            <Button variant="default" type="submit" disabled={saving}>
+  {saving ? (
+    <span className="flex items-center gap-2">
+      <Loader className="h-4 w-4 animate-spin" />
+      Creating...
+    </span>
+  ) : (
+    "Create Team"
+  )}
+</Button>
+
           </DialogFooter>
         </form>
       </DialogContent>

@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/core/DropdownMenu';
+} from '@/components/ui/core/Dropdown-menu';
 import {
   MoreHorizontal,
   ArrowUpDown,

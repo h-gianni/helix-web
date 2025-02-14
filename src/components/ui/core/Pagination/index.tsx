@@ -1,65 +1,63 @@
-"use client";
+import * as React from "react"
+import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
 
-import * as React from "react";
-import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ButtonProps } from "@/components/ui/core/Button";
+import { cn } from "@/lib/utils"
+import { ButtonProps, buttonVariants } from "@/components/ui/core/Button"
 
-const Pagination = ({
-  className,
-  ...props
-}: React.ComponentProps<"nav">) => (
+const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
     role="navigation"
     aria-label="pagination"
-    className={cn("ui-pagination-root", className)}
+    className={cn("mx-auto flex w-full justify-center", className)}
     {...props}
   />
-);
-Pagination.displayName = "Pagination";
+)
+Pagination.displayName = "Pagination"
 
 const PaginationContent = React.forwardRef<
   HTMLUListElement,
   React.ComponentProps<"ul">
 >(({ className, ...props }, ref) => (
-  <ul ref={ref} className={cn("ui-pagination-content", className)} {...props} />
-));
-PaginationContent.displayName = "PaginationContent";
+  <ul
+    ref={ref}
+    className={cn("flex flex-row items-center gap-1", className)}
+    {...props}
+  />
+))
+PaginationContent.displayName = "PaginationContent"
 
 const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<"li">
 >(({ className, ...props }, ref) => (
-  <li ref={ref} className={cn("ui-pagination-item", className)} {...props} />
-));
-PaginationItem.displayName = "PaginationItem";
+  <li ref={ref} className={cn("", className)} {...props} />
+))
+PaginationItem.displayName = "PaginationItem"
 
 type PaginationLinkProps = {
-  isActive?: boolean;
+  isActive?: boolean
 } & Pick<ButtonProps, "size"> &
-  React.ComponentProps<"a">;
+  React.ComponentProps<"a">
 
 const PaginationLink = ({
   className,
   isActive,
-  size = "sm",
+  size = "icon",
   ...props
 }: PaginationLinkProps) => (
   <a
     aria-current={isActive ? "page" : undefined}
     className={cn(
-      "ui-button",
-      {
-        'data-variant': isActive ? 'neutral' : 'neutral-soft',
-        'data-size': size,
-        'data-shape': 'rounded'
-      },
+      buttonVariants({
+        variant: isActive ? "outline" : "ghost",
+        size,
+      }),
       className
     )}
     {...props}
   />
-);
-PaginationLink.displayName = "PaginationLink";
+)
+PaginationLink.displayName = "PaginationLink"
 
 const PaginationPrevious = ({
   className,
@@ -67,15 +65,15 @@ const PaginationPrevious = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to previous page"
-    size="sm"
-    className={cn("ui-pagination-previous", className)}
+    size="default"
+    className={cn("gap-1 pl-2.5", className)}
     {...props}
   >
-    <ChevronLeft className="ui-pagination-icon" />
+    <ChevronLeft className="h-4 w-4" />
     <span>Previous</span>
   </PaginationLink>
-);
-PaginationPrevious.displayName = "PaginationPrevious";
+)
+PaginationPrevious.displayName = "PaginationPrevious"
 
 const PaginationNext = ({
   className,
@@ -83,15 +81,15 @@ const PaginationNext = ({
 }: React.ComponentProps<typeof PaginationLink>) => (
   <PaginationLink
     aria-label="Go to next page"
-    size="sm"
-    className={cn("ui-pagination-next", className)}
+    size="default"
+    className={cn("gap-1 pr-2.5", className)}
     {...props}
   >
     <span>Next</span>
-    <ChevronRight className="ui-pagination-icon" />
+    <ChevronRight className="h-4 w-4" />
   </PaginationLink>
-);
-PaginationNext.displayName = "PaginationNext";
+)
+PaginationNext.displayName = "PaginationNext"
 
 const PaginationEllipsis = ({
   className,
@@ -99,14 +97,14 @@ const PaginationEllipsis = ({
 }: React.ComponentProps<"span">) => (
   <span
     aria-hidden
-    className={cn("ui-pagination-ellipsis", className)}
+    className={cn("flex h-9 w-9 items-center justify-center", className)}
     {...props}
   >
-    <MoreHorizontal className="ui-pagination-icon" />
-    <span className="ui-pagination-sr-only">More pages</span>
+    <MoreHorizontal className="h-4 w-4" />
+    <span className="sr-only">More pages</span>
   </span>
-);
-PaginationEllipsis.displayName = "PaginationEllipsis";
+)
+PaginationEllipsis.displayName = "PaginationEllipsis"
 
 export {
   Pagination,
@@ -116,4 +114,4 @@ export {
   PaginationPrevious,
   PaginationNext,
   PaginationEllipsis,
-};
+}

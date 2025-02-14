@@ -17,6 +17,7 @@ import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import TeamCreateModal from "./_teamCreateModal";
 import EmptyTeamsView from "./_emptyTeamsView";
 import { useTeams, useCreateTeam, useTeamStore } from "@/store/team-store";
+import { cn } from "@/lib/utils";
 
 interface TeamContentProps {
   onCreateTeam: () => void;
@@ -27,12 +28,12 @@ const TeamsGrid = ({ teams }: { teams: Array<any> }) => (
   <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
     {teams.map((team) => (
       <Link key={team.id} href={`/dashboard/teams/${team.id}`}>
-        <Card 
-          clickable 
-          data-size="lg" 
-          shadow="base"
-          className="transition-all hover:shadow-md"
-        >
+<Card 
+  className={cn(
+    "transition-all shadow-base hover:shadow-md cursor-pointer"
+  )}
+>
+
           <CardHeader>
             <div className="flex items-start justify-between">
               <div>
@@ -67,18 +68,17 @@ const TeamsContent = ({ onCreateTeam }: TeamContentProps) => {
   if (error) {
     return (
       <div className="ui-loader-error">
-        <Alert variant="danger">
+        <Alert variant="destructive">
           <AlertCircle />
           <AlertDescription>
             {error instanceof Error ? error.message : "An error occurred"}
           </AlertDescription>
         </Alert>
         <Button
-          variant="neutral"
+          variant="secondary"
           onClick={() => refetch()}
-          leadingIcon={<RotateCcw />}
         >
-          Retry
+          <RotateCcw /> Retry
         </Button>
       </div>
     );
@@ -117,17 +117,15 @@ export default function TeamsPage() {
           teams.length > 0 ? (
             <Button
               onClick={() => toggleTeamModal()}
-              leadingIcon={<Plus />}
-              size="base"
-              variant="primary"
+              variant="default"
             >
-              Create Team
+              <Plus /> Create Team
             </Button>
           ) : null
         }
       />
 
-      <main className="ui-layout-page-main">
+      <main className="layout-page-main">
         <TeamsContent onCreateTeam={() => toggleTeamModal()} />
       </main>
 

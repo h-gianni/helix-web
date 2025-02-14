@@ -20,8 +20,6 @@ export function ViewSwitcher({ viewType, onViewChange }: ViewSwitcherProps) {
       <Select 
         value={viewType} 
         onValueChange={onViewChange}
-        width="inline"
-        size="sm"
       >
         <SelectTrigger>
           <SelectValue placeholder="Select view" />

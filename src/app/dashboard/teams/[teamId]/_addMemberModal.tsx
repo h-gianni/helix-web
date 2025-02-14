@@ -2,242 +2,253 @@
 
 import React, { useState, useEffect } from "react";
 import {
- Dialog,
- DialogContent,
- DialogHeader,
- DialogTitle,
- DialogDescription,
- DialogFooter,
- DialogWithConfig
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
 } from "@/components/ui/core/Dialog";
 import { Button } from "@/components/ui/core/Button";
 import { Input } from "@/components/ui/core/Input";
-import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import { UserPlus } from "lucide-react";
+import { Label } from "@/components/ui/core/Label";
+import { Alert } from "@/components/ui/core/Alert";
 import {
- Select,
- SelectContent,
- SelectItem,
- SelectTrigger,
- SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/core/Select";
+import { AlertCircle } from "lucide-react";
 
 interface JobGrade {
- id: string;
- level: number;
- grade: string;
- typicalResponsibilities?: string | null;
+  id: string;
+  level: number;
+  grade: string;
+  typicalResponsibilities?: string | null;
 }
 
 interface AddMemberModalProps {
- isOpen: boolean;
- onClose: () => void;
- teamId?: string;
- onSubmit?: (data: {
-   teamId: string;
-   email: string;
-   fullName: string;
-   title?: string;
-   jobGradeId?: string;
-   joinedDate?: string;
-   profilePhoto?: File;
- }) => Promise<void>;
+  isOpen: boolean;
+  onClose: () => void;
+  teamId?: string;
+  onSubmit?: (data: {
+    teamId: string;
+    email: string;
+    fullName: string;
+    title?: string;
+    jobGradeId?: string;
+    joinedDate?: string;
+    profilePhoto?: File;
+  }) => Promise<void>;
 }
 
-export default function AddMemberModal({
- isOpen,
- onClose,
- teamId,
- onSubmit,
+export function AddMemberModal({
+  isOpen,
+  onClose,
+  teamId,
+  onSubmit,
 }: AddMemberModalProps) {
- const [email, setEmail] = useState("");
- const [fullName, setFullName] = useState("");
- const [title, setTitle] = useState("");
- const [jobGradeId, setJobGradeId] = useState("");
- const [joinedDate, setJoinedDate] = useState("");
- const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
- const [error, setError] = useState<string | null>(null);
- const [isSubmitting, setIsSubmitting] = useState(false);
- const [jobGrades, setJobGrades] = useState<JobGrade[]>([]);
- const [isLoadingGrades, setIsLoadingGrades] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    fullName: "",
+    title: "",
+    jobGradeId: "",
+    joinedDate: "",
+    profilePhoto: null as File | null,
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [jobGrades, setJobGrades] = useState<JobGrade[]>([]);
+  const [isLoadingGrades, setIsLoadingGrades] = useState(false);
 
- useEffect(() => {
-   if (isOpen) {
-     fetchJobGrades();
-   }
- }, [isOpen]);
-
- const fetchJobGrades = async () => {
-   try {
-     setIsLoadingGrades(true);
-     const response = await fetch('/api/job-grades');
-     const data = await response.json();
-     
-     if (data.success) {
-       setJobGrades(data.data);
-     } else {
-       console.error("Failed to fetch job grades:", data.error);
-     }
-   } catch (error) {
-     console.error("Error fetching job grades:", error);
-   } finally {
-     setIsLoadingGrades(false);
-   }
- };
-
- const handleSubmit = async () => {
-   try {
-     setIsSubmitting(true);
-     setError(null);
-
-     const trimmedEmail = email.trim();
-     const trimmedFullName = fullName.trim();
-
-     if (!trimmedEmail || !trimmedFullName) {
-       throw new Error("Email and full name are required");
-     }
-
-     if (!teamId) {
-       throw new Error("Team ID is required");
-     }
-
-     if (!onSubmit) {
-      throw new Error("onSubmit handler is required");
+  useEffect(() => {
+    if (isOpen) {
+      fetchJobGrades();
     }
+  }, [isOpen]);
 
-     await onSubmit({
-       teamId,
-       email: trimmedEmail,
-       fullName: trimmedFullName,
-       title: title.trim() || undefined,
-       jobGradeId: jobGradeId || undefined,
-       joinedDate: joinedDate || undefined,
-       profilePhoto: profilePhoto || undefined,
-     });
+  async function fetchJobGrades() {
+    try {
+      setIsLoadingGrades(true);
+      const response = await fetch('/api/job-grades');
+      const data = await response.json();
+      
+      if (data.success) {
+        setJobGrades(data.data);
+      } else {
+        console.error("Failed to fetch job grades:", data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching job grades:", error);
+    } finally {
+      setIsLoadingGrades(false);
+    }
+  }
 
-     handleReset();
-     onClose();
-   } catch (err) {
-     setError(err instanceof Error ? err.message : "An error occurred");
-   } finally {
-     setIsSubmitting(false);
-   }
- };
+  async function handleSubmit() {
+    try {
+      setIsSubmitting(true);
+      setError(null);
 
- const handleReset = () => {
-   setEmail("");
-   setFullName("");
-   setTitle("");
-   setJobGradeId("");
-   setJoinedDate("");
-   setProfilePhoto(null);
-   setError(null);
- };
+      const { email, fullName } = formData;
+      const trimmedEmail = email.trim();
+      const trimmedFullName = fullName.trim();
 
- const footerConfig = {
-   primaryAction: {
-     label: 'Add Member',
-     onClick: handleSubmit,
-     isLoading: isSubmitting,
-   },
-   secondaryAction: {
-     label: 'Cancel',
-     onClick: () => {
-       handleReset();
-       onClose();
-     },
-   }
- };
+      if (!trimmedEmail || !trimmedFullName) {
+        throw new Error("Email and full name are required");
+      }
 
- return (
-   <DialogWithConfig
-     open={isOpen}
-     onOpenChange={onClose}
-     title="Add Team Member"
-     size="base"
-     footer="two-actions"
-     footerConfig={footerConfig}
-   >
-     <div className="space-y-4">
-       {error && (
-         <Alert variant="danger">
-           <AlertDescription>{error}</AlertDescription>
-         </Alert>
-       )}
+      if (!teamId) {
+        throw new Error("Team ID is required");
+      }
 
-       <Input
-         type="email"
-         value={email}
-         onChange={(e) => setEmail(e.target.value)}
-         placeholder="member@example.com"
-         data-size="base"
-         withLabel
-         label="Company Email*"
-         required
-       />
+      if (!onSubmit) {
+        throw new Error("onSubmit handler is required");
+      }
 
-       <Input
-         type="text"
-         value={fullName}
-         onChange={(e) => setFullName(e.target.value)}
-         placeholder="John Doe"
-         data-size="base"
-         withLabel
-         label="Full Name*"
-         required
-       />
+      await onSubmit({
+        teamId,
+        email: trimmedEmail,
+        fullName: trimmedFullName,
+        title: formData.title.trim() || undefined,
+        jobGradeId: formData.jobGradeId || undefined,
+        joinedDate: formData.joinedDate || undefined,
+        profilePhoto: formData.profilePhoto || undefined,
+      });
 
-       <Input
-         type="text"
-         value={title}
-         onChange={(e) => setTitle(e.target.value)}
-         placeholder="e.g., Developer"
-         data-size="base"
-         withLabel
-         label="Job Title"
-       />
+      handleReset();
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
-       <Select
-         value={jobGradeId}
-         onValueChange={setJobGradeId}
-         withLabel
-         label="Job Grade"
-         width="full"
-       >
-         <SelectTrigger>
-           <SelectValue placeholder="Select job grade" />
-         </SelectTrigger>
-         <SelectContent>
-           {jobGrades.map((grade) => (
-             <SelectItem key={grade.id} value={grade.id}>
-               {`${grade.level} / ${grade.grade}`}
-             </SelectItem>
-           ))}
-         </SelectContent>
-       </Select>
+  function handleReset() {
+    setFormData({
+      email: "",
+      fullName: "",
+      title: "",
+      jobGradeId: "",
+      joinedDate: "",
+      profilePhoto: null,
+    });
+    setError(null);
+  }
 
-       <Input
-         type="date"
-         value={joinedDate}
-         onChange={(e) => setJoinedDate(e.target.value)}
-         data-size="base"
-         withLabel
-         label="Joined Date"
-       />
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Add Team Member</DialogTitle>
+        </DialogHeader>
 
-       <Input
-         type="file"
-         onChange={(e) => {
-           if (e.target.files?.[0]) {
-             setProfilePhoto(e.target.files[0]);
-           }
-         }}
-         data-size="base"
-         withLabel
-         label="Profile Photo"
-         accept="image/*"
-       />
-     </div>
-   </DialogWithConfig>
- );
+        <div className="grid gap-4 py-4">
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <p className="text-sm">{error}</p>
+            </Alert>
+          )}
+
+          <div className="grid gap-2">
+            <Label htmlFor="email">Company Email*</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              placeholder="member@example.com"
+              required
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="fullName">Full Name*</Label>
+            <Input
+              id="fullName"
+              value={formData.fullName}
+              onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+              placeholder="John Doe"
+              required
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="title">Job Title</Label>
+            <Input
+              id="title"
+              value={formData.title}
+              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              placeholder="e.g., Developer"
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="jobGrade">Job Grade</Label>
+            <Select
+              value={formData.jobGradeId}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, jobGradeId: value }))}
+            >
+              <SelectTrigger id="jobGrade">
+                <SelectValue placeholder="Select job grade" />
+              </SelectTrigger>
+              <SelectContent>
+                {jobGrades.map((grade) => (
+                  <SelectItem key={grade.id} value={grade.id}>
+                    {`${grade.level} / ${grade.grade}`}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="joinedDate">Joined Date</Label>
+            <Input
+              id="joinedDate"
+              type="date"
+              value={formData.joinedDate}
+              onChange={(e) => setFormData(prev => ({ ...prev, joinedDate: e.target.value }))}
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="profilePhoto">Profile Photo</Label>
+            <Input
+              id="profilePhoto"
+              type="file"
+              onChange={(e) => {
+                if (e.target.files?.[0]) {
+                  setFormData(prev => ({ ...prev, profilePhoto: e.target.files![0] }));
+                }
+              }}
+              accept="image/*"
+            />
+          </div>
+        </div>
+
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => {
+              handleReset();
+              onClose();
+            }}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Adding..." : "Add Member"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 }

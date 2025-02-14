@@ -9,13 +9,7 @@ import {
   TableBody,
 } from "@/components/ui/core/Table";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import {
-  Target,
-  Edit,
-  Trash2,
-  AlertCircle,
-  Heart,
-} from "lucide-react";
+import { Target, Edit, Trash2, AlertCircle, Heart, Loader } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -36,15 +30,16 @@ interface ActivitiesSectionProps {
   onRefreshComplete: () => void;
 }
 
-export function ActivitiesSection({ 
-  onUpdate, 
+export function ActivitiesSection({
+  onUpdate,
   shouldRefresh,
-  onRefreshComplete 
+  onRefreshComplete,
 }: ActivitiesSectionProps) {
   const [activities, setActivities] = useState<BusinessActivityResponse[]>([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedActivity, setSelectedActivity] = useState<BusinessActivityResponse | null>(null);
+  const [selectedActivity, setSelectedActivity] =
+    useState<BusinessActivityResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,7 +49,8 @@ export function ActivitiesSection({
       setError(null);
 
       const response = await fetch(`/api/business-activities?t=${Date.now()}`);
-      const data: ApiResponse<BusinessActivityResponse[]> = await response.json();
+      const data: ApiResponse<BusinessActivityResponse[]> =
+        await response.json();
 
       if (!data.success) {
         throw new Error(data.error || "Failed to fetch business activities");
@@ -102,7 +98,9 @@ export function ActivitiesSection({
       setIsDeleteDialogOpen(false);
       setSelectedActivity(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete activity");
+      setError(
+        err instanceof Error ? err.message : "Failed to delete activity"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -114,9 +112,7 @@ export function ActivitiesSection({
   }, []);
 
   if (isLoading && !activities.length) {
-    return (
-      <div className="ui-loader">Loading activities...</div>
-    );
+    return <div className="ui-loader">Loading activities...</div>;
   }
 
   if (activities.length === 0) {
@@ -126,7 +122,9 @@ export function ActivitiesSection({
           <div className="space-y-base text-center">
             <Target className="mx-auto h-12 w-12 ui-text-body-muted" />
             <div className="space-y-2">
-              <h3 className="text-lg font-medium">No business activities yet</h3>
+              <h3 className="text-lg font-medium">
+                No business activities yet
+              </h3>
               <p className="ui-text-body-small">
                 Create business activities to track team performance.
               </p>
@@ -140,14 +138,12 @@ export function ActivitiesSection({
   return (
     <div className="space-y-base">
       {error && (
-        <Alert variant="danger">
+        <Alert variant="destructive">
           <AlertCircle />
           <AlertDescription className="flex items-center gap-sm">
             {error}
             <Button
-              variant="neutral"
-              volume="moderate"
-              size="sm"
+              variant="secondary"
               onClick={() => fetchActivities()}
               disabled={isLoading}
             >
@@ -157,10 +153,10 @@ export function ActivitiesSection({
         </Alert>
       )}
 
-      <Table size="sm">
+      <Table>
         <TableHeader>
           <TableRow>
-          <TableHead>Category</TableHead>
+            <TableHead>Category</TableHead>
             <TableHead>Activity</TableHead>
             <TableHead>Description</TableHead>
             <TableHead className="w-0 whitespace-nowrap">Impact</TableHead>
@@ -171,37 +167,42 @@ export function ActivitiesSection({
         <TableBody>
           {activities.map((activity) => (
             <TableRow key={activity.id}>
-              <TableCell className="text-weak w-0 whitespace-nowrap">Category</TableCell>
+              <TableCell className="text-weak w-0 whitespace-nowrap">
+                Category
+              </TableCell>
               <TableCell className="font-medium">{activity.name}</TableCell>
               <TableCell className="text-weak">
                 {activity.description || "No description"}
               </TableCell>
               <TableCell className="text-center">18</TableCell>
-              <TableCell className="text-center">{activity._count?.ratings || 0}</TableCell>
+              <TableCell className="text-center">
+                {activity._count?.ratings || 0}
+              </TableCell>
               <TableCell>
                 <div className="flex items-center gap-sm">
                   <Button
-                    variant="neutral"
-                    volume="soft"
-                    size="sm"
+                    variant="secondary"
+                    size="icon"
                     onClick={() => {
                       setSelectedActivity(activity);
                       setIsEditModalOpen(true);
                     }}
                     disabled={isLoading}
-                    leadingIcon={<Edit />}
-                  />
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+
                   <Button
-                    variant="danger"
-                    volume="soft"
-                    size="sm"
+                    variant="destructive"
+                    size="icon"
                     onClick={() => {
                       setSelectedActivity(activity);
                       setIsDeleteDialogOpen(true);
                     }}
                     disabled={isLoading}
-                    leadingIcon={<Trash2 />}
-                  />
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               </TableCell>
             </TableRow>
@@ -236,22 +237,25 @@ export function ActivitiesSection({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button 
-                variant="neutral" 
-                volume="moderate"
+              <Button
+                variant="secondary"
                 disabled={isLoading}
               >
                 Cancel
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button 
-                variant="danger" 
-                onClick={handleDelete}
-                isLoading={isLoading}
-              >
-                Delete Activity
-              </Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
+  {isLoading ? (
+    <span className="flex items-center gap-2">
+      <Loader className="h-4 w-4 animate-spin" />
+      Deleting...
+    </span>
+  ) : (
+    "Delete Activity"
+  )}
+</Button>
+
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

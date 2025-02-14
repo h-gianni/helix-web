@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/core/Card";
+import { Card, CardContent, CardHeader } from "@/components/ui/core/Card";
 import { Button } from "@/components/ui/core/Button";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
 import {
@@ -10,7 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/core/DropdownMenu";
+} from "@/components/ui/core/Dropdown-menu";
 import {
   MoreVertical,
   ChevronRight,
@@ -18,7 +18,7 @@ import {
   Trash2,
   LucideIcon,
 } from "lucide-react";
-import StarRating from "@/components/ui/core/StarRating";
+import StarRating from "@/components/ui/core/Star-rating";
 import { cn } from "@/lib/utils";
 
 export interface Team {
@@ -71,20 +71,16 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
     },
     ref
   ) => {
-    const mainRouter = useRouter();
-
-    const router = typeof window !== "undefined" ? mainRouter : null;
+    const router = useRouter();
     const effectiveTeamId = teamId ?? member.teamId;
     const encodedTeamId = encodeURIComponent(effectiveTeamId);
     const encodedMemberId = encodeURIComponent(member.id);
-    const teamName =
-      teams.find((team) => team.id === member.teamId)?.name || "No team";
 
     const handleViewDetails = () => {
       const path = `/dashboard/teams/${encodedTeamId}/members/${encodedMemberId}`;
       if (onNavigate) {
         onNavigate(path);
-      } else if (router) {
+      } else {
         router.push(path);
       }
     };
@@ -92,31 +88,27 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
     return (
       <Card
         ref={ref}
-        className={cn(
-          "flex flex-col",
-          variant === "compact" && "p-base",
-          className
-        )}
+        className={cn("flex flex-col", variant === "compact" && "p-4", className)}
         {...props}
       >
         <CardHeader className={cn("space-y-4", variant === "compact" && "p-0")}>
-          <div className="flex justify-between items-start">
-            <div className="flex gap-sm">
-              <Avatar size="md">
-                <AvatarFallback className="text-heading-5">
+          <div className="flex items-start justify-between">
+            <div className="flex gap-2">
+              <Avatar className="h-10 w-10">
+                <AvatarFallback className="text-lg">
                   {member.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div className="space-y-xxs">
-                <h1 className="text-heading-4">
-                  <span
+              <div className="space-y-1">
+                <h3 className="text-lg font-semibold">
+                  <button
                     onClick={handleViewDetails}
-                    className="ui-text-heading-4 hover:underline cursor-pointer"
+                    className="hover:underline"
                   >
                     {member.name}
-                  </span>
-                </h1>
-                <p className="ui-text-body-small ui-text-weakest">
+                  </button>
+                </h3>
+                <p className="text-sm text-muted-foreground">
                   {member.title || "No title"}
                 </p>
               </div>
@@ -124,62 +116,58 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  iconOnly
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
                   aria-label="Member actions"
-                  leadingIcon={<MoreVertical />}
-                  size="sm"
-                  variant="neutral"
-                />
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={handleViewDetails}>
-                  <ChevronRight />
+                  <ChevronRight className="mr-2 h-4 w-4" />
                   View Details
                 </DropdownMenuItem>
                 {onGenerateReview && (
                   <DropdownMenuItem onClick={() => onGenerateReview(member)}>
-                    <FileText />
+                    <FileText className="mr-2 h-4 w-4" />
                     Generate Performance Review
                   </DropdownMenuItem>
                 )}
                 {onDelete && (
                   <DropdownMenuItem
                     onClick={() => onDelete(member)}
-                    className="ui-text-danger focus:ui-text-danger"
+                    className="text-destructive focus:text-destructive"
                   >
-                    <Trash2 />
+                    <Trash2 className="mr-2 h-4 w-4" />
                     Delete
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          {/* <div className="space-y-1">
-            <p className="text-text-weakest">{teamName}</p>
-          </div> */}
         </CardHeader>
         <CardContent
           className={cn(
-            "flex-1 space-y-base pt-sm",
-            variant === "compact" && "p-0 pt-base"
+            "flex-1 space-y-4 pt-2",
+            variant === "compact" && "p-0 pt-4"
           )}
         >
-          <div className="flex justify-between items-center gap-base">
+          <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               {category.Icon && (
-                <category.Icon
-                  className={`ui-icon-base ${category.className}`}
-                />
+                <category.Icon className={cn("h-4 w-4", category.className)} />
               )}
-              <span className={`${category.className} font-medium`}>
+              <span className={cn("font-medium", category.className)}>
                 {category.label}
               </span>
             </div>
             <StarRating
               value={member.averageRating}
-              disabled={true}
+              disabled
               size="sm"
-              ratingsCount={member.ratingsCount}
+              count={member.ratingsCount}
             />
           </div>
         </CardContent>

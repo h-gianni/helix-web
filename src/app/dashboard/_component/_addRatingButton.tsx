@@ -28,13 +28,10 @@ export default function AddRatingButton({
   return (
     <>
       <Button
-        variant="primary"
-        volume="loud"
-        iconOnly={false}
-        leadingIcon={<Star />}
+        variant="default"
         onClick={handleClick}
       >
-        Rate Performance
+        <Star /> Rate Performance
       </Button>
 
       <PerformanceRatingModal 

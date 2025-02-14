@@ -16,21 +16,19 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  IconWrapper,
-} from "@/components/ui/core/DropdownMenu";
+} from "@/components/ui/core/Dropdown-menu";
 import {
   MoreVertical,
-  ChevronRight,
-  FileText,
+  Eye,
+  PenSquare,
+  ChartSpline,
   Trash2,
   LucideIcon,
-  PenSquare,
-  Eye,
-  ChartSpline,
 } from "lucide-react";
-import StarRating from "@/components/ui/core/StarRating";
+import StarRating from "@/components/ui/core/Star-rating";
 import { cn } from "@/lib/utils";
 
+// Types remain unchanged
 export interface Team {
   id: string;
   name: string;
@@ -87,7 +85,7 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
       onDelete,
       onGenerateReview,
       onNavigate,
-      performanceCategories: _performanceCategories, // renamed to indicate it's unused
+      performanceCategories: _performanceCategories,
       getPerformanceCategory,
       ...props
     },
@@ -100,41 +98,19 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
       return b.averageRating - a.averageRating;
     });
 
-    const handleNavigation = (path: string) => {
-      if (onNavigate) {
-        onNavigate(path);
-      }
-    };
-
     return (
-      <div
-        ref={ref}
-        className={cn("members-table-container", className)}
-        {...props}
-      >
-        <Table size="sm">
+      <div ref={ref} className={cn("w-full", className)} {...props}>
+        <Table>
           <TableHeader>
             <TableRow>
-              {showAvatar && (
-                <TableHead className="members-table-sr-only w-0"></TableHead>
-              )}
-              <TableHead className="members-table-col-name">Name</TableHead>
-              <TableHead className="members-table-col-team">Team</TableHead>
-              <TableHead className="members-table-col-title">
-                Job Title
-              </TableHead>
-              <TableHead className="members-table-col-seniority">
-                Seniority
-              </TableHead>
-              <TableHead className="members-table-col-performance">
-                Performance
-              </TableHead>
+              {showAvatar && <TableHead className="w-10" />}
+              <TableHead>Name</TableHead>
+              <TableHead>Team</TableHead>
+              <TableHead>Job Title</TableHead>
+              <TableHead>Seniority</TableHead>
+              <TableHead>Performance</TableHead>
               <TableHead>Ratings</TableHead>
-              {showActions && (
-                <TableHead className="members-table-sr-only w-0">
-                  Actions
-                </TableHead>
-              )}
+              {showActions && <TableHead className="w-10" />}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -144,18 +120,14 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
                 member.ratingsCount
               );
               const effectiveTeamId = teamId || member.teamId;
-              const encodedTeamId = encodeURIComponent(effectiveTeamId);
-              const encodedMemberId = encodeURIComponent(member.id);
-              const teamName =
-                teams.find((team) => team.id === member.teamId)?.name ||
-                "No team";
-              const detailsPath = `/dashboard/teams/${encodedTeamId}/members/${encodedMemberId}`;
+              const detailsPath = `/dashboard/teams/${encodeURIComponent(effectiveTeamId)}/members/${encodeURIComponent(member.id)}`;
+              const teamName = teams.find((team) => team.id === member.teamId)?.name || "No team";
 
               return (
                 <TableRow key={member.id}>
                   {showAvatar && (
                     <TableCell>
-                      <Avatar size="sm">
+                      <Avatar className="h-8 w-8">
                         <AvatarFallback>
                           {member.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
@@ -163,91 +135,70 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
                     </TableCell>
                   )}
                   <TableCell>
-                    <span
-                      onClick={() => handleNavigation(detailsPath)}
-                      className="members-table-name-link"
+                    <button
+                      onClick={() => onNavigate?.(detailsPath)}
+                      className="hover:underline"
                     >
                       {member.name}
-                    </span>
+                    </button>
                   </TableCell>
                   <TableCell>{teamName}</TableCell>
                   <TableCell>{member.title || "No title"}</TableCell>
-                  <TableCell className="members-table-cell-nowrap">
+                  <TableCell className="whitespace-nowrap">
                     Seniority grade
                   </TableCell>
-                  <TableCell className="members-table-cell-nowrap">
-                    <div className="members-table-performance-container">
+                  <TableCell className="whitespace-nowrap">
+                    <div className="flex items-center gap-2">
                       {category.Icon && (
-                        <category.Icon
-                          className={cn(
-                            "members-table-performance-icon",
-                            category.className
-                          )}
-                        />
+                        <category.Icon className={cn("h-4 w-4", category.className)} />
                       )}
                       <span className={category.className}>
                         {category.label}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="members-table-cell-nowrap">
+                  <TableCell className="whitespace-nowrap">
                     <StarRating
                       value={member.averageRating}
-                      disabled={true}
+                      disabled
                       size="sm"
-                      ratingsCount={member.ratingsCount}
+                      count={member.ratingsCount}
                     />
                   </TableCell>
                   {showActions && (
-                    <TableCell className="text-right">
+                    <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
-                            iconOnly
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
                             aria-label="Member actions"
-                            leadingIcon={
-                              <IconWrapper>
-                                <MoreVertical />
-                              </IconWrapper>
-                            }
-                            size="sm"
-                          />
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() => handleNavigation(detailsPath)}
-                          >
-                            <IconWrapper>
-                              <Eye />
-                            </IconWrapper>
+                          <DropdownMenuItem onClick={() => onNavigate?.(detailsPath)}>
+                            <Eye className="mr-2 h-4 w-4" />
                             Quick View Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() => handleNavigation(detailsPath)}
-                          >
-                            <IconWrapper>
-                              <PenSquare />
-                            </IconWrapper>
+                          <DropdownMenuItem onClick={() => onNavigate?.(detailsPath)}>
+                            <PenSquare className="mr-2 h-4 w-4" />
                             Edit Details
                           </DropdownMenuItem>
                           {onGenerateReview && (
-                            <DropdownMenuItem
-                              onClick={() => onGenerateReview(member)}
-                            >
-                              <IconWrapper>
-                                <ChartSpline />
-                              </IconWrapper>
+                            <DropdownMenuItem onClick={() => onGenerateReview(member)}>
+                              <ChartSpline className="mr-2 h-4 w-4" />
                               Performance Reviews
                             </DropdownMenuItem>
                           )}
                           {onDelete && (
                             <DropdownMenuItem
-                              destructive
                               onClick={() => onDelete(member)}
+                              className="text-destructive focus:text-destructive"
                             >
-                              <IconWrapper>
-                                <Trash2 />
-                              </IconWrapper>
+                              <Trash2 className="mr-2 h-4 w-4" />
                               Delete Member
                             </DropdownMenuItem>
                           )}

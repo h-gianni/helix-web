@@ -1,59 +1,33 @@
+/* src/styles/components/index.css */
 
-/* src/style/components/index.css */
-/* Component Tokens Index
- * Each file contains component-specific custom properties
- * Organized alphabetically for easier maintenance
- */
+/* Libraries */
+@import '../lib/reset.css';
+@import '../lib/animations.css';
 
-/* Component styles in alphabetical order */
+/* Tokens */
+@import '../tokens/colors.css';
+@import '../tokens/typography.css';
+@import '../tokens/spacing.css';
+@import '../tokens/shadows.css';
 
-/* Core - Base components (buttons, inputs) */
-@import './core/accordion.css';
-@import './core/alert.css';
-@import './core/alertdialog.css';
-@import './core/avatar.css';
-@import './core/badge.css';
-@import './core/breadcrumb.css';
+/* Themes */
+@import '../themes/base.css';
+@import '../themes/dark.css';
+@import '../themes/utils.css';
+
+/* Components */
+@import './typography.css';
+@import './spacing.css';
+
+/* Components core */
 @import './core/button.css';
-@import './core/calendar.css';
 @import './core/card.css';
-@import './core/checkbox.css';
-@import './core/command.css';
 @import './core/dialog.css';
-@import './core/drawer.css';
-@import './core/dropdown.css';
-@import './core/hovercard.css';
-@import './core/input.css';
-@import './core/label.css';
-@import './core/menubar.css';
-@import './core/pagination.css';
-@import './core/popover.css';
-@import './core/progress.css';
-@import './core/radiogroup.css';
-@import './core/scrollarea.css';
-@import './core/select.css';
-@import './core/separator.css';
-@import './core/sheet.css';
-@import './core/skeleton.css';
-@import './core/switch.css';
-@import './core/starrating.css';
-@import './core/table.css';
-@import './core/tabs.css';
-@import './core/textarea.css';
-@import './core/toggle.css';
-@import './core/togglegroup.css';
-@import './core/toast.css';
-@import './core/tooltip.css';
+@import './core/star-rating.css';
 
-/* Composite - Components built from core components */
-@import './composite/memberstable.css';
-@import './composite/navigationmenu.css';
-@import './composite/pageheader.css';
-@import './composite/profilecard.css';
-
-/* Layout - Layout components */
-
-/* Patterns - Complex UI patterns */
-
-/* Main custom classes repository */
-@import './../globals.css'
+/* Components composite */
+@import './composite/page-header.css';
+@import './composite/members-table.css';
+/* @import './composite/navigation-menu.css'; */
+@import './composite/profile-card.css';
+@import './composite/side-bar.css';

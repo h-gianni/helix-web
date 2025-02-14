@@ -2,7 +2,7 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import StarRating from "@/components/ui/core/StarRating";
+import StarRating from "@/components/ui/core/Star-rating";
 import {
   TrendingUp,
   TrendingDown,
@@ -41,7 +41,7 @@ export default function MemberDashboard({
 
   if (error || !dashboardData) {
     return (
-      <Alert variant="danger">
+      <Alert variant="destructive">
         <AlertCircle />
         <AlertDescription>
           {error instanceof Error ? error.message : "Failed to load dashboard"}

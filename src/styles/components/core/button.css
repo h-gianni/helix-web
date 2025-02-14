@@ -1,141 +1,48 @@
-.ui-button {
-  @apply inline-flex items-center justify-center gap-sm whitespace-nowrap rounded-base cursor-pointer capitalize text-base font-semibold leading-none;
-  
-  &:focus-visible {
-    @apply outline-none ui-ring-primary;
-  }
-  
-  &:disabled {
-    @apply cursor-not-allowed opacity-disabled;
-  }
-
-  &[data-icon="true"] {
-    @apply p-0 flex items-center justify-center aspect-square;
-  }
-}
-
-.ui-button .ui-icon svg {
-  @apply size-4 shrink-0;
-}
-
-.ui-button[data-shape="rounded"] {
-  @apply rounded-full;
-}
-
-@layer components {
-  /* Neutral */
-  .ui-button[data-variant="neutral"] {
-    @apply ui-background-neutral-strong text-inverse 
-    hover:ui-background-neutral-stronger active:ui-background-neutral-strongest;
-    
-    &[data-icon="true"] {
-      @apply bg-transparent text-foreground
-      hover:ui-background-neutral-weakest active:ui-background-neutral-weaker;
-    }
-  }
-
-  .ui-button[data-variant="neutral-moderate"] {
-    @apply border ui-border-neutral-strong text-foreground hover:text-strong hover:ui-background-neutral-weakest 
-    active:ui-background-neutral-weaker;
-  }
-
-  .ui-button[data-variant="neutral-soft"] {
-    @apply text-foreground bg-transparent
-    hover:ui-background-neutral-weakest active:ui-background-neutral-weaker;
-  }
-
-  /* Primary */
-  .ui-button[data-variant="primary"] {
-    @apply ui-background-primary-strong text-inverse
-    hover:ui-background-primary-stronger active:ui-background-primary-strongest;
-    
-    &[data-icon="true"] {
-      @apply bg-transparent ui-text-primary
-      hover:ui-background-primary-weakest active:ui-background-primary-weaker;
-    }
-  }
-
-  .ui-button[data-variant="primary-moderate"] {
-    @apply border ui-border-primary-strong ui-text-primary
-    hover:ui-background-primary-weakest hover:ui-text-primary-strong 
-    active:ui-background-primary-weaker;
-  }
-
-  .ui-button[data-variant="primary-soft"] {
-    @apply ui-text-primary bg-transparent
-    hover:ui-background-primary-weakest active:ui-background-primary-weaker;
-  }
-
-  /* Warning */
-  .ui-button[data-variant="warning"] {
-    @apply ui-background-warning text-inverse
-    hover:ui-background-warning-strong active:ui-background-warning-stronger;
-    
-    &[data-icon="true"] {
-      @apply bg-transparent ui-text-warning
-      hover:ui-background-warning-weakest active:ui-background-warning-weaker;
-    }
-  }
-
-  .ui-button[data-variant="warning-moderate"] {
-    @apply border ui-border-warning-strong ui-text-warning
-    hover:ui-background-warning-weakest hover:ui-text-warning-strong
-    active:ui-background-warning-weaker;
-  }
-
-  .ui-button[data-variant="warning-soft"] {
-    @apply ui-text-warning bg-transparent
-    hover:ui-background-warning-weakest active:ui-background-warning-weaker;
-  }
-
-  /* Danger */
-  .ui-button[data-variant="danger"] {
-    @apply ui-background-danger text-inverse
-    hover:ui-background-danger-strong active:ui-background-danger-stronger;
-    
-    &[data-icon="true"] {
-      @apply bg-transparent ui-text-danger
-      hover:ui-background-danger-weakest active:ui-background-danger-weaker;
-    }
-  }
-
-  .ui-button[data-variant="danger-moderate"] {
-    @apply border ui-border-danger-strong ui-text-danger
-    hover:ui-background-danger-weakest hover:ui-text-danger-strong
-    active:ui-background-danger-weaker;
-  }
-
-  .ui-button[data-variant="danger-soft"] {
-    @apply ui-text-danger bg-transparent
-    hover:ui-background-danger-weakest active:ui-background-danger-weaker;
-  }
-
-  /* Sizes */
-  .ui-button[data-size="sm"] {
-    @apply min-w-8 px-sm text-sm h-[--height-controls-sm];
-    
-    &[data-icon="true"] {
-      @apply size-8 p-0;
-    }
-  }
-
-  .ui-button[data-size="base"] {
-    @apply min-w-10 px-md text-base h-[--height-controls-base];
-    
-    &[data-icon="true"] {
-      @apply size-10 p-0;
-    }
-  }
-
-  .ui-button[data-size="lg"] {
-    @apply min-w-12 px-lg text-lg h-[--height-controls-lg];
-    
-    &[data-icon="true"] {
-      @apply size-12 p-0;
-    }
-  }
-}
-
-.ui-button[data-state="loading"] {
-  @apply cursor-wait opacity-100;
-}
+/* components/core/button.css */
+.button {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors 
+    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
+    disabled:pointer-events-none disabled:opacity-50;
+   }
+   
+   /* Variants */
+   .button[data-variant="default"] {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+   }
+   
+   .button[data-variant="destructive"] {
+    @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
+   }
+   
+   .button[data-variant="outline"] {
+    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+   }
+   
+   .button[data-variant="secondary"] {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+   }
+   
+   .button[data-variant="ghost"] {
+    @apply hover:bg-accent hover:text-accent-foreground;
+   }
+   
+   .button[data-variant="link"] {
+    @apply text-primary underline-offset-4 hover:underline;
+   }
+   
+   /* Sizes */
+   .button[data-size="default"] {
+    @apply h-10 px-4 py-2;
+   }
+   
+   .button[data-size="sm"] {
+    @apply h-9 rounded-md px-3;
+   }
+   
+   .button[data-size="lg"] {
+    @apply h-11 rounded-md px-8;
+   }
+   
+   .button[data-size="icon"] {
+    @apply h-10 w-10;
+   }

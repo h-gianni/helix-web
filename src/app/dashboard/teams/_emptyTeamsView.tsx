@@ -40,7 +40,7 @@ const EmptyTeamsView = ({ onCreateTeam }: EmptyTeamsViewProps) => {
                     "Invite your team members to join and collaborate",
                 },
               ].map(({ icon: Icon, title, description }) => (
-                <Card key={title} size="sm">
+                <Card key={title}>
                   <CardContent>
                     <div className="flex flex-col items-center space-y-sm">
                       <div className="size-8 rounded-pill bg-primary-weakest p-xs">
@@ -58,13 +58,11 @@ const EmptyTeamsView = ({ onCreateTeam }: EmptyTeamsViewProps) => {
 
             <div className="flex justify-center pt-base">
               <Button
-                variant="primary"
-                shape="rounded"
+                variant="default"
                 size="lg"
                 onClick={onCreateTeam}
-                leadingIcon={<Plus />}
               >
-                Create Your First Team
+                <Plus /> Create Your First Team
               </Button>
             </div>
           </div>

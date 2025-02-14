@@ -45,18 +45,13 @@ const EmptyDashboardView = ({ onCreateTeam }: EmptyDashboardViewProps) => {
                 </p>
                 <div className="flex gap-sm justify-center py-base">
                   <Button
-                    shape="rounded"
-                    size="base"
-                    variant="neutral"
-                    volume="moderate"
+                    variant="secondary"
                     onClick={() => router.push('/dashboard/teams')}
                   >
                     Go to teams
                   </Button>
                   <Button
-                    shape="rounded"
-                    size="base"
-                    variant="primary"
+                    variant="default"
                     onClick={() =>
                       router.push(`/dashboard/teams/${firstTeam?.id}`)
                     }

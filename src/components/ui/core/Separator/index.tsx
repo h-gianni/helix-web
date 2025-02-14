@@ -1,64 +1,31 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import * as SeparatorPrimitive from "@radix-ui/react-separator";
-import { cn } from "@/lib/utils";
+import * as React from "react"
+import * as SeparatorPrimitive from "@radix-ui/react-separator"
 
-export type SeparatorVariant = "default" | "accent" | "dashed" | "dotted" | "gradient";
-
-export interface SeparatorProps
-  extends React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root> {
-  variant?: SeparatorVariant;
-  withText?: string;
-}
+import { cn } from "@/lib/utils"
 
 const Separator = React.forwardRef<
   React.ElementRef<typeof SeparatorPrimitive.Root>,
-  SeparatorProps
+  React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>
 >(
   (
-    {
-      className,
-      orientation = "horizontal",
-      decorative = true,
-      variant = "default",
-      withText,
-      ...props
-    },
+    { className, orientation = "horizontal", decorative = true, ...props },
     ref
-  ) => {
-    if (withText && orientation !== "horizontal") {
-      console.warn("withText prop is only supported for horizontal orientation");
-    }
+  ) => (
+    <SeparatorPrimitive.Root
+      ref={ref}
+      decorative={decorative}
+      orientation={orientation}
+      className={cn(
+        "shrink-0 bg-border",
+        orientation === "horizontal" ? "h-[1px] w-full" : "h-full w-[1px]",
+        className
+      )}
+      {...props}
+    />
+  )
+)
+Separator.displayName = SeparatorPrimitive.Root.displayName
 
-    // If withText is provided, render a text separator
-    if (withText && orientation === "horizontal") {
-      return (
-        <div className="ui-separator-with-text">
-          <div className="h-px" />
-          <span>{withText}</span>
-          <div className="h-px" />
-        </div>
-      );
-    }
-
-    return (
-      <SeparatorPrimitive.Root
-        ref={ref}
-        decorative={decorative}
-        orientation={orientation}
-        className={cn(
-          "ui-separator-base",
-          `ui-separator-${variant}`,
-          orientation === "horizontal" ? "ui-separator-horizontal" : "ui-separator-vertical",
-          className
-        )}
-        {...props}
-      />
-    );
-  }
-);
-Separator.displayName = SeparatorPrimitive.Root.displayName;
-
-export { Separator };
-// export type { SeparatorProps };
+export { Separator }

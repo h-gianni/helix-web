@@ -1,0 +1,36 @@
+/* themes/dark.css */
+[data-theme="dark"] {
+    --background: var(--gray-700);
+    --foreground: var(--gray-50);
+   
+    --card: var(--gray-600);
+    --card-foreground: var(--gray-50);
+   
+    --popover: var(--gray-600);
+    --popover-foreground: var(--gray-50);
+   
+    --primary: var(--primary-200);
+    --primary-foreground: var(--gray-700);
+   
+    --secondary: var(--gray-500);
+    --secondary-foreground: var(--gray-50);
+   
+    --muted: var(--gray-500);
+    --muted-foreground: var(--gray-200);
+   
+    --accent: var(--accent-200);
+    --accent-foreground: var(--gray-700);
+   
+    --destructive: var(--danger-200);
+    --destructive-foreground: var(--gray-700);
+   
+    --border: var(--gray-500);
+    --input: var(--gray-500);
+    --ring: var(--primary-200);
+   
+    --shadow-sm: none;
+    --shadow-base: none;
+    --shadow-md: none;
+    --shadow-lg: none;
+    --shadow-xl: none;
+   }

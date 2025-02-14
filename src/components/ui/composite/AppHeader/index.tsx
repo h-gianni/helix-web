@@ -12,14 +12,17 @@ import {
 } from "@/components/ui/core/Breadcrumb";
 import { SidebarTrigger } from "@/components/ui/composite/Sidebar";
 import { Button } from "@/components/ui/core/Button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/core/Avatar";
-import { 
-  Bell, 
-  Star, 
-  Settings, 
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/components/ui/core/Avatar";
+import {
+  Bell,
+  Star,
+  Settings,
   CreditCard,
   LogOut,
-  Sun,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -28,10 +31,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  IconWrapper,
-} from "@/components/ui/core/DropdownMenu";
-import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
-import { UserButton } from '@clerk/nextjs';
+} from "@/components/ui/core/Dropdown-menu";
 
 export interface BreadcrumbItem {
   href?: string;
@@ -46,36 +46,35 @@ const UserNav = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar size="sm" className="cursor-pointer">
-          <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
-          <AvatarFallback>GF</AvatarFallback>
-        </Avatar>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
+            <AvatarFallback>GF</AvatarFallback>
+          </Avatar>
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end">
+      <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuItem>
-        <IconWrapper><Star /></IconWrapper>
-          Upgrade to Pro
+          <Star className="mr-2 h-4 w-4" />
+          <span>Upgrade to Pro</span>
         </DropdownMenuItem>
         <DropdownMenuItem>
-        <IconWrapper><Settings /></IconWrapper>
-          Account
+          <Settings className="mr-2 h-4 w-4" />
+          <span>Settings</span>
         </DropdownMenuItem>
         <DropdownMenuItem>
-        <IconWrapper><CreditCard /></IconWrapper>
-          Billing
+          <CreditCard className="mr-2 h-4 w-4" />
+          <span>Billing</span>
         </DropdownMenuItem>
         <DropdownMenuItem>
-        <IconWrapper><Bell /></IconWrapper>
-          Notifications
+          <Bell className="mr-2 h-4 w-4" />
+          <span>Notifications</span>
         </DropdownMenuItem>
-        {/* <DropdownMenuSeparator />
-        <DropdownMenuLabel>Theme</DropdownMenuLabel>
-        <IconWrapper><ThemeSwitcher /></IconWrapper> */}
         <DropdownMenuSeparator />
-        <DropdownMenuItem destructive>
-        <IconWrapper><LogOut /></IconWrapper>
-          Log out
+        <DropdownMenuItem>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -84,10 +83,10 @@ const UserNav = () => {
 
 export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
   return (
-    <div className="flex justify-between items-center gap-8 pb-base">
+    <div className="flex items-center justify-between gap-8 pb-4">
       <div className="flex items-center gap-1">
         <SidebarTrigger />
-        <Breadcrumb className="border-l border-base px-4">
+        <Breadcrumb className="border-l border-input px-4">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
@@ -104,7 +103,7 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
                       <BreadcrumbPage>{item.label}</BreadcrumbPage>
                     ) : (
                       <BreadcrumbLink asChild>
-                        <Link href={item.href || "#"}>{item.label}</Link>
+                        <Link href={item.href ?? "#"}>{item.label}</Link>
                       </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>
@@ -116,15 +115,9 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
         </Breadcrumb>
       </div>
       <div className="flex items-center gap-4">
-        <Button
-          variant="neutral"
-          volume="soft"
-          shape="rounded"
-          iconOnly
-          size="sm"
-          leadingIcon={<Bell />}
-          aria-label="Notifications"
-        />
+        <Button variant="ghost" size="icon" aria-label="Notifications">
+          <Bell className="h-4 w-4" />
+        </Button>
         <UserNav />
       </div>
     </div>

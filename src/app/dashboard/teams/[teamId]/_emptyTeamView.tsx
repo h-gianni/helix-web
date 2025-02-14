@@ -9,7 +9,7 @@ interface EmptyTeamViewProps {
 
 export default function EmptyTeamView({ onAddMember }: EmptyTeamViewProps) {
  return (
-   <Card align="center">
+   <Card>
      <CardContent className="py-8">
        <div className="space-y-8 text-center">
          <div className="space-y-4">
@@ -24,12 +24,11 @@ export default function EmptyTeamView({ onAddMember }: EmptyTeamViewProps) {
            </div>
          </div>
          <Button
-           variant="primary"
+           variant="default"
            size="lg"
            onClick={onAddMember}
-           leadingIcon={<UserPlus />}
          >
-           Add First Member
+           <UserPlus /> Add First Member
          </Button>
        </div>
      </CardContent>

@@ -63,19 +63,17 @@ export default function MemberDetailsPage() {
   if (error || !member) {
     return (
       <div className="ui-loader-error">
-        <Alert variant="danger">
+        <Alert variant="destructive">
           <AlertCircle />
           <AlertDescription>
             {error instanceof Error ? error.message : "Member not found"}
           </AlertDescription>
         </Alert>
         <Button
-          variant="neutral"
-          volume="moderate"
+          variant="secondary"
           onClick={() => router.push(`/dashboard/teams/${params.teamId}`)}
-          leadingIcon={<ArrowLeft />}
         >
-          Back to Team
+          <ArrowLeft /> Back to Team
         </Button>
       </div>
     );
@@ -97,21 +95,19 @@ export default function MemberDetailsPage() {
         actions={
           <div className="flex gap-sm">
             <Button
-              variant="neutral"
-              volume="soft"
+              variant="secondary"
               onClick={() => setRatingModalOpen(true)}
-              leadingIcon={<Plus />}
             >
-              Add Rating
+              <Plus /> Add Rating
             </Button>
-            <Button variant="primary" leadingIcon={<ChartNoAxesCombined />}>
-              Generate Performance Review
+            <Button variant="default">
+            <ChartNoAxesCombined /> Generate Performance Review
             </Button>
           </div>
         }
       />
 
-      <main className="ui-layout-page-main">
+      <main className="layout-page-main">
         <div className="flex gap-base flex-row-reverse">
           <div className="w-80">
             <ProfileCard
@@ -183,11 +179,11 @@ export default function MemberDetailsPage() {
               <TabsContent value="goals">
                 <div className="w-full">
                   <div className="flex justify-end mb-4">
-                    <Button variant="primary" asChild leadingIcon={<Target />}>
+                    <Button variant="default" asChild>
                       <Link
                         href={`/dashboard/teams/${params.teamId}/members/${params.memberId}/goals/add`}
                       >
-                        Add Goal
+                        <Target /> Add Goal
                       </Link>
                     </Button>
                   </div>
@@ -197,7 +193,7 @@ export default function MemberDetailsPage() {
                   ) : (
                     <div className="space-y-4">
                       {member.goals.map((goal) => (
-                        <Card key={goal.id} size="sm" shadow="sm">
+                        <Card key={goal.id}>
                           <CardContent className="p-4">
                             <div className="flex justify-between items-start">
                               <div>
@@ -207,16 +203,13 @@ export default function MemberDetailsPage() {
                                 </p>
                               </div>
                               <Button
-                                variant="neutral"
-                                volume="soft"
-                                size="sm"
+                                variant="secondary"
                                 asChild
-                                leadingIcon={<PenSquare />}
                               >
                                 <Link
                                   href={`/dashboard/teams/${params.teamId}/members/${params.memberId}/goals/${goal.id}/edit`}
                                 >
-                                  Edit
+                                  <PenSquare /> Edit
                                 </Link>
                               </Button>
                             </div>

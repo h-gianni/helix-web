@@ -9,7 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/core/DropdownMenu';
+} from '@/components/ui/core/Dropdown-menu';
 import { Monitor, Moon, Sun } from 'lucide-react';
 
 export function ThemeSwitcher() {

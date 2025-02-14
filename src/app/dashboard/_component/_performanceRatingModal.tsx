@@ -21,14 +21,14 @@ import {
 } from "@/components/ui/core/Select";
 import { Label } from "@/components/ui/core/Label";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import { User } from "lucide-react";
-import StarRating from '@/components/ui/core/StarRating';
-import { 
-  usePerformanceRatingStore, 
-  useTeams, 
-  useTeamMembers, 
+import { User, Loader } from "lucide-react";
+import StarRating from "@/components/ui/core/Star-rating";
+import {
+  usePerformanceRatingStore,
+  useTeams,
+  useTeamMembers,
   useTeamActivities,
-  useSubmitRating 
+  useSubmitRating,
 } from "@/store/performance-rating-store";
 
 interface PerformanceRatingModalProps {
@@ -63,11 +63,10 @@ export default function PerformanceRatingModal({
   // Queries with proper type handling
   const { data: teams = [], isLoading: teamsLoading } = useTeams();
   const { data: members = [], isLoading: membersLoading } = useTeamMembers(
-    selectedTeamId || teamId || ''
+    selectedTeamId || teamId || ""
   );
-  const { data: activities = [], isLoading: activitiesLoading } = useTeamActivities(
-    selectedTeamId || teamId || ''
-  );
+  const { data: activities = [], isLoading: activitiesLoading } =
+    useTeamActivities(selectedTeamId || teamId || "");
   const submitRating = useSubmitRating();
 
   // Initialize with props when the modal opens
@@ -83,7 +82,13 @@ export default function PerformanceRatingModal({
     const currentTeamId = selectedTeamId || teamId;
     const currentMemberId = selectedMemberId || memberId;
 
-    if (!currentTeamId || !currentMemberId || !selectedActivityId || rating === 0) return;
+    if (
+      !currentTeamId ||
+      !currentMemberId ||
+      !selectedActivityId ||
+      rating === 0
+    )
+      return;
 
     try {
       await submitRating.mutateAsync({
@@ -91,13 +96,13 @@ export default function PerformanceRatingModal({
         memberId: currentMemberId,
         activityId: selectedActivityId,
         rating,
-        feedback: feedback.trim() || undefined
+        feedback: feedback.trim() || undefined,
       });
 
       handleReset();
       setIsOpen(false);
     } catch (error) {
-      console.error('Failed to submit rating:', error);
+      console.error("Failed to submit rating:", error);
     }
   };
 
@@ -124,11 +129,11 @@ export default function PerformanceRatingModal({
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {submitRating.error && (
-            <Alert variant="danger">
+            <Alert variant="destructive">
               <AlertDescription>
-                {submitRating.error instanceof Error 
-                  ? submitRating.error.message 
-                  : 'Failed to submit rating'}
+                {submitRating.error instanceof Error
+                  ? submitRating.error.message
+                  : "Failed to submit rating"}
               </AlertDescription>
             </Alert>
           )}
@@ -151,106 +156,121 @@ export default function PerformanceRatingModal({
           )}
 
           {!teamId && hasTeams && (
-            <Select 
-              value={selectedTeamId ?? undefined}
-              onValueChange={setSelectedTeamId}
-              width="full"
-              withLabel
-              label="Select Team"
-            >
-              <SelectTrigger disabled={teamsLoading}>
-                <SelectValue placeholder={teamsLoading ? "Loading teams..." : "Select a team"} />
-              </SelectTrigger>
-              <SelectContent>
-                {teams.map((team) => (
-                  <SelectItem key={team.id} value={team.id}>
-                    {team.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-foreground">
+                Select Team
+              </label>
+              <Select
+                value={selectedTeamId ?? ""}
+                onValueChange={setSelectedTeamId}
+                disabled={teamsLoading}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={
+                      teamsLoading ? "Loading teams..." : "Select a team"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {teams.map((team) => (
+                    <SelectItem key={team.id} value={team.id}>
+                      {team.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
 
           {!memberId && currentTeamId && (
-            <Select 
-              value={selectedMemberId ?? undefined}
-              onValueChange={setSelectedMemberId}
-              width="full"
-              withLabel
-              label="Select Member"
-            >
-              <SelectTrigger disabled={membersLoading}>
-                <SelectValue placeholder={membersLoading ? "Loading members..." : "Select a member"} />
-              </SelectTrigger>
-              <SelectContent>
-                {members.map((member) => (
-                  <SelectItem key={member.id} value={member.id}>
-                    {member.user.name || member.user.email}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="flex flex-col gap-2">
+  <label className="text-sm font-medium text-foreground">Select Member</label>
+  <Select value={selectedMemberId ?? ""} onValueChange={setSelectedMemberId} disabled={membersLoading}>
+    <SelectTrigger className="w-full">
+      <SelectValue placeholder={membersLoading ? "Loading members..." : "Select a member"} />
+    </SelectTrigger>
+    <SelectContent>
+      {members.map((member) => (
+        <SelectItem key={member.id} value={member.id}>
+          {member.user.name || member.user.email}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</div>
+
           )}
 
-          <Select
-            value={selectedActivityId ?? undefined}
-            onValueChange={setSelectedActivityId}
-            width="full"
-            withLabel
-            label="Select activity"
-          >
-            <SelectTrigger disabled={activitiesLoading || !currentTeamId || !currentMemberId}>
-              <SelectValue placeholder={
-                activitiesLoading 
-                  ? "Loading activities..." 
-                  : !currentTeamId || !currentMemberId
-                  ? "Select team and member first"
-                  : "Select an activity"
-              } />
-            </SelectTrigger>
-            <SelectContent>
-              {activities.length === 0 ? (
-                <div className="p-2 text-sm text-muted-foreground">
-                  {activitiesLoading ? "Loading..." : "No activities available"}
-                </div>
-              ) : (
-                activities.map((activity) => (
-                  <SelectItem key={activity.id} value={activity.id}>
-                    {activity.name}
-                  </SelectItem>
-                ))
-              )}
-            </SelectContent>
-          </Select>
+<div className="flex flex-col gap-2">
+  <label className="text-sm font-medium text-foreground">Select Activity</label>
+  <Select 
+    value={selectedActivityId ?? ""} 
+    onValueChange={setSelectedActivityId} 
+    disabled={activitiesLoading || !currentTeamId || !currentMemberId}
+  >
+    <SelectTrigger className="w-full">
+      <SelectValue
+        placeholder={
+          activitiesLoading
+            ? "Loading activities..."
+            : !currentTeamId || !currentMemberId
+            ? "Select team and member first"
+            : "Select an activity"
+        }
+      />
+    </SelectTrigger>
+    <SelectContent>
+      {activities.length === 0 ? (
+        <div className="p-2 text-sm text-muted-foreground">
+          {activitiesLoading ? "Loading..." : "No activities available"}
+        </div>
+      ) : (
+        activities.map((activity) => (
+          <SelectItem key={activity.id} value={activity.id}>
+            {activity.name}
+          </SelectItem>
+        ))
+      )}
+    </SelectContent>
+  </Select>
+</div>
+
 
           <div className="space-y-2">
             <Label>Rating</Label>
             <div className="flex justify-center py-2">
-              <StarRating 
-                value={rating} 
-                onChange={setRating} 
+              <StarRating
+                value={rating}
+                onChange={setRating}
                 size="lg"
                 showValue={true}
               />
             </div>
           </div>
 
-          <Textarea
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
-            placeholder="Enter feedback..."
-            rows={3}
-            data-size="base"
-            showCount
-            maxLength={250}
-            withLabel
-            label="Feedback (Optional)"
-          />
+          <div className="flex flex-col gap-2">
+  <label className="text-sm font-medium text-foreground" htmlFor="feedback">
+    Feedback (Optional)
+  </label>
+  <Textarea
+    id="feedback"
+    value={feedback}
+    onChange={(e) => setFeedback(e.target.value)}
+    placeholder="Enter feedback..."
+    rows={3}
+    maxLength={250}
+    className="w-full resize-none"
+  />
+  <div className="text-right text-xs text-muted-foreground">
+    {feedback.length} / 250
+  </div>
+</div>
+
 
           <DialogFooter>
             <Button
-              variant="neutral"
-              volume="soft"
+              variant="secondary"
               onClick={handleReset}
               disabled={submitRating.isPending}
               type="button"
@@ -258,19 +278,26 @@ export default function PerformanceRatingModal({
               Reset
             </Button>
             <Button
-              variant="primary"
-              type="submit"
-              disabled={
-                submitRating.isPending || 
-                !currentTeamId || 
-                !currentMemberId || 
-                !selectedActivityId || 
-                rating === 0
-              }
-              isLoading={submitRating.isPending}
-            >
-              Save Rating
-            </Button>
+  variant="default"
+  type="submit"
+  disabled={
+    submitRating.isPending ||
+    !currentTeamId ||
+    !currentMemberId ||
+    !selectedActivityId ||
+    rating === 0
+  }
+>
+  {submitRating.isPending ? (
+    <span className="flex items-center gap-2">
+      <Loader className="h-4 w-4 animate-spin" />
+      Saving...
+    </span>
+  ) : (
+    "Save Rating"
+  )}
+</Button>
+
           </DialogFooter>
         </form>
       </DialogContent>

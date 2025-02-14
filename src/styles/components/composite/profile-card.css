@@ -1,0 +1,65 @@
+
+    .profile-card {
+      @apply relative !p-0;
+    }
+  
+    .profile-card-content {
+      @apply flex gap-2 relative;
+    }
+  
+    .profile-card[data-align="vertical"] .profile-card-content {
+      @apply flex-col gap-0;
+    }
+  
+    .profile-card-image-container {
+      @apply relative overflow-hidden;
+    }
+  
+    .profile-card[data-align="vertical"] .profile-card-image-container {
+      @apply h-40 w-full rounded-t-lg;
+    }
+  
+    .profile-card[data-align="horizontal"] .profile-card-image-container {
+      @apply w-80 h-full rounded-l-lg;
+    }
+  
+    .profile-card-image {
+      @apply object-cover w-full h-full;
+    }
+  
+    .profile-card-fields {
+      @apply p-4 space-y-4;
+    }
+  
+    .profile-card[data-align="vertical"] .profile-card-fields {
+      @apply pt-1 space-y-2;
+    }
+  
+    .profile-card[data-align="horizontal"] .profile-card-fields {
+      @apply flex-1;
+    }
+  
+    /* .profile-card-label {
+      @apply ui-text-body-helper;
+    } */
+  
+    .profile-card-value {
+      @apply flex items-center gap-2;
+    }
+  
+    .profile-card-value[data-variant="title"] {
+      @apply heading-2;
+    }
+  
+    .profile-card-value[data-variant="strong"] {
+      @apply text-strong;
+    }
+  
+    .profile-card-edit {
+      @apply absolute top-0 right-0 p-4;
+    }
+  
+    .profile-card-footer {
+      @apply px-4 pb-4;
+    }
+  

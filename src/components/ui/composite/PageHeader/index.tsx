@@ -15,34 +15,15 @@ export interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
-  (
-    {
-      title,
-      caption,
-      actions,
-      backButton,
-      icon,
-      className,
-      ...props
-    },
-    ref
-  ) => {
+  ({ title, caption, actions, backButton, icon, className, ...props }, ref) => {
     return (
-      <div
-        ref={ref}
-        className={cn("page-header", className)}
-        {...props}
-      >
+      <div ref={ref} className={cn("page-header", className)} {...props}>
         <div className="page-header-container">
           <div className="page-header-content">
             {backButton && (
-              <Button
-                variant="neutral"
-                iconOnly
-                size="sm"
-                onClick={backButton.onClick}
-                leadingIcon={<ArrowLeft />}
-              />
+              <Button variant="secondary" size="sm" onClick={backButton.onClick}>
+                <ArrowLeft />
+              </Button>
             )}
             <div>
               <h1 className="page-header-title">
@@ -52,11 +33,7 @@ const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
               {caption && <p className="page-header-caption">{caption}</p>}
             </div>
           </div>
-          {actions && (
-            <div className="page-header-actions">
-              {actions}
-            </div>
-          )}
+          {actions && <div className="page-header-actions">{actions}</div>}
         </div>
       </div>
     );

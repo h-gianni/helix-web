@@ -1,54 +1,18 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/core/Button";
+import * as React from "react"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { X } from "lucide-react"
 
-type ActionConfig = {
-  label: string;
-  onClick: () => void;
-  isLoading?: boolean;
-};
+import { cn } from "@/lib/utils"
 
-interface DialogFooterConfig {
-  primaryAction: ActionConfig;
-  secondaryAction?: ActionConfig;
-  textAction?: ActionConfig;
-}
+const Dialog = DialogPrimitive.Root
 
-export interface DialogContentProps
-  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> {
-  size?: "base" | "lg" | "xl";
-  hideClose?: boolean;
-  fullHeight?: boolean;
-}
+const DialogTrigger = DialogPrimitive.Trigger
 
-export interface DialogConfigProps
-  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root> {
-  title?: string;
-  hideClose?: boolean;
-  size?: "base" | "lg" | "xl";
-  fullHeight?: boolean;
-  footer?: "one-action" | "two-actions" | "three-actions";
-  footerConfig?: DialogFooterConfig;
-  className?: string;
-  children: React.ReactNode;
-}
+const DialogPortal = DialogPrimitive.Portal
 
-const DEFAULT_FOOTER_CONFIG: DialogFooterConfig = {
-  primaryAction: {
-    label: "Confirm",
-    onClick: () => {},
-    isLoading: false,
-  },
-};
-
-const Dialog = DialogPrimitive.Root;
-const DialogTrigger = DialogPrimitive.Trigger;
-const DialogPortal = DialogPrimitive.Portal;
-const DialogClose = DialogPrimitive.Close;
+const DialogClose = DialogPrimitive.Close
 
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
@@ -56,61 +20,66 @@ const DialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
-    className={cn("ui-dialog-overlay", className)}
+    className={cn(
+      "fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    )}
     {...props}
   />
-));
-DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
+))
+DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  DialogContentProps
->(({ 
-  className, 
-  children, 
-  size = "base", 
-  hideClose = false,
-  fullHeight = false,
-  ...props 
-}, ref) => (
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
   <DialogPortal>
-    <div className="ui-dialog-container">
-      <DialogOverlay />
-      <DialogPrimitive.Content
-        ref={ref}
-        className={cn("ui-dialog-content", className)}
-        data-size={size}
-        data-full-height={fullHeight}
-        {...props}
-      >
-        {children}
-        {!hideClose && (
-          <DialogClose className="ui-dialog-close">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </DialogClose>
-        )}
-      </DialogPrimitive.Content>
-    </div>
+    <DialogOverlay />
+    <DialogPrimitive.Content
+      ref={ref}
+      className={cn(
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+        <X className="h-4 w-4" />
+        <span className="sr-only">Close</span>
+      </DialogPrimitive.Close>
+    </DialogPrimitive.Content>
   </DialogPortal>
-));
-DialogContent.displayName = DialogPrimitive.Content.displayName;
+))
+DialogContent.displayName = DialogPrimitive.Content.displayName
 
 const DialogHeader = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("ui-dialog-header", className)} {...props} />
-);
-DialogHeader.displayName = "DialogHeader";
+  <div
+    className={cn(
+      "flex flex-col space-y-1.5 text-center sm:text-left",
+      className
+    )}
+    {...props}
+  />
+)
+DialogHeader.displayName = "DialogHeader"
 
 const DialogFooter = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("ui-dialog-footer", className)} {...props} />
-);
-DialogFooter.displayName = "DialogFooter";
+  <div
+    className={cn(
+      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      className
+    )}
+    {...props}
+  />
+)
+DialogFooter.displayName = "DialogFooter"
 
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
@@ -118,11 +87,14 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn("ui-dialog-title", className)}
+    className={cn(
+      "text-lg font-semibold leading-none tracking-tight",
+      className
+    )}
     {...props}
   />
-));
-DialogTitle.displayName = DialogPrimitive.Title.displayName;
+))
+DialogTitle.displayName = DialogPrimitive.Title.displayName
 
 const DialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
@@ -130,105 +102,21 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn("ui-dialog-description", className)}
+    className={cn("text-sm text-muted-foreground", className)}
     {...props}
   />
-));
-DialogDescription.displayName = DialogPrimitive.Description.displayName;
+))
+DialogDescription.displayName = DialogPrimitive.Description.displayName
 
-// Utility component for common dialog configurations
-const DialogWithConfig = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  DialogConfigProps
->(
-  (
-    {
-      children,
-      title,
-      hideClose = false,
-      size = "base",
-      fullHeight = false,
-      footer = "one-action",
-      footerConfig = DEFAULT_FOOTER_CONFIG,
-      className,
-      ...props
-    },
-    ref
-  ) => {
-    // Prevent body scroll when dialog is open
-    React.useEffect(() => {
-      if (props.open) {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "";
-      }
-      return () => {
-        document.body.style.overflow = "";
-      };
-    }, [props.open]);
-
-    return (
-      <Dialog {...props}>
-        <DialogContent 
-          ref={ref} 
-          size={size} 
-          hideClose={hideClose} 
-          fullHeight={fullHeight}
-          className={className}
-        >
-          {title && (
-            <DialogHeader>
-              <DialogTitle>{title}</DialogTitle>
-            </DialogHeader>
-          )}
-          <div className="ui-dialog-body" data-full-height={fullHeight}>
-            {children}
-          </div>
-          <DialogFooter>
-            {footer === "three-actions" && footerConfig.textAction && (
-              <Button
-                variant="neutral"
-                volume="soft"
-                onClick={footerConfig.textAction.onClick}
-                isLoading={footerConfig.textAction.isLoading}
-              >
-                {footerConfig.textAction.label}
-              </Button>
-            )}
-            {(footer === "two-actions" || footer === "three-actions") &&
-              footerConfig.secondaryAction && (
-                <Button
-                  variant="neutral"
-                  volume="moderate"
-                  onClick={footerConfig.secondaryAction.onClick}
-                  isLoading={footerConfig.secondaryAction.isLoading}
-                >
-                  {footerConfig.secondaryAction.label}
-                </Button>
-              )}
-            <Button
-              variant="primary"
-              onClick={footerConfig.primaryAction.onClick}
-              isLoading={footerConfig.primaryAction.isLoading}
-            >
-              {footerConfig.primaryAction.label}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    );
-  }
-);
-DialogWithConfig.displayName = "DialogWithConfig";
-
-// export type { DialogConfigProps, DialogContentProps, DialogFooterConfig };
 export {
   Dialog,
+  DialogPortal,
+  DialogOverlay,
   DialogTrigger,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogFooter,
   DialogTitle,
   DialogDescription,
-  DialogWithConfig,
-};
+}

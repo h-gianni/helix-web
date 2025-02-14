@@ -1,0 +1,46 @@
+/* themes/utils.css */
+@layer utilities {
+    /* Focus Ring */
+    .focus-ring {
+      @apply outline-none ring-2 ring-offset-2 ring-primary ring-offset-background;
+    }
+   
+    /* Animation States */
+    .animate-in {
+      animation-duration: var(--duration-normal);
+      animation-timing-function: var(--ease-out);
+      animation-fill-mode: forwards;
+    }
+   
+    .animate-out {
+      animation-duration: var(--duration-fast);
+      animation-timing-function: var(--ease-in);
+      animation-fill-mode: forwards;
+    }
+   
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .animate-in,
+      .animate-out {
+        @apply transition-none;
+        animation: none !important;
+      }
+    }
+   
+    /* Screen Reader Only */
+    .sr-only {
+      @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+    }
+   
+    /* Scrollbar Styling */
+    .scrollbar-hide {
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+   
+    .scrollbar-default {
+      @apply scrollbar-thin scrollbar-track-transparent scrollbar-thumb-muted/50 hover:scrollbar-thumb-muted;
+    }
+   }

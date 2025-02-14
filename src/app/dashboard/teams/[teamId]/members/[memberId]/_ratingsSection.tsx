@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/core/Table";
 import { Button } from "@/components/ui/core/Button";
 import { RotateCcw, AlertCircle } from "lucide-react";
-import StarRating from "@/components/ui/core/StarRating";
+import StarRating from "@/components/ui/core/Star-rating";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { useMemberRatings } from "@/store/member-store";
 
@@ -39,18 +39,17 @@ export default function RatingsSection({
   if (error) {
     return (
       <div className="space-y-base">
-        <Alert variant="danger">
+        <Alert variant="destructive">
           <AlertCircle />
           <AlertDescription>
             {error instanceof Error ? error.message : "Failed to load ratings"}
           </AlertDescription>
         </Alert>
         <Button
-          variant="primary"
+          variant="default"
           onClick={() => refetch()}
-          leadingIcon={<RotateCcw />}
         >
-          Retry
+          <RotateCcw /> Retry
         </Button>
       </div>
     );
@@ -65,7 +64,7 @@ export default function RatingsSection({
   }
 
   return (
-    <Table size="sm" zebra>
+    <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Activity</TableHead>

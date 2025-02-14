@@ -10,8 +10,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  IconWrapper,
-} from "@/components/ui/core/DropdownMenu";
+} from "@/components/ui/core/Dropdown-menu";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -22,19 +21,19 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from "@/components/ui/core/AlertDialog";
-import { Alert, AlertDescription } from "@/components/ui/core/Alert";
+import { Alert } from "@/components/ui/core/Alert";
 import {
   UserPlus,
   Trash2,
   PenSquare,
-  AlertCircle,
   ArrowLeft,
-  EllipsisVertical,
+  MoreVertical,
+  AlertCircle,
 } from "lucide-react";
-import AddMemberModal from "./_addMemberModal";
+import { AddMemberModal } from "./_addMemberModal";
 import { TeamPerformanceSummary } from "./_teamPerformanceSummary";
 import EmptyTeamView from "./_emptyTeamView";
-import TeamEditModal from "./_teamEditModal";
+import { TeamEditModal } from "./_teamEditModal";
 import {
   useTeamStore,
   useTeamDetails,
@@ -61,7 +60,6 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
     setViewType,
   } = useTeamStore();
 
-  // Queries
   const {
     data: team,
     isLoading: isTeamLoading,
@@ -73,7 +71,6 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
     isLoading: isPerformanceLoading,
   } = useTeamPerformance(params.teamId);
 
-  // Mutations
   const updateTeam = useUpdateTeam();
   const deleteTeam = useDeleteTeam();
   const addMember = useAddTeamMember();
@@ -82,23 +79,13 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
   const error = teamError;
 
   const handleSaveTeamDetails = async (name: string, description: string | null) => {
-    try {
-      await updateTeam.mutateAsync({ teamId: params.teamId, name, description });
-      setEditModalOpen(false);
-    } catch (error) {
-      console.error("Error updating team:", error);
-      throw error;
-    }
+    await updateTeam.mutateAsync({ teamId: params.teamId, name, description });
+    setEditModalOpen(false);
   };
 
   const handleAddMember = async (data: { teamId: string; email: string; title?: string }) => {
-    try {
-      await addMember.mutateAsync(data);
-      setAddMemberModalOpen(false);
-    } catch (error) {
-      console.error("Error adding member:", error);
-      throw error;
-    }
+    await addMember.mutateAsync(data);
+    setAddMemberModalOpen(false);
   };
 
   const handleDeleteTeam = async () => {
@@ -111,23 +98,24 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
   };
 
   if (isLoading) {
-    return <div className="ui-loader">Loading team details...</div>;
+    return <div className="flex items-center justify-center p-6">Loading team details...</div>;
   }
 
   if (error) {
     return (
-      <div className="ui-loader-error">
-        <Alert variant="danger">
-          <AlertCircle />
-          <AlertDescription>
+      <div className="flex flex-col items-center gap-4 p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <p className="text-sm">
             {error instanceof Error ? error.message : "An error occurred"}
-          </AlertDescription>
+          </p>
         </Alert>
         <Button
-          variant="primary"
+          variant="outline"
           onClick={() => router.back()}
-          leadingIcon={<ArrowLeft />}
+          className="gap-2"
         >
+          <ArrowLeft className="h-4 w-4" />
           Go Back
         </Button>
       </div>
@@ -136,16 +124,17 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
 
   if (!team) {
     return (
-      <div className="ui-loader-error">
-        <Alert variant="warning">
-          <AlertCircle />
-          <AlertDescription>Team not found</AlertDescription>
+      <div className="flex flex-col items-center gap-4 p-6">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <p className="text-sm">Team not found</p>
         </Alert>
         <Button
-          variant="primary"
+          variant="outline"
           onClick={() => router.back()}
-          leadingIcon={<ArrowLeft />}
+          className="gap-2"
         >
+          <ArrowLeft className="h-4 w-4" />
           Go Back
         </Button>
       </div>
@@ -169,39 +158,32 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         actions={
           <>
             <Button
-              variant="primary"
               onClick={() => setAddMemberModalOpen(true)}
-              leadingIcon={<UserPlus />}
+              className="gap-2"
             >
+              <UserPlus className="h-4 w-4" />
               Add Member
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
-                  variant="neutral"
-                  volume="soft"
-                  iconOnly
-                  leadingIcon={
-                    <IconWrapper>
-                      <EllipsisVertical />
-                    </IconWrapper>
-                  }
-                />
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                >
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => setEditModalOpen(true)}>
-                  <IconWrapper>
-                    <PenSquare />
-                  </IconWrapper>
+                  <PenSquare className="mr-2 h-4 w-4" />
                   Team Settings
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  destructive
                   onClick={() => setDeleteDialogOpen(true)}
+                  className="text-destructive focus:text-destructive"
                 >
-                  <IconWrapper>
-                    <Trash2 />
-                  </IconWrapper>
+                  <Trash2 className="mr-2 h-4 w-4" />
                   Delete Team
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -210,7 +192,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         }
       />
 
-      <main className="ui-layout-page-main">
+      <main className="p-6">
         {!team.members?.length || !performanceData?.members?.length ? (
           <EmptyTeamView onAddMember={() => setAddMemberModalOpen(true)} />
         ) : (
@@ -236,7 +218,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         onClose={() => setEditModalOpen(false)}
         teamName={team.name}
         teamDescription={team.description}
-        // onSave={handleSaveTeamDetails}
+        onSave={handleSaveTeamDetails}
       />
 
       <AlertDialog
@@ -253,9 +235,12 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Keep Team</AlertDialogCancel>
-            <AlertDialogAction variant="danger" onClick={handleDeleteTeam}>
-              Delete Team
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteTeam}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -63,7 +63,7 @@ export function TeamPerformanceSummary({
   };
 
   return (
-    <main className="ui-layout-page-main">
+    <main className="layout-page-main">
       <div className="ui-view-controls-bar">
         <ViewSwitcher viewType={viewType} onViewChange={onViewChange} />
       </div>
@@ -93,12 +93,12 @@ export function TeamPerformanceSummary({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="neutral" volume="soft">
+              <Button variant="secondary">
                 Cancel
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button variant="danger" onClick={handleDeleteMember}>
+              <Button variant="destructive" onClick={handleDeleteMember}>
                 Delete Member
               </Button>
             </AlertDialogAction>

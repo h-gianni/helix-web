@@ -22,7 +22,7 @@ export default function ProfileSettingsPage() {
           onClick: () => router.push("/dashboard/settings/"),
         }}
       />
-      <main className="ui-layout-page-main">
+      <main className="layout-page-main">
         <ProfileSection />
       </main>
     </>

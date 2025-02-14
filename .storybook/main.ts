@@ -7,8 +7,8 @@ const config: StorybookConfig = {
   stories: [
     '../src/components/ui/core/**/*.stories.@(js|jsx|ts|tsx)',       // Core components (e.g., Button, Input)
     '../src/components/ui/composite/**/*.stories.@(js|jsx|ts|tsx)',  // Composite components (e.g., Sidebar, Modal)
-    '../src/components/ui/pattern/**/*.stories.@(js|jsx|ts|tsx)',   // Pattern components (e.g., Forms, Cards)
-    '../src/components/ui/layout/**/*.stories.@(js|jsx|ts|tsx)',   // Layout components (e.g., Page layouts)
+    // '../src/components/ui/pattern/**/*.stories.@(js|jsx|ts|tsx)',
+    // '../src/components/ui/layout/**/*.stories.@(js|jsx|ts|tsx)', 
   ],
   addons: [
     "@storybook/addon-onboarding",

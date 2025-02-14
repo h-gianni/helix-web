@@ -1,0 +1,31 @@
+@layer components {
+    /* Base container styles */
+    .page-header {
+      @apply mb-4;
+    }
+  
+    /* Layout container */
+    .page-header-container {
+      @apply flex items-center justify-between;
+    }
+  
+    /* Left side with title and content */
+    .page-header-content {
+      @apply flex gap-4;
+    }
+  
+    /* Title container with optional icon */
+    .page-header-title {
+      @apply heading-1 flex items-center gap-2;
+    }
+  
+    /* Caption text */
+    .page-header-caption {
+      @apply caption;
+    }
+  
+    /* Actions container */
+    .page-header-actions {
+      @apply flex items-center gap-4;
+    }
+  }

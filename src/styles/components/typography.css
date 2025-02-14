@@ -1,0 +1,50 @@
+@layer components {
+    /* Display */
+    .display-1 {
+      @apply text-4xl font-bold tracking-tight leading-tight;
+    }
+    .display-2 {
+      @apply text-3xl font-bold tracking-tight leading-tight;
+    }
+  
+    /* Headings */
+    .heading-1 {
+      @apply text-2xl font-semibold tracking-normal leading-tight;
+    }
+    .heading-2 {
+      @apply text-xl font-semibold tracking-normal leading-snug;
+    }
+    .heading-3 {
+      @apply text-lg font-medium tracking-normal leading-snug;
+    }
+    .heading-4 {
+      @apply text-base font-medium tracking-normal leading-normal;
+    }
+  
+    /* Body */
+    .body-lg {
+      @apply text-lg font-normal tracking-normal leading-relaxed;
+    }
+    .body-base {
+      @apply text-base font-normal tracking-normal leading-normal;
+    }
+    .body-sm {
+      @apply text-sm font-normal tracking-normal leading-normal;
+    }
+  
+    /* Labels */
+    .label-lg {
+      @apply text-base font-medium tracking-wide leading-none;
+    }
+    .label-base {
+      @apply text-sm font-medium tracking-wide leading-none;
+    }
+    .label-sm {
+      @apply text-xs font-medium tracking-wide leading-none;
+    }
+  
+    /* Captions */
+    .caption {
+      @apply text-xs font-normal tracking-normal leading-normal text-muted-foreground;
+    }
+  }

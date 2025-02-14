@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from 'react';
 import {
   Card,
@@ -38,22 +40,25 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
   }, ref) => {
     const EditButton = () => (
       <Button
-        variant="neutral"
-        volume="soft"
+        variant="outline"
         onClick={onEdit}
-        leadingIcon={<PenSquare />}
-        className={cn(editButtonPosition === 'footer' && 'w-full')}
+        className={cn("gap-2", editButtonPosition === 'footer' && 'w-full')}
       >
+        <PenSquare className="h-4 w-4" />
         {editButtonText}
       </Button>
     );
 
     const renderFields = () => (
-      <div className="profile-card-fields">
+      <div className="space-y-4">
         {fields.map((field, index) => (
-          <div key={index} className="profile-card-field">
-            <Label className="profile-card-label">{field.label}</Label>
-            <p className="profile-card-value" data-variant={field.variant}>
+          <div key={index} className="space-y-1.5">
+            <Label>{field.label}</Label>
+            <p className={cn(
+              "text-sm",
+              field.variant === 'title' && "text-lg font-semibold",
+              field.variant === 'strong' && "font-medium"
+            )}>
               {field.value}
             </p>
           </div>
@@ -62,13 +67,13 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
     );
 
     const ProfileImage = () => (
-      <div className="profile-card-image-container relative h-24 w-24">
+      <div className="relative h-24 w-24">
         <Image
           src={imageUrl}
           alt="Profile"
           width={96}
           height={96}
-          className="profile-card-image rounded-full object-cover"
+          className="rounded-full object-cover"
         />
       </div>
     );
@@ -76,32 +81,37 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
     return (
       <Card
         ref={ref}
-        className={cn('profile-card', className)}
-        data-align={align}
+        className={cn(
+          "relative",
+          onEdit && editButtonPosition === 'topRight' && "pt-14",
+          className
+        )}
         {...props}
       >
         {align === 'vertical' ? (
           <>
-            <ProfileImage />
-            <CardContent className="profile-card-content">
+            <div className="flex justify-center pt-6">
+              <ProfileImage />
+            </div>
+            <CardContent className="space-y-6">
               {renderFields()}
             </CardContent>
             {onEdit && editButtonPosition === 'footer' && (
-              <CardFooter className="profile-card-footer">
+              <CardFooter>
                 <EditButton />
               </CardFooter>
             )}
           </>
         ) : (
-          <CardContent className="profile-card-content">
-            <div className="flex items-center gap-4">
+          <CardContent>
+            <div className="flex items-start gap-6">
               <ProfileImage />
               {renderFields()}
             </div>
           </CardContent>
         )}
         {onEdit && editButtonPosition === 'topRight' && (
-          <div className="profile-card-edit">
+          <div className="absolute right-4 top-4">
             <EditButton />
           </div>
         )}

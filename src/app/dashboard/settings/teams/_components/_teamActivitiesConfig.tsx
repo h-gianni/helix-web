@@ -90,7 +90,7 @@ export default function TeamActivitiesConfig({
  return (
    <div className="space-y-base">
      {error && (
-       <Alert variant="danger">
+       <Alert variant="destructive">
          <AlertCircle />
          <AlertDescription>{error}</AlertDescription>
        </Alert>
@@ -114,7 +114,7 @@ export default function TeamActivitiesConfig({
      {activities.length === 0 ? (
        <div className="text-muted-foreground">No activities available</div>
      ) : (
-       <Table size="sm">
+       <Table>
          <TableHeader>
            <TableRow>
              <TableHead className="w-[50px]">

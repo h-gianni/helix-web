@@ -7,7 +7,13 @@ import { useTeams } from "@/lib/context/teams-context";
 import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { AlertCircle } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/core/Select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/core/Select";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import TeamActivitiesConfig from "./_components/_teamActivitiesConfig";
 import type { TeamDetailsResponse } from "@/lib/types/api";
@@ -16,7 +22,9 @@ export default function TeamsSettingsPage() {
   const { teams, isLoading: isTeamsLoading } = useTeams();
   const router = useRouter();
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
-  const [teamDetails, setTeamDetails] = useState<TeamDetailsResponse | null>(null);
+  const [teamDetails, setTeamDetails] = useState<TeamDetailsResponse | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,9 +81,7 @@ export default function TeamsSettingsPage() {
   };
 
   if (isTeamsLoading) {
-    return (
-      <div className="ui-loader">Loading teams...</div>
-    );
+    return <div className="ui-loader">Loading teams...</div>;
   }
 
   if (teams.length === 0) {
@@ -88,10 +94,12 @@ export default function TeamsSettingsPage() {
             onClick: () => router.push("/dashboard/settings/"),
           }}
         />
-        <main className="ui-layout-page-main">
-          <Alert variant="danger">
+        <main className="layout-page-main">
+          <Alert variant="destructive">
             <AlertCircle />
-            <AlertDescription>No teams available. Please create a team first.</AlertDescription>
+            <AlertDescription>
+              No teams available. Please create a team first.
+            </AlertDescription>
           </Alert>
         </main>
       </>
@@ -107,32 +115,37 @@ export default function TeamsSettingsPage() {
           onClick: () => router.push("/dashboard/settings/"),
         }}
       />
-      <main className="ui-layout-page-main space-y-6">
+      <main className="layout-page-main space-y-6">
         {/* Team Selection - Only show if multiple teams exist */}
         {teams.length > 1 && (
-              <Select
-                value={selectedTeamId || ''}
-                onValueChange={handleTeamChange}
-                width="full"
-                withLabel
-                label="Select Team"
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a team" />
-                </SelectTrigger>
-                <SelectContent>
-                  {teams.map((team) => (
-                    <SelectItem key={team.id} value={team.id}>
-                      {team.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          <div className="flex flex-col gap-2">
+            <label
+              className="text-sm font-medium text-foreground"
+              htmlFor="teamSelect"
+            >
+              Select Team
+            </label>
+            <Select
+              value={selectedTeamId || ""}
+              onValueChange={handleTeamChange}
+            >
+              <SelectTrigger id="teamSelect" className="w-full">
+                <SelectValue placeholder="Select a team" />
+              </SelectTrigger>
+              <SelectContent>
+                {teams.map((team) => (
+                  <SelectItem key={team.id} value={team.id}>
+                    {team.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         )}
 
         {/* Error State */}
         {error && (
-          <Alert variant="danger">
+          <Alert variant="destructive">
             <AlertCircle />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
@@ -147,7 +160,7 @@ export default function TeamsSettingsPage() {
             ) : (
               <>
                 {/* Team Activities Config */}
-                <TeamActivitiesConfig 
+                <TeamActivitiesConfig
                   teamId={selectedTeamId}
                   onUpdate={() => fetchTeamDetails(selectedTeamId)}
                 />

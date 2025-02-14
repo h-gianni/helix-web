@@ -55,7 +55,7 @@ export default function BusinessActivitiesSettingsPage() {
         //   </Button>
         // }
       />
-      <main className="ui-layout-page-main">
+      <main className="layout-page-main">
         <div className="ui-view-controls-bar">
           <div className="flex gap-xs p-xxs">
             {/* <div className="ui-text-heading-5 text-weak">View:</div>
@@ -67,8 +67,7 @@ export default function BusinessActivitiesSettingsPage() {
           <div>
             <Button
               size="sm"
-              variant="primary"
-              volume="loud"
+              variant="default"
               onClick={() => setIsModalOpen(true)}
             >
               Add activity

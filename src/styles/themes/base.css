@@ -1,0 +1,112 @@
+/* themes/base.css */
+@layer base {
+  :root {
+    /* Base backgrounds & text */
+    --background: var(--gray-50);
+    --foreground: var(--gray-600);
+    --foreground-strong: var(--gray-700);
+    --foreground-weak: var(--gray-500);
+
+    /* Surface colors */
+    --card: var(--gray-50);
+    --card-foreground: var(--gray-700);
+    --popover: var(--gray-50);
+    --popover-foreground: var(--gray-700);
+
+    /* Interactive elements */
+    --primary: var(--primary-300);
+    --primary-foreground: var(--gray-50);
+    --secondary: var(--gray-100);
+    --secondary-foreground: var(--gray-700);
+    --accent: var(--accent-300);
+    --accent-foreground: var(--gray-50);
+    --destructive: var(--danger-300);
+    --destructive-foreground: var(--gray-50);
+
+    /* UI states */
+    --muted: var(--gray-200);
+    --muted-foreground: var(--gray-500);
+    --border: var(--gray-200);
+    --input: var(--gray-200);
+    --ring: var(--primary-300);
+
+    /* Status colors */
+    --info: var(--info-300);
+    --info-foreground: var(--gray-50);
+    --success: var(--success-300);
+    --success-foreground: var(--gray-50);
+    --warning: var(--warning-300);
+    --warning-foreground: var(--gray-900);
+    --error: var(--danger-300);
+    --error-foreground: var(--gray-50);
+
+    /* Component specific */
+    --sidebar: var(--gray-50);
+    --sidebar-foreground: var(--gray-700);
+    --navbar: var(--gray-50);
+    --navbar-foreground: var(--gray-700);
+    --footer: var(--gray-50);
+    --footer-foreground: var(--gray-700);
+
+    --sidebar-background: var(--gray-50);
+    --sidebar-foreground: var(--gray-700);
+    --sidebar-primary: var(--primary-50);
+    --sidebar-primary-foreground: var(--primary-700);
+    --sidebar-accent: var(--accent-50);
+    --sidebar-accent-foreground: var(--accent-700);
+    --sidebar-border: var(--gray-100);
+    --sidebar-ring: var(--gray-100);
+
+    /* Shape */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Base backgrounds & text */
+    --background: var(--gray-700);
+    --foreground: var(--gray-50);
+    --foreground-strong: var(--gray-50);
+    --foreground-weak: var(--gray-300);
+
+    /* Surface colors */
+    --card: var(--gray-600);
+    --card-foreground: var(--gray-50);
+    --popover: var(--gray-600);
+    --popover-foreground: var(--gray-50);
+
+    /* Interactive elements */
+    --primary: var(--primary-200);
+    --primary-foreground: var(--gray-900);
+    --secondary: var(--gray-500);
+    --secondary-foreground: var(--gray-50);
+    --accent: var(--accent-200);
+    --accent-foreground: var(--gray-900);
+    --destructive: var(--danger-200);
+    --destructive-foreground: var(--gray-900);
+
+    /* UI states */
+    --muted: var(--gray-500);
+    --muted-foreground: var(--gray-200);
+    --border: var(--gray-500);
+    --input: var(--gray-500);
+    --ring: var(--primary-200);
+
+    /* Status colors */
+    --info: var(--info-200);
+    --info-foreground: var(--gray-900);
+    --success: var(--success-200);
+    --success-foreground: var(--gray-900);
+    --warning: var(--warning-200);
+    --warning-foreground: var(--gray-900);
+    --error: var(--danger-200);
+    --error-foreground: var(--gray-900);
+
+    /* Component specific */
+    --sidebar: var(--gray-600);
+    --sidebar-foreground: var(--gray-50);
+    --navbar: var(--gray-600);
+    --navbar-foreground: var(--gray-50);
+    --footer: var(--gray-600);
+    --footer-foreground: var(--gray-50);
+  }
+}
