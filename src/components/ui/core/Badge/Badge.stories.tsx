@@ -67,49 +67,49 @@ export const AllVariants: Story = {
   render: () => (
     <div className="space-y-base">
       <div className="grid grid-cols-[auto_1fr] gap-8 items-start">
-        <div className="ui-text-body-small text-weak">Default</div>
+        <div className="ui-text-body-small text-foreground-weak">Default</div>
         <div className="flex flex-wrap gap-sm">
           <Badge variant="default" volume="loud">Default</Badge>
           <Badge variant="default" volume="soft">Moderate</Badge>
           <Badge variant="default" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="ui-text-body-small text-weak">Primary</div>
+        <div className="ui-text-body-small text-foreground-weak">Primary</div>
         <div className="flex flex-wrap gap-sm">
           <Badge variant="primary" volume="loud">Default</Badge>
           <Badge variant="primary" volume="soft">Moderate</Badge>
           <Badge variant="primary" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="ui-text-body-small text-weak">Accent</div>
+        <div className="ui-text-body-small text-foreground-weak">Accent</div>
         <div className="flex flex-wrap gap-sm">
           <Badge variant="accent" volume="loud">Default</Badge>
           <Badge variant="accent" volume="soft">Moderate</Badge>
           <Badge variant="accent" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="ui-text-body-small text-weak">Danger</div>
+        <div className="ui-text-body-small text-foreground-weak">Danger</div>
         <div className="flex flex-wrap gap-sm">
           <Badge variant="danger" volume="loud">Default</Badge>
           <Badge variant="danger" volume="soft">Moderate</Badge>
           <Badge variant="danger" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="ui-text-body-small text-weak">Success</div>
+        <div className="ui-text-body-small text-foreground-weak">Success</div>
         <div className="flex flex-wrap gap-sm">
           <Badge variant="success" volume="loud">Default</Badge>
           <Badge variant="success" volume="soft">Moderate</Badge>
           <Badge variant="success" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="ui-text-body-small text-weak">Warning</div>
+        <div className="ui-text-body-small text-foreground-weak">Warning</div>
         <div className="flex flex-wrap gap-sm">
           <Badge variant="warning" volume="loud">Default</Badge>
           <Badge variant="warning" volume="soft">Moderate</Badge>
           <Badge variant="warning" volume="moderate">Soft</Badge>
         </div>
 
-        <div className="ui-text-body-small text-weak">Info</div>
+        <div className="ui-text-body-small text-foreground-weak">Info</div>
         <div className="flex flex-wrap gap-sm">
           <Badge variant="info" volume="loud">Default</Badge>
           <Badge variant="info" volume="soft">Moderate</Badge>

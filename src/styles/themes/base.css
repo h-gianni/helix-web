@@ -6,10 +6,11 @@
     --foreground: var(--gray-600);
     --foreground-strong: var(--gray-700);
     --foreground-weak: var(--gray-500);
+    --foreground-muted: var(--gray-400);
 
     /* Surface colors */
-    --card: var(--gray-50);
-    --card-foreground: var(--gray-700);
+    --card: var(--white);
+    --card-foreground: var(--gray-600);
     --popover: var(--gray-50);
     --popover-foreground: var(--gray-700);
 
@@ -17,16 +18,16 @@
     --primary: var(--primary-300);
     --primary-foreground: var(--gray-50);
     --secondary: var(--gray-100);
-    --secondary-foreground: var(--gray-700);
+    --secondary-foreground: var(--gray-600);
     --accent: var(--accent-300);
     --accent-foreground: var(--gray-50);
     --destructive: var(--danger-300);
     --destructive-foreground: var(--gray-50);
 
     /* UI states */
-    --muted: var(--gray-200);
+    --muted: var(--gray-100);
     --muted-foreground: var(--gray-500);
-    --border: var(--gray-200);
+    --border: var(--gray-100);
     --input: var(--gray-200);
     --ring: var(--primary-300);
 
@@ -58,7 +59,9 @@
     --sidebar-ring: var(--gray-100);
 
     /* Shape */
+    --radius-sm: 0.25rem;
     --radius: 0.5rem;
+    --radius-lg: 0.75rem;
   }
 
   .dark {

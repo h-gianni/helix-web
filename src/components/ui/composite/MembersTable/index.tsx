@@ -54,7 +54,7 @@ export interface PerformanceCategory {
 
 type MembersTableDOMProps = Omit<
   React.HTMLAttributes<HTMLDivElement>,
-  'performanceCategories'
+  "performanceCategories"
 >;
 
 export interface MembersTableProps extends MembersTableDOMProps {
@@ -91,6 +91,8 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
     },
     ref
   ) => {
+    const showTeamColumn = teams.length > 1;
+
     const sortedMembers = [...members].sort((a, b) => {
       if (a.ratingsCount === 0 && b.ratingsCount === 0) return 0;
       if (a.ratingsCount === 0) return 1;
@@ -103,13 +105,13 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
         <Table>
           <TableHeader>
             <TableRow>
-              {showAvatar && <TableHead className="w-10" />}
-              <TableHead>Name</TableHead>
-              <TableHead>Team</TableHead>
+              {showAvatar && <TableHead className="w-10 px-0" />}
+              <TableHead className="pl-2">Name</TableHead>
+              {showTeamColumn && <TableHead>Team</TableHead>}
               <TableHead>Job Title</TableHead>
               <TableHead>Seniority</TableHead>
               <TableHead>Performance</TableHead>
-              <TableHead>Ratings</TableHead>
+              <TableHead className="w-[200px]">Ratings</TableHead>
               {showActions && <TableHead className="w-10" />}
             </TableRow>
           </TableHeader>
@@ -120,13 +122,17 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
                 member.ratingsCount
               );
               const effectiveTeamId = teamId || member.teamId;
-              const detailsPath = `/dashboard/teams/${encodeURIComponent(effectiveTeamId)}/members/${encodeURIComponent(member.id)}`;
-              const teamName = teams.find((team) => team.id === member.teamId)?.name || "No team";
+              const detailsPath = `/dashboard/teams/${encodeURIComponent(
+                effectiveTeamId
+              )}/members/${encodeURIComponent(member.id)}`;
+              const teamName =
+                teams.find((team) => team.id === member.teamId)?.name ||
+                "No team";
 
               return (
                 <TableRow key={member.id}>
                   {showAvatar && (
-                    <TableCell>
+                    <TableCell className="px-2">
                       <Avatar className="h-8 w-8">
                         <AvatarFallback>
                           {member.name.charAt(0).toUpperCase()}
@@ -134,39 +140,48 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
                       </Avatar>
                     </TableCell>
                   )}
-                  <TableCell>
+                  <TableCell className={cn("w-[40%] pl-2", !showTeamColumn && "w-[55%]")}>
                     <button
                       onClick={() => onNavigate?.(detailsPath)}
-                      className="hover:underline"
+                      className="heading-4 hover:underline"
                     >
                       {member.name}
                     </button>
                   </TableCell>
-                  <TableCell>{teamName}</TableCell>
-                  <TableCell>{member.title || "No title"}</TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  {showTeamColumn && (
+                    <TableCell className="w-[15%] whitespace-nowrap text-foreground-weak">
+                      {teamName}
+                    </TableCell>
+                  )}
+                  <TableCell className="w-[15%] whitespace-nowrap text-foreground-weak">
+                    {member.title || "No title"}
+                  </TableCell>
+                  <TableCell className="w-[15%] text-foreground-weak whitespace-nowrap">
                     Seniority grade
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell className="w-[15%] whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       {category.Icon && (
-                        <category.Icon className={cn("h-4 w-4", category.className)} />
+                        <category.Icon
+                          className={cn("h-4 w-4", category.className)}
+                        />
                       )}
                       <span className={category.className}>
                         {category.label}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="whitespace-nowrap">
+                  <TableCell className="w-[200px] whitespace-nowrap">
                     <StarRating
                       value={member.averageRating}
                       disabled
                       size="sm"
-                      count={member.ratingsCount}
+                      ratingsCount={member.ratingsCount}
+                      className="w-[180px]"
                     />
                   </TableCell>
                   {showActions && (
-                    <TableCell>
+                    <TableCell className="w-0 pr-2">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
@@ -179,16 +194,22 @@ const MembersTable = React.forwardRef<HTMLDivElement, MembersTableProps>(
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => onNavigate?.(detailsPath)}>
+                          <DropdownMenuItem
+                            onClick={() => onNavigate?.(detailsPath)}
+                          >
                             <Eye className="mr-2 h-4 w-4" />
                             Quick View Details
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => onNavigate?.(detailsPath)}>
+                          <DropdownMenuItem
+                            onClick={() => onNavigate?.(detailsPath)}
+                          >
                             <PenSquare className="mr-2 h-4 w-4" />
                             Edit Details
                           </DropdownMenuItem>
                           {onGenerateReview && (
-                            <DropdownMenuItem onClick={() => onGenerateReview(member)}>
+                            <DropdownMenuItem
+                              onClick={() => onGenerateReview(member)}
+                            >
                               <ChartSpline className="mr-2 h-4 w-4" />
                               Performance Reviews
                             </DropdownMenuItem>

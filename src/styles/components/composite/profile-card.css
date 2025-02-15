@@ -52,7 +52,7 @@
     }
   
     .profile-card-value[data-variant="strong"] {
-      @apply text-strong;
+      @apply text-foreground-strong;
     }
   
     .profile-card-edit {

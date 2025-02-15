@@ -88,19 +88,23 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
     return (
       <Card
         ref={ref}
-        className={cn("flex flex-col", variant === "compact" && "p-4", className)}
+        className={cn(
+          "flex flex-col",
+          variant === "compact" && "p-4",
+          className
+        )}
         {...props}
       >
         <CardHeader className={cn("space-y-4", variant === "compact" && "p-0")}>
           <div className="flex items-start justify-between">
-            <div className="flex gap-2">
+            <div className="flex gap-4">
               <Avatar className="h-10 w-10">
                 <AvatarFallback className="text-lg">
                   {member.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div className="space-y-1">
-                <h3 className="text-lg font-semibold">
+              <div className="space-y-0.5">
+                <h3 className="heading-4">
                   <button
                     onClick={handleViewDetails}
                     className="hover:underline"
@@ -108,7 +112,7 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
                     {member.name}
                   </button>
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-foreground-muted">
                   {member.title || "No title"}
                 </p>
               </div>
@@ -151,7 +155,7 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
         <CardContent
           className={cn(
             "flex-1 space-y-4 pt-2",
-            variant === "compact" && "p-0 pt-4"
+            variant === "compact" && "p-0 pt-2"
           )}
         >
           <div className="flex items-center justify-between gap-4">
@@ -159,7 +163,7 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
               {category.Icon && (
                 <category.Icon className={cn("h-4 w-4", category.className)} />
               )}
-              <span className={cn("font-medium", category.className)}>
+              <span className={cn("heading-4", category.className)}>
                 {category.label}
               </span>
             </div>
@@ -167,7 +171,7 @@ const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
               value={member.averageRating}
               disabled
               size="sm"
-              count={member.ratingsCount}
+              ratingsCount={member.ratingsCount}
             />
           </div>
         </CardContent>

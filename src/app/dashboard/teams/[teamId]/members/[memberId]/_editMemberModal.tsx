@@ -146,7 +146,7 @@ export function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
             />
             <div className="grid gap-1.5 leading-none">
               <Label htmlFor="isAdmin">Admin Access</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground-muted">
                 Grant admin privileges to this member
               </p>
             </div>

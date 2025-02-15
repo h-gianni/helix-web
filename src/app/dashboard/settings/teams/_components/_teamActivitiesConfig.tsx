@@ -66,13 +66,13 @@ export default function TeamActivitiesConfig({
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="text-muted-foreground">
-        Loading activities configuration...
-      </div>
-    )
-  }
+ if (isLoading) {
+   return (
+     <div className="text-foreground-muted">
+       Loading activities configuration...
+     </div>
+   );
+ }
 
   return (
     <div className="space-y-base">
@@ -85,80 +85,73 @@ export default function TeamActivitiesConfig({
         </Alert>
       )}
 
-      <div className="ui-view-controls-bar">
-        <div className="flex items-center gap-base">
-          <Checkbox
-            checked={activities.length === selectedActivityIds.length}
-            onCheckedChange={(checked) => {
-              if (checked) selectAll(activities)
-              else unselectAll()
-            }}
-          />
-          <span className="text-sm text-muted-foreground">
-            {selectedActivityIds.length} of {activities.length} selected
-          </span>
-        </div>
+     <div className="ui-view-controls-bar">
+       <div className="flex items-center gap-base">
+         <Checkbox
+           checked={activities.length === selectedActivityIds.length}
+           onCheckedChange={(checked) => {
+             if (checked) handleSelectAll();
+             else handleUnselectAll();
+           }}
+         />
+         <span className="text-sm text-foreground-muted">
+           {selectedActivityIds.length} of {activities.length} selected
+         </span>
+       </div>
+     </div>
 
-        <Button
-          onClick={handleSave}
-          disabled={updateTeamActivities.isPending}
-        >
-          Save Changes
-        </Button>
-      </div>
-
-      {activities.length === 0 ? (
-        <div className="text-muted-foreground">No activities available</div>
-      ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[50px]">
-                <Checkbox
-                  checked={activities.length === selectedActivityIds.length}
-                  onCheckedChange={(checked) => {
-                    if (checked) selectAll(activities)
-                    else unselectAll()
-                  }}
-                />
-              </TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Activity</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead className="w-0">Business Impact</TableHead>
-              <TableHead className="w-0">Favourite</TableHead>
-              <TableHead className="w-0">Ratings</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {activities.map((activity) => (
-              <TableRow key={activity.id}>
-                <TableCell>
-                  <Checkbox
-                    checked={selectedActivityIds.includes(activity.id)}
-                    onCheckedChange={() => toggleActivity(activity.id)}
-                    disabled={updateTeamActivities.isPending}
-                  />
-                </TableCell>
-                <TableCell className="text-weak">category</TableCell>
-                <TableCell className="font-medium">{activity.name}</TableCell>
-                <TableCell className="text-weak">
-                  {activity.description || "No description"}
-                </TableCell>
-                <TableCell className="text-center">18</TableCell>
-                <TableCell className="text-center">
-                  <Toggle size="sm">
-                    <Heart className="h-4 w-4" />
-                  </Toggle>
-                </TableCell>
-                <TableCell className="text-center">
-                  {activity._count?.ratings || 0}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
-    </div>
-  )
+     {activities.length === 0 ? (
+       <div className="text-foreground-muted">No activities available</div>
+     ) : (
+       <Table>
+         <TableHeader>
+           <TableRow>
+             <TableHead className="w-[50px]">
+               <Checkbox
+                 checked={activities.length === selectedActivityIds.length}
+                 onCheckedChange={(checked) => {
+                   if (checked) handleSelectAll();
+                   else handleUnselectAll();
+                 }}
+               />
+             </TableHead>
+             <TableHead>Category</TableHead>
+             <TableHead>Activity</TableHead>
+             <TableHead>Description</TableHead>
+             <TableHead className="w-0">Business Impact</TableHead>
+             <TableHead className="w-0">Favourite</TableHead>
+             <TableHead className="w-0">Ratings</TableHead>
+           </TableRow>
+         </TableHeader>
+         <TableBody>
+           {activities.map((activity) => (
+             <TableRow key={activity.id}>
+               <TableCell>
+                 <Checkbox
+                   checked={selectedActivityIds.includes(activity.id)}
+                   onCheckedChange={() => handleActivityToggle(activity.id)}
+                   disabled={isLoading}
+                 />
+               </TableCell>
+               <TableCell className="text-foreground-weak">category</TableCell>
+               <TableCell className="font-medium">{activity.name}</TableCell>
+               <TableCell className="text-foreground-weak">
+                 {activity.description || "No description"}
+               </TableCell>
+               <TableCell className="text-center">18</TableCell>
+               <TableCell className="text-center">
+                 <Toggle size="sm">
+                   <Heart />
+                 </Toggle>
+               </TableCell>
+               <TableCell className="text-center">
+                 {activity._count?.ratings || 0}
+               </TableCell>
+             </TableRow>
+           ))}
+         </TableBody>
+       </Table>
+     )}
+   </div>
+ );
 }

@@ -54,7 +54,7 @@
     @apply p-4;
   }
   .card-gap {
-    @apply space-y-3;
+    @apply space-y-4;
   }
 
   /* Navigation */

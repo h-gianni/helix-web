@@ -21,7 +21,7 @@ const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
         <div className="page-header-container">
           <div className="page-header-content">
             {backButton && (
-              <Button variant="secondary" size="sm" onClick={backButton.onClick}>
+              <Button variant="ghost" size="sm" onClick={backButton.onClick}>
                 <ArrowLeft />
               </Button>
             )}

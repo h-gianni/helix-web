@@ -93,7 +93,7 @@ function TextareaWithCounter() {
 <div className="space-y-2">
   <label>Bio</label>
   <Textarea placeholder="Tell us about yourself" />
-  <p className="text-sm text-muted-foreground">
+  <p className="text-sm text-foreground-muted">
     Write a brief description about yourself.
   </p>
 </div>

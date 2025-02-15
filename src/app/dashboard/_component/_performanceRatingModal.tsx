@@ -142,11 +142,11 @@ export default function PerformanceRatingModal({
             <div className="space-y-2">
               <Label>Member</Label>
               <div className="flex items-center gap-2 p-3 rounded-md border bg-muted">
-                <User className="h-4 w-4 text-muted-foreground" />
+                <User className="h-4 w-4 text-foreground-muted" />
                 <span>
                   {memberName}
                   {memberTitle && (
-                    <span className="text-muted-foreground ml-1">
+                    <span className="text-foreground-muted ml-1">
                       - {memberTitle}
                     </span>
                   )}
@@ -222,7 +222,7 @@ export default function PerformanceRatingModal({
     </SelectTrigger>
     <SelectContent>
       {activities.length === 0 ? (
-        <div className="p-2 text-sm text-muted-foreground">
+        <div className="p-2 text-sm text-foreground-muted">
           {activitiesLoading ? "Loading..." : "No activities available"}
         </div>
       ) : (
@@ -262,7 +262,7 @@ export default function PerformanceRatingModal({
     maxLength={250}
     className="w-full resize-none"
   />
-  <div className="text-right text-xs text-muted-foreground">
+  <div className="text-right text-xs text-foreground-muted">
     {feedback.length} / 250
   </div>
 </div>

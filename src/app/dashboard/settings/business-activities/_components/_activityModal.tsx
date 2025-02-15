@@ -185,21 +185,21 @@ export function ActivityModal({
             <div className="space-y-2">
               <RadioGroupItem value="from-categories" id="from-categories" />
               <Label htmlFor="from-categories">Select from categories</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground-muted">
                 Select from pre-built activity categories
               </p>
             </div>
             <div className="space-y-2">
               <RadioGroupItem value="from-import" id="from-import" />
               <Label htmlFor="from-import">Import activities</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground-muted">
                 Import your own activity list
               </p>
             </div>
             <div className="space-y-2">
               <RadioGroupItem value="from-scratch" id="from-scratch" />
               <Label htmlFor="from-scratch">Create custom</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-foreground-muted">
                 Create a new custom activity
               </p>
             </div>
@@ -545,7 +545,7 @@ export function ActivityModal({
                         <p className="font-medium">
                           Drop CSV file here or click to upload
                         </p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-foreground-muted">
                           Only CSV files are supported
                         </p>
                       </div>
@@ -559,7 +559,7 @@ export function ActivityModal({
                       </div>
                       <div>
                         <p className="font-medium">{uploadedFile.name}</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-foreground-muted">
                           {(uploadedFile.size / 1024).toFixed(2)} KB
                         </p>
                       </div>
