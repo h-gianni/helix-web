@@ -1009,7 +1009,7 @@ ul.list-disc.list-small li {
   }
 
   .page-description {
-    @apply text-base text-muted-foreground font-light mt-2;
+    @apply text-base text-foreground-muted font-light mt-2;
   }
 
   .page-header-actions {

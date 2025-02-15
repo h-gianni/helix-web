@@ -39,13 +39,13 @@ export function PerformersByCategory({
     });
 
   const EmptyState = () => (
-    <div className="flex flex-col items-center justify-center p-8">
-      <div className={`p-2 rounded-full ${category.className} mb-4`}>
+    <div className="flex flex-col items-center justify-center pb-2">
+      <div className={`p-2 rounded-full ${category.className}`}>
         <category.Icon className="h-6 w-6" />
       </div>
       <div className="text-center">
-        <h3 className="text-lg font-semibold mb-2">{`No ${category.label}`}</h3>
-        <p className="text-sm text-muted-foreground max-w-md">
+        <h3 className="heading-3">{`No ${category.label}`}</h3>
+        <p className="text-sm text-foreground-weak max-w-md pt-1">
           {category.label === "Not Rated"
             ? "All team members have received at least one rating."
             : category.label.includes("Poor") || category.label.includes("Weak")
@@ -69,12 +69,12 @@ export function PerformersByCategory({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-3">
+        <CardTitle className="flex items-center gap-2">
           <category.Icon className={`h-5 w-5 ${category.className}`} />
           <span>{category.label}</span>
           {category.description && (
-            <span className="text-sm text-muted-foreground">
-              <span className="px-2 text-muted-foreground">/</span>
+            <span className="body-sm text-foreground-weak">
+              <span className="px-2 text-foreground-muted/50">/</span>
               {category.description}
             </span>
           )}

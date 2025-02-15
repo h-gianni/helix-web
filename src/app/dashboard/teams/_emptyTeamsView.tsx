@@ -17,7 +17,7 @@ const EmptyTeamsView = ({ onCreateTeam }: EmptyTeamsViewProps) => {
             </div>
             <div className="space-y-sm">
               <h1 className="text-display-1">Teams</h1>
-              <p className="text-copy-large max-w-xl mx-auto text-muted-foreground">
+              <p className="text-copy-large max-w-xl mx-auto text-foreground-muted">
                 Get started by creating your first team. Teams help you organize
                 members and track their performance through various activities.
               </p>

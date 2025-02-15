@@ -25,7 +25,8 @@ interface TeamState {
 
 const teamApi = {
   getTeams: async () => {
-    const { data } = await apiClient.get<ApiResponse<TeamResponse[]>>('/teams');
+    // Update the endpoint to include member data if your API supports it
+    const { data } = await apiClient.get<ApiResponse<TeamResponse[]>>('/teams?include=members,teamFunction');
     if (!data.success) throw new Error(data.error || 'Failed to fetch teams');
     return data.data;
   },

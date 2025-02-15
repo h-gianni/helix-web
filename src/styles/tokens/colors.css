@@ -1,5 +1,8 @@
 /* tokens/colors.css */
 :root {
+
+    --white: 0 0% 100%;  /* #FFF */
+    --black: 0 0% 0%;  /* #FFF */
     /* Core grayscale */
     --gray-50: 206 25% 97%;  /* #F5F7F9 */
     --gray-100: 206 21% 91%; /* #E2E8EC */

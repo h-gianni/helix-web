@@ -33,7 +33,7 @@ export default function RatingsSection({
   } = useMemberRatings({ teamId, memberId });
 
   if (isLoading) {
-    return <div className="text-muted-foreground">Loading ratings...</div>;
+    return <div className="text-foreground-muted">Loading ratings...</div>;
   }
 
   if (error) {
@@ -76,7 +76,7 @@ export default function RatingsSection({
       <TableBody>
         {data.ratings.map((rating) => (
           <TableRow key={rating.id}>
-            <TableCell className="font-medium text-strong">
+            <TableCell className="font-medium text-foreground-strong">
               {rating.activity?.name || 'N/A'}
             </TableCell>
             <TableCell>
@@ -91,7 +91,7 @@ export default function RatingsSection({
             <TableCell className="text-foreground max-w-md">
               {rating.activity?.description || 'No description'}
             </TableCell>
-            <TableCell className="text-weak">
+            <TableCell className="text-foreground-weak">
               {new Date(rating.createdAt).toLocaleDateString()}
             </TableCell>
           </TableRow>

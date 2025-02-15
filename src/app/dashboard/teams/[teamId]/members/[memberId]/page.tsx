@@ -171,7 +171,7 @@ export default function MemberDetailsPage() {
               </TabsContent>
 
               <TabsContent value="feedbacks">
-                <p className="text-muted-foreground">
+                <p className="text-foreground-muted">
                   Feedbacks content coming soon...
                 </p>
               </TabsContent>
@@ -189,7 +189,7 @@ export default function MemberDetailsPage() {
                   </div>
 
                   {!member.goals?.length ? (
-                    <p className="text-muted-foreground">No goals set yet.</p>
+                    <p className="text-foreground-muted">No goals set yet.</p>
                   ) : (
                     <div className="space-y-4">
                       {member.goals.map((goal) => (
@@ -198,7 +198,7 @@ export default function MemberDetailsPage() {
                             <div className="flex justify-between items-start">
                               <div>
                                 <p className="font-medium">Year: {goal.year}</p>
-                                <p className="text-muted-foreground">
+                                <p className="text-foreground-muted">
                                   {goal.description}
                                 </p>
                               </div>

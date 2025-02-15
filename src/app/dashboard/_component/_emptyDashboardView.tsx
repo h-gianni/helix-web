@@ -19,31 +19,29 @@ const EmptyDashboardView = ({ onCreateTeam }: EmptyDashboardViewProps) => {
   const firstTeam = teams[0];
 
   return (
-    <Card>
-      <CardContent className="py-xl">
-        <div className="text-center space-y-xl">
-          <div className="space-y-base">
-            <div className="mx-auto size-12 rounded-pill ui-background-primary-weakest p-sm">
-              <Users className="size-6 text-primary" />
+        <div className="text-center space-y-4 p-2 lg:p-8">
+          <div className="space-y-4">
+            <div className="flex items-center mx-auto justify-center size-16 rounded-full bg-primary/10 p-2">
+              <Users className="size-8 text-primary" />
             </div>
 
             {!showSuccessMessage ? (
-              <div className="space-y-sm">
-                <h1 className="ui-text-display-1">Welcome to UpScore</h1>
-                <p className="ui-text-copy-large max-w-xl mx-auto">
+              <div className="space-y-2">
+                <h1 className="display-1">Welcome to UpScore</h1>
+                <p className="body-lg max-w-xl mx-auto">
                   Get started by following these steps:
                 </p>
               </div>
             ) : (
-              <div className="space-y-sm">
-                <h1 className="ui-text-display-1">
+              <div className="space-y-2">
+                <h1 className="display-1">
                   You have successfully set up UpScore
                 </h1>
-                <p className="ui-text-copy-large max-w-xl mx-auto">
+                <p className="body-lg max-w-xl mx-auto">
                   Now you can create more teams and add your members to the
                   relevant team. Enjoy.
                 </p>
-                <div className="flex gap-sm justify-center py-base">
+                <div className="flex gap-2 justify-center py-4">
                   <Button
                     variant="secondary"
                     onClick={() => router.push('/dashboard/teams')}
@@ -63,12 +61,10 @@ const EmptyDashboardView = ({ onCreateTeam }: EmptyDashboardViewProps) => {
             )}
           </div>
 
-          <div className="max-w-[1200px] mx-auto space-y-md">
+          <div className="max-w-[1200px] mx-auto py-4 space-y-4">
             <SetupGuide onCreateTeam={() => onCreateTeam()} />
           </div>
         </div>
-      </CardContent>
-    </Card>
   );
 };
 

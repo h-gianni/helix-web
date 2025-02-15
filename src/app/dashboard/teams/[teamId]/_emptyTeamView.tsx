@@ -18,7 +18,7 @@ export default function EmptyTeamView({ onAddMember }: EmptyTeamViewProps) {
            </div>
            <div className="space-y-2">
              <h2 className="text-2xl font-semibold">Start Building Your Team</h2>
-             <p className="mx-auto max-w-xl text-muted-foreground">
+             <p className="mx-auto max-w-xl text-foreground-muted">
                Your team is ready to go! Begin by adding your first team member.
              </p>
            </div>

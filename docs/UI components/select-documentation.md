@@ -323,7 +323,7 @@ const [value, setValue] = useState("")
       {/* Options */}
     </SelectContent>
   </Select>
-  <p className="text-sm text-muted-foreground">
+  <p className="text-sm text-foreground-muted">
     Select your role in the organization
   </p>
 </div>

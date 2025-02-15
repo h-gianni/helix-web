@@ -103,7 +103,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center gap-4 p-6">
+      <div className="flex flex-col items-center gap-4">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <p className="text-sm">
@@ -111,7 +111,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
           </p>
         </Alert>
         <Button
-          variant="outline"
+          variant="ghost"
           onClick={() => router.back()}
           className="gap-2"
         >
@@ -124,13 +124,13 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
 
   if (!team) {
     return (
-      <div className="flex flex-col items-center gap-4 p-6">
+      <div className="flex flex-col items-center gap-4">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <p className="text-sm">Team not found</p>
         </Alert>
         <Button
-          variant="outline"
+          variant="ghost"
           onClick={() => router.back()}
           className="gap-2"
         >
@@ -192,7 +192,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         }
       />
 
-      <main className="p-6">
+      <main className="layout-page-main">
         {!team.members?.length || !performanceData?.members?.length ? (
           <EmptyTeamView onAddMember={() => setAddMemberModalOpen(true)} />
         ) : (

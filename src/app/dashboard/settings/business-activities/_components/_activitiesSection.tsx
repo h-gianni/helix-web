@@ -167,11 +167,11 @@ export function ActivitiesSection({
         <TableBody>
           {activities.map((activity) => (
             <TableRow key={activity.id}>
-              <TableCell className="text-weak w-0 whitespace-nowrap">
+              <TableCell className="text-foreground-weak w-0 whitespace-nowrap">
                 Category
               </TableCell>
               <TableCell className="font-medium">{activity.name}</TableCell>
-              <TableCell className="text-weak">
+              <TableCell className="text-foreground-weak">
                 {activity.description || "No description"}
               </TableCell>
               <TableCell className="text-center">18</TableCell>

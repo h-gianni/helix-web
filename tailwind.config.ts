@@ -16,14 +16,61 @@ const config: Config = {
       },
     },
     extend: {
+      fontSize: {
+        "2xs": "var(--font-2xs)",
+        xs: "var(--font-xs)",
+        sm: "var(--font-sm)",
+        base: "var(--font-base)",
+        lg: "var(--font-lg)",
+        xl: "var(--font-xl)",
+        "2xl": "var(--font-2xl)",
+        "3xl": "var(--font-3xl)",
+        "4xl": "var(--font-4xl)",
+      },
+      fontWeight: {
+        thin: "var(--font-thin)",
+        light: "var(--font-light)",
+        normal: "var(--font-normal)",
+        medium: "var(--font-medium)",
+        semibold: "var(--font-semibold)",
+        bold: "var(--font-bold)",
+        black: "var(--font-black)",
+      },
+      lineHeight: {
+        none: "var(--leading-none)",
+        tight: "var(--leading-tight)",
+        snug: "var(--leading-snug)",
+        normal: "var(--leading-normal)",
+        relaxed: "var(--leading-relaxed)",
+        loose: "var(--leading-loose)",
+      },
+      letterSpacing: {
+        tighter: "var(--tracking-tighter)",
+        tight: "var(--tracking-tight)",
+        normal: "var(--tracking-normal)",
+        wide: "var(--tracking-wide)",
+        wider: "var(--tracking-wider)",
+        widest: "var(--tracking-widest)",
+      },
+      maxWidth: {
+        "copy-xxs": "var(--max-width-copy-xxs)",
+        "copy-xs": "var(--max-width-copy-xs)",
+        "copy-sm": "var(--max-width-copy-sm)",
+        "copy-base": "var(--max-width-copy-base)",
+        "copy-lg": "var(--max-width-copy-lg)",
+        "copy-xl": "var(--max-width-copy-xl)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        strong: "hsl(var(--foreground-strong))",
-        weak: "hsl(var(--foreground-weak))",
+        foreground: {
+          DEFAULT: "hsl(var(--foreground))",
+          strong: "hsl(var(--foreground-strong))",
+          weak: "hsl(var(--foreground-weak))",
+          muted: "hsl(var(--foreground-muted))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -35,6 +82,18 @@ const config: Config = {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",
@@ -54,9 +113,9 @@ const config: Config = {
         },
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: "var(--radius-lg)",
+        DEFAULT: "var(--radius)",
+        sm: "var(--radius-sm)",
       },
       keyframes: {
         "accordion-down": {
@@ -72,6 +131,13 @@ const config: Config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      boxShadow: {
+        sm: "var(--shadow-sm)",
+        DEFAULT: "var(--shadow-base)",
+        md: "var(--shadow-md)",
+        lg: "var(--shadow-lg)",
+        xl: "var(--shadow-xl)",
+      }
     },
   },
   plugins: [

@@ -81,7 +81,7 @@ export default function TeamActivitiesConfig({
 
  if (isLoading) {
    return (
-     <div className="text-muted-foreground">
+     <div className="text-foreground-muted">
        Loading activities configuration...
      </div>
    );
@@ -105,14 +105,14 @@ export default function TeamActivitiesConfig({
              else handleUnselectAll();
            }}
          />
-         <span className="text-sm text-muted-foreground">
+         <span className="text-sm text-foreground-muted">
            {selectedActivityIds.length} of {activities.length} selected
          </span>
        </div>
      </div>
 
      {activities.length === 0 ? (
-       <div className="text-muted-foreground">No activities available</div>
+       <div className="text-foreground-muted">No activities available</div>
      ) : (
        <Table>
          <TableHeader>
@@ -144,9 +144,9 @@ export default function TeamActivitiesConfig({
                    disabled={isLoading}
                  />
                </TableCell>
-               <TableCell className="text-weak">category</TableCell>
+               <TableCell className="text-foreground-weak">category</TableCell>
                <TableCell className="font-medium">{activity.name}</TableCell>
-               <TableCell className="text-weak">
+               <TableCell className="text-foreground-weak">
                  {activity.description || "No description"}
                </TableCell>
                <TableCell className="text-center">18</TableCell>

@@ -17,20 +17,22 @@ export type ApiResponse<T> =
     };
 
 // Team types
-export type TeamResponse = {
+export interface TeamResponse {
   id: string;
   name: string;
   description?: string | null;
-  teamFunctionId: string;
-  ownerId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date | null;
-  customFields?: JsonValue;
-  // Add optional fields for UI display
-  totalMembers?: number;
+  teamFunction?: {
+    id: string;
+    name: string;
+  } | null;
+  members: Array<{
+    id: string;
+    name: string;
+    email: string;
+    title?: string | null;
+  }>;
   averagePerformance?: number;
-};
+}
 
 export type TeamMemberResponse = {
   id: string;

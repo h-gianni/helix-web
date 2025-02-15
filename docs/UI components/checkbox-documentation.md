@@ -106,7 +106,7 @@ function CheckboxGroup() {
       Receive marketing emails
     </label>
   </div>
-  <p className="text-sm text-muted-foreground pl-6">
+  <p className="text-sm text-foreground-muted pl-6">
     Get notified about new products and offers.
   </p>
 </div>

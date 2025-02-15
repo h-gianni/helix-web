@@ -98,7 +98,7 @@ import { Input } from "@/components/ui/input"
     id="username"
     placeholder="Enter username"
   />
-  <p className="text-sm text-muted-foreground">
+  <p className="text-sm text-foreground-muted">
     Must be at least 4 characters long.
   </p>
 </div>
@@ -280,7 +280,7 @@ const [value, setValue] = useState("")
 ```tsx
 <div className="relative">
   <Input maxLength={100} />
-  <span className="absolute right-2 bottom-2 text-sm text-muted-foreground">
+  <span className="absolute right-2 bottom-2 text-sm text-foreground-muted">
     0/100
   </span>
 </div>
