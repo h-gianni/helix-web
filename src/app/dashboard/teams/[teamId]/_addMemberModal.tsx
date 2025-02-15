@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,94 +20,39 @@ import {
   SelectValue,
 } from "@/components/ui/core/Select";
 import { AlertCircle } from "lucide-react";
-
-interface JobGrade {
-  id: string;
-  level: number;
-  grade: string;
-  typicalResponsibilities?: string | null;
-}
+import { useJobGrades, useAddMember, useMemberModalStore } from "@/store/member-store";
 
 interface AddMemberModalProps {
   isOpen: boolean;
   onClose: () => void;
   teamId?: string;
-  onSubmit?: (data: {
-    teamId: string;
-    email: string;
-    fullName: string;
-    title?: string;
-    jobGradeId?: string;
-    joinedDate?: string;
-    profilePhoto?: File;
-  }) => Promise<void>;
 }
 
 export function AddMemberModal({
   isOpen,
   onClose,
   teamId,
-  onSubmit,
 }: AddMemberModalProps) {
-  const [formData, setFormData] = useState({
-    email: "",
-    fullName: "",
-    title: "",
-    jobGradeId: "",
-    joinedDate: "",
-    profilePhoto: null as File | null,
-  });
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [jobGrades, setJobGrades] = useState<JobGrade[]>([]);
-  const [isLoadingGrades, setIsLoadingGrades] = useState(false);
+  const { formData, setFormData, resetForm } = useMemberModalStore();
+  const { data: jobGrades, isLoading: isLoadingGrades } = useJobGrades();
+  const { mutate: addMember, status, error } = useAddMember();
+  const isSubmitting = status === "pending";
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchJobGrades();
+  const handleSubmit = () => {
+    if (!teamId) {
+      return;
     }
-  }, [isOpen]);
 
-  async function fetchJobGrades() {
-    try {
-      setIsLoadingGrades(true);
-      const response = await fetch('/api/job-grades');
-      const data = await response.json();
-      
-      if (data.success) {
-        setJobGrades(data.data);
-      } else {
-        console.error("Failed to fetch job grades:", data.error);
-      }
-    } catch (error) {
-      console.error("Error fetching job grades:", error);
-    } finally {
-      setIsLoadingGrades(false);
+    const { email, fullName } = formData;
+    const trimmedEmail = email.trim();
+    const trimmedFullName = fullName.trim();
+
+    if (!trimmedEmail || !trimmedFullName) {
+      return;
     }
-  }
 
-  async function handleSubmit() {
-    try {
-      setIsSubmitting(true);
-      setError(null);
-
-      const { email, fullName } = formData;
-      const trimmedEmail = email.trim();
-      const trimmedFullName = fullName.trim();
-
-      if (!trimmedEmail || !trimmedFullName) {
-        throw new Error("Email and full name are required");
-      }
-
-      if (!teamId) {
-        throw new Error("Team ID is required");
-      }
-
-      if (!onSubmit) {
-        throw new Error("onSubmit handler is required");
-      }
-
-      await onSubmit({
+    addMember(
+      {
         teamId,
         email: trimmedEmail,
         fullName: trimmedFullName,
@@ -115,31 +60,23 @@ export function AddMemberModal({
         jobGradeId: formData.jobGradeId || undefined,
         joinedDate: formData.joinedDate || undefined,
         profilePhoto: formData.profilePhoto || undefined,
-      });
+      },
+      {
+        onSuccess: () => {
+          resetForm();
+          onClose();
+        },
+      }
+    );
+  };
 
-      handleReset();
-      onClose();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
-  function handleReset() {
-    setFormData({
-      email: "",
-      fullName: "",
-      title: "",
-      jobGradeId: "",
-      joinedDate: "",
-      profilePhoto: null,
-    });
-    setError(null);
-  }
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Team Member</DialogTitle>
@@ -149,7 +86,9 @@ export function AddMemberModal({
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
-              <p className="text-sm">{error}</p>
+              <p className="text-sm">
+                {error instanceof Error ? error.message : "An error occurred"}
+              </p>
             </Alert>
           )}
 
@@ -159,7 +98,7 @@ export function AddMemberModal({
               id="email"
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              onChange={(e) => setFormData({ email: e.target.value })}
               placeholder="member@example.com"
               required
             />
@@ -170,7 +109,7 @@ export function AddMemberModal({
             <Input
               id="fullName"
               value={formData.fullName}
-              onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+              onChange={(e) => setFormData({ fullName: e.target.value })}
               placeholder="John Doe"
               required
             />
@@ -181,7 +120,7 @@ export function AddMemberModal({
             <Input
               id="title"
               value={formData.title}
-              onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              onChange={(e) => setFormData({ title: e.target.value })}
               placeholder="e.g., Developer"
             />
           </div>
@@ -190,13 +129,13 @@ export function AddMemberModal({
             <Label htmlFor="jobGrade">Job Grade</Label>
             <Select
               value={formData.jobGradeId}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, jobGradeId: value }))}
+              onValueChange={(value) => setFormData({ jobGradeId: value })}
             >
               <SelectTrigger id="jobGrade">
                 <SelectValue placeholder="Select job grade" />
               </SelectTrigger>
               <SelectContent>
-                {jobGrades.map((grade) => (
+                {jobGrades?.map((grade) => (
                   <SelectItem key={grade.id} value={grade.id}>
                     {`${grade.level} / ${grade.grade}`}
                   </SelectItem>
@@ -211,7 +150,7 @@ export function AddMemberModal({
               id="joinedDate"
               type="date"
               value={formData.joinedDate}
-              onChange={(e) => setFormData(prev => ({ ...prev, joinedDate: e.target.value }))}
+              onChange={(e) => setFormData({ joinedDate: e.target.value })}
             />
           </div>
 
@@ -222,7 +161,7 @@ export function AddMemberModal({
               type="file"
               onChange={(e) => {
                 if (e.target.files?.[0]) {
-                  setFormData(prev => ({ ...prev, profilePhoto: e.target.files![0] }));
+                  setFormData({ profilePhoto: e.target.files[0] });
                 }
               }}
               accept="image/*"
@@ -233,17 +172,14 @@ export function AddMemberModal({
         <DialogFooter>
           <Button
             variant="outline"
-            onClick={() => {
-              handleReset();
-              onClose();
-            }}
+            onClick={handleClose}
             disabled={isSubmitting}
           >
             Cancel
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !formData.email || !formData.fullName}
           >
             {isSubmitting ? "Adding..." : "Add Member"}
           </Button>

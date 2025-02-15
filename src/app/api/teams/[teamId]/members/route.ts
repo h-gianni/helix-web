@@ -159,8 +159,17 @@ export async function POST(
       }
     }
 
-    const body = await req.json();
-    const { email, title, isAdmin = false } = body as AddTeamMemberInput;
+    // const body = await req.json();
+    // const { email, title, isAdmin = false } = body as AddTeamMemberInput;
+
+       // Handle FormData
+       const formData = await req.formData();
+       const email = formData.get('email') as string;
+       const title = formData.get('title') as string;
+       const isAdmin = formData.get('isAdmin') === 'true';
+       const jobGradeId = formData.get('jobGradeId') as string;
+       const joinedDate = formData.get('joinedDate') as string;
+       const profilePhoto = formData.get('profilePhoto') as File;
 
     if (!email?.trim()) {
       return NextResponse.json<ApiResponse<never>>({
@@ -187,24 +196,34 @@ export async function POST(
       }, { status: 400 });
     }
 
-    // Add member
-    const member = await prisma.teamMember.create({
-      data: {
-        teamId: params.teamId,
-        userId: userToAdd.id,
-        title: title?.trim() || null,
-        isAdmin,
+     // Handle profile photo upload if present
+     let profilePhotoUrl = null;
+     if (profilePhoto) {
+       // Implement your file upload logic here
+       // profilePhotoUrl = await uploadFile(profilePhoto);
+     }
+
+// Add member
+const member = await prisma.teamMember.create({
+  data: {
+    teamId: params.teamId,
+    userId: userToAdd.id,
+    title: title?.trim() || null,
+    isAdmin,
+    jobGradeId: jobGradeId || null,
+    joinedDate: joinedDate ? new Date(joinedDate) : null,
+    // profilePhotoUrl,
+  },
+  include: {
+    user: {
+      select: {
+        id: true,
+        email: true,
+        name: true,
       },
-      include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            name: true,
-          },
-        },
-      },
-    });
+    },
+  },
+});
 
     return NextResponse.json<ApiResponse<TeamMemberResponse>>({
       success: true,

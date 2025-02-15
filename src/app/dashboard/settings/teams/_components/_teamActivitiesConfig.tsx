@@ -1,168 +1,164 @@
-// src/app/dashboard/_component/_teamActivitiesConfig.tsx
-import { useState, useEffect, useCallback } from "react";
-import { Button } from "@/components/ui/core/Button";
-import { Checkbox } from "@/components/ui/core/Checkbox";
-import { Toggle } from "@/components/ui/core/Toggle";
-import { Alert, AlertDescription } from "@/components/ui/core/Alert";
+import { useEffect } from "react"
+import { Button } from "@/components/ui/core/Button"
+import { Checkbox } from "@/components/ui/core/Checkbox"
+import { Toggle } from "@/components/ui/core/Toggle"
+import { Alert, AlertDescription } from "@/components/ui/core/Alert"
 import {
- Table,
- TableHeader,
- TableRow,
- TableHead,
- TableCell,
- TableBody,
-} from "@/components/ui/core/Table";
-import { AlertCircle, Heart } from "lucide-react";
-import type { BusinessActivityResponse as ActivityResponse } from "@/lib/types/api";
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableBody,
+} from "@/components/ui/core/Table"
+import { AlertCircle, Heart } from "lucide-react"
+import { useTeamActivitiesStore, useActivities, useTeamActivities, useUpdateTeamActivities } from '@/store/team-activities-store'
 
 interface TeamActivitiesConfigProps {
- teamId: string;
- onUpdate: () => Promise<void>;
+  teamId: string
+  onUpdate?: () => void
 }
 
 export default function TeamActivitiesConfig({
- teamId,
- onUpdate,
+  teamId,
+  onUpdate,
 }: TeamActivitiesConfigProps) {
- const [activities, setActivities] = useState<ActivityResponse[]>([]);
- const [selectedActivityIds, setSelectedActivityIds] = useState<string[]>([]);
- const [isLoading, setIsLoading] = useState(true);
- const [error, setError] = useState<string | null>(null);
+  const {
+    selectedActivityIds,
+    setSelectedActivityIds,
+    toggleActivity,
+    selectAll,
+    unselectAll
+  } = useTeamActivitiesStore()
 
- const fetchActivities = useCallback(async () => {
-   try {
-     setIsLoading(true);
-     setError(null);
+  const { 
+    data: activities = [], 
+    isLoading: isActivitiesLoading,
+    error: activitiesError
+  } = useActivities()
 
-     const [activitiesRes, teamActivitiesRes] = await Promise.all([
-       fetch("/api/business-activities"),
-       fetch(`/api/teams/${teamId}/activities`),
-     ]);
+  const {
+    data: teamActivities = [],
+    isLoading: isTeamActivitiesLoading,
+    error: teamActivitiesError
+  } = useTeamActivities(teamId)
 
-     const [activitiesData, teamActivitiesData] = await Promise.all([
-       activitiesRes.json(),
-       teamActivitiesRes.json(),
-     ]);
+  const updateTeamActivities = useUpdateTeamActivities()
 
-     if (!activitiesData.success) throw new Error(activitiesData.error);
-     if (!teamActivitiesData.success)
-       throw new Error(teamActivitiesData.error);
+  useEffect(() => {
+    if (teamActivities.length > 0) {
+      setSelectedActivityIds(teamActivities.map(activity => activity.id))
+    }
+  }, [teamActivities, setSelectedActivityIds])
 
-     setActivities(activitiesData.data);
-     setSelectedActivityIds(
-       teamActivitiesData.data.map((activity: ActivityResponse) => activity.id)
-     );
-   } catch (err) {
-     setError(err instanceof Error ? err.message : "An error occurred");
-   } finally {
-     setIsLoading(false);
-   }
- }, [teamId]);
+  const isLoading = isActivitiesLoading || isTeamActivitiesLoading
+  const error = activitiesError || teamActivitiesError
 
- useEffect(() => {
-   fetchActivities();
- }, [fetchActivities]);
+  const handleSave = async () => {
+    try {
+      await updateTeamActivities.mutateAsync({
+        teamId,
+        activityIds: selectedActivityIds
+      })
+      onUpdate?.()
+    } catch (err) {
+      console.error('Failed to update team activities:', err)
+    }
+  }
 
- const handleSelectAll = useCallback(() => {
-   setSelectedActivityIds(activities.map((i) => i.id));
- }, [activities]);
+  if (isLoading) {
+    return (
+      <div className="text-muted-foreground">
+        Loading activities configuration...
+      </div>
+    )
+  }
 
- const handleUnselectAll = useCallback(() => {
-   setSelectedActivityIds([]);
- }, []);
+  return (
+    <div className="space-y-base">
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            {error instanceof Error ? error.message : 'An error occurred'}
+          </AlertDescription>
+        </Alert>
+      )}
 
- const handleActivityToggle = useCallback((activityId: string) => {
-   setSelectedActivityIds((prev) =>
-     prev.includes(activityId)
-       ? prev.filter((id) => id !== activityId)
-       : [...prev, activityId]
-   );
- }, []);
+      <div className="ui-view-controls-bar">
+        <div className="flex items-center gap-base">
+          <Checkbox
+            checked={activities.length === selectedActivityIds.length}
+            onCheckedChange={(checked) => {
+              if (checked) selectAll(activities)
+              else unselectAll()
+            }}
+          />
+          <span className="text-sm text-muted-foreground">
+            {selectedActivityIds.length} of {activities.length} selected
+          </span>
+        </div>
 
- if (isLoading) {
-   return (
-     <div className="text-muted-foreground">
-       Loading activities configuration...
-     </div>
-   );
- }
+        <Button
+          onClick={handleSave}
+          disabled={updateTeamActivities.isPending}
+        >
+          Save Changes
+        </Button>
+      </div>
 
- return (
-   <div className="space-y-base">
-     {error && (
-       <Alert variant="destructive">
-         <AlertCircle />
-         <AlertDescription>{error}</AlertDescription>
-       </Alert>
-     )}
-
-     <div className="ui-view-controls-bar">
-       <div className="flex items-center gap-base">
-         <Checkbox
-           checked={activities.length === selectedActivityIds.length}
-           onCheckedChange={(checked) => {
-             if (checked) handleSelectAll();
-             else handleUnselectAll();
-           }}
-         />
-         <span className="text-sm text-muted-foreground">
-           {selectedActivityIds.length} of {activities.length} selected
-         </span>
-       </div>
-     </div>
-
-     {activities.length === 0 ? (
-       <div className="text-muted-foreground">No activities available</div>
-     ) : (
-       <Table>
-         <TableHeader>
-           <TableRow>
-             <TableHead className="w-[50px]">
-               <Checkbox
-                 checked={activities.length === selectedActivityIds.length}
-                 onCheckedChange={(checked) => {
-                   if (checked) handleSelectAll();
-                   else handleUnselectAll();
-                 }}
-               />
-             </TableHead>
-             <TableHead>Category</TableHead>
-             <TableHead>Activity</TableHead>
-             <TableHead>Description</TableHead>
-             <TableHead className="w-0">Business Impact</TableHead>
-             <TableHead className="w-0">Favourite</TableHead>
-             <TableHead className="w-0">Ratings</TableHead>
-           </TableRow>
-         </TableHeader>
-         <TableBody>
-           {activities.map((activity) => (
-             <TableRow key={activity.id}>
-               <TableCell>
-                 <Checkbox
-                   checked={selectedActivityIds.includes(activity.id)}
-                   onCheckedChange={() => handleActivityToggle(activity.id)}
-                   disabled={isLoading}
-                 />
-               </TableCell>
-               <TableCell className="text-weak">category</TableCell>
-               <TableCell className="font-medium">{activity.name}</TableCell>
-               <TableCell className="text-weak">
-                 {activity.description || "No description"}
-               </TableCell>
-               <TableCell className="text-center">18</TableCell>
-               <TableCell className="text-center">
-                 <Toggle size="sm">
-                   <Heart />
-                 </Toggle>
-               </TableCell>
-               <TableCell className="text-center">
-                 {activity._count?.ratings || 0}
-               </TableCell>
-             </TableRow>
-           ))}
-         </TableBody>
-       </Table>
-     )}
-   </div>
- );
+      {activities.length === 0 ? (
+        <div className="text-muted-foreground">No activities available</div>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[50px]">
+                <Checkbox
+                  checked={activities.length === selectedActivityIds.length}
+                  onCheckedChange={(checked) => {
+                    if (checked) selectAll(activities)
+                    else unselectAll()
+                  }}
+                />
+              </TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>Activity</TableHead>
+              <TableHead>Description</TableHead>
+              <TableHead className="w-0">Business Impact</TableHead>
+              <TableHead className="w-0">Favourite</TableHead>
+              <TableHead className="w-0">Ratings</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {activities.map((activity) => (
+              <TableRow key={activity.id}>
+                <TableCell>
+                  <Checkbox
+                    checked={selectedActivityIds.includes(activity.id)}
+                    onCheckedChange={() => toggleActivity(activity.id)}
+                    disabled={updateTeamActivities.isPending}
+                  />
+                </TableCell>
+                <TableCell className="text-weak">category</TableCell>
+                <TableCell className="font-medium">{activity.name}</TableCell>
+                <TableCell className="text-weak">
+                  {activity.description || "No description"}
+                </TableCell>
+                <TableCell className="text-center">18</TableCell>
+                <TableCell className="text-center">
+                  <Toggle size="sm">
+                    <Heart className="h-4 w-4" />
+                  </Toggle>
+                </TableCell>
+                <TableCell className="text-center">
+                  {activity._count?.ratings || 0}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
+    </div>
+  )
 }

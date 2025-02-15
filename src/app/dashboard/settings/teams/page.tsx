@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import { useTeams } from "@/lib/context/teams-context";
@@ -14,27 +14,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/core/Select";
-import { Card, CardContent } from "@/components/ui/core/Card";
 import TeamActivitiesConfig from "./_components/_teamActivitiesConfig";
-import type { TeamDetailsResponse } from "@/lib/types/api";
+import { useTeamSettingsStore, useTeamDetails } from '@/store/team-settings-store';
 
 export default function TeamsSettingsPage() {
   const { teams, isLoading: isTeamsLoading } = useTeams();
   const router = useRouter();
-  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
-  const [teamDetails, setTeamDetails] = useState<TeamDetailsResponse | null>(
-    null
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { selectedTeamId, setSelectedTeamId } = useTeamSettingsStore();
+  
+  const { 
+    data: teamDetails,
+    isLoading,
+    error,
+    refetch
+  } = useTeamDetails(selectedTeamId);
 
   // Determine page title based on number of teams
-  const pageTitle = useMemo(() => {
-    if (teams.length === 1) {
-      return "Team Settings";
-    }
-    return "Teams Settings";
-  }, [teams.length]);
+  const pageTitle = teams.length === 1 ? "Team Settings" : "Teams Settings";
 
   const breadcrumbItems = [
     { label: "Settings", href: "/dashboard/settings" },
@@ -46,35 +42,7 @@ export default function TeamsSettingsPage() {
     if (teams.length > 0 && !selectedTeamId) {
       setSelectedTeamId(teams[0].id);
     }
-  }, [teams, selectedTeamId]);
-
-  const fetchTeamDetails = useCallback(async (teamId: string) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const response = await fetch(`/api/teams/${teamId}`);
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.error || "Failed to fetch team settings");
-      }
-
-      setTeamDetails(data.data);
-    } catch (err) {
-      console.error("Error fetching team details:", err);
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  // Fetch team details when team selection changes
-  useEffect(() => {
-    if (selectedTeamId) {
-      fetchTeamDetails(selectedTeamId);
-    }
-  }, [selectedTeamId, fetchTeamDetails]);
+  }, [teams, selectedTeamId, setSelectedTeamId]);
 
   const handleTeamChange = (teamId: string) => {
     setSelectedTeamId(teamId);
@@ -96,7 +64,7 @@ export default function TeamsSettingsPage() {
         />
         <main className="layout-page-main">
           <Alert variant="destructive">
-            <AlertCircle />
+            <AlertCircle className="h-4 w-4" />
             <AlertDescription>
               No teams available. Please create a team first.
             </AlertDescription>
@@ -146,8 +114,10 @@ export default function TeamsSettingsPage() {
         {/* Error State */}
         {error && (
           <Alert variant="destructive">
-            <AlertCircle />
-            <AlertDescription>{error}</AlertDescription>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              {error instanceof Error ? error.message : 'An error occurred'}
+            </AlertDescription>
           </Alert>
         )}
 
@@ -162,7 +132,7 @@ export default function TeamsSettingsPage() {
                 {/* Team Activities Config */}
                 <TeamActivitiesConfig
                   teamId={selectedTeamId}
-                  onUpdate={() => fetchTeamDetails(selectedTeamId)}
+                  onUpdate={refetch}
                 />
                 {/* Future team settings components will go here */}
                 {/* <TeamGeneralSettings teamId={selectedTeamId} /> */}

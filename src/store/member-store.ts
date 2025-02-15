@@ -68,6 +68,23 @@ interface RatingsData {
   }
 }
 
+interface JobGrade {
+  id: string;
+  level: number;
+  grade: string;
+  typicalResponsibilities?: string | null;
+}
+
+interface AddMemberData {
+  teamId: string
+  email: string
+  fullName: string
+  title?: string
+  jobGradeId?: string
+  joinedDate?: string
+  profilePhoto?: File
+}
+
 
 const queryClient = new QueryClient()
 
@@ -117,10 +134,38 @@ const memberApi = {
     )
     if (!data.success) throw new Error(data.error || 'Failed to fetch ratings')
     return data.data
+  },
+
+  getJobGrades: async () => {
+    const { data } = await apiClient.get<ApiResponse<JobGrade[]>>('/job-grades')
+    if (!data.success) throw new Error(data.error || 'Failed to fetch job grades')
+    return data.data
+  },
+
+  addMember: async (memberData: AddMemberData) => {
+    const formData = new FormData()
+    Object.entries(memberData).forEach(([key, value]) => {
+      if (value !== undefined) {
+        formData.append(key, value)
+      }
+    })
+
+    const { data } = await apiClient.post<ApiResponse<any>>(
+      `/teams/${memberData.teamId}/members`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    )
+    if (!data.success) throw new Error(data.error || 'Failed to add member')
+    return data.data
   }
-
-
 }
+
+
+
 
 // Query Hooks
 export function useMemberDetails({ teamId, memberId }: { teamId: string; memberId: string }) {
@@ -174,8 +219,30 @@ export function useMemberRatings({ teamId, memberId }: { teamId: string; memberI
   })
 }
 
+// Add query hooks
+export function useJobGrades() {
+  return useQuery({
+    queryKey: ['job-grades'],
+    queryFn: memberApi.getJobGrades,
+    staleTime: 30 * 60 * 1000, // 30 minutes
+  })
+}
+
+export function useAddMember() { 
+  return useMutation({
+    mutationFn: memberApi.addMember,
+    onSuccess: (data, variables) => {
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ['team', variables.teamId] })
+      queryClient.invalidateQueries({ queryKey: ['team-members', variables.teamId] })
+    }
+  })
+}
+
+
 // Zustand Store for UI State
 interface MemberStore {
+  
   selectedTab: 'dashboard' | 'ratings' | 'feedbacks' | 'goals'
   isEditModalOpen: boolean
   isRatingModalOpen: boolean
@@ -183,6 +250,7 @@ interface MemberStore {
   setEditModalOpen: (isOpen: boolean) => void
   setRatingModalOpen: (isOpen: boolean) => void
 }
+
 
 export const useMemberStore = create<MemberStore>((set) => ({
   selectedTab: 'dashboard',
@@ -192,3 +260,39 @@ export const useMemberStore = create<MemberStore>((set) => ({
   setEditModalOpen: (isOpen) => set({ isEditModalOpen: isOpen }),
   setRatingModalOpen: (isOpen) => set({ isRatingModalOpen: isOpen })
 }))
+
+
+interface MemberModalStore {
+  formData: {
+    email: string
+    fullName: string
+    title: string
+    jobGradeId: string
+    joinedDate: string
+    profilePhoto: File | null
+  }
+  setFormData: (data: Partial<MemberModalStore['formData']>) => void
+  resetForm: () => void
+}
+
+
+
+const initialFormData = {
+  email: '',
+  fullName: '',
+  title: '',
+  jobGradeId: '',
+  joinedDate: '',
+  profilePhoto: null,
+}
+
+export const useMemberModalStore = create<MemberModalStore>((set) => ({
+  formData: initialFormData,
+  setFormData: (data) => set((state) => ({
+    formData: { ...state.formData, ...data }
+  })),
+  resetForm: () => set({ formData: initialFormData })
+}))
+
+
+
