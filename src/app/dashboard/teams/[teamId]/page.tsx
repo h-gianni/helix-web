@@ -66,10 +66,8 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
     error: teamError,
   } = useTeamDetails(params.teamId);
 
-  const {
-    data: performanceData,
-    isLoading: isPerformanceLoading,
-  } = useTeamPerformance(params.teamId);
+  const { data: performanceData, isLoading: isPerformanceLoading } =
+    useTeamPerformance(params.teamId);
 
   const updateTeam = useUpdateTeam();
   const deleteTeam = useDeleteTeam();
@@ -78,12 +76,19 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
   const isLoading = isTeamLoading || isPerformanceLoading;
   const error = teamError;
 
-  const handleSaveTeamDetails = async (name: string, description: string | null) => {
+  const handleSaveTeamDetails = async (
+    name: string,
+    description: string | null
+  ) => {
     await updateTeam.mutateAsync({ teamId: params.teamId, name, description });
     setEditModalOpen(false);
   };
 
-  const handleAddMember = async (data: { teamId: string; email: string; title?: string }) => {
+  const handleAddMember = async (data: {
+    teamId: string;
+    email: string;
+    title?: string;
+  }) => {
     await addMember.mutateAsync(data);
     setAddMemberModalOpen(false);
   };
@@ -98,7 +103,11 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center p-6">Loading team details...</div>;
+    return (
+      <div className="flex items-center justify-center p-6">
+        Loading team details...
+      </div>
+    );
   }
 
   if (error) {
@@ -110,11 +119,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
             {error instanceof Error ? error.message : "An error occurred"}
           </p>
         </Alert>
-        <Button
-          variant="ghost"
-          onClick={() => router.back()}
-          className="gap-2"
-        >
+        <Button variant="ghost" onClick={() => router.back()} className="gap-2">
           <ArrowLeft className="h-4 w-4" />
           Go Back
         </Button>
@@ -129,11 +134,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
           <AlertCircle className="h-4 w-4" />
           <p className="text-sm">Team not found</p>
         </Alert>
-        <Button
-          variant="ghost"
-          onClick={() => router.back()}
-          className="gap-2"
-        >
+        <Button variant="ghost" onClick={() => router.back()} className="gap-2">
           <ArrowLeft className="h-4 w-4" />
           Go Back
         </Button>
@@ -151,7 +152,9 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
       />
       <PageHeader
         title={team.name}
-        caption={`${team.teamFunction?.name || 'No function'} | ${team.members?.length || 0} members`}
+        caption={`${team.teamFunction?.name || "No function"} | ${
+          team.members?.length || 0
+        } members`}
         backButton={{
           onClick: () => router.push("/dashboard/teams"),
         }}
@@ -166,11 +169,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                >
+                <Button variant="ghost" size="icon" className="h-8 w-8">
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
@@ -210,7 +209,6 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         isOpen={isAddMemberModalOpen}
         onClose={() => setAddMemberModalOpen(false)}
         teamId={params.teamId}
-        onSubmit={handleAddMember}
       />
 
       <TeamEditModal
@@ -221,10 +219,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         onSave={handleSaveTeamDetails}
       />
 
-      <AlertDialog
-        open={isDeleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-      >
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Team</AlertDialogTitle>

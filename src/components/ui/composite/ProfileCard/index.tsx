@@ -40,7 +40,7 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
   }, ref) => {
     const EditButton = () => (
       <Button
-        variant="outline"
+        variant="ghost"
         onClick={onEdit}
         className={cn("gap-2", editButtonPosition === 'footer' && 'w-full')}
       >
@@ -50,12 +50,12 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
     );
 
     const renderFields = () => (
-      <div className="space-y-4">
+      <div className="space-y-2">
         {fields.map((field, index) => (
-          <div key={index} className="space-y-1.5">
-            <Label>{field.label}</Label>
+          <div key={index} className="-space-y-1">
+            <Label className='text-foreground-muted'>{field.label}</Label>
             <p className={cn(
-              "text-sm",
+              "text-base",
               field.variant === 'title' && "text-lg font-semibold",
               field.variant === 'strong' && "font-medium"
             )}>
@@ -67,7 +67,7 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
     );
 
     const ProfileImage = () => (
-      <div className="relative h-24 w-24">
+      <div className="relative h-full w-full">
         <Image
           src={imageUrl}
           alt="Profile"
@@ -90,7 +90,7 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
       >
         {align === 'vertical' ? (
           <>
-            <div className="flex justify-center pt-6">
+            <div className="flex justify-center pt-6 bg-info/10">
               <ProfileImage />
             </div>
             <CardContent className="space-y-6">

@@ -191,7 +191,7 @@ export function ActivityModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-6">
+        <div className="grid gap-6 overflow-scroll">
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />

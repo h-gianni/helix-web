@@ -26,6 +26,6 @@
   
     /* Actions container */
     .page-header-actions {
-      @apply flex items-center gap-4;
+      @apply flex items-center gap-2;
     }
   }
