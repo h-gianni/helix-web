@@ -1,6 +1,11 @@
 "use client";
 
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/core/Card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+} from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import StarRating from "@/components/ui/core/Star-rating";
 import {
@@ -29,10 +34,10 @@ export default function MemberDashboard({
   teamId,
   memberId,
 }: MemberDashboardProps) {
-  const { 
+  const {
     data: dashboardData,
     isLoading,
-    error 
+    error,
   } = useMemberDashboard({ teamId, memberId });
 
   if (isLoading) {
@@ -71,17 +76,19 @@ export default function MemberDashboard({
   };
 
   return (
-    <div className="space-y-base">
+    <div className="space-y-2">
       {/* Top Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-base">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
         {/* Overall Rating Card */}
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm">Overall Rating</CardTitle>
+            <CardTitle data-size="sm" className="heading-4">
+              Overall Rating
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-sm">
-              <div className="flex items-center gap-sm">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
                 <StarRating
                   value={currentRating}
                   disabled={true}
@@ -96,10 +103,12 @@ export default function MemberDashboard({
         {/* Current Quarter Performance */}
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm">Current Quarter</CardTitle>
+            <CardTitle data-size="sm" className="heading-4">
+              Current Quarter
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-sm">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <StarRating
                   value={currentQuarterRating}
@@ -116,12 +125,14 @@ export default function MemberDashboard({
         {/* Team Standing */}
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm">Team Standing</CardTitle>
+            <CardTitle data-size="sm" className="heading-4">
+              Team Standing
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-sm">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-sm">
+                <div className="flex items-center gap-2">
                   <Trophy className="ui-text-success" />
                   <span className="text-lg">#{teamPosition}</span>
                 </div>
@@ -130,17 +141,36 @@ export default function MemberDashboard({
             </div>
           </CardContent>
         </Card>
+
+        {/* Feedback Count */}
+        <Card>
+          <CardHeader>
+            <CardTitle data-size="sm" className="heading-4">
+              Total Feedbacks
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="">
+              <div className="flex items-center gap-2">
+                <MessageSquare />
+                <span className="text-lg">{totalFeedbacks}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-base">
-        {/* Performance Trend Chart */}
-        <Card className="md:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+        {/* Quarter Performance Trend Chart */}
+        <Card>
           <CardHeader>
-            <CardTitle data-size="sm">Quarterly Performance Trend</CardTitle>
+            <CardTitle data-size="sm" className="heading-4">
+              Quarter Trend
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-64">
+            <div className="h-40">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={quarterlyPerformance}>
                   <XAxis dataKey="quarter" />
@@ -158,69 +188,112 @@ export default function MemberDashboard({
           </CardContent>
         </Card>
 
-        {/* Top Activities & Feedback */}
-        <div className="space-y-base">
-          {/* Feedback Count */}
-          <Card>
-            <CardHeader>
-              <CardTitle data-size="sm">Total Feedbacks</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="">
-                <div className="flex items-center gap-sm">
-                  <MessageSquare />
-                  <span className="text-lg">{totalFeedbacks}</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        {/* last two quarters Performance Trend Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle data-size="sm" className="heading-4">
+              Last 2 quarters Trend
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-40">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={quarterlyPerformance}>
+                  <XAxis dataKey="quarter" />
+                  <YAxis domain={[0, 5]} />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="averageRating"
+                    stroke="#8884d8"
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
 
-          {/* Top Activities */}
-          <Card>
-            <CardHeader>
-              <CardTitle data-size="sm">Top Activities</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-sm">
-                {topActivities.map((activity) => (
-                  <div key={activity.id}>
-                    <div className="flex gap-xs items-baseline">
-                      <div className="">{activity.name}</div>
-                      <div className="ui-text-body-helper">
-                        ({activity.ratingsCount} ratings)
-                      </div>
-                    </div>
-                    <StarRating
-                      value={activity.averageRating}
-                      disabled={true}
-                      size="sm"
-                      showRatingsCount={false}
-                    />
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Yearly Performance Trend Chart */}
+        <Card>
+          <CardHeader>
+            <CardTitle data-size="sm" className="heading-4">
+              Last 12 months Trend
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-40">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={quarterlyPerformance}>
+                  <XAxis dataKey="quarter" />
+                  <YAxis domain={[0, 5]} />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="averageRating"
+                    stroke="#8884d8"
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Strengths and Improvements */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-base">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm">Strengths</CardTitle>
+            <CardTitle data-size="sm" className="heading-4">
+              Strengths
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="">Content coming soon</div>
+            <div className="body-base">Content coming soon</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm">Need to improve</CardTitle>
+            <CardTitle data-size="sm" className="heading-4">
+              Need to improve
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="">Content coming soon</div>
+            <div className="body-base">Content coming soon</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Top Activities & Feedback */}
+      <div className="grid grid-cols-3 gap-2">
+        {/* Top Activities */}
+        <Card>
+          <CardHeader>
+            <CardTitle data-size="sm" className="heading-4">
+              Top Activities
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2.5">
+              {topActivities.map((activity) => (
+                <div key={activity.id}>
+                  <div className="flex gap-1 items-baseline">
+                    <div className="heading-5">{activity.name}</div>
+                    <div className="text-sm">
+                      with {activity.ratingsCount} ratings
+                    </div>
+                  </div>
+                  <StarRating
+                    value={activity.averageRating}
+                    disabled={true}
+                    size="sm"
+                    showRatingsCount={false}
+                  />
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>

@@ -93,7 +93,7 @@ export default function MemberDetailsPage() {
         }}
         icon={member.isAdmin && <Crown className="ui-text-warning" />}
         actions={
-          <div className="flex gap-sm">
+          <>
             <Button
               variant="secondary"
               onClick={() => setRatingModalOpen(true)}
@@ -103,12 +103,12 @@ export default function MemberDetailsPage() {
             <Button variant="default">
             <ChartNoAxesCombined /> Generate Performance Review
             </Button>
-          </div>
+          </>
         }
       />
 
       <main className="layout-page-main">
-        <div className="flex gap-base flex-row-reverse">
+        <div className="flex gap-2 flex-row-reverse">
           <div className="w-80">
             <ProfileCard
               align="vertical"
@@ -146,7 +146,7 @@ export default function MemberDetailsPage() {
             />
           </div>
 
-          <div className="w-full -mt-base">
+          <div className="w-full">
             <Tabs value={selectedTab} onValueChange={(value) => setSelectedTab(value as any)}>
               <TabsList>
                 <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
