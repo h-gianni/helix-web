@@ -90,8 +90,8 @@ export default function TeamActivitiesConfig({
          <Checkbox
            checked={activities.length === selectedActivityIds.length}
            onCheckedChange={(checked) => {
-             if (checked) handleSelectAll();
-             else handleUnselectAll();
+             if (checked) selectAll(activities);
+             else unselectAll();
            }}
          />
          <span className="text-sm text-foreground-muted">
@@ -110,8 +110,8 @@ export default function TeamActivitiesConfig({
                <Checkbox
                  checked={activities.length === selectedActivityIds.length}
                  onCheckedChange={(checked) => {
-                   if (checked) handleSelectAll();
-                   else handleUnselectAll();
+                   if (checked) selectAll(activities);
+                   else unselectAll();
                  }}
                />
              </TableHead>
@@ -129,7 +129,7 @@ export default function TeamActivitiesConfig({
                <TableCell>
                  <Checkbox
                    checked={selectedActivityIds.includes(activity.id)}
-                   onCheckedChange={() => handleActivityToggle(activity.id)}
+                   onCheckedChange={() => toggleActivity(activity.id)}
                    disabled={isLoading}
                  />
                </TableCell>

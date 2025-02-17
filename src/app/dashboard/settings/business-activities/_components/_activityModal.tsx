@@ -40,6 +40,13 @@ import {
 } from "lucide-react";
 import type { BusinessActivityResponse } from "@/lib/types/api";
 import { cn } from "@/lib/utils";
+import {
+  useActivityCategories,
+  useCreateActivity,
+  useUpdateActivity,
+  useImportActivities,
+  useActivityModalStore
+} from '@/store/activity-modal-store';
 
 interface ActivityModalProps {
   isOpen: boolean;
@@ -54,25 +61,49 @@ export function ActivityModal({
   activity,
   onUpdate,
 }: ActivityModalProps) {
+
+
+  const {
+    formData,
+    dragActive,
+    setFormData,
+    setDragActive,
+    reset,
+    hasChanges
+  } = useActivityModalStore()
+
+
+  const { data: categories = [], isLoading: isCategoriesLoading } = useActivityCategories()
+  const createActivity = useCreateActivity()
+  const updateActivity = useUpdateActivity()
+  const importActivities = useImportActivities()
+
+
+  const isSubmitting = createActivity.isPending || updateActivity.isPending || importActivities.isPending
+  const error = createActivity.error || updateActivity.error || importActivities.error
+
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [activityType, setActivityType] = useState("from-categories");
-  const [dragActive, setDragActive] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
+
   useEffect(() => {
+   
     if (activity) {
-      setName(activity.name);
-      setDescription(activity.description || "");
+  
+      setFormData({
+        name: activity.name,
+        description: activity.description || '',
+        activityType: 'from-scratch'
+      })
     } else {
-      setName("");
-      setDescription("");
+      reset()
     }
-    setError(null);
-    setUploadedFile(null);
-  }, [activity, isOpen]);
+  }, [activity, isOpen, setFormData, reset, formData.activityType])
+
+ 
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -81,78 +112,70 @@ export function ActivityModal({
   };
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
 
-    const file = e.dataTransfer.files?.[0];
+    const file = e.dataTransfer.files?.[0]
     if (file?.type === "text/csv") {
-      setUploadedFile(file);
-    } else {
-      setError("Please upload a CSV file");
+      setFormData({ uploadedFile: file })
     }
-  };
+  }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file?.type === "text/csv") {
-      setUploadedFile(file);
-    } else {
-      setError("Please upload a CSV file");
+      setFormData({ uploadedFile: file })
     }
-  };
+  }
 
   const handleSubmit = async () => {
     try {
-      setIsSubmitting(true);
-      setError(null);
-
-      if (activityType === "from-import" && uploadedFile) {
-        const formData = new FormData();
-        formData.append("file", uploadedFile);
-        const response = await fetch("/api/business-activities/import", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await response.json();
-        if (!data.success) {
-          throw new Error(data.error || "Failed to import activities");
-        }
-      } else {
-        const method = activity ? "PATCH" : "POST";
-        const url = activity
-          ? `/api/business-activities/${activity.id}`
-          : "/api/business-activities";
-
-        const response = await fetch(url, {
-          method,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: name.trim(),
-            description: description.trim() || null,
-          }),
-        });
-
-        const data = await response.json();
-        if (!data.success) {
-          throw new Error(data.error || "Failed to save activity");
-        }
+      switch (formData.activityType) {
+        case 'from-import':
+          if (formData.uploadedFile) {
+            await importActivities.mutateAsync(formData.uploadedFile)
+          }
+          break
+          
+        case 'from-categories':
+          if (formData.selectedCategories.length > 0) {
+            // Create activities from selected categories
+            await createActivity.mutateAsync({
+              name: formData.name.trim(),
+              categoryIds: formData.selectedCategories
+            })
+          }
+          break
+          
+        case 'from-scratch':
+          if (activity) {
+            await updateActivity.mutateAsync({
+              id: activity.id,
+              name: formData.name.trim(),
+              description: formData.description.trim() || undefined,
+              impactScale: formData.impactScale
+            })
+          } else {
+            await createActivity.mutateAsync({
+              name: formData.name.trim(),
+              description: formData.description.trim() || undefined,
+              impactScale: formData.impactScale
+            })
+          }
+          break
       }
 
-      await onUpdate();
-      onClose();
+      onUpdate?.()
+      onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsSubmitting(false);
+      // Error handling is managed by React Query
     }
-  };
+  }
 
-  const hasChanges = () => {
-    if (activityType === "from-import") return !!uploadedFile;
-    if (!activity) return name.trim() !== "" || description.trim() !== "";
-    return name !== activity.name || description !== (activity.description || "");
-  };
+
+
+
 
   const handleClose = () => {
     if (hasChanges() && !confirm("Discard unsaved changes?")) return;
@@ -172,7 +195,7 @@ export function ActivityModal({
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
-              <p className="text-sm">{error}</p>
+              <p className="text-sm">{error.message}</p>
             </Alert>
           )}
 
