@@ -28,6 +28,7 @@
     --muted: var(--gray-100);
     --muted-foreground: var(--gray-500);
     --border: var(--gray-100);
+    --border-strong: var(--gray-200);
     --input: var(--gray-200);
     --ring: var(--primary-300);
 
@@ -59,9 +60,9 @@
     --sidebar-ring: var(--gray-100);
 
     /* Shape */
-    --radius-sm: 0.25rem;
-    --radius: 0.5rem;
-    --radius-lg: 0.75rem;
+    --radius-sm: 0.05rem;
+    --radius: 0.25rem;
+    --radius-lg: 0.5rem;
   }
 
   .dark {

@@ -33,7 +33,7 @@ export default function RatingsSection({
   } = useMemberRatings({ teamId, memberId });
 
   if (isLoading) {
-    return <div className="text-foreground-muted">Loading ratings...</div>;
+    return <div className="text-foreground">Loading ratings...</div>;
   }
 
   if (error) {
@@ -57,8 +57,8 @@ export default function RatingsSection({
 
   if (!data?.ratings.length) {
     return (
-      <div className="py-8 text-center text-muted">
-        No ratings yet. Click &ldquo;Add Rating&ldquo; to provide the first rating.
+      <div className="missing-content">
+        No ratings yet.
       </div>
     );
   }

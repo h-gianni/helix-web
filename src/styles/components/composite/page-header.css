@@ -1,7 +1,7 @@
 @layer components {
     /* Base container styles */
     .page-header {
-      @apply mb-4;
+      @apply mb-6;
     }
   
     /* Layout container */
@@ -11,7 +11,7 @@
   
     /* Left side with title and content */
     .page-header-content {
-      @apply flex gap-4;
+      @apply flex gap-2;
     }
   
     /* Title container with optional icon */

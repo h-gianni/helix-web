@@ -151,8 +151,8 @@ export default function MemberDetailsPage() {
               <TabsList>
                 <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                 <TabsTrigger value="ratings">Ratings</TabsTrigger>
-                <TabsTrigger value="feedbacks">Feedbacks</TabsTrigger>
-                <TabsTrigger value="goals">Goals</TabsTrigger>
+                <TabsTrigger value="feedbacks">Feedback</TabsTrigger>
+                {/* <TabsTrigger value="goals">Goals</TabsTrigger> */}
               </TabsList>
 
               <TabsContent value="dashboard">
@@ -171,12 +171,12 @@ export default function MemberDetailsPage() {
               </TabsContent>
 
               <TabsContent value="feedbacks">
-                <p className="text-foreground-muted">
-                  Feedbacks content coming soon...
-                </p>
+                <div className="missing-content">
+                  No feedback yet.
+                </div>
               </TabsContent>
 
-              <TabsContent value="goals">
+              {/* <TabsContent value="goals">
                 <div className="w-full">
                   <div className="flex justify-end mb-4">
                     <Button variant="default" asChild>
@@ -189,7 +189,7 @@ export default function MemberDetailsPage() {
                   </div>
 
                   {!member.goals?.length ? (
-                    <p className="text-foreground-muted">No goals set yet.</p>
+                    <div className="missing-content">No goals set yet.</div>
                   ) : (
                     <div className="space-y-4">
                       {member.goals.map((goal) => (
@@ -219,7 +219,7 @@ export default function MemberDetailsPage() {
                     </div>
                   )}
                 </div>
-              </TabsContent>
+              </TabsContent> */}
             </Tabs>
           </div>
         </div>

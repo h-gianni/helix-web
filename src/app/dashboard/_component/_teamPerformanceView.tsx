@@ -64,7 +64,7 @@ export function TeamPerformanceView({
    return (
      <Card>
        <CardContent className="flex items-center justify-center py-8">
-         <p className="text-muted">No team members found.</p>
+         <p className="text-foreground-muted">No team members found.</p>
        </CardContent>
      </Card>
    );
