@@ -165,6 +165,7 @@ export async function POST(
        // Handle FormData
        const formData = await req.formData();
        const email = formData.get('email') as string;
+       const fullName = formData.get('fullName') as string;
        const title = formData.get('title') as string;
        const isAdmin = formData.get('isAdmin') === 'true';
        const jobGradeId = formData.get('jobGradeId') as string;
@@ -178,8 +179,25 @@ export async function POST(
       }, { status: 400 });
     }
 
+    if (!fullName?.trim()) {
+      return NextResponse.json<ApiResponse<never>>({
+        success: false,
+        error: "Full name is required",
+      }, { status: 400 });
+    }
+
     // Get or create user
-    const userToAdd = await getOrCreateUser(email.trim());
+    // const userToAdd = await getOrCreateUser(email.trim());
+    // Get or create user with name
+    const userToAdd = await prisma.appUser.upsert({
+      where: { email: email.trim() },
+      update: { name: fullName.trim() },
+      create: {
+        email: email.trim(),
+        name: fullName.trim(),
+        clerkId: null,
+      },
+    });
 
     // Check if user is already a member
     const existingMember = await prisma.teamMember.findFirst({
