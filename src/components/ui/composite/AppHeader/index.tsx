@@ -32,6 +32,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/core/Dropdown-menu";
+import { UserButton } from "@clerk/nextjs";
 
 export interface BreadcrumbItem {
   href?: string;
@@ -54,6 +55,7 @@ const UserNav = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
+        <UserButton/>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuItem>
           <Star className="mr-2 h-4 w-4" />

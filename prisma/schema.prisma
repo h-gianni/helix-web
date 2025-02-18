@@ -142,8 +142,40 @@ model JobGrade {
   @@index([deletedAt])
 }
 
+model ActivityCategory {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  activities  Activity[]
+
+  @@map("activity_categories")
+}
+
+model Activity {
+  id          String    @id @default(cuid())
+  name        String    
+  description String?   @db.Text
+  impactScale Int?      @db.SmallInt
+  categoryId  String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  category    ActivityCategory @relation(fields: [categoryId], references: [id])
+  businessActivities BusinessActivity[]
+
+  @@unique([name, categoryId])
+  @@index([categoryId])
+  @@map("activities")
+}
+
 model BusinessActivity {
   id          String                 @id @default(cuid())
+  activityId  String    // Reference to the base activity
   name        String                 @unique @db.VarChar(200)
   description String?                @db.Text
   category    String?                @db.VarChar(100)
@@ -158,11 +190,13 @@ model BusinessActivity {
   customFields Json?
 
   // Relations
+  activity    Activity     @relation(fields: [activityId], references: [id])
   team        GTeam          @relation(fields: [teamId], references: [id])
   user        AppUser       @relation(fields: [createdBy], references: [id])
   ratings     MemberRating[]
 
   @@index([teamId, createdAt])
+  @@index([activityId])
   @@index([status])
   @@index([createdBy])
   @@index([deletedAt])

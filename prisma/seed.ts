@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, SubscriptionTier } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -8,68 +8,105 @@ async function main() {
   // Clean up existing data
   await cleanDatabase()
 
+  // Create activity categories
+  console.log('Creating activity categories...')
+  const activityCategories = [
+    {
+      name: 'Development',
+      description: 'Software development related activities'
+    },
+    {
+      name: 'Leadership',
+      description: 'Team leadership and management activities'
+    },
+    {
+      name: 'Documentation',
+      description: 'Documentation and knowledge sharing'
+    },
+    {
+      name: 'Quality Assurance',
+      description: 'Testing and quality control activities'
+    }
+  ]
+
+  const createdCategories = await Promise.all(
+    activityCategories.map(category =>
+      prisma.activityCategory.create({
+        data: category
+      })
+    )
+  )
+
+  // Create base activities
+  console.log('Creating base activities...')
+  const activities = [
+    {
+      name: 'Code Development',
+      description: 'Writing and maintaining code',
+      impactScale: 8,
+      categoryId: createdCategories[0].id
+    },
+    {
+      name: 'Code Review',
+      description: 'Reviewing and providing feedback on code',
+      impactScale: 7,
+      categoryId: createdCategories[0].id
+    },
+    {
+      name: 'Team Leadership',
+      description: 'Leading and managing team activities',
+      impactScale: 9,
+      categoryId: createdCategories[1].id
+    },
+    {
+      name: 'Technical Documentation',
+      description: 'Creating and maintaining technical documentation',
+      impactScale: 6,
+      categoryId: createdCategories[2].id
+    },
+    {
+      name: 'Testing',
+      description: 'Writing and executing tests',
+      impactScale: 7,
+      categoryId: createdCategories[3].id
+    }
+  ]
+
+  const createdActivities = await Promise.all(
+    activities.map(activity =>
+      prisma.activity.create({
+        data: activity
+      })
+    )
+  )
+
   // Create job grades
   console.log('Creating job grades...')
   const jobGrades = [
     {
       level: 1,
-      grade: 'A1',
-      typicalResponsibilities: 'Entry level position with basic responsibilities'
+      grade: 'JE1',
+      typicalResponsibilities: 'Entry level engineer'
     },
     {
       level: 2,
-      grade: 'A2',
-      typicalResponsibilities: 'Junior level position with developing responsibilities'
+      grade: 'JE2',
+      typicalResponsibilities: 'Junior engineer with 1-2 years experience'
     },
     {
       level: 3,
-      grade: 'A3',
-      typicalResponsibilities: 'Experienced individual contributor'
+      grade: 'SE1',
+      typicalResponsibilities: 'Senior engineer with 3-5 years experience'
     },
     {
       level: 4,
-      grade: 'M1',
-      typicalResponsibilities: 'Team lead or first-level management'
+      grade: 'SE2',
+      typicalResponsibilities: 'Senior engineer with 5+ years experience'
     },
     {
       level: 5,
-      grade: 'M2',
-      typicalResponsibilities: 'Mid-level management'
-    },
-    {
-      level: 6,
-      grade: 'M3',
-      typicalResponsibilities: 'Senior management'
-    },
-    {
-      level: 7,
-      grade: 'D1',
-      typicalResponsibilities: 'Director level'
-    },
-    {
-      level: 8,
-      grade: 'D2',
-      typicalResponsibilities: 'Senior Director'
-    },
-    {
-      level: 9,
-      grade: 'D3',
-      typicalResponsibilities: 'Executive Director'
-    },
-    {
-      level: 10,
-      grade: 'VP',
-      typicalResponsibilities: 'Vice President'
-    },
-    {
-      level: 11,
-      grade: 'SVP',
-      typicalResponsibilities: 'Senior Vice President'
-    },
-    {
-      level: 12,
-      grade: 'EVP',
-      typicalResponsibilities: 'Executive Vice President'
+      grade: 'PE1',
+      typicalResponsibilities: 'Principal engineer'
     }
   ]
 
@@ -80,38 +117,37 @@ async function main() {
       })
     )
   )
-  console.log(`Created ${createdJobGrades.length} job grades`)
 
   // Create team functions and job titles
   console.log('Creating team functions and job titles...')
   const teamFunctions = [
     {
-      name: 'Product Design',
-      description: 'User experience and interface design',
-      jobTitles: [
-        { name: 'UI Designer' },
-        { name: 'UX Designer' },
-        { name: 'Product Designer' },
-        { name: 'UX Researcher' }
-      ]
-    },
-    {
       name: 'Engineering',
       description: 'Software development and engineering',
       jobTitles: [
-        { name: 'Frontend Developer' },
-        { name: 'Backend Developer' },
-        { name: 'Full Stack Developer' },
-        { name: 'DevOps Engineer' }
+        'Software Engineer',
+        'Senior Software Engineer',
+        'Principal Engineer',
+        'DevOps Engineer'
       ]
     },
     {
-      name: 'Product Management',
-      description: 'Product strategy and execution',
+      name: 'Product',
+      description: 'Product management and design',
       jobTitles: [
-        { name: 'Product Manager' },
-        { name: 'Product Owner' },
-        { name: 'Technical Product Manager' }
+        'Product Manager',
+        'Product Designer',
+        'UX Researcher',
+        'UI Designer'
+      ]
+    },
+    {
+      name: 'Quality Assurance',
+      description: 'Testing and quality control',
+      jobTitles: [
+        'QA Engineer',
+        'Test Automation Engineer',
+        'Quality Lead'
       ]
     }
   ]
@@ -128,26 +164,39 @@ async function main() {
       func.jobTitles.map(title =>
         prisma.jobTitle.create({
           data: {
-            name: title.name,
+            name: title,
             teamFunctionId: createdFunction.id
           }
         })
       )
     )
   }
-  console.log(`Created ${teamFunctions.length} team functions with their job titles`)
 
-  // Create a sample user for activities
-  console.log('Creating sample user...')
-  const sampleUser = await prisma.appUser.create({
-    data: {
-      email: 'admin@example.com',
-      name: 'System Admin'
+  // Create sample users
+  console.log('Creating sample users...')
+  const users = [
+    {
+      email: 'john.doe@example.com',
+      name: 'John Doe',
+      subscriptionTier: SubscriptionTier.PREMIUM
+    },
+    {
+      email: 'jane.smith@example.com',
+      name: 'Jane Smith',
+      subscriptionTier: SubscriptionTier.FREE
     }
-  })
+  ]
 
-  // Create a sample team
-  console.log('Creating sample team...')
+  const createdUsers = await Promise.all(
+    users.map(user =>
+      prisma.appUser.create({
+        data: user
+      })
+    )
+  )
+
+  // Create teams
+  console.log('Creating teams...')
   const engineeringFunction = await prisma.teamFunction.findFirst({
     where: { name: 'Engineering' }
   })
@@ -156,61 +205,71 @@ async function main() {
     throw new Error('Engineering function not found')
   }
 
-  const sampleTeam = await prisma.gTeam.create({
-    data: {
-      name: 'Core Team',
-      description: 'Main development team',
+  const teams = [
+    {
+      name: 'Core Platform Team',
+      description: 'Core platform development team',
       teamFunctionId: engineeringFunction.id,
-      ownerId: sampleUser.id
-    }
-  })
-
-  // Create business activities
-  console.log('Creating business activities...')
-  const businessActivities = [
-    {
-      name: 'Technical Design',
-      description: 'Creating technical specifications and architecture designs'
+      ownerId: createdUsers[0].id
     },
     {
-      name: 'Code Review',
-      description: 'Reviewing and providing feedback on code submissions'
-    },
-    {
-      name: 'Project Management',
-      description: 'Managing project timelines, resources, and deliverables'
-    },
-    {
-      name: 'Mentorship',
-      description: 'Providing guidance and support to team members'
-    },
-    {
-      name: 'Documentation',
-      description: 'Creating and maintaining technical documentation'
-    },
-    {
-      name: 'Workshop Facilitation',
-      description: 'Planning and running team workshops'
+      name: 'Mobile Development',
+      description: 'Mobile app development team',
+      teamFunctionId: engineeringFunction.id,
+      ownerId: createdUsers[1].id
     }
   ]
 
-  await Promise.all(
-    businessActivities.map(activity =>
-      prisma.businessActivity.create({
-        data: {
-          name: activity.name,
-          description: activity.description,
-          teamId: sampleTeam.id,
-          createdBy: sampleUser.id,
-          status: 'ACTIVE',
-          priority: 'MEDIUM'
-        }
+  const createdTeams = await Promise.all(
+    teams.map(team =>
+      prisma.gTeam.create({
+        data: team
       })
     )
   )
-  console.log(`Created ${businessActivities.length} business activities`)
 
-  console.log('Seeding finished.')
+  // Create business activities
+  console.log('Creating business activities...')
+  for (const team of createdTeams) {
+    await Promise.all(
+      createdActivities.map(activity =>
+        prisma.businessActivity.create({
+          data: {
+            activityId: activity.id,
+            name: `${team.name} - ${activity.name}`,
+            description: activity.description,
+            priority: 'MEDIUM',
+            status: 'ACTIVE',
+            teamId: team.id,
+            createdBy: team.ownerId
+          }
+        })
+      )
+    )
+  }
+
+  // Create team members
+  console.log('Creating team members...')
+  for (const team of createdTeams) {
+    await Promise.all(
+      createdUsers.map(user =>
+        prisma.teamMember.create({
+          data: {
+            userId: user.id,
+            teamId: team.id,
+            isAdmin: user.id === team.ownerId,
+            status: 'ACTIVE',
+            firstName: user.name?.split(' ')[0],
+            lastName: user.name?.split(' ')[1],
+            jobGradeId: createdJobGrades[Math.floor(Math.random() * createdJobGrades.length)].id,
+            joinedDate: new Date()
+          }
+        })
+      )
+    )
+  }
+
+  console.log('Seeding complete!')
 }
 
 async function cleanDatabase() {
