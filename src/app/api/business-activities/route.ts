@@ -8,6 +8,7 @@ import type {
   CreateBusinessActivityInput as CreateActivityInput,
   JsonValue,
 } from "@/lib/types/api";
+import { v4 as uuidv4 } from 'uuid';
 
 // Helper to check team access
 async function checkTeamAccess(teamId: string, userId: string) {
@@ -132,6 +133,7 @@ export async function POST(request: Request) {
 
     const activities = await prisma.businessActivity.create({
       data: {
+        activityId: uuidv4(),
         name: name.trim(),
         description: description?.trim() || null,
         teamId,

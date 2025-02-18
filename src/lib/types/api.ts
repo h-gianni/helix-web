@@ -70,6 +70,8 @@ export type TeamDetailsResponse = TeamResponse & {
   } | null;
 };
 
+
+
 // BusinessActivity types
 export type BusinessActivityResponse = {
   id: string;
@@ -91,6 +93,33 @@ export type BusinessActivityResponse = {
   };
 };
 
+export interface BusinessActivityCategoryResponse {
+  id: string
+  name: string
+  description: string | null
+  createdAt: string
+  updatedAt: string
+  _count: {
+    activities: number
+  }
+  activities: {
+    id: string
+    name: string
+    description: string | null
+    impactScale: number | null
+    businessActivities: {
+      id: string
+      name: string
+      status: string
+      priority: string
+    }[]
+  }[]
+}
+
+export interface CreateBusinessActivityCategoryInput {
+  name: string
+  description?: string
+}
 // Rating types
 export type RatingResponse = {
   id: string;

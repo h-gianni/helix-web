@@ -6,15 +6,7 @@ import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { ActivitiesSection } from "./_components/_activitiesSection";
 import { Button } from "@/components/ui/core/Button";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/core/ToggleGroup";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/core/Select";
-import { PlusCircle, Import } from "lucide-react";
+
 import { ActivityModal } from "./_components/_activityModal";
 
 export default function BusinessActivitiesSettingsPage() {

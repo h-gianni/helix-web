@@ -4,14 +4,20 @@ import type { ApiResponse, BusinessActivityResponse } from "@/lib/types/api"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 
+
 export const activityApi = { 
     getActivityCategories: async () => {
-        const { data } = await apiClient.get<ApiResponse<Array<{
-          category: string
-          activities: BusinessActivityResponse[]
-        }>>>('/business-activities/categories')
+        const { data } = await apiClient.get<ApiResponse<
+        // Array<{
+        //   category: string
+        //   activities: BusinessActivityResponse[]
+        // }>
+        BusinessActivityResponse[]
+        >>('/business-activities/categories')
         if (!data.success) throw new Error(data.error || 'Failed to fetch activity categories')
-        return data.data
+       return data.data
+      // Map the API response to match our BusinessActivity type
+
       },
 
       createActivity: async (activityData: {

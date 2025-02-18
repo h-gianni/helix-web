@@ -47,12 +47,16 @@ import {
   useImportActivities,
   useActivityModalStore
 } from '@/store/activity-modal-store';
+import { useCategories } from "@/store/category-store";
+
+
+
 
 interface ActivityModalProps {
   isOpen: boolean;
   onClose: () => void;
   activity?: BusinessActivityResponse | null;
-  onUpdate: () => Promise<void>;
+  onUpdate?: () => Promise<void>;
 }
 
 export function ActivityModal({
@@ -73,10 +77,14 @@ export function ActivityModal({
   } = useActivityModalStore()
 
 
-  const { data: categories = [], isLoading: isCategoriesLoading } = useActivityCategories()
+
+
+  const { data: categories = [], isLoading: isCategoriesLoading } = useCategories()
   const createActivity = useCreateActivity()
   const updateActivity = useUpdateActivity()
   const importActivities = useImportActivities()
+
+  
 
 
   const isSubmitting = createActivity.isPending || updateActivity.isPending || importActivities.isPending
@@ -237,12 +245,12 @@ export function ActivityModal({
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="product">Product Management</SelectItem>
-                    <SelectItem value="engineering">Engineering</SelectItem>
-                    <SelectItem value="design">Design</SelectItem>
-                    <SelectItem value="research">Research</SelectItem>
-                  </SelectContent>
+  {categories.map((category) => (
+    <SelectItem key={category.id} value={category.id}>
+      {category.name}
+    </SelectItem>
+  ))}
+</SelectContent>
                 </Select>
               </div>
 <Table>
@@ -260,237 +268,33 @@ export function ActivityModal({
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Strategy Planning</TableCell>
-                    <TableCell className="max-w-md">
-                      Develop and implement strategic plans to achieve
-                      organizational goals
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Resource Allocation</TableCell>
-                    <TableCell className="max-w-md">
-                      Optimize distribution of resources across projects and
-                      teams
-                    </TableCell>
-                    <TableCell className="text-center">5</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Performance Review</TableCell>
-                    <TableCell className="max-w-md">
-                      Conduct regular performance evaluations and provide
-                      constructive feedback
-                    </TableCell>
-                    <TableCell className="text-center">3</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Risk Assessment</TableCell>
-                    <TableCell className="max-w-md">
-                      Identify and evaluate potential risks to project success
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Team Building</TableCell>
-                    <TableCell className="max-w-md">
-                      Foster team collaboration and positive work environment
-                    </TableCell>
-                    <TableCell className="text-center">3</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Process Improvement</TableCell>
-                    <TableCell className="max-w-md">
-                      Streamline workflows and enhance operational efficiency
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Budget Management</TableCell>
-                    <TableCell className="max-w-md">
-                      Monitor and control project expenses within budget
-                      constraints
-                    </TableCell>
-                    <TableCell className="text-center">5</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Stakeholder Communication</TableCell>
-                    <TableCell className="max-w-md">
-                      Maintain effective communication with all project
-                      stakeholders
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Quality Assurance</TableCell>
-                    <TableCell className="max-w-md">
-                      Ensure deliverables meet quality standards and
-                      requirements
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Knowledge Transfer</TableCell>
-                    <TableCell className="max-w-md">
-                      Facilitate sharing of information and best practices
-                      across teams
-                    </TableCell>
-                    <TableCell className="text-center">3</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Vendor Management</TableCell>
-                    <TableCell className="max-w-md">
-                      Manage relationships with external vendors and service
-                      providers
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Change Management</TableCell>
-                    <TableCell className="max-w-md">
-                      Guide organizational transitions and process changes
-                      effectively
-                    </TableCell>
-                    <TableCell className="text-center">5</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Data Analysis</TableCell>
-                    <TableCell className="max-w-md">
-                      Analyze and interpret data to support decision-making
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Documentation</TableCell>
-                    <TableCell className="max-w-md">
-                      Create and maintain comprehensive project documentation
-                    </TableCell>
-                    <TableCell className="text-center">3</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Training Coordination</TableCell>
-                    <TableCell className="max-w-md">
-                      Organize and facilitate team training and development
-                      programs
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Compliance Monitoring</TableCell>
-                    <TableCell className="max-w-md">
-                      Ensure adherence to regulations and internal policies
-                    </TableCell>
-                    <TableCell className="text-center">5</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Project Planning</TableCell>
-                    <TableCell className="max-w-md">
-                      Develop detailed project plans and timelines
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Client Relationship</TableCell>
-                    <TableCell className="max-w-md">
-                      Build and maintain strong relationships with clients
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Meeting Facilitation</TableCell>
-                    <TableCell className="max-w-md">
-                      Plan and lead effective team meetings and workshops
-                    </TableCell>
-                    <TableCell className="text-center">3</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Resource Optimization</TableCell>
-                    <TableCell className="max-w-md">
-                      Maximize efficiency of team resources and tools
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                </TableBody>
+  {categories.map((category) => 
+    category.activities.map((activity) => (
+      <TableRow key={activity.id}>
+        <TableCell>
+          <Checkbox 
+            checked={formData.selectedCategories.includes(activity.id)}
+            onCheckedChange={(checked) => {
+              if (checked) {
+                setFormData({
+                  selectedCategories: [...formData.selectedCategories, activity.id]
+                })
+              } else {
+                setFormData({
+                  selectedCategories: formData.selectedCategories.filter(id => id !== activity.id)
+                })
+              }
+            }}
+          />
+        </TableCell>
+        <TableCell>{category.name}</TableCell>
+        <TableCell>{activity.name}</TableCell>
+        <TableCell className="max-w-md">{activity.description}</TableCell>
+        <TableCell className="text-center">{activity.impactScale}</TableCell>
+      </TableRow>
+    ))
+  )}
+</TableBody>
               </Table>
               </div>
           )}

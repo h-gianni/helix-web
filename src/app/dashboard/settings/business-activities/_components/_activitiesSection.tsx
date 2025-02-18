@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { Target, Edit, Trash2, AlertCircle, Loader } from "lucide-react";
 import { Button } from "@/components/ui/core/Button";
 import {
   Table,
@@ -9,7 +9,6 @@ import {
   TableBody,
 } from "@/components/ui/core/Table";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import { Target, Edit, Trash2, AlertCircle, Heart, Loader } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -22,100 +21,61 @@ import {
 } from "@/components/ui/core/AlertDialog";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { ActivityModal } from "./_activityModal";
-import type { ApiResponse, BusinessActivityResponse } from "@/lib/types/api";
+
+import { 
+  useActivities, 
+  useDeleteActivity,
+  useActivitiesStore 
+} from '@/store/business-activity-store';
 
 interface ActivitiesSectionProps {
-  onUpdate: () => Promise<void>;
   shouldRefresh: boolean;
   onRefreshComplete: () => void;
+  onUpdate: () => Promise<void>; // Add this line
 }
 
 export function ActivitiesSection({
-  onUpdate,
   shouldRefresh,
   onRefreshComplete,
+  onUpdate, // Add this line
 }: ActivitiesSectionProps) {
-  const [activities, setActivities] = useState<BusinessActivityResponse[]>([]);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedActivity, setSelectedActivity] =
-    useState<BusinessActivityResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { 
+    data: activities,
+    isLoading,
+    error,
+    refetch
+  } = useActivities();
 
-  const fetchActivities = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const deleteActivity = useDeleteActivity();
+  
+  const { 
+    selectedActivity,
+    isEditModalOpen,
+    isDeleteDialogOpen,
+    setSelectedActivity,
+    setEditModalOpen,
+    setDeleteDialogOpen,
+    resetState
+  } = useActivitiesStore();
 
-      const response = await fetch(`/api/business-activities?t=${Date.now()}`);
-      const data: ApiResponse<BusinessActivityResponse[]> =
-        await response.json();
-
-      if (!data.success) {
-        throw new Error(data.error || "Failed to fetch business activities");
-      }
-
-      setActivities(data.data || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchActivities();
-  }, [fetchActivities]);
-
-  useEffect(() => {
-    if (shouldRefresh) {
-      fetchActivities().then(() => {
-        onRefreshComplete();
-      });
-    }
-  }, [shouldRefresh, fetchActivities, onRefreshComplete]);
-
-  const handleDelete = useCallback(async () => {
+  const handleDelete = async () => {
     if (!selectedActivity) return;
-
+    
     try {
-      setIsLoading(true);
-      const response = await fetch(
-        `/api/business-activities/${selectedActivity.id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      const data = await response.json();
-      if (!data.success) {
-        throw new Error(data.error || "Failed to delete activity");
-      }
-
-      await fetchActivities();
-      await onUpdate();
-      setIsDeleteDialogOpen(false);
+      await deleteActivity.mutateAsync(selectedActivity.id);
+      setDeleteDialogOpen(false);
       setSelectedActivity(null);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to delete activity"
-      );
-    } finally {
-      setIsLoading(false);
+      // Error will be handled by the mutation
+      console.error('Failed to delete activity:', err);
     }
-  }, [selectedActivity, fetchActivities, onUpdate]);
+  };
 
-  const handleModalClose = useCallback(() => {
-    setIsEditModalOpen(false);
-    setSelectedActivity(null);
-  }, []);
-
-  if (isLoading && !activities.length) {
+  if (isLoading && !activities) {
     return <div className="ui-loader">Loading activities...</div>;
   }
 
-  if (activities.length === 0) {
+  if (!activities || activities.length === 0) {
     return (
       <Card>
         <CardContent>
@@ -139,12 +99,12 @@ export function ActivitiesSection({
     <div className="space-y-base">
       {error && (
         <Alert variant="destructive">
-          <AlertCircle />
+          <AlertCircle className="h-4 w-4" />
           <AlertDescription className="flex items-center gap-sm">
-            {error}
+            {error instanceof Error ? error.message : 'An error occurred'}
             <Button
               variant="secondary"
-              onClick={() => fetchActivities()}
+              onClick={() => refetch()}
               disabled={isLoading}
             >
               Retry
@@ -165,7 +125,7 @@ export function ActivitiesSection({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {activities.map((activity) => (
+          {activities?.map((activity) => (
             <TableRow key={activity.id}>
               <TableCell className="text-foreground-weak w-0 whitespace-nowrap">
                 Category
@@ -185,7 +145,7 @@ export function ActivitiesSection({
                     size="icon"
                     onClick={() => {
                       setSelectedActivity(activity);
-                      setIsEditModalOpen(true);
+                      setEditModalOpen(true);
                     }}
                     disabled={isLoading}
                   >
@@ -197,7 +157,7 @@ export function ActivitiesSection({
                     size="icon"
                     onClick={() => {
                       setSelectedActivity(activity);
-                      setIsDeleteDialogOpen(true);
+                      setDeleteDialogOpen(true);
                     }}
                     disabled={isLoading}
                   >
@@ -213,18 +173,17 @@ export function ActivitiesSection({
       {/* Edit Modal */}
       <ActivityModal
         isOpen={isEditModalOpen}
-        onClose={handleModalClose}
-        activity={selectedActivity}
-        onUpdate={async () => {
-          await fetchActivities();
-          await onUpdate();
+        onClose={() => {
+          setEditModalOpen(false);
+          setSelectedActivity(null);
         }}
+        activity={selectedActivity}
       />
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog
         open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -239,23 +198,26 @@ export function ActivitiesSection({
             <AlertDialogCancel asChild>
               <Button
                 variant="secondary"
-                disabled={isLoading}
+                disabled={deleteActivity.isPending}
               >
                 Cancel
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-            <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
-  {isLoading ? (
-    <span className="flex items-center gap-2">
-      <Loader className="h-4 w-4 animate-spin" />
-      Deleting...
-    </span>
-  ) : (
-    "Delete Activity"
-  )}
-</Button>
-
+              <Button 
+                variant="destructive" 
+                onClick={handleDelete} 
+                disabled={deleteActivity.isPending}
+              >
+                {deleteActivity.isPending ? (
+                  <span className="flex items-center gap-2">
+                    <Loader className="h-4 w-4 animate-spin" />
+                    Deleting...
+                  </span>
+                ) : (
+                  "Delete Activity"
+                )}
+              </Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
