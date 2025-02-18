@@ -84,7 +84,7 @@ const TeamsGrid = ({ teams }: { teams: TeamResponse[] }) => (
                 </div>
               </div>
               <div className="text-sm text-foreground-muted">
-                Average team performance:{" "}
+                Average team performance:
                 {team.averagePerformance?.toFixed(1) || "Not rated"}
               </div>
             </CardContent>

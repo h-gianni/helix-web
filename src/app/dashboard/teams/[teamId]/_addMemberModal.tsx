@@ -38,10 +38,10 @@ export function AddMemberModal({
   const { mutate: addMember, status, error } = useAddMember();
   const isSubmitting = status === "pending";
 
-  const handleSubmit = () => {
-    if (!teamId) {
-      return;
-    }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!teamId) return;
 
     const { email, fullName } = formData;
     const trimmedEmail = email.trim();
@@ -51,15 +51,33 @@ export function AddMemberModal({
       return;
     }
 
+    // Create FormData instance
+    const submitData = new FormData();
+    submitData.append('email', trimmedEmail);
+    submitData.append('fullName', trimmedFullName);
+    
+    if (formData.title.trim()) {
+      submitData.append('title', formData.title.trim());
+    }
+    
+    if (formData.jobGradeId) {
+      submitData.append('jobGradeId', formData.jobGradeId);
+    }
+    
+    if (formData.joinedDate) {
+      submitData.append('joinedDate', formData.joinedDate);
+    }
+    
+    if (formData.profilePhoto) {
+      submitData.append('profilePhoto', formData.profilePhoto);
+    }
+
     addMember(
       {
         teamId,
-        email: trimmedEmail,
-        fullName: trimmedFullName,
-        title: formData.title.trim() || undefined,
-        jobGradeId: formData.jobGradeId || undefined,
-        joinedDate: formData.joinedDate || undefined,
-        profilePhoto: formData.profilePhoto || undefined,
+        email: formData.email,
+    fullName: formData.fullName,
+        ...Object.fromEntries(submitData),
       },
       {
         onSuccess: () => {
@@ -82,7 +100,7 @@ export function AddMemberModal({
           <DialogTitle>Add Team Member</DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
+        <form onSubmit={handleSubmit} className="grid gap-4 py-4">
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -167,23 +185,24 @@ export function AddMemberModal({
               accept="image/*"
             />
           </div>
-        </div>
 
-        <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={handleClose}
-            disabled={isSubmitting}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={isSubmitting || !formData.email || !formData.fullName}
-          >
-            {isSubmitting ? "Adding..." : "Add Member"}
-          </Button>
-        </DialogFooter>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleClose}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={isSubmitting || !formData.email || !formData.fullName}
+            >
+              {isSubmitting ? "Adding..." : "Add Member"}
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
