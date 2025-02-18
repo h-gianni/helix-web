@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/core/Button"
 import { Checkbox } from "@/components/ui/core/Checkbox"
 import { Toggle } from "@/components/ui/core/Toggle"
 import { Alert, AlertDescription } from "@/components/ui/core/Alert"
+import { Loader } from "@/components/ui/core/Loader";
 import {
   Table,
   TableHeader,
@@ -68,9 +69,7 @@ export default function TeamActivitiesConfig({
 
  if (isLoading) {
    return (
-     <div className="text-foreground-muted">
-       Loading activities configuration...
-     </div>
+    <div className="loader"><Loader size="base" label="Loading..." /></div>
    );
  }
 

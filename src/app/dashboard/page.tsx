@@ -12,6 +12,7 @@ import PerformanceRatingModal from "./_component/_performanceRatingModal";
 import EmptyDashboardView from "./_component/_emptyDashboardView";
 import { PerformersByCategory } from "./_component/_performersByCategory";
 import { ViewSwitcher } from "@/components/ui/composite/ViewSwitcher";
+import { Loader } from "@/components/ui/core/Loader";
 import type { Member } from "@/store/member";
 import { useTeams, useCreateTeam } from "@/store/team-store";
 import { useSetupStore } from '@/store/setup-store';
@@ -108,7 +109,7 @@ export default function DashboardPage() {
  };
 
  if (isLoading) {
-   return <div className="ui-loader">Loading dashboard...</div>;
+   return <div className="loader"><Loader size="base" label="Loading..." /></div>;
  }
 
  if (error) {

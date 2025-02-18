@@ -4,6 +4,7 @@ import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
+import { Loader } from "@/components/ui/core/Loader";
 import {
   Card,
   CardHeader,
@@ -100,7 +101,7 @@ const TeamsContent = ({ onCreateTeam }: TeamContentProps) => {
   const { data: teams = [], isLoading, error, refetch } = useTeams();
 
   if (isLoading) {
-    return <div className="ui-loader">Loading teams...</div>;
+    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
   }
 
   if (error) {

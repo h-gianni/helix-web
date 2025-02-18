@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/core/Select";
+import { Loader } from "@/components/ui/core/Loader";
 import TeamActivitiesConfig from "./_components/_teamActivitiesConfig";
 import { useTeamSettingsStore, useTeamDetails } from '@/store/team-settings-store';
 
@@ -49,7 +50,7 @@ export default function TeamsSettingsPage() {
   };
 
   if (isTeamsLoading) {
-    return <div className="ui-loader">Loading teams...</div>;
+    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
   }
 
   if (teams.length === 0) {
@@ -126,7 +127,7 @@ export default function TeamsSettingsPage() {
           <div>
             {/* Loading State */}
             {isLoading ? (
-              <div className="ui-loader">Loading team settings...</div>
+              <div className="loader"><Loader size="base" label="Loading..." /></div>
             ) : (
               <>
                 {/* Team Activities Config */}

@@ -7,6 +7,7 @@ import { ProfileCard } from "@/components/ui/composite/ProfileCard";
 import { Button } from "@/components/ui/core/Button";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
+import { Loader } from "@/components/ui/core/Loader";
 import {
   PenSquare,
   ArrowLeft,
@@ -57,7 +58,7 @@ export default function MemberDetailsPage() {
   ];
 
   if (isLoading) {
-    return <div className="ui-loader">Loading member details...</div>;
+    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
   }
 
   if (error || !member) {
