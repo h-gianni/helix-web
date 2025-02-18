@@ -179,7 +179,7 @@ Cards support smooth transitions for hover and interactive states:
     <div className="h-2 w-2 rounded-full bg-green-500" />
     <p className="font-medium">System Status</p>
   </div>
-  <p className="text-sm text-muted">Operational</p>
+  <p className="text-sm text-foreground-muted">Operational</p>
 </Card>
 ```
 
@@ -200,7 +200,7 @@ Cards support smooth transitions for hover and interactive states:
             <span className="text-green-500 ml-2">+20.1%</span>
           </div>
         </div>
-        <ChartIcon className="h-4 w-4 text-muted" />
+        <ChartIcon className="h-4 w-4 text-foreground-muted" />
       </div>
       {/* Add more statistics */}
     </div>

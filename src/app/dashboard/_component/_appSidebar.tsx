@@ -114,7 +114,7 @@ const AppSidebar = () => {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-3 px-4 py-4">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
+            <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-primary-foreground">
               <span className="text-lg font-bold">U</span>
             </div>
             <span className="text-lg font-semibold">UpScore</span>

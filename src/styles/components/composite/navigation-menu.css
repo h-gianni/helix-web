@@ -8,7 +8,7 @@
 }
 
 .ui-nav-menu-trigger {
-  @apply inline-flex h-9 w-max items-center justify-center rounded-md ui-background-surface px-md py-sm ui-text-button transition-colors;
+  @apply inline-flex h-9 w-max items-center justify-center rounded ui-background-surface px-md py-sm ui-text-button transition-colors;
 
   &:hover {
     background-color: var(--background-surface-sunken);

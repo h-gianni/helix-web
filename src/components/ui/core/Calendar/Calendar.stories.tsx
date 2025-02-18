@@ -28,7 +28,7 @@ export const SingleSelect: Story = {
     const [date, setDate] = useState<Date | undefined>(new Date());
     
     return (
-      <div className="rounded-md border">
+      <div className="rounded border">
         <Calendar
           mode="single"
           selected={date}
@@ -48,7 +48,7 @@ export const RangeSelect: Story = {
     });
     
     return (
-      <div className="rounded-md border">
+      <div className="rounded border">
         <Calendar
           mode="range"
           selected={dateRange}
@@ -67,7 +67,7 @@ export const WithDefaultDate: Story = {
     const disabledDays = { before: defaultDate };
     
     return (
-      <div className="rounded-md border">
+      <div className="rounded border">
         <Calendar
           mode="single"
           disabled={disabledDays}
@@ -82,7 +82,7 @@ export const WithDefaultDate: Story = {
 // Multiple Months
 export const MultipleMonths: Story = {
   render: () => (
-    <div className="rounded-md border">
+    <div className="rounded border">
       <Calendar
         mode="single"
         numberOfMonths={2}
@@ -99,7 +99,7 @@ export const CustomStyling: Story = {
     const [date, setDate] = useState<Date | undefined>(new Date());
     
     return (
-      <div className="rounded-md border">
+      <div className="rounded border">
         <Calendar
           mode="single"
           selected={date}
@@ -121,7 +121,7 @@ export const CustomStyling: Story = {
 // Without Outside Days
 export const WithoutOutsideDays: Story = {
   render: () => (
-    <div className="rounded-md border">
+    <div className="rounded border">
       <Calendar
         mode="single"
         showOutsideDays={false}
@@ -139,7 +139,7 @@ export const DateRangeWithPreview: Story = {
     });
 
     return (
-      <div className="rounded-md border">
+      <div className="rounded border">
         <Calendar
           initialFocus
           mode="range"
@@ -162,7 +162,7 @@ export const WithDisabledDates: Story = {
     ];
     
     return (
-      <div className="rounded-md border">
+      <div className="rounded border">
         <Calendar
           mode="single"
           selected={date}
@@ -178,7 +178,7 @@ export const WithDisabledDates: Story = {
 // Week Starts on Monday
 export const WeekStartsMonday: Story = {
   render: () => (
-    <div className="rounded-md border">
+    <div className="rounded border">
       <Calendar
         mode="single"
         weekStartsOn={1}

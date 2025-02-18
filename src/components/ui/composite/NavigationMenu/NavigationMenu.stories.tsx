@@ -49,7 +49,7 @@ export const Basic: Story = {
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
                   <a
-                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-blue-50 to-blue-100 p-6 no-underline outline-none focus:shadow-md"
+                    className="flex h-full w-full select-none flex-col justify-end rounded bg-gradient-to-b from-blue-50 to-blue-100 p-6 no-underline outline-none focus:shadow-md"
                     href="/"
                   >
                     <Coffee className="h-6 w-6" />
@@ -113,7 +113,7 @@ export const ComplexLayout: Story = {
                 <h3 className="font-medium text-lg">Core Features</h3>
                 <div className="grid gap-2">
                   <NavigationMenuLink asChild>
-                    <a className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md">
+                    <a className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded">
                       <LayoutDashboard className="h-4 w-4" />
                       <div>
                         <div className="font-medium">Dashboard</div>
@@ -122,7 +122,7 @@ export const ComplexLayout: Story = {
                     </a>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
-                    <a className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md">
+                    <a className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded">
                       <Users className="h-4 w-4" />
                       <div>
                         <div className="font-medium">Team Management</div>
@@ -136,7 +136,7 @@ export const ComplexLayout: Story = {
                 <h3 className="font-medium text-lg">Advanced Features</h3>
                 <div className="grid gap-2">
                   <NavigationMenuLink asChild>
-                    <a className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md">
+                    <a className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded">
                       <Fingerprint className="h-4 w-4" />
                       <div>
                         <div className="font-medium">Security Center</div>
@@ -145,7 +145,7 @@ export const ComplexLayout: Story = {
                     </a>
                   </NavigationMenuLink>
                   <NavigationMenuLink asChild>
-                    <a className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-md">
+                    <a className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded">
                       <Settings className="h-4 w-4" />
                       <div>
                         <div className="font-medium">Advanced Settings</div>
@@ -218,7 +218,7 @@ const ListItem = React.forwardRef<React.ElementRef<"a">, ListItemProps>(
           <a
             ref={ref}
             className={cn(
-              "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100",
+              "block select-none space-y-1 rounded p-3 leading-none no-underline outline-none transition-colors hover:bg-gray-100",
               className
             )}
             {...props}
