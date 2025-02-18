@@ -63,12 +63,7 @@ export const GET = withErrorHandler(async (
       deletedAt: null,
     },
     include: {
-      activity: {
-        include: {
-          category: true,
-        }
-      },
-      user: true, // Include the user who created the activity
+      team: true,
       _count: {
         select: {
           ratings: true,
@@ -82,7 +77,7 @@ export const GET = withErrorHandler(async (
     id: activity.id,
     name: activity.name,
     description: activity.description,
-    category: activity.activity.category.name,
+    category: activity.category || '',
     priority: activity.priority,
     status: activity.status,
     dueDate: activity.dueDate,
@@ -92,7 +87,7 @@ export const GET = withErrorHandler(async (
     deletedAt: activity.deletedAt,
     ratingsCount: activity._count.ratings,
     addedAt: activity.createdAt,
-    createdBy: activity.createdBy, // Add the createdBy field
+    createdBy: activity.createdBy,
   }));
 
   return NextResponse.json<ApiResponse<BusinessActivityResponse[]>>({
@@ -155,6 +150,8 @@ export const PUT = withErrorHandler(async (
           name: "New Activity",
           activityId: activityId,
           createdBy: userId,
+          status: 'ACTIVE',
+          priority: 'MEDIUM',
         },
         update: {
           deletedAt: null,
@@ -171,12 +168,7 @@ export const PUT = withErrorHandler(async (
       deletedAt: null,
     },
     include: {
-      activity: {
-        include: {
-          category: true,
-        }
-      },
-      user: true, // Include the user who created the activity
+      team: true,
     },
   });
 
@@ -184,12 +176,12 @@ export const PUT = withErrorHandler(async (
     id: activity.id,
     name: activity.name,
     description: activity.description,
-    category: activity.activity.category.name,
+    category: activity.category || '',
     priority: activity.priority,
     status: activity.status,
     teamId: activity.teamId,
     addedAt: activity.createdAt,
-    createdBy: activity.createdBy, // Add the createdBy field
+    createdBy: activity.createdBy,
   }));
 
   return NextResponse.json({
