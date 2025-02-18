@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import StarRating from "@/components/ui/core/Star-rating";
+import { Loader } from "@/components/ui/core/Loader";
 import {
   TrendingUp,
   TrendingDown,
@@ -41,7 +42,7 @@ export default function MemberDashboard({
   } = useMemberDashboard({ teamId, memberId });
 
   if (isLoading) {
-    return <div className="p-base text-foreground">Loading dashboard...</div>;
+    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
   }
 
   if (error || !dashboardData) {

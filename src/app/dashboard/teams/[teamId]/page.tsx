@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { Button } from "@/components/ui/core/Button";
+import { Loader } from "@/components/ui/core/Loader";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -104,9 +105,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center p-6">
-        Loading team details...
-      </div>
+      <div className="loader"><Loader size="base" label="Loading..." /></div>
     );
   }
 

@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/core/Button";
 import { RotateCcw, AlertCircle } from "lucide-react";
 import StarRating from "@/components/ui/core/Star-rating";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
+import { Loader } from "@/components/ui/core/Loader";
 import { useMemberRatings } from "@/store/member-store";
 
 interface RatingsSectionProps {
@@ -33,7 +34,7 @@ export default function RatingsSection({
   } = useMemberRatings({ teamId, memberId });
 
   if (isLoading) {
-    return <div className="text-foreground">Loading ratings...</div>;
+    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
   }
 
   if (error) {

@@ -22,5 +22,9 @@
   .missing-content {
     @apply text-base text-foreground-muted text-center p-8 border border-border-strong border-dashed rounded;
   }
+
+  .loader {
+    @apply p-4;
+  }
   
 }

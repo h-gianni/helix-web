@@ -9,7 +9,8 @@ import {
   TableBody,
 } from "@/components/ui/core/Table";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import { Target, Edit, Trash2, AlertCircle, Heart, Loader } from "lucide-react";
+import { Loader } from "@/components/ui/core/Loader";
+import { Target, Edit, Trash2, AlertCircle, Heart } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -112,7 +113,7 @@ export function ActivitiesSection({
   }, []);
 
   if (isLoading && !activities.length) {
-    return <div className="ui-loader">Loading activities...</div>;
+    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
   }
 
   if (activities.length === 0) {
@@ -247,10 +248,7 @@ export function ActivitiesSection({
             <AlertDialogAction asChild>
             <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
   {isLoading ? (
-    <span className="flex items-center gap-2">
-      <Loader className="h-4 w-4 animate-spin" />
-      Deleting...
-    </span>
+    <div className="loader"><Loader size="base" label="Deleting..." className="text-destructive" /></div>
   ) : (
     "Delete Activity"
   )}
