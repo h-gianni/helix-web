@@ -27,8 +27,8 @@
     /* UI states */
     --muted: var(--gray-100);
     --muted-foreground: var(--gray-500);
-    --border: var(--gray-100);
-    --border-strong: var(--gray-200);
+    --border: var(--gray-200);
+    --border-strong: var(--gray-300);
     --input: var(--gray-300);
     --ring: var(--primary-300);
 
