@@ -3,34 +3,46 @@ import { useQuery, useMutation, QueryClient } from '@tanstack/react-query'
 import type { ApiResponse, BusinessActivityResponse } from '@/lib/types/api'
 import { apiClient } from '@/lib/api/api-client'
 
-interface BusinessActivity {
-  id: string
-  name: string
-  description: string | null
-  category: string
-  priority: string
-  status: string
-  dueDate: string
-  assignedTo: string
-  impactScale: number
-  _count?: {
-    ratings: number
-  }
+// Define the category type
+interface CategoryObject {
+  id: string;
+  name: string;
+  description?: string | null;
 }
 
+// Type guard to check if category is an object with name property
+function isCategoryObject(category: unknown): category is CategoryObject {
+  return typeof category === 'object' && 
+         category !== null && 
+         'name' in category &&
+         typeof (category as CategoryObject).name === 'string';
+}
 // API Layer
 const activitiesApi = {
   getActivities: async () => {
     const { data } = await apiClient.get<ApiResponse<BusinessActivityResponse[]>>('/business-activities')
     if (!data.success) throw new Error(data.error || 'Failed to fetch activities')
-    return data.data
+    
+    // Transform the category field if it's an object
+    const transformedData = data.data.map(activity => ({
+      ...activity,
+      // Use type guard to safely access category.name
+      category: isCategoryObject(activity.category) 
+        ? activity.category.name 
+        : activity.category
+    }))
+    
+    return transformedData
   },
+
 
   createActivity: async (activityData: { 
     name: string
     description?: string 
+    category?: string
+    priority?: string
   }) => {
-    const { data } = await apiClient.post('/business-activities', activityData)
+    const { data } = await apiClient.post<ApiResponse<BusinessActivityResponse>>('/business-activities', activityData)
     if (!data.success) throw new Error(data.error || 'Failed to create activity')
     return data.data
   },
@@ -39,14 +51,15 @@ const activitiesApi = {
     id: string
     name?: string
     description?: string
+    category?: string
+    priority?: string
   }) => {
-    const { data } = await apiClient.patch(`/business-activities/${id}`, updateData)
+    const { data } = await apiClient.patch<ApiResponse<BusinessActivityResponse>>(`/business-activities/${id}`, updateData)
     if (!data.success) throw new Error(data.error || 'Failed to update activity')
     return data.data
   },
-
-  deleteActivity: async (id: string) => {
-    const { data } = await apiClient.delete(`/business-activities/${id}`)
+ deleteActivity: async (id: string) => {
+    const { data } = await apiClient.delete<ApiResponse<void>>(`/business-activities/${id}`)
     if (!data.success) throw new Error(data.error || 'Failed to delete activity')
     return data.data
   }

@@ -4,11 +4,13 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type {
   ApiResponse,
-  BusinessActivityResponse as ActivityResponse,
+  BusinessActivityResponse,
+   ActivityResponse,
   CreateBusinessActivityInput as CreateActivityInput,
   JsonValue,
 } from "@/lib/types/api";
 import { v4 as uuidv4 } from 'uuid';
+
 
 // Helper to check team access
 async function checkTeamAccess(teamId: string, userId: string) {
@@ -52,15 +54,17 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const teamId = url.searchParams.get("teamId");
 
-    // Modify query to include null teamId or matching teamId
     const activities = await prisma.businessActivity.findMany({
-      where: teamId ? { teamId } : {},  
-       
+      where: teamId ? { 
+        teamId,
+        deletedAt: null 
+      } : { 
+        deletedAt: null 
+      },
       select: {
         id: true,
         name: true,
         description: true,
-        category: true,
         priority: true,
         status: true,
         dueDate: true,
@@ -70,26 +74,67 @@ export async function GET(request: Request) {
         updatedAt: true,
         deletedAt: true,
         customFields: true,
+        activity: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            impactScale: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+                description: true
+              }
+            }
+          }
+        },
         team: {
           select: {
             id: true,
             name: true,
           },
         },
+        _count: {
+          select: {
+            ratings: true
+          }
+        }
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: [
+        {
+          activity: {
+            category: {
+              name: 'asc'
+            }
+          }
+        },
+        { createdAt: 'desc' }
+      ],
     });
 
-    const activitiesResponses: ActivityResponse[] = activities.map((activities) => ({
-      ...activities,
-      customFields: activities.customFields as JsonValue | undefined,
+    const activitiesResponse: ActivityResponse[] = activities.map((activity) => ({
+      id: activity.id,
+      name: activity.name,
+      description: activity.description,
+      category: activity.activity.category,
+      priority: activity.priority,
+      status: activity.status,
+      dueDate: activity.dueDate,
+      teamId: activity.teamId,
+      createdBy: activity.createdBy,
+      createdAt: activity.createdAt,
+      updatedAt: activity.updatedAt,
+      deletedAt: activity.deletedAt,
+      customFields: activity.customFields as JsonValue | undefined,
+      team: activity.team,
+      impactScale: activity.activity.impactScale,
+      _count: activity._count
     }));
-    
+
     return NextResponse.json<ApiResponse<ActivityResponse[]>>({
       success: true,
-      data: activitiesResponses,
+      data: activitiesResponse,
     });
   } catch (error) {
     console.error("Error fetching activities:", error);
@@ -163,12 +208,12 @@ export async function POST(request: Request) {
         },
       },
     });
-    const activitiesResponse: ActivityResponse = {
+    const activitiesResponse: BusinessActivityResponse = {
       ...activities,
       customFields: activities.customFields as JsonValue | undefined,
     };
 
-    return NextResponse.json<ApiResponse<ActivityResponse>>(
+    return NextResponse.json<ApiResponse<BusinessActivityResponse>>(
       { success: true, data: activitiesResponse },
       { status: 201 }
     );

@@ -87,11 +87,37 @@ export type BusinessActivityResponse = {
   updatedAt: Date;
   deletedAt: Date | null;
   customFields?: JsonValue;
-  ratings?: RatingResponse[];
   _count?: {
     ratings: number;
   };
 };
+export interface ActivityResponse {
+  id: string;
+  name: string;
+  description: string | null;
+  category: {
+    id: string;
+    name: string;
+    description: string | null;
+  };
+  priority: Priority;
+  status: BusinessActivityStatus;
+  dueDate: Date | null;
+  teamId: string;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
+  customFields?: JsonValue;
+  team: {
+    id: string;
+    name: string;
+  };
+  impactScale: number | null;
+  _count?: {
+    ratings: number;
+  };
+}
 
 export interface BusinessActivityCategoryResponse {
   id: string

@@ -1,3 +1,5 @@
+'use client'
+
 import { Target, Edit, Trash2, AlertCircle, Loader } from "lucide-react";
 import { Button } from "@/components/ui/core/Button";
 import {
@@ -21,23 +23,21 @@ import {
 } from "@/components/ui/core/AlertDialog";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { ActivityModal } from "./_activityModal";
-
-import { 
-  useActivities, 
-  useDeleteActivity,
-  useActivitiesStore 
-} from '@/store/business-activity-store';
+import { Badge } from "@/components/ui/core/Badge";
+import { useActivities, useDeleteActivity, useActivitiesStore } from '@/store/business-activity-store';
+import { useEffect } from "react";
+import type { BusinessActivityResponse } from "@/lib/types/api";
 
 interface ActivitiesSectionProps {
   shouldRefresh: boolean;
   onRefreshComplete: () => void;
-  onUpdate: () => Promise<void>; // Add this line
+  onUpdate: () => Promise<void>;
 }
 
 export function ActivitiesSection({
   shouldRefresh,
   onRefreshComplete,
-  onUpdate, // Add this line
+  onUpdate,
 }: ActivitiesSectionProps) {
   const { 
     data: activities,
@@ -54,19 +54,26 @@ export function ActivitiesSection({
     isDeleteDialogOpen,
     setSelectedActivity,
     setEditModalOpen,
-    setDeleteDialogOpen,
-    resetState
+    setDeleteDialogOpen
   } = useActivitiesStore();
+
+  useEffect(() => {
+    if (shouldRefresh) {
+      refetch().then(() => {
+        onRefreshComplete();
+      });
+    }
+  }, [shouldRefresh, refetch, onRefreshComplete]);
 
   const handleDelete = async () => {
     if (!selectedActivity) return;
     
     try {
       await deleteActivity.mutateAsync(selectedActivity.id);
+      await onUpdate();
       setDeleteDialogOpen(false);
       setSelectedActivity(null);
     } catch (err) {
-      // Error will be handled by the mutation
       console.error('Failed to delete activity:', err);
     }
   };
@@ -80,12 +87,12 @@ export function ActivitiesSection({
       <Card>
         <CardContent>
           <div className="space-y-base text-center">
-            <Target className="mx-auto h-12 w-12 ui-text-body-muted" />
+            <Target className="mx-auto h-12 w-12 text-muted-foreground" />
             <div className="space-y-2">
               <h3 className="text-lg font-medium">
                 No business activities yet
               </h3>
-              <p className="ui-text-body-small">
+              <p className="text-sm text-muted-foreground">
                 Create business activities to track team performance.
               </p>
             </div>
@@ -96,11 +103,11 @@ export function ActivitiesSection({
   }
 
   return (
-    <div className="space-y-base">
+    <div className="space-y-4">
       {error && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription className="flex items-center gap-sm">
+          <AlertDescription className="flex items-center gap-2">
             {error instanceof Error ? error.message : 'An error occurred'}
             <Button
               variant="secondary"
@@ -119,27 +126,55 @@ export function ActivitiesSection({
             <TableHead>Category</TableHead>
             <TableHead>Activity</TableHead>
             <TableHead>Description</TableHead>
-            <TableHead className="w-0 whitespace-nowrap">Impact</TableHead>
-            <TableHead className="w-0">Ratings</TableHead>
-            <TableHead className="w-0">Actions</TableHead>
+            <TableHead className="w-24 text-center">Priority</TableHead>
+            <TableHead className="w-24 text-center">Status</TableHead>
+            <TableHead className="w-24 text-center">Ratings</TableHead>
+            <TableHead className="w-24">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {activities?.map((activity) => (
+          {activities?.map((activity: BusinessActivityResponse) => (
             <TableRow key={activity.id}>
-              <TableCell className="text-foreground-weak w-0 whitespace-nowrap">
-                Category
+              <TableCell>
+                {activity.category ? (
+                  <Badge variant="outline" className="font-normal">
+                    {activity.category}
+                  </Badge>
+                ) : (
+                  <span className="text-muted-foreground">Uncategorized</span>
+                )}
               </TableCell>
               <TableCell className="font-medium">{activity.name}</TableCell>
-              <TableCell className="text-foreground-weak">
+              <TableCell className="text-muted-foreground">
                 {activity.description || "No description"}
               </TableCell>
-              <TableCell className="text-center">18</TableCell>
+              <TableCell className="text-center">
+                <Badge 
+                  variant={
+                    activity.priority === 'HIGH' ? 'destructive' : 
+                    activity.priority === 'MEDIUM' ? 'default' : 
+                    'secondary'
+                  }
+                >
+                  {activity.priority.toLowerCase()}
+                </Badge>
+              </TableCell>
+              <TableCell className="text-center">
+                <Badge
+                  variant={
+                    activity.status === 'ACTIVE' ? 'default' :
+                    activity.status === 'COMPLETED' ? 'success' :
+                    'secondary'
+                  }
+                >
+                  {activity.status.toLowerCase()}
+                </Badge>
+              </TableCell>
               <TableCell className="text-center">
                 {activity._count?.ratings || 0}
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-sm">
+                <div className="flex items-center gap-2">
                   <Button
                     variant="secondary"
                     size="icon"
@@ -178,6 +213,7 @@ export function ActivitiesSection({
           setSelectedActivity(null);
         }}
         activity={selectedActivity}
+        onSuccess={onUpdate}
       />
 
       {/* Delete Confirmation Dialog */}

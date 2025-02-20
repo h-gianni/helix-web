@@ -267,7 +267,7 @@ export function ActivityModal({
                     </TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+              <TableBody>
   {categories.map((category) => 
     category.activities.map((activity) => (
       <TableRow key={activity.id}>
