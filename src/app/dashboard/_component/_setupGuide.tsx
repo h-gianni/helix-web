@@ -7,6 +7,8 @@ import { useSetupStore } from "@/store/setup-store";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { Button } from "@/components/ui/core/Button";
+import { Input } from "@/components/ui/core/Input";
+import { Label } from "@/components/ui/core/Label";
 import { Badge } from "@/components/ui/core/Badge";
 import { Building2, Users, Target, Check } from "lucide-react";
 import {
@@ -16,6 +18,15 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/core/Dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/core/Select";
 import TeamActivitiesConfig from "@/app/dashboard/settings/teams/_components/_teamActivitiesConfig";
 
 interface SetupGuideProps {
@@ -96,7 +107,7 @@ export function SetupGuide({ onCreateTeam }: SetupGuideProps) {
                   <div
                     className={cn(
                       "flex h-10 w-10 items-center justify-center rounded-full",
-                      step.isCompleted ? "bg-success" : "bg-primary/10",
+                      step.isCompleted ? "bg-success" : "bg-primary/10"
                     )}
                   >
                     {step.isCompleted ? (
@@ -105,7 +116,10 @@ export function SetupGuide({ onCreateTeam }: SetupGuideProps) {
                       <step.icon className="h-5 w-5 text-primary" />
                     )}
                   </div>
-                  <Badge variant="secondary" className={step.isCompleted ? "opacity-50" : "opacity-100"}>
+                  <Badge
+                    variant="secondary"
+                    className={step.isCompleted ? "opacity-50" : "opacity-100"}
+                  >
                     {step.isCompleted ? "Completed" : step.time}
                   </Badge>
                 </div>
@@ -114,7 +128,9 @@ export function SetupGuide({ onCreateTeam }: SetupGuideProps) {
                   <h3 className="heading-3">
                     {step.isCompleted ? step.completedTitle : step.activeTitle}
                   </h3>
-                  <p className="body-sm text-foreground-weak">{step.description}</p>
+                  <p className="body-sm text-foreground-weak">
+                    {step.description}
+                  </p>
                 </div>
 
                 <div className="flex flex-col gap-4">
@@ -140,8 +156,251 @@ export function SetupGuide({ onCreateTeam }: SetupGuideProps) {
       <Dialog open={isActivityModalOpen} onOpenChange={toggleActivityModal}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Add Organization Activities</DialogTitle>
+            <DialogTitle>Configure your Organisation</DialogTitle>
           </DialogHeader>
+
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label htmlFor="org-name">Organisation name</Label>
+            <Input type="text" id="org-name" placeholder="Name" />
+          </div>
+
+          <Select>
+            <SelectTrigger className="w-[280px]">
+              <SelectValue placeholder="Select an organization category" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Technology</SelectLabel>
+                <SelectItem value="software">Software & SaaS</SelectItem>
+                <SelectItem value="hardware">Hardware & Electronics</SelectItem>
+                <SelectItem value="it-services">
+                  IT Services & Consulting
+                </SelectItem>
+                <SelectItem value="telecom">Telecommunications</SelectItem>
+                <SelectItem value="ai-ml">AI & Machine Learning</SelectItem>
+              </SelectGroup>
+
+              <SelectGroup>
+                <SelectLabel>Healthcare & Life Sciences</SelectLabel>
+                <SelectItem value="hospitals">
+                  Hospitals & Healthcare Systems
+                </SelectItem>
+                <SelectItem value="pharmaceuticals">Pharmaceuticals</SelectItem>
+                <SelectItem value="biotech">Biotechnology</SelectItem>
+                <SelectItem value="medical-devices">Medical Devices</SelectItem>
+                <SelectItem value="mental-health">
+                  Mental Health & Wellness
+                </SelectItem>
+              </SelectGroup>
+
+              <SelectGroup>
+                <SelectLabel>Financial Services</SelectLabel>
+                <SelectItem value="banking">
+                  Banking & Financial Institutions
+                </SelectItem>
+                <SelectItem value="insurance">Insurance</SelectItem>
+                <SelectItem value="fintech">FinTech</SelectItem>
+                <SelectItem value="accounting">
+                  Accounting & Audit Firms
+                </SelectItem>
+                <SelectItem value="investment">
+                  Investment & Asset Management
+                </SelectItem>
+              </SelectGroup>
+
+              <SelectGroup>
+                <SelectLabel>Education & Research</SelectLabel>
+                <SelectItem value="schools">
+                  Schools & Educational Institutions
+                </SelectItem>
+                <SelectItem value="universities">
+                  Universities & Colleges
+                </SelectItem>
+                <SelectItem value="edtech">EdTech Platforms</SelectItem>
+                <SelectItem value="research">Research Institutions</SelectItem>
+              </SelectGroup>
+
+              <SelectGroup>
+                <SelectLabel>Consumer Goods & Retail</SelectLabel>
+                <SelectItem value="ecommerce">E-commerce</SelectItem>
+                <SelectItem value="fashion">Fashion & Apparel</SelectItem>
+                <SelectItem value="food-beverage">Food & Beverage</SelectItem>
+                <SelectItem value="home-goods">
+                  Home Goods & Appliances
+                </SelectItem>
+              </SelectGroup>
+
+              <SelectGroup>
+                <SelectLabel>Manufacturing & Industrial</SelectLabel>
+                <SelectItem value="automotive">Automotive</SelectItem>
+                <SelectItem value="aerospace">Aerospace & Defense</SelectItem>
+                <SelectItem value="construction">
+                  Construction & Engineering
+                </SelectItem>
+                <SelectItem value="energy">Energy & Utilities</SelectItem>
+                <SelectItem value="mining">Mining & Metals</SelectItem>
+              </SelectGroup>
+
+              <SelectGroup>
+                <SelectLabel>Media & Entertainment</SelectLabel>
+                <SelectItem value="broadcasting">
+                  Broadcasting & Media
+                </SelectItem>
+                <SelectItem value="gaming">Gaming & Esports</SelectItem>
+                <SelectItem value="music">Music & Audio</SelectItem>
+                <SelectItem value="publishing">
+                  Publishing & Print Media
+                </SelectItem>
+              </SelectGroup>
+
+              <SelectGroup>
+                <SelectLabel>Nonprofit & Government</SelectLabel>
+                <SelectItem value="government">Government Agencies</SelectItem>
+                <SelectItem value="nonprofit">
+                  Nonprofit Organizations
+                </SelectItem>
+                <SelectItem value="international">
+                  International Organizations
+                </SelectItem>
+                <SelectItem value="advocacy">Advocacy Groups</SelectItem>
+              </SelectGroup>
+
+              <SelectGroup>
+                <SelectLabel>Professional Services</SelectLabel>
+                <SelectItem value="legal">Legal Services</SelectItem>
+                <SelectItem value="consulting">Consulting Firms</SelectItem>
+                <SelectItem value="recruitment">Recruitment & HR</SelectItem>
+                <SelectItem value="real-estate">
+                  Real Estate & Property Management
+                </SelectItem>
+              </SelectGroup>
+
+              <SelectGroup>
+                <SelectLabel>Travel, Hospitality & Leisure</SelectLabel>
+                <SelectItem value="hotels">Hotels & Resorts</SelectItem>
+                <SelectItem value="airlines">
+                  Airlines & Transportation
+                </SelectItem>
+                <SelectItem value="tourism">
+                  Tourism & Travel Agencies
+                </SelectItem>
+                <SelectItem value="sports">Sports & Recreation</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+
+          <Select>
+            <SelectTrigger className="w-[280px]">
+              <SelectValue placeholder="Select a department function" />
+            </SelectTrigger>
+            <SelectContent>
+              {/* Engineering Department */}
+              <SelectGroup>
+                <SelectLabel>Engineering</SelectLabel>
+                <SelectItem value="frontend">Frontend Development</SelectItem>
+                <SelectItem value="backend">Backend Development</SelectItem>
+                <SelectItem value="fullstack">
+                  Full Stack Development
+                </SelectItem>
+                <SelectItem value="devops">DevOps & Infrastructure</SelectItem>
+                <SelectItem value="qa">Quality Assurance (QA)</SelectItem>
+                <SelectItem value="security">Security Engineering</SelectItem>
+                <SelectItem value="mobile">Mobile Development</SelectItem>
+                <SelectItem value="data">Data Engineering</SelectItem>
+                <SelectItem value="ml-ai">Machine Learning / AI</SelectItem>
+                <SelectItem value="platform">Platform Engineering</SelectItem>
+              </SelectGroup>
+
+              {/* Product & Design */}
+              <SelectGroup>
+                <SelectLabel>Product & Design</SelectLabel>
+                <SelectItem value="product-management">
+                  Product Management
+                </SelectItem>
+                <SelectItem value="ux-ui-design">UX/UI Design</SelectItem>
+                <SelectItem value="research">User Research</SelectItem>
+                <SelectItem value="design-systems">Design Systems</SelectItem>
+                <SelectItem value="product-ops">Product Operations</SelectItem>
+              </SelectGroup>
+
+              {/* Sales & Marketing */}
+              <SelectGroup>
+                <SelectLabel>Sales & Marketing</SelectLabel>
+                <SelectItem value="sales">
+                  Sales & Business Development
+                </SelectItem>
+                <SelectItem value="sales-ops">Sales Operations</SelectItem>
+                <SelectItem value="partner-sales">
+                  Partner & Channel Sales
+                </SelectItem>
+                <SelectItem value="demand-gen">Demand Generation</SelectItem>
+                <SelectItem value="content">Content Marketing</SelectItem>
+                <SelectItem value="growth">Growth Marketing</SelectItem>
+                <SelectItem value="seo-sem">SEO & SEM</SelectItem>
+                <SelectItem value="product-marketing">
+                  Product Marketing
+                </SelectItem>
+                <SelectItem value="brand">Brand & Communications</SelectItem>
+              </SelectGroup>
+
+              {/* Customer Success & Support */}
+              <SelectGroup>
+                <SelectLabel>Customer Success & Support</SelectLabel>
+                <SelectItem value="customer-success">
+                  Customer Success
+                </SelectItem>
+                <SelectItem value="account-management">
+                  Account Management
+                </SelectItem>
+                <SelectItem value="support">Customer Support</SelectItem>
+                <SelectItem value="implementation">
+                  Implementation & Onboarding
+                </SelectItem>
+                <SelectItem value="training">Training & Enablement</SelectItem>
+              </SelectGroup>
+
+              {/* Operations & Finance */}
+              <SelectGroup>
+                <SelectLabel>Operations & Finance</SelectLabel>
+                <SelectItem value="business-ops">
+                  Business Operations
+                </SelectItem>
+                <SelectItem value="finance">Finance & Accounting</SelectItem>
+                <SelectItem value="revops">Revenue Operations</SelectItem>
+                <SelectItem value="legal">Legal & Compliance</SelectItem>
+                <SelectItem value="procurement">Procurement</SelectItem>
+              </SelectGroup>
+
+              {/* Human Resources */}
+              <SelectGroup>
+                <SelectLabel>Human Resources</SelectLabel>
+                <SelectItem value="recruiting">
+                  Recruiting & Talent Acquisition
+                </SelectItem>
+                <SelectItem value="hr-ops">HR Operations</SelectItem>
+                <SelectItem value="people-partner">
+                  People Partner / HRBP
+                </SelectItem>
+                <SelectItem value="learning-development">
+                  Learning & Development
+                </SelectItem>
+                <SelectItem value="employee-engagement">
+                  Employee Engagement
+                </SelectItem>
+              </SelectGroup>
+
+              {/* Leadership & Strategy */}
+              <SelectGroup>
+                <SelectLabel>Leadership & Strategy</SelectLabel>
+                <SelectItem value="executive">Executive Leadership</SelectItem>
+                <SelectItem value="strategy">Corporate Strategy</SelectItem>
+                <SelectItem value="chief-of-staff">Chief of Staff</SelectItem>
+                <SelectItem value="board-relations">
+                  Board & Investor Relations
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
 
           <div className="text-center py-6">
             <p className="text-foreground-muted">
@@ -160,7 +419,7 @@ export function SetupGuide({ onCreateTeam }: SetupGuideProps) {
                 toggleActivityModal();
               }}
             >
-              Done adding activities
+              Configure my Organisation
             </Button>
           </DialogFooter>
         </DialogContent>

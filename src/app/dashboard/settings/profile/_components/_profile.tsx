@@ -3,6 +3,7 @@ import { useUser } from "@clerk/nextjs";
 import { ProfileCard } from "@/components/ui/composite/ProfileCard";
 import { ProfileModal } from "./_profileModal";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
+import { Loader } from "@/components/ui/core/Loader";
 import { AlertCircle } from "lucide-react";
 
 interface UserProfile {
@@ -23,7 +24,7 @@ export function ProfileSection() {
     email: "",
     firstName: "",
     lastName: "",
-    title: null
+    title: null,
   });
 
   useEffect(() => {
@@ -33,7 +34,7 @@ export function ProfileSection() {
         email: user.emailAddresses[0]?.emailAddress || "",
         firstName: user.firstName || "",
         lastName: user.lastName || "",
-        title: (user.unsafeMetadata.title as string) || null
+        title: (user.unsafeMetadata.title as string) || null,
       });
       setIsLoading(false);
     }
@@ -43,7 +44,7 @@ export function ProfileSection() {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       if (user) {
         await user.reload();
         setProfile({
@@ -51,7 +52,7 @@ export function ProfileSection() {
           email: user.emailAddresses[0]?.emailAddress || "",
           firstName: user.firstName || "",
           lastName: user.lastName || "",
-          title: (user.unsafeMetadata.title as string) || null
+          title: (user.unsafeMetadata.title as string) || null,
         });
       }
     } catch (err) {
@@ -62,7 +63,11 @@ export function ProfileSection() {
   };
 
   if (isLoading) {
-    return <div className="ui-loader">Loading profile...</div>;
+    return (
+      <div className="loader">
+        <Loader size="base" label="Loading..." />
+      </div>
+    );
   }
 
   return (
@@ -74,31 +79,33 @@ export function ProfileSection() {
         </Alert>
       )}
 
-      <ProfileCard
-        align="horizontal"
-        imageUrl="/api/placeholder/96/96"
-        fields={[
-          {
-            label: "Full Name",
-            value: `${profile.firstName} ${profile.lastName}`,
-            variant: "title",
-          },
-          {
-            label: "Email (account ID)",
-            value: profile.email,
-            variant: "strong",
-          },
-          {
-            label: "Job Title",
-            value: profile.title || (
-              <span className="ui-text-body-helper">Not set</span>
-            ),
-          },
-        ]}
-        onEdit={() => setIsEditModalOpen(true)}
-        editButtonPosition="topRight"
-        editButtonText="Edit"
-      />
+      <div>
+        <ProfileCard
+          align="horizontal"
+          imageUrl="/api/placeholder/96/96"
+          fields={[
+            {
+              label: "Full Name",
+              value: `${profile.firstName} ${profile.lastName}`,
+              variant: "title",
+            },
+            {
+              label: "Email (account ID)",
+              value: profile.email,
+              variant: "strong",
+            },
+            {
+              label: "Job Title",
+              value: profile.title || (
+                <span className="ui-text-body-helper">Not set</span>
+              ),
+            },
+          ]}
+          onEdit={() => setIsEditModalOpen(true)}
+          editButtonPosition="topRight"
+          editButtonText="Edit"
+        />
+      </div>
 
       <ProfileModal
         isOpen={isEditModalOpen}

@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import StarRating from "@/components/ui/core/Star-rating";
+import { Loader } from "@/components/ui/core/Loader";
 import {
   TrendingUp,
   TrendingDown,
@@ -41,7 +42,7 @@ export default function MemberDashboard({
   } = useMemberDashboard({ teamId, memberId });
 
   if (isLoading) {
-    return <div className="p-base text-foreground">Loading dashboard...</div>;
+    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
   }
 
   if (error || !dashboardData) {
@@ -82,7 +83,7 @@ export default function MemberDashboard({
         {/* Overall Rating Card */}
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm" className="heading-4">
+            <CardTitle data-size="sm" className="heading-5 -mt-1">
               Overall Rating
             </CardTitle>
           </CardHeader>
@@ -94,6 +95,7 @@ export default function MemberDashboard({
                   disabled={true}
                   size="sm"
                   ratingsCount={totalRatings}
+                  showRatingsCount={true}
                 />
               </div>
             </div>
@@ -103,7 +105,7 @@ export default function MemberDashboard({
         {/* Current Quarter Performance */}
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm" className="heading-4">
+            <CardTitle data-size="sm" className="heading-5 -mt-1">
               Current Quarter
             </CardTitle>
           </CardHeader>
@@ -114,7 +116,7 @@ export default function MemberDashboard({
                   value={currentQuarterRating}
                   disabled={true}
                   size="sm"
-                  showRatingsCount={false}
+                  showRatingsCount={true}
                 />
                 <TrendIcon trend={quarterlyTrend} />
               </div>
@@ -125,16 +127,16 @@ export default function MemberDashboard({
         {/* Team Standing */}
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm" className="heading-4">
-              Team Standing
+            <CardTitle data-size="sm" className="heading-5 -mt-1">
+            Team Standing
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Trophy className="ui-text-success" />
-                  <span className="text-lg">#{teamPosition}</span>
+                  <Trophy className="text-foreground-muted size-5" />
+                  <span className="heading-1 text-foreground">{teamPosition}</span>
                 </div>
                 <TrendIcon trend={teamPositionTrend} />
               </div>
@@ -145,15 +147,15 @@ export default function MemberDashboard({
         {/* Feedback Count */}
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm" className="heading-4">
+            <CardTitle data-size="sm" className="heading-5 -mt-1">
               Total Feedbacks
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="">
               <div className="flex items-center gap-2">
-                <MessageSquare />
-                <span className="text-lg">{totalFeedbacks}</span>
+                <MessageSquare className="text-foreground-muted size-5" />
+                <span className="heading-1 text-foreground">{totalFeedbacks}</span>
               </div>
             </div>
           </CardContent>
@@ -161,51 +163,25 @@ export default function MemberDashboard({
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
         {/* Quarter Performance Trend Chart */}
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm" className="heading-4">
+            <CardTitle data-size="sm" className="heading-5 -mt-1">
               Quarter Trend
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-40">
+            <div className="h-40 -ml-6 pr-2">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={quarterlyPerformance}>
-                  <XAxis dataKey="quarter" />
-                  <YAxis domain={[0, 5]} />
+                  <XAxis dataKey="quarter" fontSize="12px" stroke="#6D8BA2" />
+                  <YAxis domain={[0, 5]} fontSize="12px" stroke="#6D8BA2" />
                   <Tooltip />
                   <Line
                     type="monotone"
                     dataKey="averageRating"
-                    stroke="#8884d8"
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* last two quarters Performance Trend Chart */}
-        <Card>
-          <CardHeader>
-            <CardTitle data-size="sm" className="heading-4">
-              Last 2 quarters Trend
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-40">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={quarterlyPerformance}>
-                  <XAxis dataKey="quarter" />
-                  <YAxis domain={[0, 5]} />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="averageRating"
-                    stroke="#8884d8"
+                    stroke="#007bff"
                     strokeWidth={2}
                   />
                 </LineChart>
@@ -217,21 +193,21 @@ export default function MemberDashboard({
         {/* Yearly Performance Trend Chart */}
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm" className="heading-4">
+            <CardTitle data-size="sm" className="heading-5 -mt-1">
               Last 12 months Trend
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="h-40">
+            <div className="h-40 -ml-6 pr-2">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={quarterlyPerformance}>
-                  <XAxis dataKey="quarter" />
-                  <YAxis domain={[0, 5]} />
+                <XAxis dataKey="quarter" fontSize="12px" stroke="#6D8BA2" />
+                <YAxis domain={[0, 5]} fontSize="12px" stroke="#6D8BA2" />
                   <Tooltip />
                   <Line
                     type="monotone"
                     dataKey="averageRating"
-                    stroke="#8884d8"
+                    stroke="#007bff"
                     strokeWidth={2}
                   />
                 </LineChart>
@@ -245,23 +221,23 @@ export default function MemberDashboard({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm" className="heading-4">
+            <CardTitle data-size="sm" className="heading-5 -mt-1">
               Strengths
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="body-base">Content coming soon</div>
+            <div className="missing-text">Not ready to generate the content</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm" className="heading-4">
+            <CardTitle data-size="sm" className="heading-5 -mt-1">
               Need to improve
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="body-base">Content coming soon</div>
+            <div className="missing-text">Not ready to generate the content</div>
           </CardContent>
         </Card>
       </div>
@@ -271,7 +247,7 @@ export default function MemberDashboard({
         {/* Top Activities */}
         <Card>
           <CardHeader>
-            <CardTitle data-size="sm" className="heading-4">
+            <CardTitle data-size="sm" className="heading-5 -mt-1">
               Top Activities
             </CardTitle>
           </CardHeader>
@@ -280,7 +256,7 @@ export default function MemberDashboard({
               {topActivities.map((activity) => (
                 <div key={activity.id}>
                   <div className="flex gap-1 items-baseline">
-                    <div className="heading-5">{activity.name}</div>
+                    <div className="heading-5 -mt-1">{activity.name}</div>
                     <div className="text-sm">
                       with {activity.ratingsCount} ratings
                     </div>

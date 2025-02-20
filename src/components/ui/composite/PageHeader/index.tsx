@@ -25,7 +25,7 @@ const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
                 <ArrowLeft />
               </Button>
             )}
-            <div>
+            <div className="space-y-1.5">
               <h1 className="page-header-title">
                 {title}
                 {icon && icon}

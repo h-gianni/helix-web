@@ -21,14 +21,15 @@
     --secondary-foreground: var(--gray-600);
     --accent: var(--accent-300);
     --accent-foreground: var(--gray-50);
-    --destructive: var(--danger-300);
-    --destructive-foreground: var(--gray-50);
+    --destructive: var(--destructive-300);
+    --destructive-foreground: var(--destructive-50);
 
     /* UI states */
     --muted: var(--gray-100);
     --muted-foreground: var(--gray-500);
     --border: var(--gray-100);
-    --input: var(--gray-200);
+    --border-strong: var(--gray-200);
+    --input: var(--gray-300);
     --ring: var(--primary-300);
 
     /* Status colors */
@@ -38,7 +39,7 @@
     --success-foreground: var(--gray-50);
     --warning: var(--warning-300);
     --warning-foreground: var(--gray-900);
-    --error: var(--danger-300);
+    --error: var(--destructive-300);
     --error-foreground: var(--gray-50);
 
     /* Component specific */
@@ -59,9 +60,9 @@
     --sidebar-ring: var(--gray-100);
 
     /* Shape */
-    --radius-sm: 0.25rem;
-    --radius: 0.5rem;
-    --radius-lg: 0.75rem;
+    --radius-sm: 0.05rem;
+    --radius: 0.25rem;
+    --radius-lg: 0.5rem;
   }
 
   .dark {
@@ -84,7 +85,7 @@
     --secondary-foreground: var(--gray-50);
     --accent: var(--accent-200);
     --accent-foreground: var(--gray-900);
-    --destructive: var(--danger-200);
+    --destructive: var(--destructive-200);
     --destructive-foreground: var(--gray-900);
 
     /* UI states */
@@ -101,7 +102,7 @@
     --success-foreground: var(--gray-900);
     --warning: var(--warning-200);
     --warning-foreground: var(--gray-900);
-    --error: var(--danger-200);
+    --error: var(--destructive-200);
     --error-foreground: var(--gray-900);
 
     /* Component specific */

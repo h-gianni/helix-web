@@ -389,7 +389,7 @@
     font-weight: var(--font-weight-medium);
     padding: var(--space-xs);
     padding-top: var(--space-xxs);
-    color: var(--text-muted);
+    color: var(--foreground-muted);
   }
 
   .popcard-list-separator {
@@ -434,7 +434,7 @@
     margin-left: auto;
     font-size: var(--font-size-xs);
     letter-spacing: var(--letter-spacing-widest);
-    color: var(--text-muted);
+    color: var(--foregorund-muted);
   }
 
   /* Popcard List Indicator */

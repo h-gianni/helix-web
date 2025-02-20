@@ -31,14 +31,14 @@
     --warning-500: 35 100% 35%; /* #B06700 */
     --warning-600: 35 100% 29%; /* #925500 */
    
-    /* Danger */
-    --danger-50: 3 100% 95%;  /* #FFE8E7 */
-    --danger-100: 3 100% 81%; /* #FFA5A0 */
-    --danger-200: 3 100% 70%; /* #FF6C64 */
-    --danger-300: 3 100% 59%; /* #FF3B30 */
-    --danger-400: 3 100% 49%; /* #FB0D00 */
-    --danger-500: 3 100% 41%; /* #D00B00 */
-    --danger-600: 3 100% 34%; /* #AD0900 */
+    /* destructive */
+    --destructive-50: 3 100% 95%;  /* #FFE8E7 */
+    --destructive-100: 3 100% 81%; /* #FFA5A0 */
+    --destructive-200: 3 100% 70%; /* #FF6C64 */
+    --destructive-300: 3 100% 59%; /* #FF3B30 */
+    --destructive-400: 3 100% 49%; /* #FB0D00 */
+    --destructive-500: 3 100% 41%; /* #D00B00 */
+    --destructive-600: 3 100% 34%; /* #AD0900 */
    
     /* Success */
     --success-50: 135 59% 92%;  /* #DEF6E4 */
