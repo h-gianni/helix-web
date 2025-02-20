@@ -21,6 +21,15 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/core/AlertDialog";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/core/Pagination";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { ActivityModal } from "./_activityModal";
 import type { ApiResponse, BusinessActivityResponse } from "@/lib/types/api";
@@ -113,7 +122,11 @@ export function ActivitiesSection({
   }, []);
 
   if (isLoading && !activities.length) {
-    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
+    return (
+      <div className="loader">
+        <Loader size="base" label="Loading..." />
+      </div>
+    );
   }
 
   if (activities.length === 0) {
@@ -137,7 +150,7 @@ export function ActivitiesSection({
   }
 
   return (
-    <div className="space-y-base">
+    <div className="space-y-2">
       {error && (
         <Alert variant="destructive">
           <AlertCircle />
@@ -154,55 +167,79 @@ export function ActivitiesSection({
         </Alert>
       )}
 
+      <div className="view-controls-bar">To be added: sorting and filters</div>
+
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Category</TableHead>
             <TableHead>Activity</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead className="w-0 whitespace-nowrap">Impact</TableHead>
-            <TableHead className="w-0">Ratings</TableHead>
-            <TableHead className="w-0">Actions</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead className="w-0 whitespace-nowrap">
+              Category Impact
+            </TableHead>
+            <TableHead className="w-0 whitespace-nowrap">
+              Activity Impact
+            </TableHead>
+            <TableHead className="w-0 whitespace-nowrap">
+              Total Impact
+            </TableHead>
+            <TableHead className="w-0">Used</TableHead>
+            <TableHead className="w-0 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {activities.map((activity) => (
             <TableRow key={activity.id}>
-              <TableCell className="text-foreground-weak w-0 whitespace-nowrap">
-                Category
+              <TableCell>
+                <div className="flex flex-col">
+                  <span className="font-medium">{activity.name}</span>
+                  <span className="body-sm text-foreground-muted">
+                    {activity.description || "No description"}
+                  </span>
+                </div>
               </TableCell>
-              <TableCell className="font-medium">{activity.name}</TableCell>
-              <TableCell className="text-foreground-weak">
-                {activity.description || "No description"}
+              <TableCell className="text-sm text-foreground-muted w-0 whitespace-nowrap">
+                {activity.category || "No category"}
               </TableCell>
-              <TableCell className="text-center">18</TableCell>
-              <TableCell className="text-center">
+              <TableCell className="text-center text-sm">
+                10<span className="text-foreground-muted">/10</span>
+              </TableCell>
+              <TableCell className="text-center text-sm">
+                8<span className="text-foreground-muted">/10</span>
+              </TableCell>
+              <TableCell className="text-center font-semibold">
+                18
+                <span className="text-foreground-muted text-sm font-normal">
+                  /20
+                </span>
+              </TableCell>
+              <TableCell className="text-center text-sm">
                 {activity._count?.ratings || 0}
               </TableCell>
               <TableCell>
-                <div className="flex items-center gap-sm">
+                <div className="flex items-center gap-2">
                   <Button
-                    variant="secondary"
-                    size="icon"
+                    variant="ghost"
+                    size="icon-sm"
                     onClick={() => {
                       setSelectedActivity(activity);
                       setIsEditModalOpen(true);
                     }}
                     disabled={isLoading}
                   >
-                    <Edit className="h-4 w-4" />
+                    <Edit />
                   </Button>
 
                   <Button
-                    variant="destructive"
-                    size="icon"
+                    variant="destructive-ghost"
+                    size="icon-sm"
                     onClick={() => {
                       setSelectedActivity(activity);
                       setIsDeleteDialogOpen(true);
                     }}
                     disabled={isLoading}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 />
                   </Button>
                 </div>
               </TableCell>
@@ -210,6 +247,22 @@ export function ActivitiesSection({
           ))}
         </TableBody>
       </Table>
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious href="#" />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink href="#">1</PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationEllipsis />
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationNext href="#" />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
 
       {/* Edit Modal */}
       <ActivityModal
@@ -238,22 +291,28 @@ export function ActivitiesSection({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button
-                variant="secondary"
-                disabled={isLoading}
-              >
+              <Button variant="ghost" disabled={isLoading}>
                 Cancel
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-            <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
-  {isLoading ? (
-    <div className="loader"><Loader size="base" label="Deleting..." className="text-destructive" /></div>
-  ) : (
-    "Delete Activity"
-  )}
-</Button>
-
+              <Button
+                variant="destructive"
+                onClick={handleDelete}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="loader">
+                    <Loader
+                      size="base"
+                      label="Deleting..."
+                      className="text-destructive"
+                    />
+                  </div>
+                ) : (
+                  "Delete Activity"
+                )}
+              </Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

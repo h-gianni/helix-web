@@ -14,7 +14,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/core/Select";
-import { PlusCircle, Import } from "lucide-react";
+import { Plus, Import } from "lucide-react";
 import { ActivityModal } from "./_components/_activityModal";
 
 export default function BusinessActivitiesSettingsPage() {
@@ -40,40 +40,18 @@ export default function BusinessActivitiesSettingsPage() {
     <>
       <PageBreadcrumbs items={breadcrumbItems} />
       <PageHeader
-        title="Business Activities"
-        caption="Add all activities will be tracked in your business that are relevant to you and your teams."
+        title="Org Activities"
+        caption="Select the activities relevant to your organisation so you can rate the team members' performance on what is relevant to the organization."
         backButton={{
           onClick: () => router.push("/dashboard/settings/"),
         }}
-        // actions={
-        //   <Button
-        //     variant="primary"
-        //     onClick={() => setIsModalOpen(true)}
-        //     leadingIcon={<PlusCircle />}
-        //   >
-        //     Add Activity
-        //   </Button>
-        // }
+        actions={
+          <Button variant="default" onClick={() => setIsModalOpen(true)}>
+            <Plus /> Add Activity
+          </Button>
+        }
       />
-      <main className="ui-layout-page-main">
-        <div className="ui-view-controls-bar">
-          <div className="flex gap-xs p-xxs">
-            {/* <div className="ui-text-heading-5 text-foreground-weak">View:</div>
-            <ToggleGroup type="single" defaultValue="left" className="gap-sm">
-              <ToggleGroupItem value="a">All</ToggleGroupItem>
-              <ToggleGroupItem value="b">Selected</ToggleGroupItem>
-            </ToggleGroup> */}
-          </div>
-          <div>
-            <Button
-              size="sm"
-              variant="default"
-              onClick={() => setIsModalOpen(true)}
-            >
-              Add activity
-            </Button>
-          </div>
-        </div>
+      <main className="layout-page-main">
         <ActivitiesSection
           onUpdate={handleUpdate}
           shouldRefresh={shouldRefreshList}

@@ -15,13 +15,13 @@
       @apply text-xl font-semibold tracking-normal leading-snug text-foreground-strong;
     }
     .heading-3 {
-      @apply text-lg font-medium tracking-normal leading-snug text-foreground-strong;
+      @apply text-lg font-semibold tracking-normal leading-snug text-foreground-strong;
     }
     .heading-4 {
-      @apply text-base font-medium tracking-normal leading-normal text-foreground-strong;
+      @apply text-base font-bold tracking-normal leading-normal text-foreground-strong;
     }
     .heading-5 {
-      @apply text-sm font-semibold tracking-normal leading-normal text-foreground-strong;
+      @apply text-sm font-bold tracking-normal leading-normal text-foreground-strong;
     }
   
     /* Body */
@@ -48,6 +48,6 @@
   
     /* Captions */
     .caption {
-      @apply text-xs font-normal tracking-normal leading-normal text-foreground-muted;
+      @apply text-sm font-normal tracking-normal leading-snug text-foreground-weak;
     }
   }

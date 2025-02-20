@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,11 +7,13 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogBody,
 } from "@/components/ui/core/Dialog";
 import { Button } from "@/components/ui/core/Button";
 import { Input } from "@/components/ui/core/Input";
 import { Label } from "@/components/ui/core/Label";
 import { Checkbox } from "@/components/ui/core/Checkbox";
+import { Loader } from "@/components/ui/core/Loader";
 import {
   Table,
   TableHeader,
@@ -32,12 +32,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/core/Select";
-import {
-  Upload,
-  X,
-  FileText,
-  AlertCircle,
-} from "lucide-react";
+import { Upload, X, FileText, AlertCircle } from "lucide-react";
 import type { BusinessActivityResponse } from "@/lib/types/api";
 import { cn } from "@/lib/utils";
 import {
@@ -45,8 +40,8 @@ import {
   useCreateActivity,
   useUpdateActivity,
   useImportActivities,
-  useActivityModalStore
-} from '@/store/activity-modal-store';
+  useActivityModalStore,
+} from "@/store/activity-modal-store";
 
 interface ActivityModalProps {
   isOpen: boolean;
@@ -61,49 +56,39 @@ export function ActivityModal({
   activity,
   onUpdate,
 }: ActivityModalProps) {
-
-
   const {
     formData,
     dragActive,
     setFormData,
     setDragActive,
     reset,
-    hasChanges
-  } = useActivityModalStore()
+    hasChanges,
+  } = useActivityModalStore();
 
+  const { data: categories = [], isLoading: isCategoriesLoading } =
+    useActivityCategories();
+  const createActivity = useCreateActivity();
+  const updateActivity = useUpdateActivity();
+  const importActivities = useImportActivities();
 
-  const { data: categories = [], isLoading: isCategoriesLoading } = useActivityCategories()
-  const createActivity = useCreateActivity()
-  const updateActivity = useUpdateActivity()
-  const importActivities = useImportActivities()
-
-
-  const isSubmitting = createActivity.isPending || updateActivity.isPending || importActivities.isPending
-  const error = createActivity.error || updateActivity.error || importActivities.error
-
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-
-  const [activityType, setActivityType] = useState("from-categories");
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-
+  const isSubmitting =
+    createActivity.isPending ||
+    updateActivity.isPending ||
+    importActivities.isPending;
+  const error =
+    createActivity.error || updateActivity.error || importActivities.error;
 
   useEffect(() => {
-   
     if (activity) {
-  
       setFormData({
         name: activity.name,
-        description: activity.description || '',
-        activityType: 'from-scratch'
-      })
+        description: activity.description || "",
+        activityType: "from-scratch",
+      });
     } else {
-      reset()
+      reset();
     }
-  }, [activity, isOpen, setFormData, reset, formData.activityType])
-
- 
+  }, [activity, isOpen, setFormData, reset]);
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -112,86 +97,82 @@ export function ActivityModal({
   };
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
 
-    const file = e.dataTransfer.files?.[0]
+    const file = e.dataTransfer.files?.[0];
     if (file?.type === "text/csv") {
-      setFormData({ uploadedFile: file })
+      setFormData({ uploadedFile: file });
     }
-  }
+  };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file?.type === "text/csv") {
-      setFormData({ uploadedFile: file })
+      setFormData({ uploadedFile: file });
     }
-  }
+  };
 
   const handleSubmit = async () => {
     try {
       switch (formData.activityType) {
-        case 'from-import':
+        case "from-import":
           if (formData.uploadedFile) {
-            await importActivities.mutateAsync(formData.uploadedFile)
+            await importActivities.mutateAsync(formData.uploadedFile);
           }
-          break
-          
-        case 'from-categories':
+          break;
+
+        case "from-categories":
           if (formData.selectedCategories.length > 0) {
             // Create activities from selected categories
             await createActivity.mutateAsync({
               name: formData.name.trim(),
-              categoryIds: formData.selectedCategories
-            })
+              categoryIds: formData.selectedCategories,
+            });
           }
-          break
-          
-        case 'from-scratch':
+          break;
+
+        case "from-scratch":
           if (activity) {
             await updateActivity.mutateAsync({
               id: activity.id,
               name: formData.name.trim(),
               description: formData.description.trim() || undefined,
-              impactScale: formData.impactScale
-            })
+              impactScale: formData.impactScale,
+            });
           } else {
             await createActivity.mutateAsync({
               name: formData.name.trim(),
               description: formData.description.trim() || undefined,
-              impactScale: formData.impactScale
-            })
+              impactScale: formData.impactScale,
+            });
           }
-          break
+          break;
       }
 
-      onUpdate?.()
-      onClose()
+      onUpdate?.();
+      onClose();
     } catch (err) {
       // Error handling is managed by React Query
     }
-  }
-
-
-
-
+  };
 
   const handleClose = () => {
-    if (hasChanges() && !confirm("Discard unsaved changes?")) return;
+    if (hasChanges(activity) && !confirm("Discard unsaved changes?")) return;
     onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-4xl">
-        <DialogHeader>
+      <DialogContent className="max-w-6xl h-full" scrollable>
+        <DialogHeader className="p-8 pt-6 pb-0">
           <DialogTitle>
-            {activity ? "Edit Business Activity" : "Add Business Activity"}
+            {activity ? "Edit Org Activities" : "Add Org Activities"}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-6 overflow-scroll">
+        <DialogBody className="space-y-6">
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -200,320 +181,201 @@ export function ActivityModal({
           )}
 
           <RadioGroup
-            defaultValue="from-categories"
-            value={activityType}
-            onValueChange={setActivityType}
-            className="grid grid-cols-3 gap-4"
+            value={formData.activityType}
+            onValueChange={(value) =>
+              setFormData({
+                activityType: value as
+                  | "from-categories"
+                  | "from-import"
+                  | "from-scratch",
+              })
+            }
+            className="flex gap-8"
           >
-            <div className="space-y-2">
+            <div className="flex gap-2 items-center">
               <RadioGroupItem value="from-categories" id="from-categories" />
-              <Label htmlFor="from-categories">Select from categories</Label>
-              <p className="text-sm text-foreground-muted">
-                Select from pre-built activity categories
-              </p>
+              <Label htmlFor="from-categories">
+                Select from pre-built categories
+              </Label>
             </div>
-            <div className="space-y-2">
+            <div className="flex gap-2 items-center">
               <RadioGroupItem value="from-import" id="from-import" />
-              <Label htmlFor="from-import">Import activities</Label>
-              <p className="text-sm text-foreground-muted">
-                Import your own activity list
-              </p>
+              <Label htmlFor="from-import">Import your own activities</Label>
             </div>
-            <div className="space-y-2">
+            <div className="flex gap-2 items-center">
               <RadioGroupItem value="from-scratch" id="from-scratch" />
-              <Label htmlFor="from-scratch">Create custom</Label>
-              <p className="text-sm text-foreground-muted">
-                Create a new custom activity
-              </p>
+              <Label htmlFor="from-scratch">Create from scratch</Label>
             </div>
           </RadioGroup>
 
-          {activityType === "from-categories" && (
+          {formData.activityType === "from-categories" && (
             <div className="space-y-4">
-              <div className="w-[320px]">
-                <Label>Function Category</Label>
+              <div className="w-fit space-y-0.5">
+                <Label>Categories</Label>
                 <Select>
                   <SelectTrigger>
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="product">Product Management</SelectItem>
-                    <SelectItem value="engineering">Engineering</SelectItem>
-                    <SelectItem value="design">Design</SelectItem>
-                    <SelectItem value="research">Research</SelectItem>
+                    <SelectItem value="01">
+                      Must show the categories list
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-<Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-0">
-                      <Checkbox />
-                    </TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Activity</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead className="w-[100px] text-center">
-                      Impact Scale
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Strategy Planning</TableCell>
-                    <TableCell className="max-w-md">
-                      Develop and implement strategic plans to achieve
-                      organizational goals
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Resource Allocation</TableCell>
-                    <TableCell className="max-w-md">
-                      Optimize distribution of resources across projects and
-                      teams
-                    </TableCell>
-                    <TableCell className="text-center">5</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Performance Review</TableCell>
-                    <TableCell className="max-w-md">
-                      Conduct regular performance evaluations and provide
-                      constructive feedback
-                    </TableCell>
-                    <TableCell className="text-center">3</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Risk Assessment</TableCell>
-                    <TableCell className="max-w-md">
-                      Identify and evaluate potential risks to project success
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Team Building</TableCell>
-                    <TableCell className="max-w-md">
-                      Foster team collaboration and positive work environment
-                    </TableCell>
-                    <TableCell className="text-center">3</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Process Improvement</TableCell>
-                    <TableCell className="max-w-md">
-                      Streamline workflows and enhance operational efficiency
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Budget Management</TableCell>
-                    <TableCell className="max-w-md">
-                      Monitor and control project expenses within budget
-                      constraints
-                    </TableCell>
-                    <TableCell className="text-center">5</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Stakeholder Communication</TableCell>
-                    <TableCell className="max-w-md">
-                      Maintain effective communication with all project
-                      stakeholders
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Quality Assurance</TableCell>
-                    <TableCell className="max-w-md">
-                      Ensure deliverables meet quality standards and
-                      requirements
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Knowledge Transfer</TableCell>
-                    <TableCell className="max-w-md">
-                      Facilitate sharing of information and best practices
-                      across teams
-                    </TableCell>
-                    <TableCell className="text-center">3</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Vendor Management</TableCell>
-                    <TableCell className="max-w-md">
-                      Manage relationships with external vendors and service
-                      providers
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Change Management</TableCell>
-                    <TableCell className="max-w-md">
-                      Guide organizational transitions and process changes
-                      effectively
-                    </TableCell>
-                    <TableCell className="text-center">5</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Data Analysis</TableCell>
-                    <TableCell className="max-w-md">
-                      Analyze and interpret data to support decision-making
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Documentation</TableCell>
-                    <TableCell className="max-w-md">
-                      Create and maintain comprehensive project documentation
-                    </TableCell>
-                    <TableCell className="text-center">3</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Training Coordination</TableCell>
-                    <TableCell className="max-w-md">
-                      Organize and facilitate team training and development
-                      programs
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Compliance Monitoring</TableCell>
-                    <TableCell className="max-w-md">
-                      Ensure adherence to regulations and internal policies
-                    </TableCell>
-                    <TableCell className="text-center">5</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Project Planning</TableCell>
-                    <TableCell className="max-w-md">
-                      Develop detailed project plans and timelines
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Client Relationship</TableCell>
-                    <TableCell className="max-w-md">
-                      Build and maintain strong relationships with clients
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Meeting Facilitation</TableCell>
-                    <TableCell className="max-w-md">
-                      Plan and lead effective team meetings and workshops
-                    </TableCell>
-                    <TableCell className="text-center">3</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <Checkbox />
-                    </TableCell>
-                    <TableCell>General</TableCell>
-                    <TableCell>Resource Optimization</TableCell>
-                    <TableCell className="max-w-md">
-                      Maximize efficiency of team resources and tools
-                    </TableCell>
-                    <TableCell className="text-center">4</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-              </div>
+              {isCategoriesLoading ? (
+                <div className="flex justify-center py-8">
+                  <Loader size="base" label="Loading activities..." />
+                </div>
+              ) : (
+                <div className="overflow-auto max-h-[400px] border rounded-md">
+                  <Table>
+                    <TableHeader className="sticky top-0 bg-background z-10">
+                      <TableRow>
+                        <TableHead className="w-0 whitespace-nowrap">
+                          <Checkbox
+                            checked={
+                              formData.selectedCategories.length ===
+                                (categories?.flatMap((c) => c.activities)
+                                  ?.length || 0) &&
+                              (categories?.length || 0) > 0
+                            }
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                // Select all
+                                setFormData({
+                                  selectedCategories:
+                                    categories?.flatMap((c) =>
+                                      c.activities.map((a) => a.id)
+                                    ) || [],
+                                });
+                              } else {
+                                // Deselect all
+                                setFormData({ selectedCategories: [] });
+                              }
+                            }}
+                          />
+                        </TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Activity</TableHead>
+                        <TableHead>Description</TableHead>
+                        <TableHead className="w-0 whitespace-nowrap text-center">
+                          Impact Scale
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {!categories?.length ? (
+                        <TableRow>
+                          <TableCell
+                            colSpan={5}
+                            className="text-center h-24 text-foreground-muted"
+                          >
+                            No activity found in the selected category
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        categories
+                          .filter(
+                            (cat) =>
+                              !formData.category ||
+                              cat.category === formData.category
+                          )
+                          .flatMap((categoryGroup) =>
+                            categoryGroup.activities.map((activity) => (
+                              <TableRow key={activity.id}>
+                                <TableCell>
+                                  <Checkbox
+                                    checked={formData.selectedCategories.includes(
+                                      activity.id
+                                    )}
+                                    onCheckedChange={(checked) => {
+                                      if (checked) {
+                                        setFormData({
+                                          selectedCategories: [
+                                            ...formData.selectedCategories,
+                                            activity.id,
+                                          ],
+                                        });
+                                      } else {
+                                        setFormData({
+                                          selectedCategories:
+                                            formData.selectedCategories.filter(
+                                              (id) => id !== activity.id
+                                            ),
+                                        });
+                                      }
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell className="text-sm text-foreground-muted whitespace-nowrap">
+                                  {categoryGroup.category}
+                                </TableCell>
+                                <TableCell>
+                                  <div className="flex flex-col">
+                                    <span className="font-medium">
+                                      {activity.name}
+                                    </span>
+                                  </div>
+                                </TableCell>
+                                <TableCell className="max-w-md">
+                                  <span className="text-sm text-foreground-muted">
+                                    {activity.description || "No description"}
+                                  </span>
+                                </TableCell>
+                                <TableCell className="text-center font-semibold">
+                                  {/* {activity.impactScale ? parseInt(activity.impactScale) : "-"} */}
+                                  10
+                                  <span className="text-foreground-muted text-sm font-normal">
+                                    /10
+                                  </span>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </div>
           )}
 
-          {activityType === "from-scratch" && (
-            <div className="grid gap-4">
-              <div className="grid gap-2">
+          {formData.activityType === "from-scratch" && (
+            <div className="flex flex-col max-w-copy-base gap-4">
+              <div className="w-fit space-y-0.5">
+                <Label>Categories</Label>
+                <Select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="01">
+                      Custom
+                    </SelectItem>
+                    <SelectItem value="02">
+                      Must show the categories list
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-0.5">
                 <Label htmlFor="name">Activity Name</Label>
                 <Input
                   id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={formData.name}
+                  onChange={(e) => setFormData({ name: e.target.value })}
                   placeholder="Enter activity name"
                   required
                 />
               </div>
 
-              <div className="grid gap-2">
+              <div className="space-y-0.5">
                 <Label htmlFor="description">Description</Label>
                 <Textarea
                   id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ description: e.target.value })}
                   placeholder="Enter activity description"
                   rows={3}
                 />
@@ -521,7 +383,11 @@ export function ActivityModal({
 
               <div className="w-[200px]">
                 <Label htmlFor="impact">Impact Scale</Label>
-                <Select>
+                {/* <Select 
+                  id="impact"
+                  value={formData.impactScale}
+                  onValueChange={(value) => setFormData({ impactScale: value })}
+                >
                   <SelectTrigger id="impact">
                     <SelectValue placeholder="Select impact..." />
                   </SelectTrigger>
@@ -532,19 +398,19 @@ export function ActivityModal({
                       </SelectItem>
                     ))}
                   </SelectContent>
-                </Select>
+                </Select> */}
               </div>
             </div>
           )}
 
-          {activityType === "from-import" && (
+          {formData.activityType === "from-import" && (
             <div className="grid gap-4">
               <div
                 className={cn(
                   "relative flex flex-col items-center justify-center h-64 rounded-lg border-2 border-dashed",
                   dragActive
                     ? "border-primary bg-primary/5"
-                    : "border-input hover:bg-accent",
+                    : "border-input hover:bg-secondary",
                   "transition-colors duration-200"
                 )}
                 onDragEnter={handleDrag}
@@ -552,12 +418,12 @@ export function ActivityModal({
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
               >
-                {!uploadedFile ? (
+                {!formData.uploadedFile ? (
                   <>
                     <input
                       type="file"
                       accept=".csv"
-                      onChange={handleFileSelect}
+                      // onChange={handleFileSelect}
                       className="absolute inset-0 opacity-0 cursor-pointer"
                     />
                     <div className="flex flex-col items-center gap-2 text-center">
@@ -581,16 +447,18 @@ export function ActivityModal({
                         <FileText className="h-6 w-6 text-primary" />
                       </div>
                       <div>
-                        <p className="font-medium">{uploadedFile.name}</p>
+                        <p className="font-medium">
+                          {formData.uploadedFile.name}
+                        </p>
                         <p className="text-sm text-foreground-muted">
-                          {(uploadedFile.size / 1024).toFixed(2)} KB
+                          {(formData.uploadedFile.size / 1024).toFixed(2)} KB
                         </p>
                       </div>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => setUploadedFile(null)}
+                      onClick={() => setFormData({ uploadedFile: null })}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -612,9 +480,9 @@ export function ActivityModal({
               </Alert>
             </div>
           )}
-        </div>
+        </DialogBody>
 
-        <DialogFooter>
+        <DialogFooter className="p-6 border-t">
           <Button
             variant="outline"
             onClick={handleClose}
@@ -624,9 +492,13 @@ export function ActivityModal({
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isSubmitting || !hasChanges()}
+            disabled={isSubmitting || !hasChanges(activity)}
           >
-            {isSubmitting ? "Saving..." : (activity ? "Save Changes" : "Add Activity")}
+            {isSubmitting
+              ? "Saving..."
+              : activity
+              ? "Save Changes"
+              : "Add Activity"}
           </Button>
         </DialogFooter>
       </DialogContent>

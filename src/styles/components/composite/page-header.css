@@ -1,7 +1,7 @@
 @layer components {
     /* Base container styles */
     .page-header {
-      @apply mb-6;
+      @apply pb-4 min-h-8;
     }
   
     /* Layout container */
@@ -21,11 +21,11 @@
   
     /* Caption text */
     .page-header-caption {
-      @apply caption;
+      @apply caption max-w-copy-base;
     }
   
     /* Actions container */
     .page-header-actions {
-      @apply flex items-center gap-2;
+      @apply flex items-center gap-4;
     }
   }

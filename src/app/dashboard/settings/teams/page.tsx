@@ -80,6 +80,7 @@ export default function TeamsSettingsPage() {
       <PageBreadcrumbs items={breadcrumbItems} />
       <PageHeader
         title={pageTitle}
+        caption="Select the activities relevant to your team so you can rate the team members' performance on what counts for you and the organization."
         backButton={{
           onClick: () => router.push("/dashboard/settings/"),
         }}
