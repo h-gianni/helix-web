@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { useQuery, useMutation, QueryClient } from '@tanstack/react-query'
 import type { ApiResponse, BusinessActivityResponse } from '@/lib/types/api'
 import { apiClient } from '@/lib/api/api-client'
+import { da } from 'date-fns/locale';
 
 // Define the category type
 interface CategoryObject {
@@ -23,16 +24,8 @@ const activitiesApi = {
     const { data } = await apiClient.get<ApiResponse<BusinessActivityResponse[]>>('/business-activities')
     if (!data.success) throw new Error(data.error || 'Failed to fetch activities')
     
-    // Transform the category field if it's an object
-    const transformedData = data.data.map(activity => ({
-      ...activity,
-      // Use type guard to safely access category.name
-      category: isCategoryObject(activity.category) 
-        ? activity.category.name 
-        : activity.category
-    }))
     
-    return transformedData
+    return data.data
   },
 
 

@@ -6,7 +6,8 @@ import type {
   ApiResponse,
   BusinessActivityResponse,
    ActivityResponse,
-  CreateBusinessActivityInput as CreateActivityInput,
+  CreateBusinessActivityInput,
+  CreateActivityInput,
   JsonValue,
 } from "@/lib/types/api";
 import { v4 as uuidv4 } from 'uuid';
@@ -63,8 +64,6 @@ export async function GET(request: Request) {
       },
       select: {
         id: true,
-        name: true,
-        description: true,
         priority: true,
         status: true,
         dueDate: true,
@@ -93,7 +92,7 @@ export async function GET(request: Request) {
           select: {
             id: true,
             name: true,
-          },
+          }
         },
         _count: {
           select: {
@@ -113,23 +112,24 @@ export async function GET(request: Request) {
       ],
     });
 
-    const activitiesResponse: ActivityResponse[] = activities.map((activity) => ({
-      id: activity.id,
-      name: activity.name,
-      description: activity.description,
-      category: activity.activity.category,
-      priority: activity.priority,
-      status: activity.status,
-      dueDate: activity.dueDate,
-      teamId: activity.teamId,
-      createdBy: activity.createdBy,
-      createdAt: activity.createdAt,
-      updatedAt: activity.updatedAt,
-      deletedAt: activity.deletedAt,
-      customFields: activity.customFields as JsonValue | undefined,
-      team: activity.team,
-      impactScale: activity.activity.impactScale,
-      _count: activity._count
+
+    const activitiesResponse: ActivityResponse[] = activities.map((businessActivity) => ({
+      id: businessActivity.id,
+      name: businessActivity.activity.name,
+      description: businessActivity.activity.description,
+      category: businessActivity.activity.category,
+      priority: businessActivity.priority,
+      status: businessActivity.status,
+      dueDate: businessActivity.dueDate,
+      teamId: businessActivity.teamId,
+      createdBy: businessActivity.createdBy,
+      createdAt: businessActivity.createdAt,
+      updatedAt: businessActivity.updatedAt,
+      deletedAt: businessActivity.deletedAt,
+      customFields: businessActivity.customFields as JsonValue | undefined,
+      team: businessActivity.team,
+      impactScale: businessActivity.activity.impactScale,
+      _count: businessActivity._count
     }));
 
     return NextResponse.json<ApiResponse<ActivityResponse[]>>({
@@ -156,11 +156,11 @@ export async function POST(request: Request) {
     }
 
     const body: CreateActivityInput = await request.json();
-    const { name, description, teamId } = body;
+    const { activityId, teamId, priority = "MEDIUM", status = "ACTIVE", dueDate } = body;
 
-    if (!name?.trim()) {
+    if (!activityId || !teamId) {
       return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Activities name is required" },
+        { success: false, error: "Activity ID and Team ID are required" },
         { status: 400 }
       );
     }
@@ -176,21 +176,17 @@ export async function POST(request: Request) {
       }
     }
 
-    const activities = await prisma.businessActivity.create({
+    const businessActivity = await prisma.businessActivity.create({
       data: {
-        activityId: uuidv4(),
-        name: name.trim(),
-        description: description?.trim() || null,
+        activityId,
         teamId,
         createdBy: userId,
-        status: "ACTIVE",
-        priority: "MEDIUM"
+        status,
+        priority,
+        dueDate,
       },
       select: {
         id: true,
-        name: true,
-        description: true,
-        category: true,
         priority: true,
         status: true,
         dueDate: true,
@@ -200,25 +196,63 @@ export async function POST(request: Request) {
         updatedAt: true,
         deletedAt: true,
         customFields: true,
+        activity: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            impactScale: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+                description: true
+              }
+            }
+          }
+        },
         team: {
           select: {
             id: true,
             name: true,
-          },
+          }
         },
+        _count: {
+          select: {
+            ratings: true
+          }
+        }
       },
     });
-    const activitiesResponse: BusinessActivityResponse = {
-      ...activities,
-      customFields: activities.customFields as JsonValue | undefined,
+
+    const businessActivityResponse: BusinessActivityResponse = {
+      id: businessActivity.id,
+      priority: businessActivity.priority,
+      status: businessActivity.status,
+      dueDate: businessActivity.dueDate,
+      teamId: businessActivity.teamId,
+      createdBy: businessActivity.createdBy,
+      createdAt: businessActivity.createdAt,
+      updatedAt: businessActivity.updatedAt,
+      deletedAt: businessActivity.deletedAt,
+      customFields: businessActivity.customFields as JsonValue | undefined,
+      activity: {
+        id: businessActivity.activity.id,
+        name: businessActivity.activity.name,
+        description: businessActivity.activity.description,
+        impactScale: businessActivity.activity.impactScale,
+        category: businessActivity.activity.category
+      },
+      team: businessActivity.team,
+      _count: businessActivity._count
     };
 
     return NextResponse.json<ApiResponse<BusinessActivityResponse>>(
-      { success: true, data: activitiesResponse },
+      { success: true, data: businessActivityResponse },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating activities:", error);
+    console.error("Error creating business activity:", error);
     return NextResponse.json<ApiResponse<never>>(
       { success: false, error: "Internal server error" },
       { status: 500 }

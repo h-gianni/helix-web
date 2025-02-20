@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { Target, Edit, Trash2, AlertCircle, Loader } from "lucide-react";
 import { Button } from "@/components/ui/core/Button";
@@ -78,6 +78,13 @@ export function ActivitiesSection({
     }
   };
 
+
+  useEffect(() => {
+    if (activities) {
+      console.log('Activities data:', activities);
+    }
+  }, [activities]);
+
   if (isLoading && !activities) {
     return <div className="ui-loader">Loading activities...</div>;
   }
@@ -127,26 +134,22 @@ export function ActivitiesSection({
             <TableHead>Activity</TableHead>
             <TableHead>Description</TableHead>
             <TableHead className="w-24 text-center">Priority</TableHead>
-            <TableHead className="w-24 text-center">Status</TableHead>
+            <TableHead className="w-24 text-center">Impact</TableHead>
             <TableHead className="w-24 text-center">Ratings</TableHead>
             <TableHead className="w-24">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {activities?.map((activity: BusinessActivityResponse) => (
+          {activities?.map((activity: any) => (
             <TableRow key={activity.id}>
               <TableCell>
-                {activity.category ? (
-                  <Badge variant="outline" className="font-normal">
-                    {activity.category}
-                  </Badge>
-                ) : (
-                  <span className="text-muted-foreground">Uncategorized</span>
-                )}
+                <Badge variant="outline" className="font-normal">
+                  {activity.category?.name}
+                </Badge>
               </TableCell>
               <TableCell className="font-medium">{activity.name}</TableCell>
               <TableCell className="text-muted-foreground">
-                {activity.description || "No description"}
+                {activity.activity?.description || "No description"}
               </TableCell>
               <TableCell className="text-center">
                 <Badge 
@@ -160,15 +163,7 @@ export function ActivitiesSection({
                 </Badge>
               </TableCell>
               <TableCell className="text-center">
-                <Badge
-                  variant={
-                    activity.status === 'ACTIVE' ? 'default' :
-                    activity.status === 'COMPLETED' ? 'success' :
-                    'secondary'
-                  }
-                >
-                  {activity.status.toLowerCase()}
-                </Badge>
+                {activity.impactScale || '-'}
               </TableCell>
               <TableCell className="text-center">
                 {activity._count?.ratings || 0}

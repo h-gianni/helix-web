@@ -71,13 +71,22 @@ export type TeamDetailsResponse = TeamResponse & {
 };
 
 
-
-// BusinessActivity types
-export type BusinessActivityResponse = {
+export interface CategoryResponse {
   id: string;
   name: string;
   description: string | null;
-  category: string | null;
+}
+
+export interface ActivityData {
+  id: string;
+  name: string;
+  description: string | null;
+  impactScale: number | null;
+  category: CategoryResponse;
+}
+
+export interface BusinessActivityResponse {
+  id: string;
   priority: Priority;
   status: BusinessActivityStatus;
   dueDate: Date | null;
@@ -87,10 +96,15 @@ export type BusinessActivityResponse = {
   updatedAt: Date;
   deletedAt: Date | null;
   customFields?: JsonValue;
+  activity: ActivityData;
+  team: {
+    id: string;
+    name: string;
+  };
   _count?: {
     ratings: number;
   };
-};
+}
 export interface ActivityResponse {
   id: string;
   name: string;
@@ -315,3 +329,12 @@ export type TransactionClient = Omit<
   typeof PrismaClient,
   "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
 >;
+
+
+export type CreateActivityInput = {
+  activityId: string;    // ID of the base activity to link
+  teamId: string;        // Team ID
+  priority?: Priority;   // Optional priority, defaults to MEDIUM
+  status?: BusinessActivityStatus; // Optional status, defaults to ACTIVE
+  dueDate?: Date;       // Optional due date
+};

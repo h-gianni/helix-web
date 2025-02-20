@@ -175,10 +175,7 @@ model Activity {
 
 model BusinessActivity {
   id          String                 @id @default(cuid())
-  activityId  String    // Reference to the base activity
-  name        String                 @unique @db.VarChar(200)
-  description String?                @db.Text
-  category    String?                @db.VarChar(100)
+  activityId  String    
   priority    Priority               @default(MEDIUM)
   status      BusinessActivityStatus @default(ACTIVE)
   dueDate     DateTime?
@@ -191,8 +188,8 @@ model BusinessActivity {
 
   // Relations
   activity    Activity     @relation(fields: [activityId], references: [id])
-  team        GTeam          @relation(fields: [teamId], references: [id])
-  user        AppUser       @relation(fields: [createdBy], references: [id])
+  team        GTeam        @relation(fields: [teamId], references: [id])
+  user        AppUser      @relation(fields: [createdBy], references: [id])
   ratings     MemberRating[]
 
   @@index([teamId, createdAt])
