@@ -92,7 +92,7 @@ const DialogBody = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "overflow-y-auto p-8",
+      "relative overflow-y-auto p-8",
       className
     )}
     {...props}
