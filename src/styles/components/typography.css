@@ -18,10 +18,10 @@
       @apply text-lg font-semibold tracking-normal leading-snug text-foreground-strong;
     }
     .heading-4 {
-      @apply text-base font-bold tracking-normal leading-normal text-foreground-strong;
+      @apply text-base font-bold tracking-normal leading-normal text-foreground;
     }
     .heading-5 {
-      @apply text-sm font-bold tracking-normal leading-normal text-foreground-strong;
+      @apply text-sm font-bold tracking-normal leading-normal text-foreground;
     }
   
     /* Body */

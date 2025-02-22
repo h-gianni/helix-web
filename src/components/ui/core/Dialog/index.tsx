@@ -78,7 +78,7 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4",
+      "relative flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-4",
       className
     )}
     {...props}
@@ -92,7 +92,7 @@ const DialogBody = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "relative overflow-y-auto p-8",
+      "overflow-y-auto p-8",
       className
     )}
     {...props}

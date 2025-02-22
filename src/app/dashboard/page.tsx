@@ -1,17 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
+import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
 import { useRouter } from "next/navigation";
-import { PageHeader } from "@/components/ui/composite/PageHeader";
+import { PageHeader } from "@/components/ui/composite/Page-header";
 import { Button } from "@/components/ui/core/Button";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { MessageSquare, Star, AlertCircle, RotateCcw } from "lucide-react";
-import TeamCreateModal from "../dashboard/teams/_teamCreateModal";
-import PerformanceRatingModal from "./_component/_performanceRatingModal";
-import EmptyDashboardView from "./_component/_emptyDashboardView";
-import { PerformersByCategory } from "./_component/_performersByCategory";
-import { ViewSwitcher } from "@/components/ui/composite/ViewSwitcher";
+import TeamCreateModal from "./_components/_teams/_team-create-modal";
+import PerformanceRatingModal from "./_components/_performance-scoring-modal";
+import EmptyDashboardView from "./_components/_empty-dashboard-view";
+import { PerformersByCategory } from "./_components/_performers-by-category";
+import { ViewSwitcher } from "@/components/ui/composite/View-switcher";
 import { Loader } from "@/components/ui/core/Loader";
 import type { Member } from "@/store/member";
 import { useTeams, useCreateTeam } from "@/store/team-store";

@@ -2,8 +2,8 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
-import { PageHeader } from "@/components/ui/composite/PageHeader";
+import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
+import { PageHeader } from "@/components/ui/composite/Page-header";
 import { Button } from "@/components/ui/core/Button";
 import { Loader } from "@/components/ui/core/Loader";
 import {
@@ -21,7 +21,7 @@ import {
   AlertDialogTitle,
   AlertDialogAction,
   AlertDialogCancel,
-} from "@/components/ui/core/AlertDialog";
+} from "@/components/ui/core/Alert-dialog";
 import { Alert } from "@/components/ui/core/Alert";
 import {
   UserPlus,
@@ -31,10 +31,10 @@ import {
   MoreVertical,
   AlertCircle,
 } from "lucide-react";
-import { AddMemberModal } from "./_addMemberModal";
-import { TeamPerformanceSummary } from "./_teamPerformanceSummary";
-import EmptyTeamView from "./_emptyTeamView";
-import { TeamEditModal } from "./_teamEditModal";
+import { AddMemberModal } from "../../_components/_team/_add-member-modal";
+import { TeamPerformanceSummary } from "../../_components/_team/_team-performance-summary";
+import EmptyTeamView from "../../_components/_team/_team-empty-view";
+import { TeamEditModal } from "../../_components/_team/_team-edit-modal";
 import {
   useTeamStore,
   useTeamDetails,

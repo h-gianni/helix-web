@@ -1,9 +1,9 @@
 @layer components {
   div.layout-page {
-    @apply w-full p-4;
+    @apply w-full p-6;
   }
   main.layout-page-main {
-    @apply space-y-4 w-full;
+    @apply space-y-4 py-4 w-full;
   }
 
   /* Layout Spacing */
