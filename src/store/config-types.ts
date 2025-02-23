@@ -12,8 +12,14 @@ export interface Team {
     };
     activities: {
       selected: string[];
+      favorites: Record<string, string[]>;
+      hidden: Record<string, string[]>;
     };
-    teams: Team[];
+    teams: Array<{
+      id: string;
+      name: string;
+      functions: string[];
+    }>;
   }
   
   export interface ConfigStore {
@@ -21,5 +27,7 @@ export interface Team {
     setConfig: (config: Configuration) => void;
     updateOrganization: (name: string) => void;
     updateActivities: (activities: string[]) => void;
-    updateTeams: (teams: Team[]) => void;
+    updateFavorites: (category: string, activities: string[]) => void;
+    updateHidden: (category: string, activities: string[]) => void;
+    updateTeams: (teams: Configuration['teams']) => void;
   }

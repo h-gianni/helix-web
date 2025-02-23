@@ -8,6 +8,7 @@ import { PenSquare } from "lucide-react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/core/Card";
 import { useConfigStore } from '@/store/config-store';
 import TeamActionsDialog from './_team-actions-dialog';
+import TeamsEditDialog from './_teams-edit-dialog';
 
 interface Team {
   id: string;
@@ -30,6 +31,7 @@ const MAX_AVATARS = 3;
 const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings' }) => {
   const teams = useConfigStore((state) => state.config.teams);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleRefineActions = (team: Team) => {
     setSelectedTeam(team);
@@ -66,7 +68,10 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>My Teams</CardTitle>
-        <Button variant="ghost" onClick={onEdit}>
+        <Button 
+          variant="ghost" 
+          onClick={variant === 'settings' ? () => setIsEditDialogOpen(true) : onEdit}
+        >
           <PenSquare /> Edit
         </Button>
       </CardHeader>
@@ -80,7 +85,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
                 name={team.name}
                 functions={team.functions}
                 size={variant === 'setup' ? 'sm' : 'base'}
-                onEdit={onEdit}
+                onEdit={variant === 'settings' ? () => setIsEditDialogOpen(true) : onEdit}
               />
             ))}
           </div>
@@ -114,7 +119,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
                   {variant === 'settings' && (
                     <>
                       <TableCell>
-                        {renderAvatarGroup([])} {/* Pass actual members when available */}
+                        {renderAvatarGroup([])}
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
@@ -125,7 +130,11 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
                           >
                             Refine actions
                           </Button>
-                          <Button variant="ghost" size="sm" onClick={onEdit}>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => setIsEditDialogOpen(true)}
+                          >
                             Edit
                           </Button>
                         </div>
@@ -146,6 +155,11 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
           team={selectedTeam}
         />
       )}
+
+      <TeamsEditDialog
+        isOpen={isEditDialogOpen}
+        onClose={() => setIsEditDialogOpen(false)}
+      />
     </Card>
   );
 };

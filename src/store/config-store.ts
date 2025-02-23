@@ -9,6 +9,8 @@ const defaultConfig: Configuration = {
   },
   activities: {
     selected: [],
+    favorites: {} as Record<string, string[]>,
+    hidden: {} as Record<string, string[]>
   },
   teams: [],
 };
@@ -18,21 +20,50 @@ export const useConfigStore = create<ConfigStore>()(
     (set) => ({
       config: defaultConfig,
       setConfig: (config) => set({ config }),
-      updateOrganization: (name) =>
+      updateOrganization: (name: string) =>
         set((state) => ({
           config: {
             ...state.config,
             organization: { name },
           },
         })),
-      updateActivities: (activities) =>
+      updateActivities: (activities: string[]) =>
         set((state) => ({
           config: {
             ...state.config,
-            activities: { selected: activities },
+            activities: { 
+              ...state.config.activities,
+              selected: activities 
+            },
           },
         })),
-      updateTeams: (teams) =>
+      updateFavorites: (category: string, activities: string[]) =>
+        set((state) => ({
+          config: {
+            ...state.config,
+            activities: {
+              ...state.config.activities,
+              favorites: {
+                ...state.config.activities.favorites,
+                [category]: activities
+              }
+            },
+          },
+        })),
+      updateHidden: (category: string, activities: string[]) =>
+        set((state) => ({
+          config: {
+            ...state.config,
+            activities: {
+              ...state.config.activities,
+              hidden: {
+                ...state.config.activities.hidden,
+                [category]: activities
+              }
+            },
+          },
+        })),
+      updateTeams: (teams: Configuration['teams']) =>
         set((state) => ({
           config: {
             ...state.config,

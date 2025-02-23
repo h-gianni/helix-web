@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -9,10 +9,21 @@ import {
 } from "@/components/ui/core/Dialog";
 import { Button } from "@/components/ui/core/Button";
 import { Badge } from "@/components/ui/core/Badge";
-import { Heart, GripHorizontal, Eye } from "lucide-react";
+import { Heart, GripHorizontal, Eye, EyeOff } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/core/Tooltip";
 import { cn } from "@/lib/utils";
-import { activityData, actionsCategories } from "@/data/org-actions-data";
+import { activityData } from "@/data/org-actions-data";
 import { useConfigStore } from '@/store/config-store';
+
+interface ActivityState {
+  favorite: boolean;
+  hidden: boolean;
+}
 
 interface Team {
   id: string;
@@ -26,28 +37,149 @@ export interface TeamActionsDialogProps {
   team: Team;
 }
 
+interface DragData {
+  category: string;
+  activity: string;
+  index: number;
+}
+
 const TeamActionsDialog: React.FC<TeamActionsDialogProps> = ({
   isOpen,
   onClose,
   team,
 }) => {
   const selectedActivities = useConfigStore((state) => state.config.activities.selected);
+  const favorites = useConfigStore((state) => state.config.activities.favorites);
+  const hidden = useConfigStore((state) => state.config.activities.hidden);
+  const updateFavorites = useConfigStore((state) => state.updateFavorites);
+  const updateHidden = useConfigStore((state) => state.updateHidden);
   
-  const getTeamActivities = () => {
-    return team.functions.reduce((acc: Record<string, string[]>, func) => {
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [activities, setActivities] = useState<Record<string, string[]>>({});
+  const [activityStates, setActivityStates] = useState<Record<string, ActivityState>>({});
+
+  useEffect(() => {
+    const teamActivities = team.functions.reduce((acc: Record<string, string[]>, func) => {
       if (activityData[func]) {
-        acc[func] = activityData[func].filter(activity => selectedActivities.includes(activity));
+        acc[func] = activityData[func].filter(act => selectedActivities.includes(act));
       }
       return acc;
     }, {});
+    setActivities(teamActivities);
+
+    const states: Record<string, ActivityState> = {};
+    Object.entries(teamActivities).forEach(([category, acts]) => {
+      acts.forEach(act => {
+        states[act] = {
+          favorite: favorites?.[category]?.includes(act) || false,
+          hidden: hidden?.[category]?.includes(act) || false
+        };
+      });
+    });
+    setActivityStates(states);
+  }, [team, selectedActivities, favorites, hidden]);
+
+  const toggleFavorite = (act: string, category: string): void => {
+    const categoryActivities = activities[category] || [];
+    const favoritesInCategory = categoryActivities.filter(
+      a => activityStates[a]?.favorite
+    ).length;
+
+    if (favoritesInCategory >= 5 && !activityStates[act]?.favorite) {
+      return;
+    }
+
+    const newState = !activityStates[act]?.favorite;
+    setActivityStates(prev => ({
+      ...prev,
+      [act]: { 
+        ...prev[act], 
+        favorite: newState,
+        hidden: false
+      }
+    }));
+
+    const currentFavorites = favorites?.[category] || [];
+    const updatedFavorites = newState
+      ? [...currentFavorites, act]
+      : currentFavorites.filter(a => a !== act);
+    updateFavorites(category, updatedFavorites);
+
+    if (hidden?.[category]?.includes(act)) {
+      const updatedHidden = (hidden[category] || []).filter(a => a !== act);
+      updateHidden(category, updatedHidden);
+    }
   };
 
-  const handleFavorite = (activity: string) => {
-    // TODO: Implement favorite functionality
-    console.log('Favorite:', activity);
+  const toggleVisibility = (act: string, category: string): void => {
+    const categoryActivities = activities[category] || [];
+    const visibleInCategory = categoryActivities.filter(
+      a => !activityStates[a]?.hidden
+    ).length;
+
+    if (visibleInCategory <= 1 && !activityStates[act]?.hidden) {
+      return;
+    }
+
+    const newState = !activityStates[act]?.hidden;
+    setActivityStates(prev => ({
+      ...prev,
+      [act]: { 
+        ...prev[act], 
+        hidden: newState,
+        favorite: false
+      }
+    }));
+
+    const currentHidden = hidden?.[category] || [];
+    const updatedHidden = newState
+      ? [...currentHidden, act]
+      : currentHidden.filter(a => a !== act);
+    updateHidden(category, updatedHidden);
+
+    if (favorites?.[category]?.includes(act)) {
+      const updatedFavorites = (favorites[category] || []).filter(a => a !== act);
+      updateFavorites(category, updatedFavorites);
+    }
   };
 
-  const teamActivities = getTeamActivities();
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, category: string, activity: string, index: number): void => {
+    setDraggedItem(activity);
+    const dragData: DragData = { category, activity, index };
+    e.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetCategory: string, targetIndex: number): void => {
+    e.preventDefault();
+    const data = JSON.parse(e.dataTransfer.getData('text/plain')) as DragData;
+    
+    if (data.category === targetCategory) {
+      const newActivities = { ...activities };
+      const categoryActivities = [...newActivities[targetCategory]];
+      const [movedItem] = categoryActivities.splice(data.index, 1);
+      categoryActivities.splice(targetIndex, 0, movedItem);
+      newActivities[targetCategory] = categoryActivities;
+      setActivities(newActivities);
+    }
+    
+    setDraggedItem(null);
+  };
+
+  const getCategoryActivities = (categoryKey: string, categoryActs: string[]): string[] => {
+    return [...categoryActs].sort((a, b) => {
+      const stateA = activityStates[a];
+      const stateB = activityStates[b];
+      if (stateA?.favorite && !stateB?.favorite) return -1;
+      if (!stateA?.favorite && stateB?.favorite) return 1;
+      if (stateA?.hidden && !stateB?.hidden) return 1;
+      if (!stateA?.hidden && stateB?.hidden) return -1;
+      return 0;
+    });
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -69,35 +201,92 @@ const TeamActionsDialog: React.FC<TeamActionsDialogProps> = ({
 
         <DialogBody>
           <div className="space-y-6">
-            {Object.entries(teamActivities).map(([category, activities]) => (
-              activities.length > 0 && (
+            {Object.entries(activities).map(([category, categoryActivities]) => (
+              categoryActivities.length > 0 && (
                 <div key={category} className="space-y-2">
                   <h3 className="heading-4 capitalize">{category}</h3>
                   <div className="w-full -space-y-px">
-                    {activities.map((activity) => (
+                    {getCategoryActivities(category, categoryActivities).map((activity, index) => (
                       <div
                         key={activity}
-                        className="flex items-center justify-between bg-white text-foreground border px-4 py-3 border-border"
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, category, activity, index)}
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, category, index)}
+                        className={cn(
+                          "flex items-center justify-between bg-white border px-4 py-3 border-border",
+                          draggedItem === activity && "shadow-lg",
+                          activityStates[activity]?.hidden && "text-foreground-muted"
+                        )}
                       >
                         <div className="flex items-center gap-4 flex-1">
                           <GripHorizontal className="h-4 w-4 cursor-grab text-foreground/25" />
                           <span className="text-base">{activity}</span>
                         </div>
                         <div className="flex gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleFavorite(activity)}
-                          >
-                            <Heart className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => console.log('View:', activity)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => toggleFavorite(activity, category)}
+                                    disabled={activityStates[activity]?.hidden}
+                                    className={cn(
+                                      activityStates[activity]?.favorite && "text-accent"
+                                    )}
+                                  >
+                                    <Heart 
+                                      className={cn(
+                                        "h-4 w-4",
+                                        activityStates[activity]?.favorite && "fill-current"
+                                      )} 
+                                    />
+                                  </Button>
+                                </div>
+                              </TooltipTrigger>
+                              {activityStates[activity]?.hidden ? (
+                                <TooltipContent>
+                                  Cannot favorite a hidden action
+                                </TooltipContent>
+                              ) : getCategoryActivities(category, activities[category]).filter(a => activityStates[a]?.favorite).length >= 5 && !activityStates[activity]?.favorite && (
+                                <TooltipContent>
+                                  Maximum 5 favorites per category
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TooltipProvider>
+
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => toggleVisibility(activity, category)}
+                                    disabled={activityStates[activity]?.favorite}
+                                  >
+                                    {activityStates[activity]?.hidden ? (
+                                      <EyeOff className="h-4 w-4" />
+                                    ) : (
+                                      <Eye className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                </div>
+                              </TooltipTrigger>
+                              {activityStates[activity]?.favorite ? (
+                                <TooltipContent>
+                                  Cannot hide a favorite action
+                                </TooltipContent>
+                              ) : activities[category].filter(a => !activityStates[a]?.hidden).length <= 1 && !activityStates[activity]?.hidden && (
+                                <TooltipContent>
+                                  Must keep at least 1 visible action
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </div>
                     ))}
