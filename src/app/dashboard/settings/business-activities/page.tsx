@@ -1,11 +1,11 @@
 'use client'
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
-import { PageHeader } from "@/components/ui/composite/PageHeader";
-import { ActivitiesSection } from "./_components/_activitiesSection";
+import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
+import { PageHeader } from "@/components/ui/composite/Page-header";
+import { ActivitiesSection } from "../../_components/_business-activities/_actions-section";
 import { Button } from "@/components/ui/core/Button";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/core/ToggleGroup";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/core/Toggle-group";
 import {
   Select,
   SelectTrigger,
@@ -14,7 +14,7 @@ import {
   SelectItem,
 } from "@/components/ui/core/Select";
 import { Plus, Import } from "lucide-react";
-import { ActivityModal } from "./_components/_activityModal";
+import { ActivityModal } from "../../_components/_business-activities/_actions-modal";
 
 export default function BusinessActivitiesSettingsPage() {
   const router = useRouter();
