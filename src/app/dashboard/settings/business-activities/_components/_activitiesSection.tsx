@@ -208,7 +208,7 @@ export function ActivitiesSection({
           setSelectedActivity(null);
         }}
         activity={selectedActivity}
-        onSuccess={onUpdate}
+        onUpdate={onUpdate}
       />
 
       {/* Delete Confirmation Dialog */}

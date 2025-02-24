@@ -100,10 +100,12 @@ export function ActivityModal({
   useEffect(() => {
    
     if (activity) {
+
+   
   
       setFormData({
-        name: activity.name,
-        description: activity.description || '',
+        name: activity.activity.name,
+        description: activity.activity.description || '',
         activityType: 'from-scratch'
       })
     } else {

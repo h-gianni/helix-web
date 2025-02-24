@@ -37,7 +37,6 @@ export async function GET(request: Request) {
             businessActivities: {
               select: {
                 id: true,
-                name: true,
                 status: true,
                 priority: true,
               },

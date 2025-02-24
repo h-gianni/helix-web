@@ -9,6 +9,7 @@ import type {
   TeamResponse,
   TransactionClient,
 } from "@/lib/types/api";
+import { ca } from "date-fns/locale";
 
 // Helper to check if user is team owner
 async function isTeamOwner(clerkId: string, teamId: string) {
@@ -131,11 +132,16 @@ export const GET = async (
             },
           },
         },
-        activities: {
+        activities: {  // This is BusinessActivity
           where: {
             deletedAt: null
           },
           include: {
+            activity: {  // This is Activity model
+              include: {
+                category: true
+              }
+            },
             team: {
               select: {
                 id: true,
@@ -167,10 +173,11 @@ export const GET = async (
       description: team.description,
       teamFunctionId: team.teamFunctionId,
       ownerId: team.ownerId,
+      customFields: team.customFields as JsonValue | undefined,
       createdAt: team.createdAt,
       updatedAt: team.updatedAt,
       deletedAt: team.deletedAt,
-      customFields: team.customFields as JsonValue | undefined,
+    
       teamFunction: team.teamFunction ? {
         id: team.teamFunction.id,
         name: team.teamFunction.name,
@@ -178,15 +185,17 @@ export const GET = async (
         jobTitles: team.teamFunction.jobTitles.map(jobTitle => ({
           id: jobTitle.id,
           name: jobTitle.name,
-          teamFunctionId: jobTitle.teamFunctionId, // Added missing property
-          deletedAt: jobTitle.deletedAt,          // Added missing property
+          teamFunctionId: jobTitle.teamFunctionId,
           createdAt: jobTitle.createdAt,
-          updatedAt: jobTitle.updatedAt
+          updatedAt: jobTitle.updatedAt,
+          deletedAt: jobTitle.deletedAt,
+          customFields: jobTitle.customFields as JsonValue | undefined
         })),
         createdAt: team.teamFunction.createdAt,
         updatedAt: team.teamFunction.updatedAt
       } : null,
-      members: team.teamMembers.map((member) => ({
+    
+      members: team.teamMembers.map(member => ({
         id: member.id,
         userId: member.userId,
         teamId: member.teamId,
@@ -201,29 +210,40 @@ export const GET = async (
         createdAt: member.createdAt,
         updatedAt: member.updatedAt,
         deletedAt: member.deletedAt,
-        customFields: member.customFields as JsonValue | undefined,  // Explicitly handle undefined
+        customFields: member.customFields as JsonValue | undefined,
         user: {
           id: member.user.id,
           email: member.user.email,
-          name: member.user.name,
+          name: member.user.name
+        }
+      })),
+    
+      businessActivities: team.activities.map(businessActivity => ({
+        id: businessActivity.id,
+        activityId: businessActivity.activityId,
+        priority: businessActivity.priority,
+       
+        status: businessActivity.status,
+        dueDate: businessActivity.dueDate,
+        teamId: businessActivity.teamId,
+        createdBy: businessActivity.createdBy,
+        createdAt: businessActivity.createdAt,
+        updatedAt: businessActivity.updatedAt,
+        deletedAt: businessActivity.deletedAt,
+        customFields: businessActivity.customFields as JsonValue | undefined,
+        activity: {
+          id: businessActivity.activity.id,
+          name: businessActivity.activity.name,
+          description: businessActivity.activity.description,
+          impactScale: businessActivity.activity.impactScale,
+          category: businessActivity.activity.category,
+          categoryId: businessActivity.activity.categoryId
         },
-      })),
-      businessActivities: team.activities.map((activity) => ({
-        id: activity.id,
-        name: activity.name,
-        description: activity.description,
-        category: activity.category,
-        priority: activity.priority,
-        status: activity.status,
-        dueDate: activity.dueDate,
-        teamId: activity.teamId,
-        createdBy: activity.createdBy,
-        createdAt: activity.createdAt,
-        updatedAt: activity.updatedAt,
-        deletedAt: activity.deletedAt,
-        customFields: activity.customFields as JsonValue | undefined,  // Explicitly handle undefined
-        // _count: activity._count.ratings ? activity._count.ratings :  undefined,
-      })),
+        team: {
+          id: businessActivity.team.id,
+          name: businessActivity.team.name
+        }
+      }))
     };
     return NextResponse.json<ApiResponse<TeamDetailsResponse>>({
       success: true,

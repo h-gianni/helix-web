@@ -82,7 +82,7 @@ export default function BusinessActivitiesSettingsPage() {
           isOpen={true}
           onClose={handleModalClose}
           activity={null}
-          onSuccess={handleUpdate}
+          onUpdate={handleUpdate}
         />
       )}
     </>

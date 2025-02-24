@@ -21,19 +21,22 @@ export interface TeamResponse {
   id: string;
   name: string;
   description?: string | null;
+  teamFunctionId: string;
+  ownerId: string;
+  customFields?: JsonValue | null;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date | null;
   teamFunction?: {
     id: string;
     name: string;
   } | null;
-  members: Array<{
-    id: string;
-    name: string;
+  members: Array<Pick<TeamMemberResponse, 'id' | 'title'> & {
+    name: string | null;
     email: string;
-    title?: string | null;
   }>;
   averagePerformance?: number;
 }
-
 export type TeamMemberResponse = {
   id: string;
   userId: string;
@@ -57,7 +60,7 @@ export type TeamMemberResponse = {
   };
 };
 
-export type TeamDetailsResponse = TeamResponse & {
+export type TeamDetailsResponse = Omit<TeamResponse, 'members'> & {
   members: TeamMemberResponse[];
   businessActivities: BusinessActivityResponse[];
   teamFunction: {
@@ -70,7 +73,6 @@ export type TeamDetailsResponse = TeamResponse & {
   } | null;
 };
 
-
 export interface CategoryResponse {
   id: string;
   name: string;
@@ -82,11 +84,13 @@ export interface ActivityData {
   name: string;
   description: string | null;
   impactScale: number | null;
+  categoryId: string; // This was missing
   category: CategoryResponse;
 }
 
 export interface BusinessActivityResponse {
   id: string;
+  activityId: string; // This was missing
   priority: Priority;
   status: BusinessActivityStatus;
   dueDate: Date | null;
@@ -149,7 +153,7 @@ export interface BusinessActivityCategoryResponse {
     impactScale: number | null
     businessActivities: {
       id: string
-      name: string
+      // name: string
       status: string
       priority: string
     }[]
