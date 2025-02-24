@@ -1,11 +1,20 @@
 'use client'
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
-import { PageHeader } from "@/components/ui/composite/PageHeader";
-import { ActivitiesSection } from "./_components/_activitiesSection";
+import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
+import { PageHeader } from "@/components/ui/composite/Page-header";
+import { ActivitiesSection } from "../../_components/_business-activities/_actions-section";
 import { Button } from "@/components/ui/core/Button";
-import { ActivityModal } from "./_components/_activityModal";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/core/Toggle-group";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/core/Select";
+import { Plus, Import } from "lucide-react";
+import { ActivityModal } from "../../_components/_business-activities/_actions-modal";
 
 export default function BusinessActivitiesSettingsPage() {
   const router = useRouter();
@@ -46,34 +55,23 @@ export default function BusinessActivitiesSettingsPage() {
       {/* <PageBreadcrumbs items={breadcrumbItems} /> */}
       
       <PageHeader
-        title="Business Activities"
-        caption="Add all activities will be tracked in your business that are relevant to you and your teams."
+        title="Org Activities"
+        caption="Select the activities relevant to your organisation so you can rate the team members' performance on what is relevant to the organization."
         backButton={{
           onClick: handleBackClick,
         }}
+        actions={
+          <Button variant="default" onClick={() => setIsModalOpen(true)}>
+            <Plus /> Add Activity
+          </Button>
+        }
       />
-
-      <main className="ui-layout-page-main">
-        <div className="ui-view-controls-bar flex items-center justify-between p-4 border-b">
-          <div className="flex gap-2" />
-          <div>
-            <Button
-              size="sm"
-              variant="default"
-              onClick={handleAddActivity}
-            >
-              Add activity
-            </Button>
-          </div>
-        </div>
-
-        <div className="p-4">
-          <ActivitiesSection
-            onUpdate={handleUpdate}
-            shouldRefresh={shouldRefreshList}
-            onRefreshComplete={() => setShouldRefreshList(false)}
-          />
-        </div>
+      <main className="layout-page-main">
+        <ActivitiesSection
+          onUpdate={handleUpdate}
+          shouldRefresh={shouldRefreshList}
+          onRefreshComplete={() => setShouldRefreshList(false)}
+        />
       </main>
 
       {/* Only render modal when open to avoid unnecessary rendering */}

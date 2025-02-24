@@ -1,12 +1,13 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
-import { PageHeader } from "@/components/ui/composite/PageHeader";
-import { ProfileCard } from "@/components/ui/composite/ProfileCard";
+import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
+import { PageHeader } from "@/components/ui/composite/Page-header";
+import { ProfileCard } from "@/components/ui/composite/Profile-card";
 import { Button } from "@/components/ui/core/Button";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
+import { Loader } from "@/components/ui/core/Loader";
 import {
   PenSquare,
   ArrowLeft,
@@ -17,11 +18,11 @@ import {
   Plus,
 } from "lucide-react";
 import Link from "next/link";
-import { EditMemberModal } from "./_editMemberModal";
-import PerformanceRatingModal from "@/app/dashboard/_component/_performanceRatingModal";
-import RatingsSection from "./_ratingsSection";
+import { EditMemberModal } from "../../../../_components/_member/_edit-member-modal";
+import PerformanceRatingModal from "@/app/dashboard/_components/_performance-scoring-modal";
+import RatingsSection from "../../../../_components/_member/_ratings-section";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/core/Tabs";
-import MemberDashboard from "./_memberDashboard";
+import MemberDashboard from "../../../../_components/_member/_member-dashboard";
 import { useMemberDetails, useMemberStore } from "@/store/member-store";
 
 export default function MemberDetailsPage() {
@@ -57,7 +58,7 @@ export default function MemberDetailsPage() {
   ];
 
   if (isLoading) {
-    return <div className="ui-loader">Loading member details...</div>;
+    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
   }
 
   if (error || !member) {
@@ -151,8 +152,8 @@ export default function MemberDetailsPage() {
               <TabsList>
                 <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
                 <TabsTrigger value="ratings">Ratings</TabsTrigger>
-                <TabsTrigger value="feedbacks">Feedbacks</TabsTrigger>
-                <TabsTrigger value="goals">Goals</TabsTrigger>
+                <TabsTrigger value="feedbacks">Feedback</TabsTrigger>
+                {/* <TabsTrigger value="goals">Goals</TabsTrigger> */}
               </TabsList>
 
               <TabsContent value="dashboard">
@@ -171,12 +172,12 @@ export default function MemberDetailsPage() {
               </TabsContent>
 
               <TabsContent value="feedbacks">
-                <p className="text-foreground-muted">
-                  Feedbacks content coming soon...
-                </p>
+                <div className="missing-content">
+                  No feedback yet.
+                </div>
               </TabsContent>
 
-              <TabsContent value="goals">
+              {/* <TabsContent value="goals">
                 <div className="w-full">
                   <div className="flex justify-end mb-4">
                     <Button variant="default" asChild>
@@ -189,7 +190,7 @@ export default function MemberDetailsPage() {
                   </div>
 
                   {!member.goals?.length ? (
-                    <p className="text-foreground-muted">No goals set yet.</p>
+                    <div className="missing-content">No goals set yet.</div>
                   ) : (
                     <div className="space-y-4">
                       {member.goals.map((goal) => (
@@ -219,7 +220,7 @@ export default function MemberDetailsPage() {
                     </div>
                   )}
                 </div>
-              </TabsContent>
+              </TabsContent> */}
             </Tabs>
           </div>
         </div>

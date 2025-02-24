@@ -15,5 +15,20 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  .missing-text {
+    @apply text-sm text-foreground-muted;
+  }
+  .missing-content {
+    @apply text-base text-foreground-muted text-center p-8 border border-border-strong border-dashed rounded;
+  }
+
+  .loader {
+    @apply p-4;
+  }
+
+  .view-controls-bar {
+    @apply flex gap-4 px-4 py-2 text-base;
+  }
   
 }

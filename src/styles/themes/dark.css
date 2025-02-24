@@ -21,7 +21,7 @@
     --accent: var(--accent-200);
     --accent-foreground: var(--gray-700);
    
-    --destructive: var(--danger-200);
+    --destructive: var(--destructive-200);
     --destructive-foreground: var(--gray-700);
    
     --border: var(--gray-500);

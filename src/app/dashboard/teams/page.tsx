@@ -1,9 +1,10 @@
 "use client";
 
-import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
-import { PageHeader } from "@/components/ui/composite/PageHeader";
+import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
+import { PageHeader } from "@/components/ui/composite/Page-header";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
+import { Loader } from "@/components/ui/core/Loader";
 import {
   Card,
   CardHeader,
@@ -15,8 +16,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Plus, AlertCircle, RotateCcw, Users } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import TeamCreateModal from "./_teamCreateModal";
-import EmptyTeamsView from "./_emptyTeamsView";
+import { TeamCard } from "@/components/ui/composite/Team-card";
+import TeamCreateModal from "../_components/_teams/_team-create-modal";
+import EmptyTeamsView from "../_components/_teams/_teams-empty-view";
 import { useTeams, useCreateTeam, useTeamStore } from "@/store/team-store";
 import type { TeamResponse, TeamMemberResponse } from "@/lib/types/api";
 import { cn } from "@/lib/utils";
@@ -34,73 +36,33 @@ interface TeamMember {
   title?: string | null;
 }
 
-// Separate component for the teams grid to improve readability
-const TeamsGrid = ({ teams }: { teams: TeamResponse[] }) => (
-  <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-    {teams.map((team) => {
-      const memberCount = team.members?.length ?? 0;
-      
-      return (
-        <Link key={team.id} href={`/dashboard/teams/${team.id}`}>
-          <Card className="hover:border-input hover:shadow transition-all">
-            <CardHeader className="p-4 pb-0">
-              <div className="flex justify-between items-start gap-8">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary">
-                  <Users className="h-5 w-5" />
-                </div>
-                {team.teamFunction?.name && (
-                  <Badge variant="secondary" className="capitalize">
-                    {team.teamFunction.name}
-                  </Badge>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4 p-4 pt-0">
-              <div className="flex-1 text-left space-y-1.5">
-                <h3 className="heading-2">{team.name}</h3>
-                <div className="flex items-center gap-2">
-                  {memberCount > 0 && (
-                    <div className="flex -space-x-2">
-                      {team.members.slice(0, MAX_AVATARS).map((member: TeamMember) => (
-                        <Avatar 
-                          key={member.id} 
-                          className="h-6 w-6 border-2 border-background"
-                        >
-                          <AvatarFallback className="text-xs">
-                            {member.name?.charAt(0).toUpperCase() || '?'}
-                          </AvatarFallback>
-                        </Avatar>
-                      ))}
-                      {memberCount > MAX_AVATARS && (
-                        <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-background bg-muted text-xs">
-                          +{memberCount - MAX_AVATARS}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  <p className="body-sm text-foreground-weak">
-                    {memberCount} {memberCount === 1 ? 'member' : 'members'}
-                  </p>
-                </div>
-              </div>
-              <div className="text-sm text-foreground-muted">
-                Average team performance:
-                {team.averagePerformance?.toFixed(1) || "Not rated"}
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-      );
-    })}
-  </div>
-);
+const TeamsGrid = ({ teams }: { teams: TeamResponse[] }) => {
+  const router = useRouter();
+  
+  return (
+    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      {teams.map((team) => (
+        <TeamCard
+          key={team.id}
+          id={team.id}
+          name={team.name}
+          functions={team.teamFunction ? [team.teamFunction.name] : []}
+          members={team.members}
+          averagePerformance={team.averagePerformance}
+          size="lg"
+          onClick={() => router.push(`/dashboard/teams/${team.id}`)}
+        />
+      ))}
+    </div>
+  );
+};
 
 // Main content component
 const TeamsContent = ({ onCreateTeam }: TeamContentProps) => {
   const { data: teams = [], isLoading, error, refetch } = useTeams();
 
   if (isLoading) {
-    return <div className="ui-loader">Loading teams...</div>;
+    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
   }
 
   if (error) {

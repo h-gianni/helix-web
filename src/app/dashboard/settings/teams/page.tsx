@@ -2,9 +2,9 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
+import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
 import { useTeams } from "@/lib/context/teams-context";
-import { PageHeader } from "@/components/ui/composite/PageHeader";
+import { PageHeader } from "@/components/ui/composite/Page-header";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { AlertCircle } from "lucide-react";
 import {
@@ -14,7 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/core/Select";
-import TeamActivitiesConfig from "./_components/_teamActivitiesConfig";
+import { Loader } from "@/components/ui/core/Loader";
+import TeamActivitiesConfig from "../../_components/_teams/_team-activities-config";
 import { useTeamSettingsStore, useTeamDetails } from '@/store/team-settings-store';
 
 export default function TeamsSettingsPage() {
@@ -49,7 +50,7 @@ export default function TeamsSettingsPage() {
   };
 
   if (isTeamsLoading) {
-    return <div className="ui-loader">Loading teams...</div>;
+    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
   }
 
   if (teams.length === 0) {
@@ -79,6 +80,7 @@ export default function TeamsSettingsPage() {
       <PageBreadcrumbs items={breadcrumbItems} />
       <PageHeader
         title={pageTitle}
+        caption="Select the activities relevant to your team so you can rate the team members' performance on what counts for you and the organization."
         backButton={{
           onClick: () => router.push("/dashboard/settings/"),
         }}
@@ -126,7 +128,7 @@ export default function TeamsSettingsPage() {
           <div>
             {/* Loading State */}
             {isLoading ? (
-              <div className="ui-loader">Loading team settings...</div>
+              <div className="loader"><Loader size="base" label="Loading..." /></div>
             ) : (
               <>
                 {/* Team Activities Config */}

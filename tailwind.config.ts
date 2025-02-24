@@ -62,6 +62,7 @@ const config: Config = {
       },
       colors: {
         border: "hsl(var(--border))",
+        "border-strong": "hsl(var(--border-strong))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -137,7 +138,17 @@ const config: Config = {
         md: "var(--shadow-md)",
         lg: "var(--shadow-lg)",
         xl: "var(--shadow-xl)",
-      }
+      },
+      sidebar: {
+        DEFAULT: "hsl(var(--sidebar-background))",
+        foreground: "hsl(var(--sidebar-foreground))",
+        primary: "hsl(var(--sidebar-primary))",
+        "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+        accent: "hsl(var(--sidebar-accent))",
+        "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+        border: "hsl(var(--sidebar-border))",
+        ring: "hsl(var(--sidebar-ring))",
+      },
     },
   },
   plugins: [
