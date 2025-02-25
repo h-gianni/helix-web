@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
-import { NavBar } from "./_components/NavBar";
+import { Navbar } from "./_components/_navbar";
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="selection:bg-[hsl(320,65%,52%,20%)]">
-      <NavBar />
+    <div>
+      <Navbar />
       {children}
     </div>
   );
