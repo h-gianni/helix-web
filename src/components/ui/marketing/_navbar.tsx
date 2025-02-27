@@ -3,77 +3,90 @@
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/core/Button";
 import {
-NavigationMenu,
-NavigationMenuContent,
-NavigationMenuItem,
-NavigationMenuLink,
-NavigationMenuList,
-NavigationMenuTrigger,
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
 } from "@/components/ui/composite/Navigation-menu";
 import { Menu, MoveRight, X } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 
 export const Navbar = () => {
-const navigationItems = [
+  const navigationItems = [
     {
-    title: "Home",
-    href: "/",
-    description: "",
+      title: "Pricing",
+      href: "/",
+      description: "",
     },
     {
-    title: "Product",
-    description: "Managing a small business today is already tough.",
-    items: [
-        {
-        title: "Reports",
-        href: "/reports",
-        },
-        {
-        title: "Statistics",
-        href: "/statistics",
-        },
-        {
-        title: "Dashboards",
-        href: "/dashboards",
-        },
-        {
-        title: "Recordings",
-        href: "/recordings",
-        },
-    ],
+      title: "Pricing",
+      href: "/",
+      description: "",
     },
     {
-    title: "Company",
-    description: "Managing a small business today is already tough.",
-    items: [
+      title: "Product",
+      description: "Managing a small business today is already tough.",
+      items: [
         {
-        title: "About us",
-        href: "/about",
+          title: "Reports",
+          href: "/reports",
         },
         {
-        title: "Fundraising",
-        href: "/fundraising",
+          title: "Statistics",
+          href: "/statistics",
         },
         {
-        title: "Investors",
-        href: "/investors",
+          title: "Dashboards",
+          href: "/dashboards",
         },
         {
-        title: "Contact us",
-        href: "/contact",
+          title: "Recordings",
+          href: "/recordings",
         },
-    ],
+      ],
     },
-];
+    {
+      title: "Company",
+      description: "Managing a small business today is already tough.",
+      items: [
+        {
+          title: "About us",
+          href: "/about",
+        },
+        {
+          title: "Fundraising",
+          href: "/fundraising",
+        },
+        {
+          title: "Investors",
+          href: "/investors",
+        },
+        {
+          title: "Contact us",
+          href: "/contact",
+        },
+      ],
+    },
+  ];
 
-const [isOpen, setOpen] = useState(false);
-return (
+  const [isOpen, setOpen] = useState(false);
+  return (
     <header className="w-full z-40 fixed top-0 left-0 bg-background">
-    <div className="container relative mx-auto min-h-20 flex gap-4 flex-row justify-between items-center">
-        <div className="justify-start items-center gap-4 lg:flex hidden flex-row">
-        <p className="font-semibold">UpScore</p>
-        <NavigationMenu className="flex justify-start items-start">
+      <div className="container relative mx-auto min-h-20 flex gap-4 flex-row justify-between items-center">
+        <div className="justify-start items-center gap-6 lg:flex hidden flex-row">
+          <p className="font-semibold">UpScore</p>
+          <div className="flex">
+            <Button variant="ghost" className="hidden md:inline">
+              Features
+            </Button>
+            <Button variant="ghost" className="hidden md:inline">
+              Pricing
+            </Button>
+          </div>
+          {/* <NavigationMenu className="flex justify-start items-start">
             <NavigationMenuList className="flex justify-start gap-4 flex-row">
             {navigationItems.map((item) => (
                 <NavigationMenuItem key={item.title}>
@@ -120,56 +133,63 @@ return (
                 </NavigationMenuItem>
             ))}
             </NavigationMenuList>
-        </NavigationMenu>
+        </NavigationMenu> */}
         </div>
         <div className="flex justify-end w-full gap-4">
-        <Button variant="ghost" className="hidden md:inline">
-            Book a demo
-        </Button>
-        <div className="border-r hidden md:inline"></div>
-        <SignedOut><Button variant="outline">Sign in</Button></SignedOut>
-        <SignedIn><Button>Get started</Button></SignedIn>
+          <Button variant="ghost" className="hidden md:inline">
+            Get the Mobile App
+          </Button>
+          <Button variant="ghost" className="hidden md:inline">
+            Watch a demo
+          </Button>
+          <div className="border-r hidden md:inline"></div>
+          <SignedOut>
+            <Button variant="outline">Sign in</Button>
+          </SignedOut>
+          <SignedIn>
+            <Button>Get started</Button>
+          </SignedIn>
         </div>
         <div className="flex w-12 shrink lg:hidden items-end justify-end">
-        <Button variant="ghost" onClick={() => setOpen(!isOpen)}>
+          <Button variant="ghost" onClick={() => setOpen(!isOpen)}>
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </Button>
-        {isOpen && (
+          </Button>
+          {isOpen && (
             <div className="absolute top-20 border-t flex flex-col w-full right-0 bg-background shadow-lg py-4 container gap-8">
-            {navigationItems.map((item) => (
+              {navigationItems.map((item) => (
                 <div key={item.title}>
-                <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-2">
                     {item.href ? (
-                    <Link
+                      <Link
                         href={item.href}
                         className="flex justify-between items-center"
-                    >
+                      >
                         <span className="text-lg">{item.title}</span>
                         <MoveRight className="w-4 h-4 stroke-1 text-muted-foreground" />
-                    </Link>
+                      </Link>
                     ) : (
-                    <p className="text-lg">{item.title}</p>
+                      <p className="text-lg">{item.title}</p>
                     )}
                     {item.items &&
-                    item.items.map((subItem) => (
+                      item.items.map((subItem) => (
                         <Link
-                        key={subItem.title}
-                        href={subItem.href}
-                        className="flex justify-between items-center"
+                          key={subItem.title}
+                          href={subItem.href}
+                          className="flex justify-between items-center"
                         >
-                        <span className="text-muted-foreground">
+                          <span className="text-muted-foreground">
                             {subItem.title}
-                        </span>
-                        <MoveRight className="w-4 h-4 stroke-1" />
+                          </span>
+                          <MoveRight className="w-4 h-4 stroke-1" />
                         </Link>
-                    ))}
+                      ))}
+                  </div>
                 </div>
-                </div>
-            ))}
+              ))}
             </div>
-        )}
+          )}
         </div>
-    </div>
+      </div>
     </header>
-);
+  );
 };

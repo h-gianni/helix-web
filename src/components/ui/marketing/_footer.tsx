@@ -38,12 +38,12 @@ export const Footer = () => {
           href: "/about",
         },
         {
-          title: "Fundraising",
-          href: "/fundraising",
+          title: "Our Story",
+          href: "/our-story",
         },
         {
-          title: "Investors",
-          href: "/investors",
+          title: "Fundraising",
+          href: "/fundraising",
         },
         {
           title: "Contact us",
@@ -59,26 +59,26 @@ export const Footer = () => {
         <div className="grid lg:grid-cols-2 gap-10 items-center">
           <div className="flex gap-8 flex-col items-start">
             <div className="flex gap-2 flex-col">
-              <h2 className="text-3xl md:text-5xl tracking-tighter max-w-xl font-regular text-left">
-                TWBlocks™
+              <h2 className="marketing-h2 text-white">
+                UpScore™
               </h2>
-              <p className="text-lg max-w-lg leading-relaxed tracking-tight text-background/75 text-left">
-                Managing a small business today is already tough.
+              <p className="marketing-body-lg text-white/50">
+                Managing a team today got lesser tough.
               </p>
             </div>
             <div className="flex gap-20 flex-row">
-              <div className="flex flex-col text-sm max-w-lg leading-relaxed tracking-tight text-background/75 text-left">
+              {/* <div className="flex flex-col marketing-body-sm max-w-lg text-white/50">
                 <p>1 Tailwind Way</p>
                 <p>Menlo Park</p>
-                <p>CA 94025</p>
-              </div>
-              <div className="flex flex-col text-sm max-w-lg leading-relaxed tracking-tight text-background/75 text-left">
+                <p>London, UK 94025</p>
+              </div> */}
+              <div className="flex gap-4 marketing-body-sm max-w-lg text-background/75">
                 <Link href="/">Terms of service</Link>
                 <Link href="/">Privacy Policy</Link>
               </div>
             </div>
           </div>
-          <div className="grid lg:grid-cols-3 gap-10 items-start">
+          {/* <div className="grid lg:grid-cols-3 gap-10 items-start">
             {navigationItems.map((item) => (
               <div
                 key={item.title}
@@ -90,10 +90,10 @@ export const Footer = () => {
                       href={item.href}
                       className="flex justify-between items-center"
                     >
-                      <span className="text-xl">{item.title}</span>
+                      <span className="text-lg font-bold">{item.title}</span>
                     </Link>
                   ) : (
-                    <p className="text-xl">{item.title}</p>
+                    <p className="text-lg font-bold">{item.title}</p>
                   )}
                   {item.items &&
                     item.items.map((subItem) => (
@@ -102,7 +102,7 @@ export const Footer = () => {
                         href={subItem.href}
                         className="flex justify-between items-center"
                       >
-                        <span className="text-background/75">
+                        <span className="text-white/75">
                           {subItem.title}
                         </span>
                       </Link>
@@ -110,7 +110,7 @@ export const Footer = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -53,32 +53,31 @@ const faqs = [
 ];
 
 export const FAQ = () => (
-  <div className="w-full py-20 lg:py-40">
-    <div className="container mx-auto">
-      <div className="flex flex-col gap-10">
-        <div className="flex text-center justify-center items-center gap-4 flex-col">
-          <Badge variant="outline">FAQ</Badge>
-          <div className="flex gap-2 flex-col">
-            <h4 className="text-3xl md:text-5xl tracking-tighter max-w-xl text-center font-regular">
+  <section>
+    <div className="section-container">
+      <div className="section-header-centered">
+        <div>
+          <Badge variant="default">FAQ</Badge>
+          </div>
+            <h4 className="marketing-h1">
               Frequently Asked Questions
             </h4>
-            <p className="text-lg leading-relaxed tracking-tight text-muted-foreground max-w-xl text-center">
+            <p className="marketing-body-lg">
               Still have questions about how our AI-powered performance
               management app works, or whether it’s right for your team? Check
               out these FAQs to get the answers you need—fast. If you don’t see
               your question here, feel free to reach out and we’ll be happy to
               help.
             </p>
-          </div>
           <div>
-            <Button className="gap-4" variant="outline">
-              Any questions? Reach out <PhoneCall className="w-4 h-4" />
+            <Button variant="outline">
+              Any questions? Reach out <PhoneCall />
             </Button>
           </div>
         </div>
 
         <div className="max-w-3xl w-full mx-auto">
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion type="single" collapsible className="max-w-lg mx-auto">
             {faqs.map((faq, index) => (
               <AccordionItem key={index} value={`faq-${index}`}>
                 <AccordionTrigger>{faq.question}</AccordionTrigger>
@@ -87,7 +86,6 @@ export const FAQ = () => (
             ))}
           </Accordion>
         </div>
-      </div>
     </div>
-  </div>
+  </section>
 );

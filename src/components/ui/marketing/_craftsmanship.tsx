@@ -26,17 +26,16 @@ export const Craftsmanship = () => {
   };
 
   return (
-    <div className="w-full py-20 lg:py-40">
-      <div className="container mx-auto">
-        <div className="flex flex-col gap-4">
+    <section>
+      <div className="section-container">
+        <div className="section-header">
           <div>
-            <Badge>Platform</Badge>
+            <Badge>Our philosophy</Badge>
           </div>
-          <div className="flex gap-2 flex-col">
-            <h2 className="text-3xl md:text-5xl tracking-tighter lg:max-w-xl font-regular">
+            <h2 className="marketing-h1">
               Craftsmanship Meets Human-Centered Design
             </h2>
-            <p className="text-lg max-w-xl lg:max-w-xl leading-relaxed tracking-tight text-muted-foreground">
+            <p className="marketing-body-lg">
               We believe technology should feel empowering, not overwhelming.
               That’s why every element of our app—down to each pixel and
               interaction—is crafted with purpose and care. Our design
@@ -48,7 +47,7 @@ export const Craftsmanship = () => {
               art of great design.
             </p>
           </div>
-          <div className="pt-12 w-full">
+          <div className="w-full">
             <div
               className="relative aspect-video w-full h-full overflow-hidden rounded-2xl select-none"
               onMouseMove={onMouseMove}
@@ -99,8 +98,7 @@ export const Craftsmanship = () => {
               />
             </div>
           </div>
-        </div>
       </div>
-    </div>
+    </section>
   );
 };
