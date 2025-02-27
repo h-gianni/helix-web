@@ -1,6 +1,6 @@
 // prisma/seed.ts
 import { PrismaClient } from '@prisma/client'
-import { seedActivities } from './seed-data/activities'
+import { actionParentCategories as seedActivities  } from './seed-data/actions'
 
 const prisma = new PrismaClient()
 
@@ -11,7 +11,7 @@ async function main() {
   for (const [key, categoryData] of Object.entries(seedActivities)) {
     console.log(`Creating category: ${categoryData.name}`)
 
-    const category = await prisma.activityCategory.upsert({
+    const category = await prisma.actionCategory.upsert({
       where: { name: categoryData.name },
       update: {},
       create: {
@@ -21,10 +21,10 @@ async function main() {
     })
 
     // Create activities for this category
-    for (const activityData of categoryData.activities) {
+    for (const activityData of categoryData.subcategories) {
       console.log(`Creating activity: ${activityData.name}`)
 
-      await prisma.activity.upsert({
+      await prisma.action.upsert({
         where: { 
           name_categoryId: {
             name: activityData.name,
@@ -35,7 +35,7 @@ async function main() {
         create: {
           name: activityData.name,
           description: activityData.description,
-          impactScale: activityData.impactScale,
+          // impactScale: activityData.impactScale,
           categoryId: category.id,
         },
       })

@@ -35,7 +35,7 @@ async function seedActionCategories() {
         data: {
           name: parentCategory.name,
           description: parentCategory.description,
-          key: parentCategory.name.toLowerCase().replace(/\s+/g, '-'),
+          // key: parentCategory.name.toLowerCase().replace(/\s+/g, '-'),
         }
       });
       
@@ -61,8 +61,8 @@ async function seedActionCategories() {
           data: {
             name: subCategory.name,
             description: subCategory.description,
-            key: subCategory.key,
-            parentId: parentId
+            // key: subCategory.key,
+            // parentId: parentId
           }
         });
         
