@@ -29,7 +29,7 @@ enum Priority {
   HIGH
 }
 
-enum BusinessActivityStatus {
+enum BusinessActionStatus {
   ACTIVE
   COMPLETED
   ARCHIVED
@@ -40,10 +40,10 @@ enum EntityType {
   TEAM_FUNCTION
   JOB_TITLE
   JOB_GRADE
-  BUSINESS_ACTIVITY
+  BUSINESS_ACTION
   G_TEAM
   TEAM_MEMBER
-  MEMBER_RATING
+  MEMBER_SCORE
   STRUCTURED_FEEDBACK
   MEMBER_COMMENT
   PERFORMANCE_REVIEW
@@ -83,8 +83,9 @@ model AppUser {
   // Relations
   teamMembers      TeamMember[]
   teams          GTeam[]    @relation("TeamOwner")
-  createdActivities BusinessActivity[]
-  orgName OrgName[]
+  createdActions OrgAction[]
+  orgname OrgName[]
+  
 
   @@map("app_users")
   @@index([deletedAt])
@@ -143,7 +144,7 @@ model JobGrade {
   @@index([deletedAt])
 }
 
-model ActivityCategory {
+model ActionCategory {
   id          String    @id @default(cuid())
   name        String    @unique
   description String?
@@ -151,12 +152,12 @@ model ActivityCategory {
   updatedAt   DateTime  @updatedAt
 
   // Relations
-  activities  Activity[]
+  actions  Action[]
 
-  @@map("activity_categories")
+  @@map("action_categories")
 }
 
-model Activity {
+model Action {
   id          String    @id @default(cuid())
   name        String    
   description String?   @db.Text
@@ -166,19 +167,19 @@ model Activity {
   updatedAt   DateTime  @updatedAt
 
   // Relations
-  category    ActivityCategory @relation(fields: [categoryId], references: [id])
-  businessActivities BusinessActivity[]
+  category    ActionCategory @relation(fields: [categoryId], references: [id])
+  orgActions OrgAction[]
 
   @@unique([name, categoryId])
   @@index([categoryId])
-  @@map("activities")
+  @@map("actions")
 }
 
-model BusinessActivity {
+model OrgAction {
   id          String                 @id @default(cuid())
-  activityId  String    
+  actionId  String    
   priority    Priority               @default(MEDIUM)
-  status      BusinessActivityStatus @default(ACTIVE)
+  status      BusinessActionStatus @default(ACTIVE)
   dueDate     DateTime?
   teamId      String
   createdBy   String
@@ -188,18 +189,19 @@ model BusinessActivity {
   customFields Json?
 
   // Relations
-  activity    Activity     @relation(fields: [activityId], references: [id])
+  action    Action     @relation(fields: [actionId], references: [id])
   team        GTeam        @relation(fields: [teamId], references: [id])
   user        AppUser      @relation(fields: [createdBy], references: [id])
-  ratings     MemberRating[]
+  scores     MemberScore[]
 
   @@index([teamId, createdAt])
-  @@index([activityId])
+  @@index([actionId])
   @@index([status])
   @@index([createdBy])
   @@index([deletedAt])
-  @@map("business_activities")
+  @@map("org_actions")
 }
+
 
 model GTeam {
   id             String       @id @default(cuid())
@@ -216,7 +218,7 @@ model GTeam {
   teamFunction   TeamFunction @relation(fields: [teamFunctionId], references: [id])
   owner          AppUser      @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: Cascade)
   teamMembers    TeamMember[]
-  activities     BusinessActivity[]
+  actions     OrgAction[]
 
   @@unique([name, ownerId])
   @@index([teamFunctionId])
@@ -246,7 +248,7 @@ model TeamMember {
   user        AppUser              @relation(fields: [userId], references: [id], onDelete: Cascade)
   team        GTeam                @relation(fields: [teamId], references: [id], onDelete: Cascade)
   jobGrade    JobGrade?            @relation(fields: [jobGradeId], references: [id])
-  ratings     MemberRating[]
+  scores     MemberScore[]
   feedback    StructuredFeedback[]
   comments    MemberComment[]
   reviews     PerformanceReview[]
@@ -259,23 +261,23 @@ model TeamMember {
   @@map("team_members")
 }
 
-model MemberRating {
+model MemberScore {
   id          String   @id @default(cuid())
   value       Int      @db.SmallInt
   teamMemberId String
-  activityId  String
+  actionId  String
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   // Relations
   teamMember  TeamMember       @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
-  activity    BusinessActivity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  action    OrgAction @relation(fields: [actionId], references: [id], onDelete: Cascade)
 
   @@index([teamMemberId])
-  @@index([activityId])
+  @@index([actionId])
   @@index([createdAt])
-  @@map("member_ratings")
+  @@map("member_scores")
 }
 
 model StructuredFeedback {
@@ -350,11 +352,11 @@ model AuditLog {
 }
 
 model OrgName {
-  id          String      @id @default(cuid())
-  name        String
+  id String @id @default(cuid())
+  name String
+  createdAt DateTime @default(now())
+  user AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 
-//relations
-user        AppUser              @relation(fields: [userId], references: [id], onDelete: Cascade)
-userId  String
   @@map("org_name")
 }
