@@ -55,7 +55,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const teamId = url.searchParams.get("teamId");
 
-    const activities = await prisma.businessActivity.findMany({
+    const activities = await prisma.orgAction.findMany({
       where: teamId ? { 
         teamId,
         deletedAt: null 

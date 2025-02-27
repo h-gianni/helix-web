@@ -84,6 +84,7 @@ model AppUser {
   teamMembers      TeamMember[]
   teams          GTeam[]    @relation("TeamOwner")
   createdActivities BusinessActivity[]
+  orgName OrgName[]
 
   @@map("app_users")
   @@index([deletedAt])
@@ -346,4 +347,14 @@ model AuditLog {
   @@index([performedBy])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+model OrgName {
+  id          String      @id @default(cuid())
+  name        String
+
+//relations
+user        AppUser              @relation(fields: [userId], references: [id], onDelete: Cascade)
+userId  String
+  @@map("org_name")
 }

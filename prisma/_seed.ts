@@ -1,199 +1,124 @@
-const { PrismaClient } = require('@prisma/client');
+// prisma/seed.ts
+import { PrismaClient } from '@prisma/client';
+import { actionParentCategories } from './seed-data/actions';
+
 const prisma = new PrismaClient();
 
-// Existing job grades data
-const jobGrades = [
-  {
-    level: 1,
-    grade: 'A1',
-    typicalResponsibilities: 'Entry level position with basic responsibilities'
-  },
-  {
-    level: 2,
-    grade: 'A2',
-    typicalResponsibilities: 'Junior level position with developing responsibilities'
-  },
-  {
-    level: 3,
-    grade: 'A3',
-    typicalResponsibilities: 'Experienced individual contributor'
-  },
-  {
-    level: 4,
-    grade: 'M1',
-    typicalResponsibilities: 'Team lead or first-level management'
-  },
-  {
-    level: 5,
-    grade: 'M2',
-    typicalResponsibilities: 'Mid-level management'
-  },
-  {
-    level: 6,
-    grade: 'M3',
-    typicalResponsibilities: 'Senior management'
-  },
-  {
-    level: 7,
-    grade: 'D1',
-    typicalResponsibilities: 'Director level'
-  },
-  {
-    level: 8,
-    grade: 'D2',
-    typicalResponsibilities: 'Senior Director'
-  },
-  {
-    level: 9,
-    grade: 'D3',
-    typicalResponsibilities: 'Executive Director'
-  },
-  {
-    level: 10,
-    grade: 'VP',
-    typicalResponsibilities: 'Vice President'
-  },
-  {
-    level: 11,
-    grade: 'SVP',
-    typicalResponsibilities: 'Senior Vice President'
-  },
-  {
-    level: 12,
-    grade: 'EVP',
-    typicalResponsibilities: 'Executive Vice President'
-  }
-];
-
-// Initial disciplines data
-const disciplines = [
-  {
-    name: 'Product Design',
-    description: 'User experience and interface design',
-    jobTitles: [
-      { name: 'UI Designer' },
-      { name: 'UX Designer' },
-      { name: 'Product Designer' },
-      { name: 'UX Researcher' }
-    ]
-  },
-  {
-    name: 'Engineering',
-    description: 'Software development and engineering',
-    jobTitles: [
-      { name: 'Frontend Developer' },
-      { name: 'Backend Developer' },
-      { name: 'Full Stack Developer' },
-      { name: 'DevOps Engineer' }
-    ]
-  },
-  {
-    name: 'Product Management',
-    description: 'Product strategy and execution',
-    jobTitles: [
-      { name: 'Product Manager' },
-      { name: 'Product Owner' },
-      { name: 'Technical Product Manager' }
-    ]
-  }
-];
-
-// Initial activities data
-const activities = [
-  {
-    name: 'Technical Design',
-    description: 'Creating technical specifications and architecture designs'
-  },
-  {
-    name: 'Code Review',
-    description: 'Reviewing and providing feedback on code submissions'
-  },
-  {
-    name: 'Project Management',
-    description: 'Managing project timelines, resources, and deliverables'
-  },
-  {
-    name: 'Mentorship',
-    description: 'Providing guidance and support to team members'
-  },
-  {
-    name: 'Documentation',
-    description: 'Creating and maintaining technical documentation'
-  },
-  {
-    name: 'Workshop Facilitation',
-    description: 'Planning and running team workshops'
-  }
-];
-
-async function main() {
-  console.log('Start seeding...');
-
-  // Clear existing data (optional - be careful with this in production!)
-  await prisma.$executeRaw`TRUNCATE TABLE "Activity" CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE "JobTitle" CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE "Discipline" CASCADE`;
-  await prisma.$executeRaw`TRUNCATE TABLE "JobGrade" CASCADE`;
-
-  // Seed job grades
-  console.log('Seeding job grades...');
-  for (const data of jobGrades) {
-    try {
-      const result = await prisma.$queryRaw`
-        INSERT INTO "JobGrade" (id, level, grade, "typicalResponsibilities", "createdAt", "updatedAt")
-        VALUES (gen_random_uuid(), ${data.level}, ${data.grade}, ${data.typicalResponsibilities}, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-        ON CONFLICT (level) DO UPDATE
-        SET grade = ${data.grade},
-            "typicalResponsibilities" = ${data.typicalResponsibilities},
-            "updatedAt" = CURRENT_TIMESTAMP
-        RETURNING level`;
-
-      console.log(`Created/Updated job grade with level ${data.level}`);
-    } catch (error) {
-      console.error(`Error processing job grade level ${data.level}:`, error);
-    }
+async function cleanupBeforeSeed() {
+  // Only use this in development environment
+  if (process.env.NODE_ENV === 'production') {
+    console.log('Skipping cleanup in production environment');
+    return;
   }
 
-  // Seed disciplines and job titles
-  console.log('Seeding disciplines and job titles...');
-  for (const discipline of disciplines) {
-    try {
-      const createdDiscipline = await prisma.discipline.create({
-        data: {
-          name: discipline.name,
-          description: discipline.description,
-          jobTitles: {
-            create: discipline.jobTitles
-          }
-        }
-      });
-      console.log(`Created discipline: ${discipline.name}`);
-    } catch (error) {
-      console.error(`Error creating discipline ${discipline.name}:`, error);
-    }
+  try {
+    // Delete existing records in reverse order of dependencies
+    await prisma.action.deleteMany({});
+    await prisma.actionCategory.deleteMany({});
+    console.log('Previous seed data cleaned up successfully');
+  } catch (error) {
+    console.error('Error during cleanup:', error);
+    // Continue with seeding even if cleanup fails
   }
-
-  // Seed activities
-  console.log('Seeding activities...');
-  for (const activity of activities) {
-    try {
-      const createdActivity = await prisma.activity.create({
-        data: activity
-      });
-      console.log(`Created activity: ${activity.name}`);
-    } catch (error) {
-      console.error(`Error creating activity ${activity.name}:`, error);
-    }
-  }
-
-  console.log('Seeding finished.');
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
+async function seedActionCategories() {
+  console.log('Seeding action categories...');
+  
+  // Map to store created category IDs by name for reference
+  const categoryMap = new Map();
+  
+  // First pass: Create all parent categories
+  for (const parentCategory of actionParentCategories) {
+    try {
+      const parentCat = await prisma.actionCategory.create({
+        data: {
+          name: parentCategory.name,
+          description: parentCategory.description,
+          key: parentCategory.name.toLowerCase().replace(/\s+/g, '-'),
+        }
+      });
+      
+      categoryMap.set(parentCategory.name, parentCat.id);
+      console.log(`Created parent category: ${parentCat.name} (ID: ${parentCat.id})`);
+    } catch (error) {
+      console.error(`Error creating parent category ${parentCategory.name}:`, error);
+    }
+  }
+  
+  // Second pass: Create subcategories with parentId references
+  for (const parentCategory of actionParentCategories) {
+    const parentId = categoryMap.get(parentCategory.name);
+    
+    if (!parentId) {
+      console.error(`Parent category ID not found for ${parentCategory.name}, skipping subcategories`);
+      continue;
+    }
+    
+    for (const subCategory of parentCategory.subcategories) {
+      try {
+        const subCat = await prisma.actionCategory.create({
+          data: {
+            name: subCategory.name,
+            description: subCategory.description,
+            key: subCategory.key,
+            parentId: parentId
+          }
+        });
+        
+        categoryMap.set(`${parentCategory.name}:${subCategory.name}`, subCat.id);
+        console.log(`Created subcategory: ${subCat.name} under ${parentCategory.name}`);
+        
+        // Create actions for this subcategory
+        await seedActionsForCategory(subCat.id, subCategory.actions);
+      } catch (error) {
+        console.error(`Error creating subcategory ${subCategory.name}:`, error);
+      }
+    }
+  }
+  
+  return categoryMap;
+}
+
+async function seedActionsForCategory(categoryId, actions) {
+  for (const actionItem of actions) {
+    try {
+      const action = await prisma.action.create({
+        data: {
+          name: actionItem.name,
+          description: actionItem.description,
+          impactScale: actionItem.impactScale,
+          categoryId: categoryId
+        }
+      });
+      
+      console.log(`Created action: ${action.name}`);
+    } catch (error) {
+      console.error(`Error creating action ${actionItem.name}:`, error);
+    }
+  }
+}
+
+async function main() {
+  try {
+    // Optionally clean up existing data first
+    await cleanupBeforeSeed();
+    
+    // Run the seed operations in a transaction
+    await prisma.$transaction(async (tx) => {
+      await seedActionCategories();
+    });
+    
+    console.log('Seeding completed successfully');
+  } catch (error) {
+    console.error('Transaction failed. Error seeding database:', error);
     process.exit(1);
-  })
-  .finally(async () => {
+  } finally {
     await prisma.$disconnect();
-  });
+  }
+}
+
+main().catch((e) => {
+  console.error('Unhandled error during seeding:', e);
+  process.exit(1);
+});

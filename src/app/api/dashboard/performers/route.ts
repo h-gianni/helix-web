@@ -35,7 +35,7 @@ interface MemberWithScores {
     id: string;
     name: string;
   };
-  ratings: {
+  scores: {
     value: number;
   }[];
 }
@@ -96,7 +96,7 @@ export async function GET() {
             name: true,
           },
         },
-        ratings: {
+        scores: {
           select: {
             value: true,
           },
@@ -106,9 +106,9 @@ export async function GET() {
 
     // Transform data into performers format
     const performers: Performer[] = membersWithScores.map((member: MemberWithScores) => {
-      const totalScores = member.ratings.length;
+      const totalScores = member.scores.length;
       const averageRating = totalScores > 0
-        ? member.ratings.reduce(
+        ? member.scores.reduce(
             (sum: number, score: { value: number }) => sum + score.value,
             0
           ) / totalScores

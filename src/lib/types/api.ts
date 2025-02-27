@@ -1,5 +1,5 @@
 // lib/types/api.ts
-import { Priority, BusinessActivityStatus, TeamMemberStatus, ReviewStatus, Prisma } from "@prisma/client";
+import { Priority, BusinessActivityStatus, TeamMemberStatus, ReviewStatus, Prisma, OrgActionStatus } from "@prisma/client";
 
 // Define a type for JSON fields
 export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
@@ -92,7 +92,7 @@ export interface BusinessActivityResponse {
   id: string;
   activityId: string; // This was missing
   priority: Priority;
-  status: BusinessActivityStatus;
+  status: OrgActionStatus;
   dueDate: Date | null;
   teamId: string;
   createdBy: string;
@@ -109,6 +109,24 @@ export interface BusinessActivityResponse {
     ratings: number;
   };
 }
+
+export interface OrgActionResponse {
+  id: string;
+  actionId: string;
+  priority: Priority;
+  status: OrgActionStatus;
+  dueDate: string | null;
+  teamId: string;
+  createdBy: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  customFields: Record<string, any> | null;
+  _count: {
+    scores: number;
+  };
+}
+
 export interface ActivityResponse {
   id: string;
   name: string;

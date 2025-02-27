@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import type { 
   ApiResponse, 
   BusinessActivityResponse as  ActivityResponse,
+  OrgActionResponse,
   UpdateBusinessActivityInput as UpdateActivityInput 
 } from "@/lib/types/api";
 
@@ -14,14 +15,14 @@ export async function GET(
 ) {
   try {
     const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+    // if (!userId) {
+    //   return NextResponse.json<ApiResponse<never>>(
+    //     { success: false, error: "Unauthorized" },
+    //     { status: 401 }
+    //   );
+    // }
 
-    const activity = await prisma.businessActivity.findUnique({
+    const activity = await prisma.orgAction.findUnique({
       where: { 
         id: params.activityId,
         deletedAt: null,
@@ -29,7 +30,7 @@ export async function GET(
       include: {
         _count: {
           select: {
-            ratings: true,
+            scores: true,
           },
         },
       },
@@ -42,9 +43,15 @@ export async function GET(
       );
     }
 
-    return NextResponse.json<ApiResponse<ActivityResponse>>({
+    return NextResponse.json<ApiResponse<OrgActionResponse>>({
       success: true,
-      data: activity as ActivityResponse,
+      data: { ...activity,
+        createdAt: activity.createdAt.toISOString(),
+        updatedAt: activity.updatedAt.toISOString(),
+        deletedAt: activity.deletedAt?.toISOString() ?? null,
+        dueDate: activity.dueDate?.toISOString() ?? null,
+        customFields: typeof activity.customFields === 'string' ? JSON.parse(activity.customFields) : activity.customFields,
+      }
     });
   } catch (error) {
     console.error("Error fetching activity:", error);
@@ -78,16 +85,16 @@ export async function PATCH(
       );
     }
 
-    const activity = await prisma.businessActivity.update({
+    const activity = await prisma.orgAction.update({
       where: { id: params.activityId },
       data: {
-        name: name.trim(),
-        description: description?.trim() || null,
+        // name: name.trim(),
+        // description: description?.trim() || null,
       },
       include: {
         _count: {
           select: {
-            ratings: true,
+            scores: true,
           },
         },
       },

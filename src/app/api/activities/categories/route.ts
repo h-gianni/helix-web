@@ -4,9 +4,9 @@ import { withErrorHandler } from '@/lib/api/error-handler'
 
 
 export const GET = withErrorHandler(async () => {
-    const categories = await prisma.activityCategory.findMany({
+    const categories = await prisma.actionCategory.findMany({
       include: {
-        activities: {
+        actions: {
           select: {
             id: true,
             name: true,
@@ -14,7 +14,7 @@ export const GET = withErrorHandler(async () => {
             impactScale: true,
             _count: {
               select: {
-                businessActivities: true
+                orgActions: true
               }
             }
           }
