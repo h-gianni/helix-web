@@ -15,12 +15,12 @@ export async function GET(
 ) {
   try {
     const { userId } = await auth();
-    // if (!userId) {
-    //   return NextResponse.json<ApiResponse<never>>(
-    //     { success: false, error: "Unauthorized" },
-    //     { status: 401 }
-    //   );
-    // }
+    if (!userId) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
 
     const activity = await prisma.orgAction.findUnique({
       where: { 

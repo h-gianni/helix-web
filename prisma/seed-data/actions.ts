@@ -1,6 +1,7 @@
 // prisma/seed-data/actions.ts
 
-type ActionItem = {
+
+export type ActionItem = {
   name: string;
   description: string;
   impactScale: number;
@@ -16,10 +17,12 @@ type SubCategory = {
 type ActionParentCategory = {
   name: string;
   description: string;
-  key: string; // Add this line
+  key?: string; // Optional in case some parent categories don't have keys set
+  subcategories: SubCategory[];
 };
 
-export const actionParentCategories = [
+
+export const actionParentCategories:ActionParentCategory[] = [
   {
     name: "General",
     description: "General activities and behaviors applicable across all roles",

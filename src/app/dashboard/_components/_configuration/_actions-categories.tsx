@@ -1,54 +1,69 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Badge } from "@/components/ui/core/Badge";
-import { Check } from "lucide-react";
-import { actionsCategories, activityData } from '@/data/org-actions-data';
+import { ActionCategory } from '@/lib/types/api/action';
 
 interface OrganizationCategoriesProps {
   onSelect: (category: string) => void;
-  selectedActivities: string[];
-}
-
-interface Category {
-  key: string;
-  label: string;
+  selectedActivities: ActionCategory[];
+  selectedCategory: string; // Add selectedCategory prop
 }
 
 export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
   onSelect,
   selectedActivities,
+  selectedCategory, // Destructure selectedCategory
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("engineering");
+  const [coreCategories, setCoreCategories] = useState<ActionCategory[]>([]);
+  const [generalCategories, setGeneralCategories] = useState<ActionCategory[]>([]);
 
-  const handleSelect = (key: string) => {
-    setSelectedCategory(key);
-    onSelect(key);
+  const coreList = ['cm7nd5atu00025n7jczacmikq', 'cm7nd5au5000n5n7jhc6x2khk', 'cm7nd5au900185n7j5qozgig9'];
+
+  // Function to get the count of selected action items in a category
+  const getSelectedCount = (categoryId: string): number => {
+    const category = selectedActivities.find(cat => cat.id === categoryId);
+    if (category && category.actions) {
+      return category.actions.filter(action => action).length;
+    }
+    return 0;
   };
 
-  const getSelectedCount = (categoryKey: string) => {
-    return selectedActivities.filter((activity) =>
-        activityData[categoryKey]?.includes(activity)
-    ).length;
+  // Process the categories as soon as selectedActivities changes
+  useEffect(() => {
+    if (selectedActivities && selectedActivities.length > 0) {
+      const coreItems = selectedActivities.filter(category => coreList.includes(category.id));
+      setCoreCategories(coreItems);
+
+      const generalItems = selectedActivities.filter(category => !coreList.includes(category.id));
+      setGeneralCategories(generalItems);
+    }
+  }, [selectedActivities]);
+
+  const handleCategorySelect = (categoryId: string) => {
+    onSelect(categoryId); // Call the onSelect callback to update the selectedCategory in the parent
   };
 
-  const CategoryItem: React.FC<{categoryKey: string; label: string}> = ({
-    categoryKey,
-    label,
+  const CategoryItem: React.FC<{
+    category: ActionCategory;
+    isSelected: boolean;
+    onSelect: (categoryId: string) => void;
+    selectedCount: number;
+  }> = ({
+    category,
+    isSelected,
+    onSelect,
+    selectedCount,
   }) => {
-    const count = getSelectedCount(categoryKey);
-
     return (
       <li
         className={`text-sm border-l border-border cursor-pointer px-3 py-2 hover:bg-muted flex justify-between items-center ${
-          selectedCategory === categoryKey
-            ? "bg-primary/10 border-l-primary"
-            : ""
+          isSelected ? "bg-primary/10 border-l-primary" : ""
         }`}
-        onClick={() => handleSelect(categoryKey)}
+        onClick={() => onSelect(category.id)}
       >
-        <span>{label}</span>
-        {count > 0 && (
+        <span>{category.name}</span>
+        {selectedCount > 0 && (
           <Badge variant="default">
-            {count}
+            {selectedCount}
           </Badge>
         )}
       </li>
@@ -59,22 +74,34 @@ export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
     <div className="space-y-4">
       <div>
         <h3 className="text-sm font-semibold text-foreground-muted mb-2">
-          General responsibilities
+          General Responsibilities
         </h3>
         <ul className="space-y-0">
-          {actionsCategories.general.map(({ key, label }) => (
-            <CategoryItem key={key} categoryKey={key} label={label} />
+          {coreCategories.map((category) => (
+            <CategoryItem 
+              key={category.id} 
+              category={category} 
+              isSelected={selectedCategory === category.id} // Use selectedCategory from props
+              onSelect={handleCategorySelect}
+              selectedCount={getSelectedCount(category.id)}
+            />
           ))}
         </ul>
       </div>
 
       <div>
         <h3 className="text-sm font-semibold text-foreground-muted mb-2">
-          Core Functions
+          Core Responsibilities
         </h3>
         <ul className="space-y-0">
-          {actionsCategories.core.map(({ key, label }) => (
-            <CategoryItem key={key} categoryKey={key} label={label} />
+          {generalCategories.map((category) => (
+            <CategoryItem 
+              key={category.id} 
+              category={category} 
+              isSelected={selectedCategory === category.id} // Use selectedCategory from props
+              onSelect={handleCategorySelect}
+              selectedCount={getSelectedCount(category.id)}
+            />
           ))}
         </ul>
       </div>
