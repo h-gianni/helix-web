@@ -1,0 +1,37 @@
+/* globals.css */
+
+@import "./components/marketing.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  section {
+    @apply w-full py-16 lg:py-32 px-8;
+  }
+  .section-container {
+    @apply container mx-auto space-y-14;
+  }
+  .section-header {
+    @apply max-w-xl space-y-6;
+  }
+  .hero {
+    @apply max-w-2xl space-y-8 pb-20;
+  }
+  .section-header-centered {
+    @apply section-header flex flex-col justify-center text-center mx-auto;
+  }
+  .hero-centered {
+    @apply hero flex flex-col justify-center text-center mx-auto;
+  }
+
+  
+}

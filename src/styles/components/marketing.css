@@ -1,0 +1,32 @@
+/* src/styles/marketing.css */
+
+/* Libraries */
+@import '../lib/reset.css';
+@import '../lib/animations.css';
+
+/* Tokens - Shared design tokens */
+@import '../tokens/colors.css';
+@import '../tokens/typography.css';
+@import '../tokens/marketing-typography.css';
+@import '../tokens/spacing.css';
+@import '../tokens/shadows.css';
+
+/* Themes - Shared theme definitions */
+/* @import '../themes/base.css';
+@import '../themes/dark.css';
+@import '../themes/utils.css'; */
+
+/* Core components - Shared UI primitives */
+/* @import './core/button.css';
+@import './core/card.css';
+@import './core/dialog.css'; */
+
+/* Marketing-specific components */
+@import './marketing/typography.css';
+@import './marketing/hero.css';
+@import './marketing/feature.css';
+@import './marketing/testimonial.css';
+@import './marketing/cta.css';
+@import './marketing/navbar.css';
+@import './marketing/footer.css';
+
