@@ -87,7 +87,7 @@ export const Scenarios = () => (
       </div>
 
       {/* Scenarios Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-8">
         {scenarios.map((scenario, index) =>
           scenario.isImage ? (
             // IMAGE DIVS AFTER SECOND SCENARIO
@@ -104,7 +104,7 @@ export const Scenarios = () => (
             // SCENARIO CARDS
             <Card
               key={index}
-              className={`bg-white border-0 rounded-md p-6 aspect-square lg:aspect-auto flex justify-between flex-col ${
+              className={`bg-white border-0 rounded-md p-4 lg:p-6 aspect-square lg:aspect-auto flex justify-between flex-col ${
                 scenario.span === 2 ? "lg:col-span-2" : ""
               }`}
             >
@@ -113,7 +113,7 @@ export const Scenarios = () => (
                 <Badge variant="secondary">Scenario {index + 1}</Badge>
               </div>
 
-              <div className="flex flex-col gap-6 flex-1">
+              <div className="flex flex-col gap-4 lg:gap-6 flex-1">
                 <h3 className="marketing-h4">{scenario.title}</h3>
                 <div className="grid grid-cols-1 gap-4">
                   <div className="space-y-1">

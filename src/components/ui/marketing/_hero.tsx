@@ -33,8 +33,9 @@ export const Hero = () => {
     <section className="pb-0 bg-white">
       <div className="section-container">
         <div className="hero-centered">
+        <p className="lg:hidden marketing-h4">UpScore</p>
           <div>
-            <Badge variant="secondary">AI for humans</Badge>
+            <Badge variant="secondary">Powered by AI, for humans</Badge>
             {/* <Button variant="secondary" size="sm" className="gap-4">
               Read our launch article <ArrowRight className="w-4 h-4" />
             </Button> */}
@@ -72,7 +73,7 @@ export const Hero = () => {
             actions and behaviors in real time—unlocking data-driven insights to
             make you the most effective team leader in the organization.
           </p>
-          <div className="flex flex-row gap-4 mx-auto">
+          <div className="flex flex-col md:flex-row gap-4 mx-auto">
             <Button size="lg" variant="outline">
               Show me a short demo <Film />
             </Button>
@@ -82,7 +83,7 @@ export const Hero = () => {
               </Button>
             </SignUpButton>
           </div>
-          <p className="marketing-body-xs text-foreground-muted max-w-sm mx-auto pt-8">
+          <p className="marketing-body-xs text-foreground-muted text-left lg:text-center max-w-xs lg:max-w-sm mx-auto pt-0 lg:pt-8">
             UpScore is a mobile and desktop app that lets you score your team’s
             performance in real-time—in less than 20 seconds per entry. Set up
             your organization in just 5 minutes, and let our AI transform your
@@ -99,7 +100,7 @@ export const Hero = () => {
         alt="Hero Image"
         width={1080}
         height={600}
-        className="mx-auto bg-muted"
+        className="mx-auto min-h-56 bg-muted"
       />
     </section>
   );

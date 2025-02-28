@@ -22,8 +22,8 @@ const steps = [
 
 export const How = () => (
   <section className="flex p-0">
-    <div className="bg-muted w-2/5 rounded-tr-xl"></div>
-    <div className="section-container w-3/5 p-16 py-20">
+    <div className="hidden md:block bg-muted w-2/5 rounded-tr-xl"></div>
+    <div className="section-container lg:w-3/5 px-4 lg:p-16 lg:py-20">
       <div className="section-header">
         <div>
           <Badge>Easy peasy</Badge>
@@ -41,7 +41,7 @@ export const How = () => (
       </div>
 
       {/* Vertical Stepper */}
-      <div className="relative flex flex-col gap-1 max-w-3xl">
+      <div className="relative flex flex-col gap-1 max-w-3xl px-4 lg:pl-0">
         {steps.map((step, index) => (
           <div key={index} className="flex items-stretch gap-6 relative">
             {/* Step Indicator (Dot & Vertical Line) */}

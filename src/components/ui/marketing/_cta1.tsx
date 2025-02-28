@@ -15,7 +15,7 @@ export const CTA1 = () => (
           required and no strings attached. If you love what you see, you can
           easily upgrade to our Professional plan at any time.
         </p>
-        <div className="flex flex-row gap-4 mx-auto">
+        <div className="flex flex-col md:flex-row gap-4 mx-auto">
           <Button variant="outline" size="lg">
             I want to see a demo <PhoneCall />
           </Button>
