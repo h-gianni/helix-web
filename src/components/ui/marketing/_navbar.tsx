@@ -48,40 +48,40 @@ const DesktopNavigation = () => {
   return (
     <NavigationMenu>
       <NavigationMenuList>
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Features</NavigationMenuTrigger>
+        {/* <NavigationMenuItem>
+          <NavigationMenuTrigger>What it is</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-              {navConfig.features.map((feature) => (
+              {navConfig.productNav.map((productNav) => (
                 <ListItem
-                  key={feature.title}
-                  title={feature.title}
-                  href={feature.href}
+                  key={productNav.title}
+                  title={productNav.title}
+                  href={productNav.href}
                 >
-                  {feature.description}
+                  {productNav.description}
                 </ListItem>
               ))}
             </ul>
           </NavigationMenuContent>
-        </NavigationMenuItem>
-        
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Resources</NavigationMenuTrigger>
+        </NavigationMenuItem> */}
+
+        {/* <NavigationMenuItem>
+          <NavigationMenuTrigger>Features and benefits</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
-              {navConfig.resources.map((resource) => (
+              {navConfig.featuresNav.map((featuresNav) => (
                 <ListItem
-                  key={resource.title}
-                  title={resource.title}
-                  href={resource.href}
+                  key={featuresNav.title}
+                  title={featuresNav.title}
+                  href={featuresNav.href}
                 >
-                  {resource.description}
+                  {featuresNav.description}
                 </ListItem>
               ))}
             </ul>
           </NavigationMenuContent>
-        </NavigationMenuItem>
-        
+        </NavigationMenuItem> */}
+
         {navConfig.mainLinks.map((link) => (
           <NavigationMenuItem key={link.title}>
             <Link href={link.href} legacyBehavior passHref>
@@ -102,7 +102,10 @@ export const Navbar = () => {
       <div className="lg:container relative mx-auto min-h-20 flex gap-4 flex-row items-center justify-between">
         {/* LEFT: Logo */}
         <div className="flex items-center gap-4 lg:gap-6">
-          <p className="marketing-h4">UpScore</p>
+          <div className="flex items-center gap-2">
+            <span className="size-6 rounded-full bg-primary"></span>
+            <p className="marketing-h4 leading-[0]">JustScore</p>
+          </div>
 
           {/* DESKTOP NAVIGATION */}
           <div className="flex items-center gap-2">

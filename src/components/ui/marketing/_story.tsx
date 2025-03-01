@@ -15,7 +15,7 @@ export const OurStory = () => {
         </div>
 
         {/* Narrative Section */}
-        <div className="space-y-10 text-lg text-muted-foreground leading-relaxed">
+        <div className="space-y-10 text-lg text-muted-foreground leading-relaxed px-4 lg:px-0">
           <p>
             It was another late afternoon during our annual performance review, a room filled with leaders from Product, Engineering, and Design. 
             I remember one particular meeting where the conversation spiraled into confusion. One colleague insisted that a team member’s impressive 

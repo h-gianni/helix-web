@@ -8,20 +8,20 @@ import { useState } from "react";
 import { navConfig } from "@/app/(marketing)/config/navigation-config";
 
 // Mobile Navigation Item Component for the drawer
-const MobileNavItem = ({ 
-  title, 
-  href, 
+const MobileNavItem = ({
+  title,
+  href,
   description,
-  onClick
-}: { 
-  title: string; 
-  href: string; 
+  onClick,
+}: {
+  title: string;
+  href: string;
   description: string;
   onClick?: () => void;
 }) => {
   return (
-    <Link 
-      href={href} 
+    <Link
+      href={href}
       onClick={onClick}
       className="flex flex-col gap-1 p-4 hover:bg-accent rounded-md"
     >
@@ -32,25 +32,23 @@ const MobileNavItem = ({
 };
 
 // Mobile Navigation Section Component for the drawer
-const MobileNavSection = ({ 
-  title, 
+const MobileNavSection = ({
+  title,
   items,
-  onClick
-}: { 
-  title: string; 
+  onClick,
+}: {
+  title: string;
   items: Array<{ title: string; href: string; description: string }>;
   onClick?: () => void;
 }) => {
   return (
     <div className="py-4">
-      <h3 className="px-4 text-sm font-semibold text-foreground/70 mb-2">{title}</h3>
+      <h3 className="px-4 text-sm font-semibold text-foreground/70 mb-2">
+        {title}
+      </h3>
       <div className="flex flex-col">
         {items.map((item) => (
-          <MobileNavItem 
-            key={item.title} 
-            {...item} 
-            onClick={onClick}
-          />
+          <MobileNavItem key={item.title} {...item} onClick={onClick} />
         ))}
       </div>
     </div>
@@ -59,7 +57,7 @@ const MobileNavSection = ({
 
 export const MobileBottomNav = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
-  
+
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -71,7 +69,10 @@ export const MobileBottomNav = () => {
           <div className="sticky top-0 bg-background z-10 border-b">
             <div className="container px-4 py-4">
               <div className="flex items-center justify-between">
-                <p className="marketing-h4">UpScore</p>
+                <div className="flex items-center gap-2">
+                  <span className="size-6 rounded-full bg-primary"></span>
+                  <p className="marketing-h4 leading-[0]">JustScore</p>
+                </div>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -83,28 +84,30 @@ export const MobileBottomNav = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Scrollable content */}
           <div className="flex-1 overflow-y-auto pb-32">
             <div className="container px-4">
-              <MobileNavSection 
-                title="Features" 
-                items={navConfig.features} 
+              {/* <MobileNavSection
+                title="Features"
+                items={navConfig.productNav}
                 onClick={closeMenu}
               />
-              
-              <MobileNavSection 
-                title="Resources" 
-                items={navConfig.resources} 
+
+              <MobileNavSection
+                title="Resources"
+                items={navConfig.featuresNav}
                 onClick={closeMenu}
-              />
-              
+              /> */}
+
               <div className="py-4">
-                <h3 className="px-4 text-sm font-semibold text-foreground/70 mb-2">Pages</h3>
+                <h3 className="px-4 text-sm font-semibold text-foreground/70 mb-2">
+                  Jump to:
+                </h3>
                 {navConfig.mainLinks.map((link) => (
-                  <Link 
+                  <Link
                     key={link.title}
-                    href={link.href} 
+                    href={link.href}
                     onClick={closeMenu}
                     className="flex items-center gap-2 p-4 hover:bg-accent rounded-md"
                   >
@@ -114,7 +117,7 @@ export const MobileBottomNav = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Fixed bottom actions */}
           <div className="fixed bottom-16 left-0 right-0 bg-background border-t py-4 px-4">
             <div className="container flex flex-col gap-2">
@@ -138,7 +141,11 @@ export const MobileBottomNav = () => {
         <div className="grid grid-cols-5 h-16">
           <button
             onClick={() => setMenuOpen(!isMenuOpen)}
-            className={`flex flex-col items-center justify-center ${isMenuOpen ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
+            className={`flex flex-col items-center justify-center ${
+              isMenuOpen
+                ? "text-primary"
+                : "text-muted-foreground hover:text-primary"
+            }`}
           >
             {isMenuOpen ? (
               <>
@@ -152,7 +159,7 @@ export const MobileBottomNav = () => {
               </>
             )}
           </button>
-          
+
           <Link
             href="/demo"
             className="flex flex-col items-center justify-center text-muted-foreground hover:text-primary"
@@ -160,7 +167,7 @@ export const MobileBottomNav = () => {
             <Play className="size-5" />
             <span className="text-xs mt-1">Demo</span>
           </Link>
-          
+
           <Link
             href="/get-app"
             className="flex flex-col items-center justify-center text-muted-foreground hover:text-primary"
@@ -168,7 +175,7 @@ export const MobileBottomNav = () => {
             <Smartphone className="size-5" />
             <span className="text-xs mt-1">Download App</span>
           </Link>
-          
+
           <SignedOut>
             <Link
               href="/sign-in"
@@ -178,7 +185,7 @@ export const MobileBottomNav = () => {
               <span className="text-xs mt-1">Sign In</span>
             </Link>
           </SignedOut>
-          
+
           <SignedIn>
             <Link
               href="/dashboard"
@@ -188,26 +195,30 @@ export const MobileBottomNav = () => {
               <span className="text-xs mt-1">Docs</span>
             </Link>
           </SignedIn>
-          
+
           <SignedOut>
             <Link
               href="/sign-up"
               className="flex flex-col items-center justify-center text-primary font-medium"
             >
               <div className="flex items-center justify-center w-6 h-6 bg-primary rounded-full">
-                <span className="text-primary-foreground text-xs font-bold">+</span>
+                <span className="text-primary-foreground text-xs font-bold">
+                  +
+                </span>
               </div>
               <span className="text-xs mt-1">Try it</span>
             </Link>
           </SignedOut>
-          
+
           <SignedIn>
             <Link
               href="/dashboard"
               className="flex flex-col items-center justify-center text-primary font-medium"
             >
               <div className="flex items-center justify-center w-6 h-6 bg-primary rounded-full">
-                <span className="text-primary-foreground text-xs font-bold">+</span>
+                <span className="text-primary-foreground text-xs font-bold">
+                  +
+                </span>
               </div>
               <span className="text-xs mt-1">Dashboard</span>
             </Link>

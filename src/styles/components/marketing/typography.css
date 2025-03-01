@@ -37,7 +37,7 @@
     @apply font-bold text-foreground-strong;
     font-family: var(--font-marketing);
     font-size: var(--font-marketing-base);
-    line-height: var(--leading-marketing-tight);
+    line-height: var(--leading-marketing-snug);
   }
   
   .marketing-h5 {

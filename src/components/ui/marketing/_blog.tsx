@@ -29,18 +29,20 @@ const blogPosts = [
 ];
 
 export const Blog = () => (
-  <section>
+  <section id="blog">
     <div className="section-container">
       <div className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-8">
         <div className="section-header">
           <h4 className="marketing-h1">Latest Articles</h4>
         </div>
-        <Button className="gap-2">
-          View all articles <MoveRight />
-        </Button>
+        <div className="hidden lg:block">
+          <Button className="gap-2">
+            View all articles <MoveRight />
+          </Button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 px-4 lg:px-0">
         {blogPosts.map((post, index) => (
           <div
             key={index}

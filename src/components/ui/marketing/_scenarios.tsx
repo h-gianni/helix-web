@@ -91,7 +91,7 @@ export const Scenarios = () => (
         {scenarios.map((scenario, index) =>
           scenario.isImage ? (
             // IMAGE DIVS AFTER SECOND SCENARIO
-            <div key={index} className="relative w-full rounded-md overflow-hidden bg-muted items-stretch">
+            <div key={index} className="hidden lg:block relative w-full rounded-md overflow-hidden bg-muted items-stretch">
               <Image
                 src={scenario.imageSrc}
                 alt={scenario.alt}
@@ -104,7 +104,7 @@ export const Scenarios = () => (
             // SCENARIO CARDS
             <Card
               key={index}
-              className={`bg-white border-0 rounded-md p-4 lg:p-6 aspect-square lg:aspect-auto flex justify-between flex-col ${
+              className={`bg-white border-0 rounded-md p-4 pb-6 lg:pb-0 lg:p-6 lg:aspect-auto flex justify-between flex-col ${
                 scenario.span === 2 ? "lg:col-span-2" : ""
               }`}
             >
@@ -122,7 +122,7 @@ export const Scenarios = () => (
                   </div>
                   <div className="space-y-1">
                     <h4 className="marketing-h6 text-foreground">
-                      With Our App
+                      With UpScore
                     </h4>
                     <p className="marketing-body-sm"> {scenario.solution} </p>
                   </div>

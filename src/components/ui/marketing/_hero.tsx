@@ -30,10 +30,13 @@ export const Hero = () => {
   }, [titleNumber, titles]);
 
   return (
-    <section className="pb-0 bg-white">
+    <section className="bg-white">
       <div className="section-container">
         <div className="hero-centered">
-        <p className="lg:hidden marketing-h4">UpScore</p>
+          <div className="lg:hidden flex flex-col space-y-2 pt-6 pb-2">
+            <div className="size-10 rounded-full bg-primary mx-auto"></div>
+            <div className="marketing-h2">JustScore</div>
+          </div>
           <div>
             <Badge variant="secondary">Powered by AI, for humans</Badge>
             {/* <Button variant="secondary" size="sm" className="gap-4">

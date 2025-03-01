@@ -76,7 +76,7 @@ export const FAQ = () => (
           </div>
         </div>
 
-        <div className="max-w-3xl w-full mx-auto">
+        <div className="max-w-3xl w-full mx-auto px-4 lg:px-0">
           <Accordion type="single" collapsible className="max-w-lg mx-auto">
             {faqs.map((faq, index) => (
               <AccordionItem key={index} value={`faq-${index}`}>

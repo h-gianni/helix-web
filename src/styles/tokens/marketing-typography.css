@@ -16,9 +16,12 @@
     --font-marketing-5xl: 60px;
   
     /* Marketing-specific line heights - potentially more generous */
+    --leading-marketing-none: 1;
     --leading-marketing-tight: 1.1;
+    --leading-marketing-snug: 1.25;
     --leading-marketing-normal: 1.4;
     --leading-marketing-relaxed: 1.6;
+    --leading-marketing-loose: 1.8;
     
     /* Marketing-specific letter spacing - potentially tighter for headlines */
     --tracking-marketing-headline: -0.03em;

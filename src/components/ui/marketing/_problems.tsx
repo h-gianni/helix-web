@@ -49,7 +49,7 @@ const problemList = [
 ];
 
 export const Problems = () => (
-  <section>
+  <section id="solutions">
     <div className="section-container">
       <div className="section-header">
         <div>

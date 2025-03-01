@@ -21,7 +21,7 @@ const steps = [
 ];
 
 export const How = () => (
-  <section className="flex p-0">
+  <section className="flex px-0">
     <div className="hidden md:block bg-muted w-2/5 rounded-tr-xl"></div>
     <div className="section-container lg:w-3/5 px-4 lg:p-16 lg:py-20">
       <div className="section-header">
