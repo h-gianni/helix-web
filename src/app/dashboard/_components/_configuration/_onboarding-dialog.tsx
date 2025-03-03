@@ -26,7 +26,7 @@ interface SetupDialogProps {
 
 const steps = [
   { id: "org", title: "Organisation Details" },
-  { id: "activities", title: "Activities List" },
+  { id: "actions", title: "Organisation Actions List" },
   { id: "team", title: "Create Team" },
   { id: "summary", title: "Summary" },
 ];
@@ -59,7 +59,7 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
       case "org":
         return <OrganizationConfig />;
 
-      case "activities":
+      case "actions":
         return (
           <ActionsConfig
             selectedCategory={selectedCategory}
