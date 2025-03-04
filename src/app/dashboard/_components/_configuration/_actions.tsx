@@ -20,7 +20,9 @@ const ActionsConfig: React.FC<ActionsConfigProps> = ({
   preselectCategory, // Category ID to preselect items from
 }) => {
   const selectedActivities = useConfigStore((state) => state.config.activities.selected);
+  const selectedByCategory = useConfigStore((state) => state.config.activities.selectedByCategory);
   const updateActivities = useConfigStore((state) => state.updateActivities);
+  const updateActivitiesByCategory = useConfigStore((state) => state.updateActivitiesByCategory);
 
   const { data: actionCategories, isLoading } = useActions();
   const { selectedCategoryId, setSelectedCategoryId } = useActionModalStore();
@@ -58,19 +60,46 @@ const ActionsConfig: React.FC<ActionsConfigProps> = ({
         category.actions.map(action => action.id)
       );
       
-      // Update the selected activities
+      // Update the selected activities and store by category
       if (actionsToPreselect.length > 0) {
         updateActivities(actionsToPreselect);
+        updateActivitiesByCategory(preselectCategory, actionsToPreselect);
         setHasPreselected(true);
       }
     }
-  }, [preselectCategory, preselectCategoryData, isLoadingPreselectCategory, hasPreselected, updateActivities]);
+  }, [preselectCategory, preselectCategoryData, isLoadingPreselectCategory, hasPreselected, updateActivities, updateActivitiesByCategory]);
 
   const handleSelectActivity = (activityId: string) => {
+    // First, update the global selected activities list
     const newActivities = selectedActivities.includes(activityId)
       ? selectedActivities.filter(a => a !== activityId)
       : [...selectedActivities, activityId];
     updateActivities(newActivities);
+    
+    // Then, update the category-specific list
+    if (selectedCategoryId) {
+      // Safely access the category activities or default to empty array
+      const currentCategoryActivities = selectedByCategory && 
+        selectedByCategory[selectedCategoryId] ? 
+        [...selectedByCategory[selectedCategoryId]] : 
+        [];
+      
+      // Check if activity is already in global selected list
+      const isActivitySelected = selectedActivities.includes(activityId);
+      
+      // Create updated category activities
+      let updatedCategoryActivities;
+      if (isActivitySelected) {
+        // If it was selected, remove it from category
+        updatedCategoryActivities = currentCategoryActivities.filter(id => id !== activityId);
+      } else {
+        // If it wasn't selected, add it to category
+        updatedCategoryActivities = [...currentCategoryActivities, activityId];
+      }
+      
+      // Update the category-specific store
+      updateActivitiesByCategory(selectedCategoryId, updatedCategoryActivities);
+    }
   };
 
   const handleSelectCategory = (categoryId: string) => {
@@ -96,12 +125,22 @@ const ActionsConfig: React.FC<ActionsConfigProps> = ({
       // Select all actions in the current category
       const newActivities = [...new Set([...selectedActivities, ...currentCategoryActionIds])];
       updateActivities(newActivities);
+      
+      // Also update the category-specific store
+      if (selectedCategoryId) {
+        updateActivitiesByCategory(selectedCategoryId, currentCategoryActionIds);
+      }
     } else {
       // Deselect all actions in the current category
       const newActivities = selectedActivities.filter(
         (activityId) => !currentCategoryActionIds.includes(activityId)
       );
       updateActivities(newActivities);
+      
+      // Also update the category-specific store
+      if (selectedCategoryId) {
+        updateActivitiesByCategory(selectedCategoryId, []);
+      }
     }
   };
 

@@ -7,18 +7,28 @@ import { Card } from '@/components/ui/core/Card';
 import { Checkbox } from '@/components/ui/core/Checkbox';
 import { actionsCategories, activityData } from "@/data/org-actions-data";
 import { useConfigStore } from '@/store/config-store';
+import { useActions } from '@/store/action-store';
 
 interface Team {
   id: string;
   name: string;
   functions: string[];
+  categories: string[]; // Add categories to team interface
 }
 
 const TeamSetup = () => {
   const selectedActivities = useConfigStore((state) => state.config.activities.selected);
+  const selectedByCategory = useConfigStore((state) => state.config.activities.selectedByCategory || {});
   const updateTeams = useConfigStore((state) => state.updateTeams);
   const teams = useConfigStore((state) => state.config.teams);
+  
+  // Get action categories data
+  const { data: actionCategories, isLoading } = useActions();
 
+  // Get all selected category IDs
+  const selectedCategoryIds = Object.keys(selectedByCategory);
+
+  // Get function categories from your existing data structure
   const selectedFunctions = [...new Set(
     Object.entries(activityData)
       .filter(([key, activities]) => 
@@ -33,10 +43,26 @@ const TeamSetup = () => {
       updateTeams([{ 
         id: '1', 
         name: '', 
-        functions: selectedFunctions 
+        functions: selectedFunctions,
+        categories: selectedCategoryIds // Initialize with all selected categories
       }]);
+    } else {
+      // Update existing teams to have the categories property if they don't already
+      const updatedTeams = teams.map(team => {
+        if (!team.categories) {
+          return {
+            ...team,
+            categories: selectedCategoryIds
+          };
+        }
+        return team;
+      });
+      
+      if (JSON.stringify(updatedTeams) !== JSON.stringify(teams)) {
+        updateTeams(updatedTeams);
+      }
     }
-  }, []);
+  }, [selectedCategoryIds.length]);
 
   const handleTeamNameChange = (teamId: string, name: string) => {
     updateTeams(teams.map(team => 
@@ -56,11 +82,25 @@ const TeamSetup = () => {
     }));
   };
 
+  const handleCategoryToggle = (teamId: string, categoryId: string) => {
+    updateTeams(teams.map(team => {
+      if (team.id === teamId) {
+        const categories = team.categories || [];
+        const updatedCategories = categories.includes(categoryId)
+          ? categories.filter(c => c !== categoryId)
+          : [...categories, categoryId];
+        return { ...team, categories: updatedCategories };
+      }
+      return team;
+    }));
+  };
+
   const addTeam = () => {
     updateTeams([...teams, { 
       id: String(Date.now()), 
       name: '', 
-      functions: selectedFunctions 
+      functions: selectedFunctions,
+      categories: selectedCategoryIds // Initialize with all selected categories
     }]);
   };
 
@@ -68,10 +108,23 @@ const TeamSetup = () => {
     updateTeams(teams.filter(team => team.id !== teamId));
   };
 
+  // Get category name by ID
+  const getCategoryNameById = (categoryId: string) => {
+    if (!actionCategories) return 'Loading...';
+    
+    const category = actionCategories.find(cat => cat.id === categoryId);
+    return category ? category.name : 'Unknown';
+  };
+
+  // Get action count for a category
+  const getActionCountForCategory = (categoryId: string) => {
+    return selectedByCategory[categoryId]?.length || 0;
+  };
+
   return (
     <div className="space-y-6">
       {teams.map((team) => (
-        <Card key={team.id}>
+        <Card key={team.id} className="p-4">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="w-full space-y-1">
@@ -97,6 +150,7 @@ const TeamSetup = () => {
               )}
             </div>
 
+            {/* Function selection section */}
             {selectedFunctions.length === 1 ? (
               <div className="text-sm text-foreground-muted">
                 Team function: {selectedFunctions[0]}
@@ -132,6 +186,30 @@ const TeamSetup = () => {
                       </div>
                     );
                   })}
+                </div>
+              </div>
+            )}
+
+            {/* Category selection section */}
+            {!isLoading && selectedCategoryIds.length > 0 && (
+              <div className="space-y-1.5 border-t pt-4 mt-4">
+                <Label>Action Categories</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {selectedCategoryIds.map((categoryId) => (
+                    <div key={categoryId} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`${team.id}-category-${categoryId}`}
+                        checked={(team.categories || []).includes(categoryId)}
+                        onCheckedChange={() => handleCategoryToggle(team.id, categoryId)}
+                      />
+                      <label
+                        htmlFor={`${team.id}-category-${categoryId}`}
+                        className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {getCategoryNameById(categoryId)} ({getActionCountForCategory(categoryId)})
+                      </label>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
