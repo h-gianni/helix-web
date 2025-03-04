@@ -22,7 +22,7 @@ export const actionsCategories = {
     { key: "operations", label: "Operations" },
     { key: "education", label: "Education" },
   ],
-};
+};  
 
 export const activityData: Record<string, string[]> = {
   engineering: [

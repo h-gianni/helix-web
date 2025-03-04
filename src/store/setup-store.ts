@@ -33,7 +33,12 @@ export const useSetupStore = create<SetupState>((set) => ({
     steps: { ...state.steps, [step]: true },
     currentStep: state.currentStep + 1
   })),
-  completeSetup: () => set((state) => ({
-    steps: { ...state.steps, configureTeamActivities: true }
-  }))
+  completeSetup: () => set((state) => {
+    console.log('setup complete store')
+    return ({
+ 
+  
+      steps: { ...state.steps, configureTeamActivities: true }
+    })
+  })
 }));

@@ -39,10 +39,21 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
   const [currentStep, setCurrentStep] = React.useState(0);
   const [selectedCategory, setSelectedCategory] = React.useState("engineering");
 
+  // Get the first category from action categories on initial load
+  const { config } = useConfigStore();
+
   const isLastStep = currentStep === steps.length - 1;
   const isFirstStep = currentStep === 0;
 
   const handleNext = () => {
+
+  // You can save the current category before moving to the next step
+  if (steps[currentStep].id === "activities") {
+    // You could potentially store the last selected category in the config store
+    // for persistence if needed
+  }
+
+
     if (isLastStep) {
       onCompleteSetup();
       return;
@@ -73,9 +84,9 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
         case "summary":
           return (
             <div className="space-y-4">
-              <OrganizationSummary onEdit={() => setCurrentStep(0)} />
+              <OrganizationSummary />
               <TeamsSummary onEdit={() => setCurrentStep(2)} variant="setup" />
-              <OrgActionsSummary onEdit={() => setCurrentStep(1)} />
+              <OrgActionsSummary  />
             </div>
           );
       }
