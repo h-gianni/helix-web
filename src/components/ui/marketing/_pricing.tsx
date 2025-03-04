@@ -115,7 +115,7 @@ const features = [
 ];
 
 export const Pricing = () => (
-  <section>
+  <section id="pricing">
     <div className="section-container">
       <div className="section-header-centered">
         <div>
@@ -130,7 +130,7 @@ export const Pricing = () => (
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
         {/* Starter Plan */}
-        <Card className="p-8 shadow flex flex-col justify-between">
+        <Card className="p-4 lg:p-8 shadow flex flex-col justify-between">
         <div className="space-y-4">
           <div className="relative bg-muted/50 rounded-md h-32">
             <Badge variant="secondary" className="absolute top-0">For the new and curious ones</Badge>

@@ -1,85 +1,149 @@
 /* src/styles/components/marketing/typography.css */
 
 @layer components {
-    /* Marketing Display Text */
+  /* Marketing Display Text */
+  .marketing-display {
+    @apply font-bold text-foreground-strong;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-3xl);
+    line-height: var(--leading-marketing-tight);
+    letter-spacing: var(--tracking-marketing-headline);
+  }
+  
+  /* Marketing Headings */
+  .marketing-h1 {
+    @apply font-bold text-foreground-strong;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-2xl);
+    line-height: var(--leading-marketing-tight);
+    letter-spacing: var(--tracking-marketing-headline);
+  }
+  
+  .marketing-h2 {
+    @apply font-bold text-foreground-strong;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-xl);
+    line-height: var(--leading-marketing-tight);
+  }
+  
+  .marketing-h3 {
+    @apply font-bold text-foreground-strong;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-lg);
+    line-height: var(--leading-marketing-tight);
+  }
+  
+  .marketing-h4 {
+    @apply font-bold text-foreground-strong;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-base);
+    line-height: var(--leading-marketing-snug);
+  }
+  
+  .marketing-h5 {
+    @apply font-bold text-foreground-strong;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-sm);
+    line-height: var(--leading-marketing-tight);
+  }
+  
+  .marketing-h6 {
+    @apply font-bold text-foreground-strong;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-xs);
+    line-height: var(--leading-marketing-normal);
+  }
+  
+  /* Marketing Body Text */
+  .marketing-body-lg {
+    @apply font-normal text-foreground-weak;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-base);
+    line-height: var(--leading-marketing-relaxed);
+  }
+  
+  .marketing-body {
+    @apply font-normal text-foreground;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-sm);
+    line-height: var(--leading-marketing-relaxed);
+  }
+  
+  .marketing-body-sm {
+    @apply font-normal text-foreground-weak;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-xs);
+    line-height: var(--leading-marketing-normal);
+  }
+  
+  .marketing-body-xs {
+    @apply font-normal text-foreground-weak;
+    font-family: var(--font-marketing);
+    font-size: var(--font-marketing-2xs);
+    line-height: var(--leading-marketing-normal);
+  }
+
+  /* Tablet and Desktop Responsive Overrides */
+  @media (min-width: 768px) {
     .marketing-display {
-      @apply font-bold text-foreground-strong;
-      font-family: var(--font-marketing);
-      font-size: var(--font-marketing-5xl);
-      line-height: var(--leading-marketing-tight);
-      letter-spacing: var(--tracking-marketing-headline);
+      font-size: var(--font-marketing-4xl);
     }
     
-    /* Marketing Headings */
     .marketing-h1 {
-      @apply font-bold text-foreground-strong;
-      font-family: var(--font-marketing);
-      font-size: var(--font-marketing-4xl);
-      line-height: var(--leading-marketing-tight);
-      letter-spacing: var(--tracking-marketing-headline);
+      font-size: var(--font-marketing-3xl);
     }
     
     .marketing-h2 {
-      @apply font-bold text-foreground-strong;
-      font-family: var(--font-marketing);
       font-size: var(--font-marketing-2xl);
-      line-height: var(--leading-marketing-tight);
     }
     
     .marketing-h3 {
-      @apply font-bold text-foreground-strong;
-      font-family: var(--font-marketing);
       font-size: var(--font-marketing-xl);
-      line-height: var(--leading-marketing-tight);
     }
     
     .marketing-h4 {
-      @apply font-bold text-foreground-strong;
-      font-family: var(--font-marketing);
       font-size: var(--font-marketing-lg);
-      line-height: var(--leading-marketing-tight);
     }
     
     .marketing-h5 {
-      @apply font-bold text-foreground-strong;
-      font-family: var(--font-marketing);
       font-size: var(--font-marketing-base);
-      line-height: var(--leading-marketing-tight);
     }
     
     .marketing-h6 {
-      @apply font-bold text-foreground-strong;
-      font-family: var(--font-marketing);
       font-size: var(--font-marketing-sm);
-      line-height: var(--leading-marketing-normal);
     }
     
-    /* Marketing Body Text */
     .marketing-body-lg {
-      @apply font-normal text-foreground-weak;
-      font-family: var(--font-marketing);
       font-size: var(--font-marketing-lg);
-      line-height: var(--leading-marketing-relaxed);
     }
     
     .marketing-body {
-      @apply font-normal text-foreground;
-      font-family: var(--font-marketing);
       font-size: var(--font-marketing-base);
-      line-height: var(--leading-marketing-relaxed);
     }
     
     .marketing-body-sm {
-      @apply font-normal text-foreground-weak;
-      font-family: var(--font-marketing);
       font-size: var(--font-marketing-sm);
-      line-height: var(--leading-marketing-normal);
     }
     
     .marketing-body-xs {
-      @apply font-normal text-foreground-weak;
-      font-family: var(--font-marketing);
       font-size: var(--font-marketing-xs);
-      line-height: var(--leading-marketing-normal);
     }
   }
+
+  /* Large Desktop Responsive Overrides */
+  @media (min-width: 1024px) {
+    .marketing-display {
+      font-size: var(--font-marketing-5xl);
+    }
+    
+    .marketing-h1 {
+      font-size: var(--font-marketing-4xl);
+    }
+    
+    .marketing-h2 {
+      font-size: var(--font-marketing-2xl);
+    }
+    
+    /* All other styles remain the same as tablet breakpoint */
+  }
+}

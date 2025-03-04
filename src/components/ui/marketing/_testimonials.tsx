@@ -99,11 +99,11 @@ export const Testimonials = () => (
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-8">
         {testimonials.map((testimonial, index) => (
           <Card
             key={index}
-            className={`bg-white border-0 rounded-md p-6 aspect-square lg:aspect-auto flex justify-between flex-col ${
+            className={`bg-white border-0 rounded-md p-6 lg:aspect-auto flex justify-between flex-col ${
               index === 0 ? "lg:col-span-2 lg:row-span-2" : ""
             }`}
           >

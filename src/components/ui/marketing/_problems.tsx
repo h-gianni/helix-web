@@ -49,7 +49,7 @@ const problemList = [
 ];
 
 export const Problems = () => (
-  <section>
+  <section id="solutions">
     <div className="section-container">
       <div className="section-header">
         <div>
@@ -68,7 +68,7 @@ export const Problems = () => (
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {problemList.map((item, index) => (
-          <Card key={index} className="flex flex-col items-start p-8 border-0 space-y-6">
+          <Card key={index} className="flex flex-col items-start p-4 lg:p-8 border-0 space-y-6">
             <div className="flex-none bg-muted rounded-xl size-16">
               {/* <Check className="w-4 h-4 text-primary" /> */}
             </div>

@@ -15,16 +15,20 @@
   }
 
   section {
-    @apply w-full py-16 lg:py-32 px-8;
+    @apply w-full py-12 lg:py-32 px-4 lg:px-8;
+  }
+  /* Hero Section */
+  section:first-of-type {
+    @apply w-full pt-0 lg:pt-32 bg-white;
   }
   .section-container {
-    @apply container mx-auto space-y-14;
+    @apply lg:container mx-auto space-y-8 lg:space-y-14;
   }
   .section-header {
-    @apply max-w-xl space-y-6;
+    @apply max-w-xl space-y-6 px-4 lg:px-0;
   }
   .hero {
-    @apply max-w-2xl space-y-8 pb-20;
+    @apply max-w-2xl space-y-6 lg:space-y-8 pb-8 lg:pb-20 px-4 lg:px-0;
   }
   .section-header-centered {
     @apply section-header flex flex-col justify-center text-center mx-auto;

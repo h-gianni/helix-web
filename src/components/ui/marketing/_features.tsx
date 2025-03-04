@@ -53,7 +53,7 @@ const features = [
 ];
 
 export const Features = () => (
-  <section className="bg-white">
+  <section id="features" className="bg-white">
     <div className="section-container">
       <div className="section-header-centered">
         <div>
@@ -71,7 +71,7 @@ export const Features = () => (
       {features.map((feature, index) => (
         <div
           key={index}
-          className={`flex flex-col pt-8 ${
+          className={`flex flex-col lg:pt-8 ${
             feature.reverse ? "lg:flex-row" : "lg:flex-row-reverse"
           } gap-10 items-center`}
         >
