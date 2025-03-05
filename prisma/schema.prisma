@@ -84,7 +84,7 @@ model AppUser {
   teamMembers      TeamMember[]
   teams          GTeam[]    @relation("TeamOwner")
   createdActions OrgAction[]
-  orgname OrgName[]
+  orgName OrgName[]
   
 
   @@map("app_users")

@@ -1,4 +1,4 @@
-// app/api/business-activities/route.ts
+// app/api/org-activities/route.ts
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
@@ -73,7 +73,7 @@ export async function GET(request: Request) {
         updatedAt: true,
         deletedAt: true,
         customFields: true,
-        activity: {
+        action: {
           select: {
             id: true,
             name: true,
@@ -96,13 +96,13 @@ export async function GET(request: Request) {
         },
         _count: {
           select: {
-            ratings: true
+            scores: true
           }
         }
       },
       orderBy: [
         {
-          activity: {
+          action: {
             category: {
               name: 'asc'
             }

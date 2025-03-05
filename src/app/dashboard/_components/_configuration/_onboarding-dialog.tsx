@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,8 +9,14 @@ import {
 } from "@/components/ui/core/Dialog";
 import { Button } from "@/components/ui/core/Button";
 import { Progress } from "@/components/ui/core/Progress";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+// import { useToast } from '@/components/ui/core/Toast';
 import { useConfigStore } from '@/store/config-store';
+import { 
+  useOnboardingStore,
+  useCompleteOnboarding,
+  useStepValidation
+} from '@/store/onboarding-store';
 import OrganizationConfig from "./_organization";
 import ActionsConfig from "./_actions";
 import TeamSetup from "./_teams";
@@ -36,37 +42,111 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
   onClose,
   onCompleteSetup,
 }) => {
-  const [currentStep, setCurrentStep] = React.useState(0);
-  const [selectedCategory, setSelectedCategory] = React.useState("engineering");
-
-  // Get the first category from action categories on initial load
-  const { config } = useConfigStore();
+  //const { toast } = useToast();
+  const { validateStep } = useStepValidation();
+  const config = useConfigStore((state) => state.config);
+  
+  // Onboarding store state
+  const { 
+    currentStep, 
+    setCurrentStep,
+    selectedCategory, 
+    setSelectedCategory,
+    isCompleting,
+    error 
+  } = useOnboardingStore();
+  
+  // Mutation for completing onboarding
+  const completeOnboardingMutation = useCompleteOnboarding();
 
   const isLastStep = currentStep === steps.length - 1;
   const isFirstStep = currentStep === 0;
+  
+  // Get current step info
+  const currentStepId = steps[currentStep].id;
+  const isStepValid = validateStep(currentStepId);
 
-  const handleNext = () => {
+  // Debug log whenever important state changes
+  useEffect(() => {
+    if (currentStepId === "team") {
+      console.log("Teams validation:", {
+        teams: config.teams,
+        isValid: isStepValid,
+        teamCount: config.teams.length,
+        teamsWithNames: config.teams.filter(t => !!t.name?.trim()).length,
+        teamsWithFunctions: config.teams.filter(t => t.functions?.length > 0).length
+      });
+    }
+  }, [currentStepId, config.teams, isStepValid]);
 
-  // You can save the current category before moving to the next step
-  if (steps[currentStep].id === "activities") {
-    // You could potentially store the last selected category in the config store
-    // for persistence if needed
-  }
-
-
-    if (isLastStep) {
-      onCompleteSetup();
+  const handleNext = async () => {
+    console.log("Next clicked:", { 
+      currentStepId, 
+      isStepValid,
+      teams: currentStepId === "team" ? config.teams : 'not-team-step'
+    });
+    
+    // If step isn't valid, don't proceed, but show why
+    if (!isStepValid) {
+      switch (currentStepId) {
+        case "org":
+          // toast({
+          //   title: "Organization name required",
+          //   description: "Please enter your organization name",
+          //   variant: "destructive"
+          // });
+          console.log("Organization name required")
+          break;
+        case "activities":
+          // toast({
+          //   title: "Activities required",
+          //   description: "Please select at least one activity",
+          //   variant: "destructive"
+          // });
+          console.log("Activities required")
+          break; 
+        case "team":
+          // toast({
+          //   title: "Team setup incomplete",
+          //   description: "Each team must have a name and at least one function",
+          //   variant: "destructive"
+          // });
+          console.log("Team setup incomplete")
+          break;
+      }
       return;
     }
-    setCurrentStep((prev) => prev + 1);
+
+    if (isLastStep) {
+      try {
+        // Complete onboarding by saving to the database
+        const result = await completeOnboardingMutation.mutateAsync();
+        
+        // Show success toast
+        // toast({
+        //   title: "Onboarding Completed!",
+        //   description: `Created ${result.teams.length} teams with ${result.activitiesCount} activities`,
+        //   variant: "success",
+        // });
+        console.log("Onboarding completed!");
+        
+        // Call the completion callback
+        onCompleteSetup();
+      } catch (err) {
+        // Toast is handled by the mutation
+      }
+      return;
+    }
+    
+    setCurrentStep(currentStep + 1);
   };
 
   const handleBack = () => {
-    setCurrentStep((prev) => prev - 1);
+    setCurrentStep(currentStep - 1);
   };
 
   const renderStepContent = () => {
-    switch (steps[currentStep].id) {
+    switch (currentStepId) {
       case "org":
         return <OrganizationConfig />;
 
@@ -81,16 +161,28 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
       case "team":
         return <TeamSetup />;
 
-        case "summary":
-          return (
-            <div className="space-y-4">
-              <OrganizationSummary />
-              <TeamsSummary onEdit={() => setCurrentStep(2)} variant="setup" />
-              <OrgActionsSummary  />
-            </div>
-          );
-      }
-    };
+      case "summary":
+        return (
+          <div className="space-y-6">
+            <OrganizationSummary  />
+            <OrgActionsSummary 
+              // onEdit={() => setCurrentStep(1)} 
+              // selectedCategory={selectedCategory}
+            />
+            <TeamsSummary 
+              onEdit={() => setCurrentStep(2)} 
+              variant="setup" 
+            />
+            
+            {error && (
+              <div className="p-4 border border-destructive/50 bg-destructive/10 rounded-md text-destructive">
+                {error}
+              </div>
+            )}
+          </div>
+        );
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -121,18 +213,26 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
             <Button
               variant="outline"
               onClick={handleBack}
-              disabled={isFirstStep}
+              disabled={isFirstStep || isCompleting}
             >
-              <ArrowLeft />
+              <ArrowLeft className="mr-2" />
               Back
             </Button>
-            <Button onClick={handleNext}>
-              {isLastStep ? (
+            <Button 
+              onClick={handleNext}
+              disabled={isCompleting || !isStepValid}
+            >
+              {isCompleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : isLastStep ? (
                 "Complete Setup"
               ) : (
                 <>
                   Next
-                  <ArrowRight />
+                  <ArrowRight className="ml-2" />
                 </>
               )}
             </Button>

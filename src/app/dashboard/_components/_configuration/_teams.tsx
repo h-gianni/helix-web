@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/core/Input';
 import { Button } from '@/components/ui/core/Button';
@@ -9,13 +9,6 @@ import { actionsCategories, activityData } from "@/data/org-actions-data";
 import { useConfigStore } from '@/store/config-store';
 import { useActions } from '@/store/action-store';
 
-interface Team {
-  id: string;
-  name: string;
-  functions: string[];
-  categories: string[]; // Add categories to team interface
-}
-
 const TeamSetup = () => {
   const selectedActivities = useConfigStore((state) => state.config.activities.selected);
   const selectedByCategory = useConfigStore((state) => state.config.activities.selectedByCategory || {});
@@ -23,7 +16,7 @@ const TeamSetup = () => {
   const teams = useConfigStore((state) => state.config.teams);
   
   // Get action categories data
-  const { data: actionCategories, isLoading } = useActions();
+  const { data: actionCategories } = useActions();
 
   // Get all selected category IDs
   const selectedCategoryIds = Object.keys(selectedByCategory);
@@ -38,17 +31,29 @@ const TeamSetup = () => {
       .map(([key]) => key)
   )];
 
+  // Initialize teams with default values if none exist
   useEffect(() => {
-    if (teams.length === 0) {
+    if (teams.length === 0 && selectedFunctions.length > 0) {
       updateTeams([{ 
-        id: '1', 
+        id: 'temp-' + Date.now(), 
         name: '', 
-        functions: selectedFunctions,
+        functions: [selectedFunctions[0]], // Initialize with first function
         categories: selectedCategoryIds // Initialize with all selected categories
       }]);
-    } else {
-      // Update existing teams to have the categories property if they don't already
+    } else if (teams.length > 0) {
+      // Ensure all teams have at least one function 
       const updatedTeams = teams.map(team => {
+        if (!team.functions || team.functions.length === 0) {
+          return {
+            ...team,
+            functions: selectedFunctions.length > 0 ? [selectedFunctions[0]] : []
+          };
+        }
+        return team;
+      });
+      
+      // Also ensure categories are assigned
+      const teamsWithCategories = updatedTeams.map(team => {
         if (!team.categories) {
           return {
             ...team,
@@ -58,31 +63,38 @@ const TeamSetup = () => {
         return team;
       });
       
-      if (JSON.stringify(updatedTeams) !== JSON.stringify(teams)) {
-        updateTeams(updatedTeams);
+      // Update store if changes were made
+      if (JSON.stringify(teams) !== JSON.stringify(teamsWithCategories)) {
+        updateTeams(teamsWithCategories);
       }
     }
-  }, [selectedCategoryIds.length]);
+  }, [teams.length, selectedFunctions.length, selectedCategoryIds.length]);
 
-  const handleTeamNameChange = (teamId: string, name: string) => {
+  const handleTeamNameChange = (teamId, name) => {
     updateTeams(teams.map(team => 
       team.id === teamId ? { ...team, name } : team
     ));
   };
 
-  const handleFunctionToggle = (teamId: string, functionName: string) => {
+  const handleFunctionToggle = (teamId, functionName) => {
     updateTeams(teams.map(team => {
       if (team.id === teamId) {
         const functions = team.functions.includes(functionName)
           ? team.functions.filter(f => f !== functionName)
           : [...team.functions, functionName];
+          
+        // Don't allow removing the last function
+        if (functions.length === 0) {
+          return team;
+        }
+        
         return { ...team, functions };
       }
       return team;
     }));
   };
 
-  const handleCategoryToggle = (teamId: string, categoryId: string) => {
+  const handleCategoryToggle = (teamId, categoryId) => {
     updateTeams(teams.map(team => {
       if (team.id === teamId) {
         const categories = team.categories || [];
@@ -97,19 +109,25 @@ const TeamSetup = () => {
 
   const addTeam = () => {
     updateTeams([...teams, { 
-      id: String(Date.now()), 
+      id: 'temp-' + Date.now(), 
       name: '', 
-      functions: selectedFunctions,
+      // Always initialize with first function to ensure validation passes
+      functions: selectedFunctions.length > 0 ? [selectedFunctions[0]] : [],
       categories: selectedCategoryIds // Initialize with all selected categories
     }]);
   };
 
-  const removeTeam = (teamId: string) => {
+  const removeTeam = (teamId) => {
+    // Prevent removing the last team
+    if (teams.length <= 1) {
+      return;
+    }
+    
     updateTeams(teams.filter(team => team.id !== teamId));
   };
 
   // Get category name by ID
-  const getCategoryNameById = (categoryId: string) => {
+  const getCategoryNameById = (categoryId) => {
     if (!actionCategories) return 'Loading...';
     
     const category = actionCategories.find(cat => cat.id === categoryId);
@@ -117,7 +135,7 @@ const TeamSetup = () => {
   };
 
   // Get action count for a category
-  const getActionCountForCategory = (categoryId: string) => {
+  const getActionCountForCategory = (categoryId) => {
     return selectedByCategory[categoryId]?.length || 0;
   };
 
@@ -131,7 +149,7 @@ const TeamSetup = () => {
                 <Label htmlFor={`team-name-${team.id}`}>Team name</Label>
                 <Input
                   id={`team-name-${team.id}`}
-                  value={team.name}
+                  value={team.name || ""}
                   onChange={(e) => handleTeamNameChange(team.id, e.target.value)}
                   placeholder="Enter a fun or descriptive name"
                   className="max-w-copy-sm"
@@ -160,19 +178,20 @@ const TeamSetup = () => {
                 <Label>Team functions</Label>
                 <div className="flex gap-6">
                   {selectedFunctions.map((func) => {
-                    const functionActivities = activityData[func].filter(activity => 
+                    const functionActivities = activityData[func]?.filter(activity => 
                       selectedActivities.includes(activity)
-                    );
+                    ) || [];
+                    
                     return (
                       <div key={func} className="flex items-center space-x-2">
                         <Checkbox
                           id={`${team.id}-${func}`}
-                          checked={team.functions.includes(func)}
+                          checked={(team.functions || []).includes(func)}
                           onCheckedChange={() => {
-                            const willUncheck = team.functions.includes(func);
-                            const remainingFunctions = team.functions.filter(f => f !== func);
-                            if (willUncheck && remainingFunctions.length === 0) {
-                              return; // Prevent unchecking if it's the last function
+                            // Only toggle if it won't result in no functions
+                            const willUncheck = (team.functions || []).includes(func);
+                            if (willUncheck && (team.functions || []).length <= 1) {
+                              return; // Don't uncheck if it's the only function
                             }
                             handleFunctionToggle(team.id, func);
                           }}
@@ -191,7 +210,7 @@ const TeamSetup = () => {
             )}
 
             {/* Category selection section */}
-            {!isLoading && selectedCategoryIds.length > 0 && (
+            {actionCategories && selectedCategoryIds.length > 0 && (
               <div className="space-y-1.5 border-t pt-4 mt-4">
                 <Label>Action Categories</Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -223,7 +242,7 @@ const TeamSetup = () => {
         onClick={addTeam}
         className="w-full"
       >
-        <Plus />
+        <Plus className="mr-2" />
         Add another team
       </Button>
     </div>
