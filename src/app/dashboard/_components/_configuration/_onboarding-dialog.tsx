@@ -42,7 +42,7 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
   onClose,
   onCompleteSetup,
 }) => {
-  //const { toast } = useToast();
+  // const { toast } = useToast();
   const { validateStep } = useStepValidation();
   const config = useConfigStore((state) => state.config);
   
@@ -53,7 +53,8 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
     selectedCategory, 
     setSelectedCategory,
     isCompleting,
-    error 
+    error,
+    syncTeamCategories
   } = useOnboardingStore();
   
   // Mutation for completing onboarding
@@ -66,28 +67,29 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
   const currentStepId = steps[currentStep].id;
   const isStepValid = validateStep(currentStepId);
 
-  // Debug log whenever important state changes
+  // Sync categories to teams whenever moving between steps
   useEffect(() => {
     if (currentStepId === "team") {
-      console.log("Teams validation:", {
-        teams: config.teams,
-        isValid: isStepValid,
-        teamCount: config.teams.length,
-        teamsWithNames: config.teams.filter(t => !!t.name?.trim()).length,
-        teamsWithFunctions: config.teams.filter(t => t.functions?.length > 0).length
-      });
+      console.log("Syncing categories to teams in useEffect");
+      syncTeamCategories();
     }
-  }, [currentStepId, config.teams, isStepValid]);
+  }, [currentStepId, syncTeamCategories]);
+
+  // Additional sync when selected categories change
+  useEffect(() => {
+    if (currentStepId === "team" && 
+        Object.keys(config.activities.selectedByCategory || {}).length > 0) {
+      console.log("Categories changed, syncing to teams");
+      syncTeamCategories();
+    }
+  }, [config.activities.selectedByCategory, currentStepId, syncTeamCategories]);
 
   const handleNext = async () => {
-    console.log("Next clicked:", { 
-      currentStepId, 
-      isStepValid,
-      teams: currentStepId === "team" ? config.teams : 'not-team-step'
-    });
+    // Double-check validation before proceeding
+    const isCurrentlyValid = validateStep(currentStepId);
+    console.log(`Step ${currentStepId} is ${isCurrentlyValid ? 'valid' : 'invalid'}`);
     
-    // If step isn't valid, don't proceed, but show why
-    if (!isStepValid) {
+    if (!isCurrentlyValid) {
       switch (currentStepId) {
         case "org":
           // toast({
@@ -95,7 +97,6 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
           //   description: "Please enter your organization name",
           //   variant: "destructive"
           // });
-          console.log("Organization name required")
           break;
         case "activities":
           // toast({
@@ -103,37 +104,49 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
           //   description: "Please select at least one activity",
           //   variant: "destructive"
           // });
-          console.log("Activities required")
-          break; 
+          break;
         case "team":
           // toast({
           //   title: "Team setup incomplete",
           //   description: "Each team must have a name and at least one function",
           //   variant: "destructive"
           // });
-          console.log("Team setup incomplete")
+          
+          // Additional debug info in console
+          console.error("Team validation failed:", {
+            teams: config.teams,
+            teamsWithNames: config.teams.filter(t => !!t.name?.trim()).length,
+            teamsWithFunctions: config.teams.filter(t => 
+              t.functions && t.functions.length > 0
+            ).length,
+            teamsWithCategories: config.teams.filter(t => 
+              t.categories && t.categories.length > 0
+            ).length
+          });
           break;
       }
       return;
     }
 
+    // If moving to team step, ensure categories are synced
+    if (currentStepId === "activities" && steps[currentStep + 1].id === "team") {
+      // Sync categories before moving to the next step
+      syncTeamCategories();
+    }
+
     if (isLastStep) {
       try {
-        // Complete onboarding by saving to the database
         const result = await completeOnboardingMutation.mutateAsync();
         
-        // Show success toast
         // toast({
         //   title: "Onboarding Completed!",
         //   description: `Created ${result.teams.length} teams with ${result.activitiesCount} activities`,
         //   variant: "success",
         // });
-        console.log("Onboarding completed!");
         
-        // Call the completion callback
         onCompleteSetup();
       } catch (err) {
-        // Toast is handled by the mutation
+        // Error handling is done in the mutation
       }
       return;
     }
