@@ -85,11 +85,11 @@ export const Features = () => (
             <h3 className="marketing-h3">{feature.title}</h3>
               <div className="grid grid-cols-1 gap-4 max-w-xs">
                 <div className="space-y-1">
-                  <h4 className="marketing-h5 text-foreground">Feature</h4>
+                  <h4 className="marketing-h5">Feature</h4>
                   <p className="marketing-body"> {feature.feature} </p>
                 </div>
                 <div className="space-y-1">
-                  <h4 className="marketing-h5 text-foreground">Benefit</h4>
+                  <h4 className="marketing-h5">Benefit</h4>
                   <p className="marketing-body"> {feature.benefit} </p>
                 </div>
               </div>

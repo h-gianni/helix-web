@@ -46,7 +46,7 @@ export const How = () => (
           <div key={index} className="flex items-stretch gap-6 relative">
             {/* Step Indicator (Dot & Vertical Line) */}
             <div className="flex flex-col items-center">
-              <Circle className="size-4 fill-foreground-muted/25 text-background" />
+              <Circle className="size-4 fill-accent text-background" />
               {index !== steps.length - 1 && (
                 <div className="w-1 bg-foreground-muted/10 h-full min-h-[50px] mt-1"></div>
               )}
@@ -55,7 +55,7 @@ export const How = () => (
             {/* Step Content */}
             <div className="space-y-4 max-w-lg -mt-1">
               <div>
-                <Badge variant="secondary">Step {index + 1}</Badge>
+                <Badge variant="secondary" className="bg-accent text-primary">Step {index + 1}</Badge>
               </div>
               <div className="space-y-1.5">
               <h3 className="marketing-h4">{step.title}</h3>

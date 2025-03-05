@@ -15,7 +15,6 @@ import { CTA1 } from "../../components/ui/marketing/_cta1";
 import { CTA2 } from "../../components/ui/marketing/_cta2";
 import { Blog } from "../../components/ui/marketing/_blog";
 import { FAQ } from "../../components/ui/marketing/_faq";
-import { Contact } from "../../components/ui/marketing/_contact";
 import { OurStory } from "../../components/ui/marketing/_story";
 import { Footer } from "../../components/ui/marketing/_footer";
 

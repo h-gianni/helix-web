@@ -9,7 +9,7 @@ import { ArrowRight, Film } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
 import Image from "next/image";
-// import heroImage from '@/assets/marketing/hero.webp'
+import heroImage from "@/assets/marketing/hero.avif";
 
 export const Hero = () => {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -30,15 +30,17 @@ export const Hero = () => {
   }, [titleNumber, titles]);
 
   return (
-    <section className="bg-white">
+    <section className="bg-white pb-0 px-0">
       <div className="section-container">
         <div className="hero-centered">
           <div className="lg:hidden flex flex-col space-y-2 pt-6 pb-2">
-            <div className="size-10 rounded-full bg-primary mx-auto"></div>
+            <div className="size-10 rounded-full bg-accent mx-auto"></div>
             <div className="marketing-h2">JustScore</div>
           </div>
           <div>
-            <Badge variant="secondary">Powered by AI, for humans</Badge>
+            <Badge variant="secondary">
+              Powered by AI, for humans
+            </Badge>
             {/* <Button variant="secondary" size="sm" className="gap-4">
               Read our launch article <ArrowRight className="w-4 h-4" />
             </Button> */}
@@ -86,25 +88,35 @@ export const Hero = () => {
               </Button>
             </SignUpButton>
           </div>
-          <p className="marketing-body-xs text-foreground-muted text-left lg:text-center max-w-xs lg:max-w-sm mx-auto pt-0 lg:pt-8">
-            UpScore is a mobile and desktop app that lets you score your team’s
-            performance in real-time—in less than 20 seconds per entry. Set up
-            your organization in just 5 minutes, and let our AI transform your
-            scores into clear, actionable dashboards and periodic performance
-            reviews in your desired format. It’s effortless, data-driven
-            leadership that delivers measurable ROI.
-          </p>
         </div>
       </div>
+      <div className="relative w-full flex flex-col items-center mt-4 md:mt-0">
+        <p className="hidden md:block absolute top-0 z-20 bg-white rounded-b-lg marketing-body-xs text-foreground-muted text-center max-w-xs lg:max-w-xs mx-auto px-4 py-2">
+          UpScore is a mobile and desktop app that lets you score your team’s
+          performance in real-time—in less than 20 seconds per entry. Set up
+          your organization in just 5 minutes, and let our AI transform your
+          scores into clear, actionable dashboards and periodic performance
+          reviews in your desired format. It’s effortless, data-driven
+          leadership that delivers measurable ROI.
+        </p>
 
-      <Image
-        // src={heroImage}
-        src={""}
-        alt="Hero Image"
-        width={1080}
-        height={600}
-        className="mx-auto min-h-56 bg-muted"
-      />
+        {/* SVG Pointer */}
+        <svg
+          className="hidden md:block absolute top-0 left-0 w-full h-[240px] z-10"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <polygon points="0,0 100,0 50,100" fill="white" />
+        </svg>
+
+        <Image
+          src={heroImage}
+          alt="Hero Image"
+          width={1080}
+          height={600}
+          className="relative z-0 mx-auto min-h-56 bg-muted"
+        />
+      </div>
     </section>
   );
 };

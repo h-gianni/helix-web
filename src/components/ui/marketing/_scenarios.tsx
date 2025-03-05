@@ -110,7 +110,7 @@ export const Scenarios = () => (
             >
               {/* <User className="w-8 h-8 stroke-1" /> */}
               <div>
-                <Badge variant="secondary">Scenario {index + 1}</Badge>
+                <Badge variant="secondary" className="bg-accent text-primary">Scenario {index + 1}</Badge>
               </div>
 
               <div className="flex flex-col gap-4 lg:gap-6 flex-1">

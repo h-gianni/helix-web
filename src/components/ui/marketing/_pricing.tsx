@@ -161,10 +161,10 @@ export const Pricing = () => (
         </Card>
 
         {/* Professional Plan */}
-        <Card className="p-8 shadow-lg flex flex-col justify-between border-primary">
+        <Card className="p-8 shadow-lg flex flex-col justify-between border-accent border-2">
         <div className="space-y-4">
           <div className="relative bg-muted/50 rounded-md h-32">
-            <Badge className="absolute top-0">Leaders' unfair advantage</Badge>
+            <Badge className="absolute top-0 bg-accent text-primary">Leaders' unfair advantage</Badge>
           </div>
             <h3 className="marketing-h3">Professional</h3>
             <p className="marketing-body-sm">

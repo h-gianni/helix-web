@@ -64,7 +64,7 @@ const DesktopNavigation = () => {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem> */}
-
+        
         {/* <NavigationMenuItem>
           <NavigationMenuTrigger>Features and benefits</NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -81,7 +81,7 @@ const DesktopNavigation = () => {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem> */}
-
+        
         {navConfig.mainLinks.map((link) => (
           <NavigationMenuItem key={link.title}>
             <Link href={link.href} legacyBehavior passHref>
@@ -103,8 +103,8 @@ export const Navbar = () => {
         {/* LEFT: Logo */}
         <div className="flex items-center gap-4 lg:gap-6">
           <div className="flex items-center gap-2">
-            <span className="size-6 rounded-full bg-primary"></span>
-            <p className="marketing-h4 leading-[0]">JustScore</p>
+            <span className="size-6 rounded-full bg-accent"></span>
+          <p className="marketing-h4">ScoreAndGo</p>
           </div>
 
           {/* DESKTOP NAVIGATION */}
