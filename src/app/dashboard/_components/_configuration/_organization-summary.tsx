@@ -17,9 +17,9 @@ const OrganizationSummary = () => {
   
   useEffect(() => {
     // Debug logging to see what's coming back from the API
-    console.log("Profile data:", profile);
-    console.log("Loading state:", isLoading);
-    console.log("Error state:", error);
+    // console.log("Profile data:", profile);
+    // console.log("Loading state:", isLoading);
+    // console.log("Error state:", error);
     
     // Check if profile exists and has the expected structure
     if (profile) {

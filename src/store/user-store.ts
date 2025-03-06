@@ -90,14 +90,6 @@ export const userProfileApi = {
     }
 
 
-// React Query hooks
-// export function useProfile() {
-//     return useQuery({
-//       queryKey: ['user-profile'],
-//       queryFn: userProfileApi.getProfile,
-//       staleTime: 5 * 60 * 1000 // 5 minutes
-//     });
-//   }
   
   export function useUpdateProfile() {
     const queryClient = useQueryClient();
@@ -146,6 +138,7 @@ interface ProfileStoreProps {
     initializeFromProfile: (profile) => {
         // Check if the profile has an orgName field with data
         let orgNameValue = '';
+        
         
         if (profile.orgName && profile.orgName.length > 0) {
           orgNameValue = profile.orgName[0].name;
