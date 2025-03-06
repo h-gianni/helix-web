@@ -9,12 +9,7 @@ import { ProfileCard } from "@/components/ui/composite/Profile-card";
 import { ProfileModal } from "../_components/_profile/_profile-modal";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Loader } from "@/components/ui/core/Loader";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/core/Card";
+
 import { Users, Target, AlertCircle } from "lucide-react";
 import { useConfigStore } from "@/store/config-store";
 import OrganizationSummary from "../_components/_configuration/_organization-summary";
@@ -125,17 +120,17 @@ export default function SettingsPage() {
             />
             
           <OrganizationSummary
-            onEdit={() =>
-              router.push("/dashboard/settings/business-activities")
-            }
+            // onEdit={() =>
+            //   router.push("/dashboard/settings/business-activities")
+            // }
           />
           <TeamsSummary
             onEdit={() => router.push("/dashboard/settings/teams")}
           />
           <OrgActionsSummary
-            onEdit={() =>
-              router.push("/dashboard/settings/business-activities")
-            }
+            // onEdit={() =>
+            //   router.push("/dashboard/settings/business-activities")
+            // }
           />
 
         <ProfileModal

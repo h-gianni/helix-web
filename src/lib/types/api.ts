@@ -7,13 +7,13 @@ export type JsonValue = string | number | boolean | null | JsonValue[] | { [key:
 export type ApiResponse<T> =
   | {
       success: true;
-      data: T;
+      data?: T;
       error?: never;
     }
   | {
       success: false;
       data?: never;
-      error: string;
+      error?: string;
     };
 
 // Team types
