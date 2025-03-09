@@ -4,6 +4,7 @@ import type { ApiResponse, BusinessActivityResponse as ActivityResponse } from "
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 
+
 export const teamActivitiesApi = {
     getActivities: async () => {
       const { data } = await apiClient.get<ApiResponse<ActivityResponse[]>>('/business-activities')

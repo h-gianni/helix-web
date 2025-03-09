@@ -1,4 +1,4 @@
-// app/api/business-activities/route.ts
+// app/api/org-activities/route.ts
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
@@ -73,7 +73,7 @@ export async function GET(request: Request) {
         updatedAt: true,
         deletedAt: true,
         customFields: true,
-        activity: {
+        action: {
           select: {
             id: true,
             name: true,
@@ -96,13 +96,13 @@ export async function GET(request: Request) {
         },
         _count: {
           select: {
-            ratings: true
+            scores: true
           }
         }
       },
       orderBy: [
         {
-          activity: {
+          action: {
             category: {
               name: 'asc'
             }
@@ -115,9 +115,9 @@ export async function GET(request: Request) {
 
     const activitiesResponse: ActivityResponse[] = activities.map((businessActivity) => ({
       id: businessActivity.id,
-      name: businessActivity.activity.name,
-      description: businessActivity.activity.description,
-      category: businessActivity.activity.category,
+      name: businessActivity.action.name,
+      description: businessActivity.action.description,
+      category: businessActivity.action.category,
       priority: businessActivity.priority,
       status: businessActivity.status,
       dueDate: businessActivity.dueDate,
@@ -128,7 +128,7 @@ export async function GET(request: Request) {
       deletedAt: businessActivity.deletedAt,
       customFields: businessActivity.customFields as JsonValue | undefined,
       team: businessActivity.team,
-      impactScale: businessActivity.activity.impactScale,
+      impactScale: businessActivity.action.impactScale,
       _count: businessActivity._count
     }));
 

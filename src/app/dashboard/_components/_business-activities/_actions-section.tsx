@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/core/Table";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Loader } from "@/components/ui/core/Loader";
-import { Target, Edit, Trash2, AlertCircle, Heart } from "lucide-react";
+import { Target, Edit, Trash2, AlertCircle } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -32,12 +32,9 @@ import {
   PaginationPrevious,
 } from "@/components/ui/core/Pagination";
 import { Card, CardContent } from "@/components/ui/core/Card";
-import { Badge } from "@/components/ui/core/Badge";
 import { useActivities, useDeleteActivity, useActivitiesStore } from '@/store/business-activity-store';
 import { useEffect } from "react";
-// import type { BusinessActivityResponse } from "@/lib/types/api";
-import { ActivityModal } from "./_actions-modal";
-import type { ApiResponse, BusinessActivityResponse } from "@/lib/types/api";
+import type { BusinessActivityResponse } from "@/lib/types/api";
 
 interface ActivitiesSectionProps {
   shouldRefresh: boolean;
@@ -89,7 +86,6 @@ export function ActivitiesSection({
     }
   };
 
-
   useEffect(() => {
     if (activities) {
       console.log('Activities data:', activities);
@@ -104,7 +100,7 @@ export function ActivitiesSection({
     );
   }
 
-  if (!activities || activities.length === 0) {
+  if(!activities || !Array.isArray(activities) || activities.length === 0) {
     return (
       <Card>
         <CardContent>
@@ -163,63 +159,72 @@ export function ActivitiesSection({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {activities?.map((activity: any) => (
-            <TableRow key={activity.id}>
-              <TableCell>
-                <div className="flex flex-col">
-                  <span className="font-medium">{activity.name}</span>
-                  <span className="body-sm text-foreground-muted">
-                    {activity.description || "No description"}
+          {activities.map((activity) => {
+            // Make sure each field we're using is a primitive string or number
+            const activityName = typeof activity.name === 'string' ? activity.name : JSON.stringify(activity.name);
+            const activityDescription = typeof activity.description === 'string' ? activity.description : 'No description';
+            const activityCategory = typeof activity.category === 'string' ? activity.category : 'No category';
+            const activityId = activity.id;
+            const ratingsCount = activity._count?.ratings || 0;
+            
+            return (
+              <TableRow key={activityId}>
+                <TableCell>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{activityName}</span>
+                    <span className="body-sm text-foreground-muted">
+                      {activityDescription}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell className="text-sm text-foreground-muted w-0 whitespace-nowrap">
+                  {activityCategory}
+                </TableCell>
+                <TableCell className="text-center text-sm">
+                  10<span className="text-foreground-muted">/10</span>
+                </TableCell>
+                <TableCell className="text-center text-sm">
+                  8<span className="text-foreground-muted">/10</span>
+                </TableCell>
+                <TableCell className="text-center font-semibold">
+                  18
+                  <span className="text-foreground-muted text-sm font-normal">
+                    /20
                   </span>
-                </div>
-              </TableCell>
-              <TableCell className="text-sm text-foreground-muted w-0 whitespace-nowrap">
-                {activity.category || "No category"}
-              </TableCell>
-              <TableCell className="text-center text-sm">
-                10<span className="text-foreground-muted">/10</span>
-              </TableCell>
-              <TableCell className="text-center text-sm">
-                8<span className="text-foreground-muted">/10</span>
-              </TableCell>
-              <TableCell className="text-center font-semibold">
-                18
-                <span className="text-foreground-muted text-sm font-normal">
-                  /20
-                </span>
-              </TableCell>
-              <TableCell className="text-center text-sm">
-                {activity._count?.ratings || 0}
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() => {
-                      setSelectedActivity(activity);
-                      setEditModalOpen(true);
-                    }}
-                    disabled={isLoading}
-                  >
-                    <Edit />
-                  </Button>
+                </TableCell>
+                <TableCell className="text-center text-sm">
+                  {ratingsCount}
+                </TableCell>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      onClick={() => {
+                        setSelectedActivity(activity);
+                        setEditModalOpen(true);
+                      }}
+                      disabled={isLoading}
+                    >
+                      <Edit />
+                    </Button>
 
-                  <Button
-                    variant="destructive-ghost"
-                    size="icon-sm"
-                    onClick={() => {
-                      setSelectedActivity(activity);
-                      setDeleteDialogOpen(true);
-                    }}
-                    disabled={isLoading}
-                  >
-                    <Trash2 />
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
+                    <Button
+                      variant="destructive-ghost"
+                      size="icon-sm"
+                      onClick={() => {
+                        setSelectedActivity(activity);
+                        setDeleteDialogOpen(true);
+                      }}
+                      disabled={isLoading}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
       <Pagination>
@@ -238,17 +243,6 @@ export function ActivitiesSection({
           </PaginationItem>
         </PaginationContent>
       </Pagination>
-
-      {/* Edit Modal */}
-      {/* <ActivityModal
-        isOpen={isEditModalOpen}
-        onClose={() => {
-          setEditModalOpen(false);
-          setSelectedActivity(null);
-        }}
-        activity={selectedActivity}
-        onSuccess={onUpdate}
-      /> */}
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog

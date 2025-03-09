@@ -57,7 +57,7 @@ export const GET = withErrorHandler(async (
     );
   }
 
-  const activities = await prisma.businessActivity.findMany({
+  const activities = await prisma.orgAction.findMany({
     where: {
       teamId: teamId,
       deletedAt: null,
@@ -66,7 +66,7 @@ export const GET = withErrorHandler(async (
       team: true,
       _count: {
         select: {
-          ratings: true,
+          scores: true,
         },
       },
     },
@@ -75,9 +75,9 @@ export const GET = withErrorHandler(async (
   // Transform the response to match the old format
   const transformedActivities = activities.map(activity => ({
     id: activity.id,
-    name: activity.name,
-    description: activity.description,
-    category: activity.category || '',
+    // name: activity.name,
+    // description: activity.description,
+    // category: activity.category || '',
     priority: activity.priority,
     status: activity.status,
     dueDate: activity.dueDate,
@@ -85,12 +85,12 @@ export const GET = withErrorHandler(async (
     createdAt: activity.createdAt,
     updatedAt: activity.updatedAt,
     deletedAt: activity.deletedAt,
-    ratingsCount: activity._count.ratings,
+    ratingsCount: activity._count.scores,
     addedAt: activity.createdAt,
     createdBy: activity.createdBy,
   }));
 
-  return NextResponse.json<ApiResponse<BusinessActivityResponse[]>>({
+  return NextResponse.json({
     success: true,
     data: transformedActivities,
   });

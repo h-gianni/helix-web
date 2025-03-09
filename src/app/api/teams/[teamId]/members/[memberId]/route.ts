@@ -5,7 +5,7 @@ import type {
   ApiResponse,
   UpdateTeamMemberInput,
   TeamMemberResponse,
-  TransactionClient,
+
 } from "@/lib/types/api";
 
 // Helper to get user from clerkId

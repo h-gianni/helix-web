@@ -19,7 +19,7 @@ interface MemberWithRatings {
     name: string | null;
     email: string;
   };
-  ratings: {
+  scores: {
     value: number;
   }[];
 }
@@ -53,7 +53,7 @@ export async function GET(
                 email: true,
               },
             },
-            ratings: {  // Changed from scores to ratings
+            scores: {  // Changed from scores to ratings
               select: {
                 value: true,
               },
@@ -77,11 +77,11 @@ export async function GET(
     // Map members to performance data
     const performanceData: MemberPerformance[] = team.teamMembers.map((member: MemberWithRatings) => {
       console.log('Processing member:', member.user.email);
-      console.log('Member ratings:', member.ratings.length);
+      console.log('Member ratings:', member.scores.length);
 
-      const totalRatings = member.ratings.length;
+      const totalRatings = member.scores.length;
       const averageRating = totalRatings > 0
-        ? member.ratings.reduce(
+        ? member.scores.reduce(
             (sum: number, rating: { value: number }) => sum + rating.value, 
             0
           ) / totalRatings

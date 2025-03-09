@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import type { ApiResponse, BusinessActivityResponse } from "@/lib/types/api";
+import type { ApiResponse, BusinessActivityResponse, JsonValue } from "@/lib/types/api";
 
 async function checkTeamAccess(teamId: string, userId: string) {
   const user = await prisma.appUser.findUnique({
@@ -59,28 +59,50 @@ export async function GET(request: Request) {
       );
     }
 
-    const activities = await prisma.businessActivity.findMany({
+    const orgActions = await prisma.orgAction.findMany({
       where: {
         teamId,
         deletedAt: null,
       },
       select: {
         id: true,
-        name: true,
-        description: true,
-        category: true,
+        actionId: true,
         priority: true,
         status: true,
         dueDate: true,
         teamId: true,
+        createdBy: true,
         createdAt: true,
         updatedAt: true,
-        ratings: {
+        deletedAt: true,
+        customFields: true,
+        action: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            impactScale: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+                description: true
+              }
+            }
+          }
+        },
+        team: {
+          select: {
+            id: true,
+            name: true,
+          }
+        },
+        scores: {
           select: {
             id: true,
             value: true,
             teamMemberId: true,
-            activityId: true,
+            actionId: true,
             createdAt: true,
             updatedAt: true,
             teamMember: {
@@ -99,7 +121,7 @@ export async function GET(request: Request) {
         },
         _count: {
           select: {
-            ratings: true,
+            scores: true,
           },
         },
       },
@@ -108,9 +130,35 @@ export async function GET(request: Request) {
       },
     });
 
+    // Transform OrgAction to BusinessActivityResponse
+    const businessActivities: any[] = orgActions.map(orgAction => ({
+      id: orgAction.id,
+      activityId: orgAction.actionId,
+      priority: orgAction.priority,
+      status: orgAction.status,
+      dueDate: orgAction.dueDate,
+      teamId: orgAction.teamId,
+      createdBy: orgAction.createdBy,
+      createdAt: orgAction.createdAt,
+      updatedAt: orgAction.updatedAt,
+      deletedAt: orgAction.deletedAt,
+      customFields: orgAction.customFields as JsonValue | undefined,
+      activity: {
+        id: orgAction.action.id,
+        name: orgAction.action.name,
+        description: orgAction.action.description,
+        impactScale: orgAction.action.impactScale,
+        category: orgAction.action.category
+      },
+      team: orgAction.team,
+      _count: {
+        scores: orgAction._count.scores
+      }
+    }));
+
     return NextResponse.json<ApiResponse<BusinessActivityResponse[]>>({
       success: true,
-      data: activities as BusinessActivityResponse[],
+      data: businessActivities,
     });
   } catch (error) {
     console.error("Error fetching business activities:", error);
@@ -135,12 +183,12 @@ export async function PATCH(
     }
 
     // First get the activity to check team access
-    const activity = await prisma.businessActivity.findUnique({
+    const orgAction = await prisma.orgAction.findUnique({
       where: { id: params.activityId },
       select: { teamId: true },
     });
 
-    if (!activity) {
+    if (!orgAction) {
       return NextResponse.json<ApiResponse<never>>(
         { success: false, error: "Business activity not found" },
         { status: 404 }
@@ -148,7 +196,7 @@ export async function PATCH(
     }
 
     // Check if user has access to the team
-    const hasAccess = await checkTeamAccess(activity.teamId, userId);
+    const hasAccess = await checkTeamAccess(orgAction.teamId, userId);
     if (!hasAccess) {
       return NextResponse.json<ApiResponse<never>>(
         { success: false, error: "Access denied" },
@@ -157,58 +205,87 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { name, description } = body;
+    const { status, priority, dueDate } = body;
 
-    const updatedActivity = await prisma.businessActivity.update({
+    // Update the OrgAction with the new data
+    const updatedOrgAction = await prisma.orgAction.update({
       where: { id: params.activityId },
       data: {
-        name: name?.trim(),
-        description: description?.trim() || null,
+        status: status,
+        priority: priority,
+        dueDate: dueDate,
+        // Note: We can't update name or description directly as they're part of the Action model
       },
       select: {
         id: true,
-        name: true,
-        description: true,
-        category: true,
+        actionId: true,
         priority: true,
         status: true,
         dueDate: true,
         teamId: true,
+        createdBy: true,
         createdAt: true,
         updatedAt: true,
-        ratings: {
+        deletedAt: true,
+        customFields: true,
+        action: {
           select: {
             id: true,
-            value: true,
-            teamMemberId: true,
-            activityId: true,
-            createdAt: true,
-            updatedAt: true,
-            teamMember: {
+            name: true,
+            description: true,
+            impactScale: true,
+            category: {
               select: {
                 id: true,
-                user: {
-                  select: {
-                    id: true,
-                    email: true,
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
+                name: true,
+                description: true
+              }
+            }
+          }
+        },
+        team: {
+          select: {
+            id: true,
+            name: true,
+          }
         },
         _count: {
           select: {
-            ratings: true,
+            scores: true,
           },
         },
       },
     });
 
+    // Transform to BusinessActivityResponse
+    const businessActivity: BusinessActivityResponse = {
+      id: updatedOrgAction.id,
+      activityId: updatedOrgAction.actionId,
+      priority: updatedOrgAction.priority,
+      status: updatedOrgAction.status,
+      dueDate: updatedOrgAction.dueDate,
+      teamId: updatedOrgAction.teamId,
+      createdBy: updatedOrgAction.createdBy,
+      createdAt: updatedOrgAction.createdAt,
+      updatedAt: updatedOrgAction.updatedAt,
+      deletedAt: updatedOrgAction.deletedAt,
+      customFields: updatedOrgAction.customFields as JsonValue | undefined,
+      activity: {
+        id: updatedOrgAction.action.id,
+        name: updatedOrgAction.action.name,
+        description: updatedOrgAction.action.description,
+        impactScale: updatedOrgAction.action.impactScale,
+        category: updatedOrgAction.action.category
+      },
+      team: updatedOrgAction.team,
+      _count: {
+        scores: updatedOrgAction._count.scores
+      }
+    };
+
     return NextResponse.json<ApiResponse<BusinessActivityResponse>>({
       success: true,
-      data: updatedActivity as BusinessActivityResponse,
+      data: businessActivity,
     });
   } catch (error) {
     console.error("Error updating business activity:", error);
@@ -233,12 +310,12 @@ export async function DELETE(
     }
 
     // First get the activity to check team access
-    const activity = await prisma.businessActivity.findUnique({
+    const orgAction = await prisma.orgAction.findUnique({
       where: { id: params.activityId },
       select: { teamId: true },
     });
 
-    if (!activity) {
+    if (!orgAction) {
       return NextResponse.json<ApiResponse<never>>(
         { success: false, error: "Business activity not found" },
         { status: 404 }
@@ -246,7 +323,7 @@ export async function DELETE(
     }
 
     // Check if user has access to the team
-    const hasAccess = await checkTeamAccess(activity.teamId, userId);
+    const hasAccess = await checkTeamAccess(orgAction.teamId, userId);
     if (!hasAccess) {
       return NextResponse.json<ApiResponse<never>>(
         { success: false, error: "Access denied" },
@@ -255,7 +332,7 @@ export async function DELETE(
     }
 
     // Soft delete instead of hard delete
-    await prisma.businessActivity.update({
+    await prisma.orgAction.update({
       where: { id: params.activityId },
       data: { deletedAt: new Date() },
     });

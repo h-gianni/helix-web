@@ -63,6 +63,7 @@ export default function TeamActivitiesConfig({
 
   useEffect(() => {
     if (teamActivities.length > 0) {
+      console.log("Setting selectedActivityIds:", teamActivities.map((activity) => activity.id));
       setSelectedActivityIds(teamActivities.map((activity) => activity.id));
     }
   }, [teamActivities, setSelectedActivityIds]);
@@ -148,48 +149,51 @@ export default function TeamActivitiesConfig({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {activities.map((activity) => (
-                <TableRow key={activity.id}>
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedActivityIds.includes(activity.id)}
-                      onCheckedChange={() => toggleActivity(activity.id)}
-                      disabled={isLoading}
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-col">
-                      <span className="font-medium">{activity.name}</span>
-                      <span className="body-sm text-foreground-muted">
-                        {activity.description || "No description"}
+              {activities.map((activity) => {
+                console.log("Activity orgActivity:", activity);
+                return (
+                  <TableRow key={activity.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedActivityIds.includes(activity.id)}
+                        onCheckedChange={() => toggleActivity(activity.id)}
+                        disabled={isLoading}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-medium">{activity.name}</span>
+                        <span className="body-sm text-foreground-muted">
+                          {activity.description || "No description"}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm text-foreground-muted w-0 whitespace-nowrap">
+                      {/* {activity.category || "No category"} */}
+                    </TableCell>
+                    <TableCell className="text-center text-sm">
+                      10<span className="text-foreground-muted">/10</span>
+                    </TableCell>
+                    <TableCell className="text-center text-sm">
+                      8<span className="text-foreground-muted">/10</span>
+                    </TableCell>
+                    <TableCell className="text-center font-semibold">
+                      18
+                      <span className="text-foreground-muted text-sm font-normal">
+                        /20
                       </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm text-foreground-muted w-0 whitespace-nowrap">
-                    {activity.category || "No category"}
-                  </TableCell>
-                  <TableCell className="text-center text-sm">
-                    10<span className="text-foreground-muted">/10</span>
-                  </TableCell>
-                  <TableCell className="text-center text-sm">
-                    8<span className="text-foreground-muted">/10</span>
-                  </TableCell>
-                  <TableCell className="text-center font-semibold">
-                    18
-                    <span className="text-foreground-muted text-sm font-normal">
-                      /20
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Toggle size="sm">
-                      <Heart className="text-foreground-muted" />
-                    </Toggle>
-                  </TableCell>
-                  <TableCell className="text-center text-foreground-muted">
-                    {activity._count?.ratings || 0}
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Toggle size="sm">
+                        <Heart className="text-foreground-muted" />
+                      </Toggle>
+                    </TableCell>
+                    <TableCell className="text-center text-foreground-muted">
+                      {activity._count?.scores || 0}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         )}
