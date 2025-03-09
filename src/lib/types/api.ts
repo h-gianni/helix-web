@@ -7,13 +7,13 @@ export type JsonValue = string | number | boolean | null | JsonValue[] | { [key:
 export type ApiResponse<T> =
   | {
       success: true;
-      data: T;
+      data?: T;
       error?: never;
     }
   | {
       success: false;
       data?: never;
-      error: string;
+      error?: string;
     };
 
 // Team types
@@ -88,9 +88,35 @@ export interface ActivityData {
   category: CategoryResponse;
 }
 
-export interface BusinessActivityResponse {
+// export interface BusinessActivityResponse {
+//   id: string;
+//   activityId: string; // This was missing
+//   priority: Priority;
+//   status: OrgActionStatus;
+//   dueDate: Date | null;
+//   teamId: string;
+//   createdBy: string;
+//   createdAt: Date;
+//   updatedAt: Date;
+//   deletedAt: Date | null;
+//   customFields?: JsonValue;
+//   activity: ActivityData;
+//   team: {
+//     id: string;
+//     name: string;
+//   };
+//   _count?: {
+//     ratings: number;
+//   };
+// }
+
+export interface OrgActionResponse {
   id: string;
-  activityId: string; // This was missing
+  name: string;
+  description: string | null;
+  actionId: string;
+  category: CategoryResponse;
+
   priority: Priority;
   status: OrgActionStatus;
   dueDate: Date | null;
@@ -100,32 +126,45 @@ export interface BusinessActivityResponse {
   updatedAt: Date;
   deletedAt: Date | null;
   customFields?: JsonValue;
-  activity: ActivityData;
+  activity: {  // Renamed from activity to match relation name in schema
+    id: string;
+    name: string;
+    description: string | null;
+    impactScale: number | null;
+    category: {
+      id: string;
+      name: string;
+      description: string | null;
+    };
+  };
   team: {
     id: string;
     name: string;
   };
   _count?: {
-    ratings: number;
+    scores: number;  // Changed from ratings to scores to match schema
   };
 }
 
-export interface OrgActionResponse {
-  id: string;
-  actionId: string;
-  priority: Priority;
-  status: OrgActionStatus;
-  dueDate: string | null;
-  teamId: string;
-  createdBy: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  customFields: Record<string, any> | null;
-  _count: {
-    scores: number;
-  };
-}
+// You can keep BusinessActivityResponse as an alias for backward compatibility
+export type BusinessActivityResponse = OrgActionResponse;
+
+// export interface OrgActionResponse {
+//   id: string;
+//   actionId: string;
+//   priority: Priority;
+//   status: OrgActionStatus;
+//   dueDate: string | null;
+//   teamId: string;
+//   createdBy: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   deletedAt: string | null;
+//   customFields: Record<string, any> | null;
+//   _count: {
+//     scores: number;
+//   };
+// }
 
 export interface ActivityResponse {
   id: string;
@@ -151,7 +190,7 @@ export interface ActivityResponse {
   };
   impactScale: number | null;
   _count?: {
-    ratings: number;
+    scores: number;
   };
 }
 
@@ -285,23 +324,23 @@ export type UpdateTeamMemberInput = {
   status?: TeamMemberStatus;
 };
 
-export type CreateBusinessActivityInput = {
-  name: string;
-  description?: string;
-  category?: string;
-  priority?: Priority;
-  dueDate?: Date;
-  teamId: string;
-};
+// export type CreateBusinessActivityInput = {
+//   name: string;
+//   description?: string;
+//   category?: string;
+//   priority?: Priority;
+//   dueDate?: Date;
+//   teamId: string;
+// };
 
-export type UpdateBusinessActivityInput = {
-  name?: string;
-  description?: string | null;
-  category?: string | null;
-  priority?: Priority;
-  status?: BusinessActivityStatus;
-  dueDate?: Date | null;
-};
+// export type UpdateBusinessActivityInput = {
+//   name?: string;
+//   description?: string | null;
+//   category?: string | null;
+//   priority?: Priority;
+//   status?: BusinessActivityStatus;
+//   dueDate?: Date | null;
+// };
 
 export type CreateRatingInput = {
   value: number;
@@ -347,10 +386,10 @@ export type TeamBusinessActivitySummary = {
   memberPerformance: MemberRatingSummary[];
 };
 
-export type TransactionClient = Omit<
-  typeof PrismaClient,
-  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
->;
+// export type TransactionClient = Omit<
+//   typeof PrismaClient,
+//   "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
+// >;
 
 
 export type CreateActivityInput = {
@@ -360,3 +399,23 @@ export type CreateActivityInput = {
   status?: BusinessActivityStatus; // Optional status, defaults to ACTIVE
   dueDate?: Date;       // Optional due date
 };
+
+
+// Input types should also match the model
+export type CreateOrgActionInput = {
+  actionId: string;    // ID of the base action to link
+  teamId: string;      // Team ID
+  priority?: Priority; // Optional priority
+  status?: OrgActionStatus; // Optional status
+  dueDate?: Date;      // Optional due date
+};
+
+export type UpdateOrgActionInput = {
+  priority?: Priority;
+  status?: OrgActionStatus;
+  dueDate?: Date | null;
+};
+
+// Keep old types for backward compatibility
+export type CreateBusinessActivityInput = CreateOrgActionInput;
+export type UpdateBusinessActivityInput = UpdateOrgActionInput;

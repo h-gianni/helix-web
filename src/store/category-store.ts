@@ -47,7 +47,7 @@ const categoryApi = {
     const params = teamId ? `?teamId=${teamId}` : ''
     const { data } = await apiClient.get<ApiResponse<BusinessActivityCategory[]>>(`/business-activities/categories${params}`)
     if (!data.success) throw new Error(data.error || 'Failed to fetch categories')
-    return data.data
+    return data.data || []
   },
 
   createCategory: async (input: CreateCategoryInput) => {

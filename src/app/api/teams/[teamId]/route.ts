@@ -9,7 +9,7 @@ import type {
   TeamResponse,
   TransactionClient,
 } from "@/lib/types/api";
-import { ca } from "date-fns/locale";
+
 
 // Helper to check if user is team owner
 async function isTeamOwner(clerkId: string, teamId: string) {
@@ -125,19 +125,19 @@ export const GET = async (
               },
             },
             jobGrade: true,
-            ratings: {
+            scores: {
               include: {
-                activity: true,
+                action: true,
               },
             },
           },
         },
-        activities: {  // This is BusinessActivity
+        actions: {  // This is BusinessActivity
           where: {
             deletedAt: null
           },
           include: {
-            activity: {  // This is Activity model
+            action: {  // This is Activity model
               include: {
                 category: true
               }
@@ -218,9 +218,9 @@ export const GET = async (
         }
       })),
     
-      businessActivities: team.activities.map(businessActivity => ({
+      businessActivities: team.actions.map(businessActivity => ({
         id: businessActivity.id,
-        activityId: businessActivity.activityId,
+        activityId: businessActivity.actionId,
         priority: businessActivity.priority,
        
         status: businessActivity.status,
@@ -232,12 +232,12 @@ export const GET = async (
         deletedAt: businessActivity.deletedAt,
         customFields: businessActivity.customFields as JsonValue | undefined,
         activity: {
-          id: businessActivity.activity.id,
-          name: businessActivity.activity.name,
-          description: businessActivity.activity.description,
-          impactScale: businessActivity.activity.impactScale,
-          category: businessActivity.activity.category,
-          categoryId: businessActivity.activity.categoryId
+          id: businessActivity.action.id,
+          name: businessActivity.action.name,
+          description: businessActivity.action.description,
+          impactScale: businessActivity.action.impactScale,
+          category: businessActivity.action.category,
+          categoryId: businessActivity.action.categoryId
         },
         team: {
           id: businessActivity.team.id,
@@ -312,7 +312,7 @@ export async function PATCH(
       },
     });
 
-    return NextResponse.json<ApiResponse<TeamResponse>>({
+    return NextResponse.json({
       success: true,
       data: {
         id: team.id,

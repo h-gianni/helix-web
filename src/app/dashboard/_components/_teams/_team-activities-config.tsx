@@ -59,6 +59,7 @@ function TeamActivitiesConfig({ teamId, onUpdate }: TeamActivitiesConfigProps) {
 
   useEffect(() => {
     if (teamActivities.length > 0) {
+      console.log("Setting selectedActivityIds:", teamActivities.map((activity) => activity.id));
       setSelectedActivityIds(teamActivities.map((activity) => activity.id));
     }
   }, [teamActivities, setSelectedActivityIds]);
@@ -137,47 +138,52 @@ function TeamActivitiesConfig({ teamId, onUpdate }: TeamActivitiesConfigProps) {
                 </TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody data-slot="table-body">
-              {activities.map((activity) => (
-                <TableRow data-slot="table-row" key={activity.id}>
-                  <TableCell data-slot="table-cell">
-                    <Checkbox
-                      checked={selectedActivityIds.includes(activity.id)}
-                      onCheckedChange={() => toggleActivity(activity.id)}
-                      disabled={isLoading}
-                    />
-                  </TableCell>
-                  <TableCell data-slot="table-cell">
-                    <div className="flex flex-col">
-                      <span className="font-medium">{activity.name}</span>
-                      <span className="body-sm">
-                        {activity.description || "No description"}
+            <TableBody>
+              {activities.map((activity) => {
+                console.log("Activity orgActivity:", activity);
+                return (
+                  <TableRow key={activity.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedActivityIds.includes(activity.id)}
+                        onCheckedChange={() => toggleActivity(activity.id)}
+                        disabled={isLoading}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col">
+                        <span className="font-medium">{activity.name}</span>
+                        <span className="body-sm text-foreground-muted">
+                          {activity.description || "No description"}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-sm text-foreground-muted w-0 whitespace-nowrap">
+                      {/* {activity.category || "No category"} */}
+                    </TableCell>
+                    <TableCell className="text-center text-sm">
+                      10<span className="text-foreground-muted">/10</span>
+                    </TableCell>
+                    <TableCell className="text-center text-sm">
+                      8<span className="text-foreground-muted">/10</span>
+                    </TableCell>
+                    <TableCell className="text-center font-semibold">
+                      18
+                      <span className="text-foreground-muted text-sm font-normal">
+                        /20
                       </span>
-                    </div>
-                  </TableCell>
-                  <TableCell data-slot="table-cell" className="text-sm w-0 whitespace-nowrap">
-                    {activity.category || "No category"}
-                  </TableCell>
-                  <TableCell data-slot="table-cell" className="text-center text-sm">
-                    10<span>/10</span>
-                  </TableCell>
-                  <TableCell data-slot="table-cell" className="text-center text-sm">
-                    8<span>/10</span>
-                  </TableCell>
-                  <TableCell data-slot="table-cell" className="text-center font-semibold">
-                    18<span className="text-sm font-normal">/20</span>
-                  </TableCell>
-                  <TableCell data-slot="table-cell" className="text-center">
-                    <Toggle data-slot="toggle" size="sm">
-                      {/* Replaced empty className with size-4 */}
-                      <Heart className="size-4" />
-                    </Toggle>
-                  </TableCell>
-                  <TableCell data-slot="table-cell" className="text-center">
-                    {activity._count?.ratings || 0}
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Toggle size="sm">
+                        <Heart className="text-foreground-muted" />
+                      </Toggle>
+                    </TableCell>
+                    <TableCell className="text-center text-foreground-muted">
+                      {activity._count?.scores || 0}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         )}
