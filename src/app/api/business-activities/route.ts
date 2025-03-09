@@ -115,9 +115,9 @@ export async function GET(request: Request) {
 
     const activitiesResponse: ActivityResponse[] = activities.map((businessActivity) => ({
       id: businessActivity.id,
-      name: businessActivity.activity.name,
-      description: businessActivity.activity.description,
-      category: businessActivity.activity.category,
+      name: businessActivity.action.name,
+      description: businessActivity.action.description,
+      category: businessActivity.action.category,
       priority: businessActivity.priority,
       status: businessActivity.status,
       dueDate: businessActivity.dueDate,
@@ -128,7 +128,7 @@ export async function GET(request: Request) {
       deletedAt: businessActivity.deletedAt,
       customFields: businessActivity.customFields as JsonValue | undefined,
       team: businessActivity.team,
-      impactScale: businessActivity.activity.impactScale,
+      impactScale: businessActivity.action.impactScale,
       _count: businessActivity._count
     }));
 

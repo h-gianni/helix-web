@@ -17,7 +17,7 @@ interface TeamsSummaryProps {
 }
 
 // Type definitions from schema
-interface Team {
+interface MainTeam {
   id: string;
   name: string;
   description?: string;
@@ -48,8 +48,8 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
   const { profile } = useProfileStore();
   const [isProfileLoading, setIsProfileLoading] = useState(true);
   
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [teams, setTeams] = useState<MainTeam[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<MainTeam | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
   const [teamMembers, setTeamMembers] = useState<Record<string, TeamMember[]>>({});
@@ -79,7 +79,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
   }, [profile]);
 
   // Helper to process teams data for UI
-  const processTeamsData = (teamsData: any[]): Team[] => {
+  const processTeamsData = (teamsData: any[]): MainTeam[] => {
     return teamsData.map(team => {
       // Extract custom fields if available
       const customFields = team.customFields || {};
@@ -99,7 +99,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
     return team.teamFunction ? [team.teamFunction.name] : ['General'];
   };
 
-  const handleRefineActions = (team: Team) => {
+  const handleRefineActions = (team: MainTeam) => {
     setSelectedTeam(team);
   };
 
@@ -388,7 +388,10 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
           <TeamActionsDialog
             isOpen={!!selectedTeam}
             onClose={() => setSelectedTeam(null)}
-            team={selectedTeam}
+            team={{
+              ...selectedTeam,
+              functions: selectedTeam.functions || [], // provide a default value
+            }}
           />
         )}
 

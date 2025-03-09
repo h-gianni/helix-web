@@ -16,12 +16,12 @@ export async function GET(
     const quarterEnd = new Date(currentYear, (currentQuarter + 1) * 3, 0);
 
     // Get all ratings for the member
-    const allRatings = await prisma.memberRating.findMany({
+    const allRatings = await prisma.memberScore.findMany({
       where: {
         teamMemberId: memberId,
       },
       include: {
-        activity: true,
+        action: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -58,7 +58,7 @@ export async function GET(
     });
 
     // Get team standings
-    const teamMembers = await prisma.memberRating.groupBy({
+    const teamMembers = await prisma.memberScore.groupBy({
       by: ['teamMemberId'],
       where: {
         teamMember: {
@@ -80,7 +80,7 @@ export async function GET(
     const teamPosition = sortedTeamMembers.findIndex(m => m.teamMemberId === memberId) + 1;
 
     // Calculate team position trend
-    const previousQuarterTeamMembers = await prisma.memberRating.groupBy({
+    const previousQuarterTeamMembers = await prisma.memberScore.groupBy({
       by: ['teamMemberId'],
       where: {
         teamMember: {
@@ -105,8 +105,8 @@ export async function GET(
       teamPosition > previousTeamPosition ? 'down' : 'stable';
 
     // Get top activities
-    const topActivities = await prisma.memberRating.groupBy({
-      by: ['activityId'],
+    const topActivities = await prisma.memberScore.groupBy({
+      by: ['actionId'],
       where: {
         teamMemberId: memberId,
       },
@@ -128,18 +128,18 @@ export async function GET(
 
     const topActivitiesWithDetails = await Promise.all(
       topActivities.map(async (activity) => {
-        const activityDetails = await prisma.businessActivity.findUnique({
+        const activityDetails = await prisma.orgAction.findUnique({
           where: {
-            id: activity.activityId,
+            id: activity.actionId,
           },
           select: {
             id: true,
-            name: true,
+            // name: true,
           },
         });
         return {
-          id: activity.activityId,
-          name: activityDetails?.name || 'Unknown Activity',
+          id: activity.actionId,
+          // name: activityDetails?.name || 'Unknown Activity',
           averageRating: activity._avg.value || 0,
           ratingsCount: activity._count.value,
         };
