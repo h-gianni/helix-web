@@ -38,7 +38,7 @@
   --destructive-lighter: hsl(3 100% 81%);
   --destructive-light: hsl(3 100% 70%);
   --destructive-base: hsl(3 100% 59%);
-  --destructive-dark: hsl(3 100% 49%);
+  --destructive-dark: hsl(3 100% 46%);
   --destructive-darker: hsl(3 100% 41%);
   --destructive-darkest: hsl(3 100% 34%);
 
@@ -171,7 +171,7 @@
   --color-secondary-foreground: var(--neutral-darkest);
   --color-accent: var(--accent-base);
   --color-accent-foreground: var(--neutral-lightest);
-  --color-destructive: var(--destructive-base);
+  --color-destructive: var(--destructive-dark);
   --color-destructive-foreground: var(--destructive-lightest);
 
   /* Status colors */
