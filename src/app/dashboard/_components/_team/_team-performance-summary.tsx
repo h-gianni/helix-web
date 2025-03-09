@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TeamPerformanceView } from "@/app/dashboard/_components/_team-performance-view";
 import { ViewSwitcher } from "@/components/ui/composite/View-switcher";
-import { MemberPerformance } from "@/store//member";
+import { MemberPerformance } from "@/store/member";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,8 +31,7 @@ export function TeamPerformanceSummary({
   onViewChange,
 }: TeamPerformanceSummaryProps) {
   const router = useRouter();
-  const [memberToDelete, setMemberToDelete] =
-    useState<MemberPerformance | null>(null);
+  const [memberToDelete, setMemberToDelete] = useState<MemberPerformance | null>(null);
 
   if (!members || members.length === 0) {
     return null;
@@ -42,12 +41,9 @@ export function TeamPerformanceSummary({
     if (!memberToDelete) return;
 
     try {
-      const response = await fetch(
-        `/api/teams/${teamId}/members/${memberToDelete.id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`/api/teams/${teamId}/members/${memberToDelete.id}`, {
+        method: "DELETE",
+      });
 
       const data = await response.json();
       if (data.success) {
@@ -67,11 +63,12 @@ export function TeamPerformanceSummary({
       <div className="ui-view-controls-bar">
         <ViewSwitcher viewType={viewType} onViewChange={onViewChange} />
       </div>
+
       <TeamPerformanceView
         teamId={teamId}
         members={members}
-        showAvatar={true}
-        showActions={true}
+        showAvatar
+        showActions
         mode="full"
         viewType={viewType}
         onViewChange={onViewChange}
@@ -82,23 +79,25 @@ export function TeamPerformanceSummary({
         open={!!memberToDelete}
         onOpenChange={(open) => !open && setMemberToDelete(null)}
       >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Team Member</AlertDialogTitle>
-            <AlertDialogDescription>
+        <AlertDialogContent data-slot="alert-dialog-content">
+          <AlertDialogHeader data-slot="alert-dialog-header">
+            <AlertDialogTitle data-slot="alert-dialog-title">
+              Delete Team Member
+            </AlertDialogTitle>
+            <AlertDialogDescription data-slot="alert-dialog-description">
               Are you sure you want to remove {memberToDelete?.name} from the
               team? This action cannot be undone. All associated ratings and
               performance data will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter data-slot="alert-dialog-footer">
             <AlertDialogCancel asChild>
-              <Button variant="secondary">
+              <Button data-slot="button" variant="secondary">
                 Cancel
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button variant="destructive" onClick={handleDeleteMember}>
+              <Button data-slot="button" variant="destructive" onClick={handleDeleteMember}>
                 Delete Member
               </Button>
             </AlertDialogAction>

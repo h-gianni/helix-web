@@ -78,25 +78,27 @@ export function Onboarding({ onCreateTeam }: OnboardingProps) {
       <div className="grid gap-4 md:grid-cols-3">
         {setupSteps.map((step) => (
           <Card
+            data-slot="card"
             key={step.activeTitle}
             className={cn(step.isActive && "ring-2 ring-primary shadow-lg")}
           >
-            <CardContent>
+            <CardContent data-slot="card-content">
               <div className="flex flex-col h-full gap-4 p-4">
                 <div className="flex justify-between items-start gap-8">
                   <div
                     className={cn(
-                      "flex h-10 w-10 items-center justify-center rounded-full",
+                      "flex size-10 items-center justify-center rounded-full",
                       step.isCompleted ? "bg-success" : "bg-primary/10"
                     )}
                   >
                     {step.isCompleted ? (
-                      <Check className="h-5 w-5 text-success-foreground" />
+                      <Check className="size-5 text-success-foreground" />
                     ) : (
-                      <step.icon className="h-5 w-5 text-primary" />
+                      <step.icon className="size-5 text-primary" />
                     )}
                   </div>
                   <Badge
+                    data-slot="badge"
                     variant="secondary"
                     className={step.isCompleted ? "opacity-50" : "opacity-100"}
                   >
@@ -108,13 +110,14 @@ export function Onboarding({ onCreateTeam }: OnboardingProps) {
                   <h3 className="heading-3">
                     {step.isCompleted ? step.completedTitle : step.activeTitle}
                   </h3>
-                  <p className="body-sm text-foreground-weak">
+                  <p className="body-sm">
                     {step.description}
                   </p>
                 </div>
 
                 <div className="flex flex-col gap-4">
                   <Button
+                    data-slot="button"
                     variant={step.isCompleted ? "outline" : "default"}
                     onClick={
                       step.isCompleted ? step.completedClick : step.onClick

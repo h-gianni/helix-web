@@ -14,32 +14,41 @@ export interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
 }
 
-const PageHeader = React.forwardRef<HTMLDivElement, PageHeaderProps>(
-  ({ title, caption, actions, backButton, icon, className, ...props }, ref) => {
-    return (
-      <div ref={ref} className={cn("page-header", className)} {...props}>
-        <div className="page-header-container">
-          <div className="page-header-content">
-            {backButton && (
-              <Button variant="ghost" size="sm" onClick={backButton.onClick}>
-                <ArrowLeft />
-              </Button>
-            )}
-            <div className="space-y-1.5">
-              <h1 className="page-header-title">
-                {title}
-                {icon && icon}
-              </h1>
-              {caption && <p className="page-header-caption">{caption}</p>}
-            </div>
+function PageHeader({
+  title,
+  caption,
+  actions,
+  backButton,
+  icon,
+  className,
+  ...props
+}: PageHeaderProps) {
+  return (
+    <div className={cn("page-header", className)} {...props}>
+      <div className="page-header-container">
+        <div className="page-header-content">
+          {backButton && (
+            <Button 
+              data-slot="button"
+              variant="ghost" 
+              size="sm" 
+              onClick={backButton.onClick}
+            >
+              <ArrowLeft />
+            </Button>
+          )}
+          <div className="space-y-1.5">
+            <h1 className="page-header-title">
+              {title}
+              {icon && icon}
+            </h1>
+            {caption && <p className="page-header-caption">{caption}</p>}
           </div>
-          {actions && <div className="page-header-actions">{actions}</div>}
         </div>
+        {actions && <div className="page-header-actions">{actions}</div>}
       </div>
-    );
-  }
-);
-
-PageHeader.displayName = "PageHeader";
+    </div>
+  );
+}
 
 export { PageHeader };

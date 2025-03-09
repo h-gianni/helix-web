@@ -35,7 +35,7 @@ export const Hero = () => {
         <div className="hero-centered">
           <div className="lg:hidden flex flex-col space-y-2 pt-6 pb-2">
             <div className="size-10 rounded-full bg-accent mx-auto"></div>
-            <div className="marketing-h2">JustScore</div>
+            <div className="marketing-h2 text-primary">JustScore</div>
           </div>
           <div>
             <Badge variant="secondary">
@@ -73,7 +73,7 @@ export const Hero = () => {
             </span>
           </h1>
 
-          <p className="marketing-body-lg text-foreground-weak max-w-2xl text-center mx-auto">
+          <p className="marketing-body-lg max-w-2xl text-center mx-auto">
             Refuse to leave success to chance. Quickly score and track team
             actions and behaviors in real time—unlocking data-driven insights to
             make you the most effective team leader in the organization.
@@ -91,7 +91,7 @@ export const Hero = () => {
         </div>
       </div>
       <div className="relative w-full flex flex-col items-center mt-4 md:mt-0">
-        <p className="hidden md:block absolute top-0 z-20 bg-white rounded-b-lg marketing-body-xs text-foreground-muted text-center max-w-xs lg:max-w-xs mx-auto px-4 py-2">
+        <p className="hidden md:block absolute top-0 z-20 bg-white rounded-b-lg marketing-body-xs text-center max-w-xs lg:max-w-xs mx-auto px-4 py-2">
           UpScore is a mobile and desktop app that lets you score your team’s
           performance in real-time—in less than 20 seconds per entry. Set up
           your organization in just 5 minutes, and let our AI transform your

@@ -1,24 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { Button } from "@/components/ui/core/Button";
 import { PenSquare } from "lucide-react";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/core/Card";
-import { useConfigStore } from '@/store/config-store';
-import OrganizationDialog from './_organization-edit-dialog';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+} from "@/components/ui/core/Card";
+import { useConfigStore } from "@/store/config-store";
+import OrganizationDialog from "./_organization-edit-dialog";
 
-const OrganizationSummary = () => {
+interface OrganizationSummaryProps {
+  onEdit?: () => void; // Optional or required, depending on your needs
+}
+
+function OrganizationSummary({ onEdit }: OrganizationSummaryProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const orgName = useConfigStore((state) => state.config.organization.name);
 
   return (
     <>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Organization Details</CardTitle>
-          <Button variant="ghost" onClick={() => setIsDialogOpen(true)}>
+      <Card data-slot="card">
+        <CardHeader
+          data-slot="card-header"
+          className="flex flex-row items-center justify-between"
+        >
+          <CardTitle data-slot="card-title">Organization Details</CardTitle>
+          <Button
+            data-slot="button"
+            variant="ghost"
+            onClick={() => {
+              setIsDialogOpen(true);
+              onEdit?.();
+            }}
+          >
             <PenSquare /> Edit
           </Button>
         </CardHeader>
-        <CardContent>
+
+        <CardContent data-slot="card-content">
           <div className="text-base">
             <span className="font-medium">Name: </span>
             <span>{orgName}</span>
@@ -26,12 +46,12 @@ const OrganizationSummary = () => {
         </CardContent>
       </Card>
 
-      <OrganizationDialog 
+      <OrganizationDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
       />
     </>
   );
-};
+}
 
 export default OrganizationSummary;

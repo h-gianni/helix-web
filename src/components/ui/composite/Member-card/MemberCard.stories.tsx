@@ -174,7 +174,7 @@ export const NoRatings: Story = {
       label: 'No Ratings',
       minRating: 0,
       maxRating: 0,
-      className: 'text-foreground-muted',
+      className: '',
       Icon: TrendingUp
     }
   },

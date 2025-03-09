@@ -3,12 +3,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LucideIcon,
-  Home,
-  Users,
-  Settings,
-} from "lucide-react";
+import { LucideIcon, Home, Users, Settings } from "lucide-react";
 import {
   Sidebar,
   SidebarHeader,
@@ -21,7 +16,7 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
 } from "@/components/ui/composite/Side-bar";
-import { useTeams } from '@/lib/context/teams-context';
+import { useTeams } from "@/lib/context/teams-context";
 
 interface Team {
   id: string;
@@ -61,6 +56,7 @@ const mainNavItems: NavItem[] = [
     to: "/dashboard/settings",
     icon: Settings,
     label: "Settings",
+    // Example of optional subItems, if needed in the future
     // subItems: [
     //   { to: "/dashboard/settings/business-activities", label: "Org Activities" },
     //   { to: "/dashboard/settings/teams", label: "Teams Activities" },
@@ -69,7 +65,7 @@ const mainNavItems: NavItem[] = [
   },
 ];
 
-const AppSidebar = () => {
+function AppSidebar() {
   const { teams, isLoading, fetchTeams } = useTeams();
   const pathname = usePathname();
 
@@ -78,14 +74,15 @@ const AppSidebar = () => {
   }, [fetchTeams]);
 
   const renderNavItems = () => {
-    return mainNavItems.map(item => {
+    return mainNavItems.map((item) => {
       if (item.label === "Teams" && item.dynamicSubItems) {
         return {
           ...item,
-          subItems: teams?.map(team => ({
-            to: `/dashboard/teams/${team.id}`,
-            label: team.name
-          })) || []
+          subItems:
+            teams?.map((team) => ({
+              to: `/dashboard/teams/${team.id}`,
+              label: team.name,
+            })) || [],
         };
       }
       return item;
@@ -93,19 +90,20 @@ const AppSidebar = () => {
   };
 
   return (
-    <Sidebar>
-      <SidebarHeader>
+    <Sidebar data-slot="sidebar">
+      <SidebarHeader data-slot="sidebar-header">
         <div className="flex items-center gap-3 px-4 py-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded bg-accent text-accent-foreground">
+          {/* Replace h-8 w-8 with size-8 */}
+          <div className="size-8 flex items-center justify-center rounded bg-accent text-accent-foreground">
             <span className="text-lg font-bold">U</span>
           </div>
           <span className="text-lg font-semibold">UpScore</span>
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarMenu>
+      <SidebarContent data-slot="sidebar-content">
+        <SidebarGroup data-slot="sidebar-group">
+          <SidebarMenu data-slot="sidebar-menu">
             {renderNavItems().map((item) => (
               <NavMenuItem key={item.label} item={item} />
             ))}
@@ -114,34 +112,41 @@ const AppSidebar = () => {
       </SidebarContent>
     </Sidebar>
   );
-};
+}
 
-const NavMenuItem: React.FC<NavMenuItemProps> = ({ item }) => {
+function NavMenuItem({ item }: NavMenuItemProps) {
   const pathname = usePathname();
-  const isActive = pathname === item.to || 
-    item.subItems?.some(subItem => pathname === subItem.to);
+  const isActive =
+    pathname === item.to ||
+    item.subItems?.some((subItem) => pathname === subItem.to);
   const Icon = item.icon;
 
   return (
     <>
-      <SidebarMenuItem>
+      <SidebarMenuItem data-slot="sidebar-menu-item">
         <SidebarMenuButton
+          data-slot="sidebar-menu-button"
           asChild
           isActive={isActive}
           tooltip={item.label}
         >
           <Link href={item.to}>
-            <Icon />
-            <span className="font-medium text-foreground-strong">{item.label}</span>
+            {/* Apply size-4 to the icon */}
+            <Icon className="size-4" />
+            <span className="font-medium">{item.label}</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
-      
+
       {item.subItems && (
-        <SidebarMenuSub>
+        <SidebarMenuSub data-slot="sidebar-menu-sub">
           {item.subItems.map((subItem) => (
-            <SidebarMenuSubItem key={subItem.to}>
+            <SidebarMenuSubItem
+              data-slot="sidebar-menu-subitem"
+              key={subItem.to}
+            >
               <SidebarMenuSubButton
+                data-slot="sidebar-menu-subbutton"
                 asChild
                 isActive={pathname === subItem.to}
               >
@@ -153,6 +158,6 @@ const NavMenuItem: React.FC<NavMenuItemProps> = ({ item }) => {
       )}
     </>
   );
-};
+}
 
 export default AppSidebar;

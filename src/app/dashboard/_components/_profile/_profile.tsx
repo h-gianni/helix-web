@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { ProfileCard } from "@/components/ui/composite/Profile-card";
 import { ProfileModal } from "./_profile-modal";
@@ -14,7 +14,7 @@ interface UserProfile {
   title: string | null;
 }
 
-export function ProfileSection() {
+function ProfileSection() {
   const { user, isLoaded } = useUser();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -73,9 +73,12 @@ export function ProfileSection() {
   return (
     <div className="space-y-6">
       {error && (
-        <Alert variant="destructive">
-          <AlertCircle />
-          <AlertDescription>{error}</AlertDescription>
+        <Alert data-slot="alert" variant="destructive">
+          {/* If you had an h/w class here, you'd replace it with size-# */}
+          <AlertCircle className="size-4" />
+          <AlertDescription data-slot="alert-description">
+            {error}
+          </AlertDescription>
         </Alert>
       )}
 
@@ -116,3 +119,5 @@ export function ProfileSection() {
     </div>
   );
 }
+
+export { ProfileSection };

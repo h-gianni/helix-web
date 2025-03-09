@@ -1,53 +1,62 @@
 @layer components {
-    /* Display */
-    .display-1 {
-      @apply text-4xl font-bold tracking-tight leading-tight text-foreground;
-    }
-    .display-2 {
-      @apply text-3xl font-bold tracking-tight leading-tight text-foreground;
-    }
-  
-    /* Headings */
-    .heading-1 {
-      @apply text-2xl font-semibold tracking-normal leading-tight text-foreground-strong;
-    }
-    .heading-2 {
-      @apply text-xl font-semibold tracking-normal leading-snug text-foreground-strong;
-    }
-    .heading-3 {
-      @apply text-lg font-semibold tracking-normal leading-snug text-foreground-strong;
-    }
-    .heading-4 {
-      @apply text-base font-bold tracking-normal leading-normal text-foreground;
-    }
-    .heading-5 {
-      @apply text-sm font-bold tracking-normal leading-normal text-foreground;
-    }
-  
-    /* Body */
-    .body-lg {
-      @apply text-lg font-normal tracking-normal leading-relaxed;
-    }
-    .body-base {
-      @apply text-base font-normal tracking-normal leading-normal;
-    }
-    .body-sm {
-      @apply text-sm font-normal tracking-normal leading-normal;
-    }
-  
-    /* Labels */
-    .label-lg {
-      @apply text-base font-medium tracking-wide leading-none;
-    }
-    .label-base {
-      @apply text-sm font-medium tracking-wide leading-none;
-    }
-    .label-sm {
-      @apply text-xs font-medium tracking-wide leading-none;
-    }
-  
-    /* Captions */
-    .caption {
-      @apply text-sm font-normal tracking-normal leading-snug text-foreground-weak;
-    }
+  /* Display */
+  .display-1 {
+    @apply text-4xl font-bold tracking-tight leading-tight text-foreground;
   }
+  .display-2 {
+    @apply text-3xl font-bold tracking-tight leading-tight text-foreground;
+  }
+
+  /* Headings */
+  .heading-1 {
+    @apply text-2xl font-semibold tracking-tighter leading-tight;
+  }
+  .heading-2 {
+    @apply text-xl font-semibold tracking-tight leading-snug;
+  }
+  .heading-3 {
+    @apply text-lg font-semibold tracking-tight leading-snug;
+  }
+  .heading-4 {
+    @apply text-base font-bold tracking-normal leading-normal text-foreground;
+  }
+  .heading-5 {
+    @apply text-sm font-bold tracking-normal leading-normal text-foreground;
+  }
+  .heading-6 {
+    @apply text-xs font-bold tracking-normal leading-normal text-foreground;
+  }
+  .heading-upper {
+    @apply text-2xs font-semibold tracking-wide uppercase leading-normal text-foreground;
+  }
+
+  /* Body */
+  .body-lg {
+    @apply text-lg font-normal tracking-normal leading-relaxed;
+  }
+  .body-base {
+    @apply text-base font-normal tracking-normal leading-normal;
+  }
+  .body-sm {
+    @apply text-sm font-normal tracking-normal leading-normal;
+  }
+  .body-xs {
+    @apply text-2xs font-normal tracking-normal leading-normal;
+  }
+
+  /* Labels */
+  .label-lg {
+    @apply text-base font-medium tracking-wide leading-none;
+  }
+  .label-base {
+    @apply text-sm font-medium tracking-wide leading-none;
+  }
+  .label-sm {
+    @apply text-xs font-medium tracking-wide leading-none;
+  }
+
+  /* Captions */
+  .caption {
+    @apply text-sm font-normal tracking-normal leading-snug;
+  }
+}

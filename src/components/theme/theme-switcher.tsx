@@ -1,8 +1,7 @@
-// components/theme/ThemeSwitcher.tsx
 'use client';
 
 import * as React from 'react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './theme-provider';
 import { Button } from '@/components/ui/core/Button';
 import {
   DropdownMenu,
@@ -18,7 +17,7 @@ export function ThemeSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="neutral" iconOnly  size="sm">
+        <Button variant="outline" size="icon" aria-label="Change Theme">
           {theme === 'dark' ? (
             <Moon className="h-4 w-4" />
           ) : theme === 'light' ? (
@@ -28,7 +27,7 @@ export function ThemeSwitcher() {
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="start">
         <DropdownMenuItem onClick={() => setTheme('light')}>
           <Sun className="mr-2 h-4 w-4" />
           <span>Light</span>

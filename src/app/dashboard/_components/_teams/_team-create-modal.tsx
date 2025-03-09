@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -33,9 +33,7 @@ export default function TeamCreateModal({
 }: TeamCreateModalProps) {
   const [teamName, setTeamName] = useState("");
   const [teamFunctionId, setTeamFunctionId] = useState("");
-  const [teamFunctions, setTeamFunctions] = useState<TeamFunctionResponse[]>(
-    []
-  );
+  const [teamFunctions, setTeamFunctions] = useState<TeamFunctionResponse[]>([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -71,21 +69,12 @@ export default function TeamCreateModal({
     e.preventDefault();
     setError(null);
 
-    console.log("Form submission:", {
-      teamName: teamName.trim(),
-      teamFunctionId,
-      hasTeamName: !!teamName.trim(),
-      hasTeamFunction: !!teamFunctionId,
-    });
-
     // Validation checks
     if (!teamName.trim()) {
       setError("Team name is required");
       return;
     }
-
     if (!teamFunctionId) {
-      console.log("No team function selected");
       setError("Please select a team function");
       return;
     }
@@ -103,92 +92,101 @@ export default function TeamCreateModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create New Team</DialogTitle>
+    <Dialog data-slot="dialog" open={isOpen} onOpenChange={onClose}>
+      <DialogContent data-slot="dialog-content">
+        <DialogHeader data-slot="dialog-header">
+          <DialogTitle data-slot="dialog-title">Create New Team</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <Alert variant="destructive">
+            <Alert data-slot="alert" variant="destructive">
               <AlertCircle className="size-4" />
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription data-slot="alert-description">
+                {error}
+              </AlertDescription>
             </Alert>
           )}
 
           <div className="space-y-4">
-          <div className="flex flex-col gap-2">
-  <label className="text-sm font-medium text-foreground" htmlFor="teamFunction">
-    Team Function
-  </label>
-  <Select
-    value={teamFunctionId ?? ""}
-    onValueChange={(value) => {
-      console.log("Selected value:", value);
-      setTeamFunctionId(value);
-      setError(null);
-    }}
-    name="teamFunction"
-    disabled={loading}
-  >
-    <SelectTrigger className={cn("w-full", error && !teamFunctionId && "border-red-500")}>
-      <SelectValue placeholder={loading ? "Loading functions..." : "Select a function"} />
-    </SelectTrigger>
-    <SelectContent>
-      {teamFunctions.map((teamFunction) => (
-        <SelectItem key={teamFunction.id} value={teamFunction.id}>
-          {teamFunction.name}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-  {error && !teamFunctionId && (
-    <p className="text-sm text-red-500">Please select a team function.</p>
-  )}
-</div>
+            {/* Team Function */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-foreground" htmlFor="teamFunction">
+                Team Function
+              </label>
+              <Select
+                data-slot="select"
+                value={teamFunctionId ?? ""}
+                onValueChange={(value) => {
+                  setTeamFunctionId(value);
+                  setError(null);
+                }}
+                name="teamFunction"
+                disabled={loading}
+              >
+                <SelectTrigger
+                  data-slot="select-trigger"
+                  className={cn("w-full", error && !teamFunctionId && "border-red-500")}
+                >
+                  <SelectValue
+                    data-slot="select-value"
+                    placeholder={loading ? "Loading functions..." : "Select a function"}
+                  />
+                </SelectTrigger>
+                <SelectContent data-slot="select-content">
+                  {teamFunctions.map((teamFunction) => (
+                    <SelectItem
+                      data-slot="select-item"
+                      key={teamFunction.id}
+                      value={teamFunction.id}
+                    >
+                      {teamFunction.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {error && !teamFunctionId && (
+                <p className="text-sm text-red-500">Please select a team function.</p>
+              )}
+            </div>
 
-
-<div className="flex flex-col gap-2">
-  <label className="text-sm font-medium text-foreground" htmlFor="teamName">
-    Team Name
-  </label>
-  <Input
-    id="teamName"
-    value={teamName}
-    onChange={(e) => {
-      setTeamName(e.target.value);
-      setError(null);
-    }}
-    placeholder="Enter team name"
-    className={cn("w-full", error && !teamName.trim() && "border-red-500")}
-  />
-  {error && !teamName.trim() && (
-    <p className="text-sm text-red-500">Team name is required.</p>
-  )}
-</div>
-
+            {/* Team Name */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-foreground" htmlFor="teamName">
+                Team Name
+              </label>
+              <Input
+                data-slot="input"
+                id="teamName"
+                value={teamName}
+                onChange={(e) => {
+                  setTeamName(e.target.value);
+                  setError(null);
+                }}
+                placeholder="Enter team name"
+                className={cn("w-full", error && !teamName.trim() && "border-red-500")}
+              />
+              {error && !teamName.trim() && (
+                <p className="text-sm text-red-500">Team name is required.</p>
+              )}
+            </div>
           </div>
 
-          <DialogFooter>
-            <Button
-              variant="secondary"
-              onClick={onClose}
-              disabled={saving}
-            >
+          <DialogFooter data-slot="dialog-footer">
+            <Button data-slot="button" variant="secondary" onClick={onClose} disabled={saving}>
               Cancel
             </Button>
-            <Button variant="default" type="submit" disabled={saving}>
-  {saving ? (
-    <span className="flex items-center gap-2">
-      <Loader className="h-4 w-4 animate-spin" />
-      Creating...
-    </span>
-  ) : (
-    "Create Team"
-  )}
-</Button>
-
+            <Button data-slot="button" variant="default" type="submit" disabled={saving}>
+              {saving ? (
+                <span className="flex items-center gap-2">
+                  {/* Replaced h-4 w-4 with size-4 */}
+                  <Loader className="size-4 animate-spin" />
+                  Creating...
+                </span>
+              ) : (
+                "Create Team"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -47,7 +47,7 @@ import {
   Sun,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
+import { ThemeSwitcher } from "@/components/theme/theme-switcher";
 
 const StoryWrapper = ({ children }: { children: React.ReactNode }) => (
   <div className="h-[600px]">

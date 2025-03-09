@@ -2,7 +2,6 @@
 
 /* Libraries */
 @import '../lib/reset.css';
-@import '../lib/animations.css';
 
 /* Tokens - Shared design tokens */
 @import '../tokens/colors.css';

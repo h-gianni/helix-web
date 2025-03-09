@@ -59,7 +59,7 @@ export const How = () => (
               </div>
               <div className="space-y-1.5">
               <h3 className="marketing-h4">{step.title}</h3>
-              <p className="marketing-body text-foreground-weak pb-8">
+              <p className="marketing-body pb-8">
                 {step.description}
               </p>
               </div>

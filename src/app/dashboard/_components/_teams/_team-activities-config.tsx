@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/core/Button";
 import { Checkbox } from "@/components/ui/core/Checkbox";
 import { Toggle } from "@/components/ui/core/Toggle";
@@ -21,7 +21,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/core/Pagination";
-
 import { AlertCircle, Heart } from "lucide-react";
 import {
   useTeamActivitiesStore,
@@ -35,10 +34,7 @@ interface TeamActivitiesConfigProps {
   onUpdate?: () => void;
 }
 
-export default function TeamActivitiesConfig({
-  teamId,
-  onUpdate,
-}: TeamActivitiesConfigProps) {
+function TeamActivitiesConfig({ teamId, onUpdate }: TeamActivitiesConfigProps) {
   const {
     selectedActivityIds,
     setSelectedActivityIds,
@@ -93,37 +89,27 @@ export default function TeamActivitiesConfig({
   return (
     <div className="space-y-4">
       {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
+        <Alert data-slot="alert" variant="destructive">
+          {/* Replaced h-4 w-4 with size-4 */}
+          <AlertCircle className="size-4" />
+          <AlertDescription data-slot="alert-description">
             {error instanceof Error ? error.message : "An error occurred"}
           </AlertDescription>
         </Alert>
       )}
+
       <div className="space-y-2">
         <div className="view-controls-bar">
-          {/* <div className="flex items-center gap-4">
-            <Checkbox
-              checked={activities.length === selectedActivityIds.length}
-              onCheckedChange={(checked) => {
-                if (checked) selectAll(activities);
-                else unselectAll();
-              }}
-            />
-            <span className="text-sm text-foreground-weak">
-              {selectedActivityIds.length} of {activities.length} selected
-            </span>
-          </div> */}
           <div className="body-base">To be added: sorting and filtering</div>
         </div>
 
         {activities.length === 0 ? (
           <span className="missing-content">No activities available</span>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-0">
+          <Table data-slot="table">
+            <TableHeader data-slot="table-header">
+              <TableRow data-slot="table-row">
+                <TableHead data-slot="table-head" className="w-0">
                   <Checkbox
                     checked={activities.length === selectedActivityIds.length}
                     onCheckedChange={(checked) => {
@@ -132,60 +118,62 @@ export default function TeamActivitiesConfig({
                     }}
                   />
                 </TableHead>
-                <TableHead>Activity</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="w-0 whitespace-nowrap">
+                <TableHead data-slot="table-head">Activity</TableHead>
+                <TableHead data-slot="table-head">Category</TableHead>
+                <TableHead data-slot="table-head" className="w-0 whitespace-nowrap">
                   Category Impact
                 </TableHead>
-                <TableHead className="w-0 whitespace-nowrap">
+                <TableHead data-slot="table-head" className="w-0 whitespace-nowrap">
                   Activity Impact
                 </TableHead>
-                <TableHead className="w-0 whitespace-nowrap">
+                <TableHead data-slot="table-head" className="w-0 whitespace-nowrap">
                   Total Impact
                 </TableHead>
-                <TableHead className="w-0">Favourite</TableHead>
-                <TableHead className="w-0">Used</TableHead>
+                <TableHead data-slot="table-head" className="w-0">
+                  Favourite
+                </TableHead>
+                <TableHead data-slot="table-head" className="w-0">
+                  Used
+                </TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody data-slot="table-body">
               {activities.map((activity) => (
-                <TableRow key={activity.id}>
-                  <TableCell>
+                <TableRow data-slot="table-row" key={activity.id}>
+                  <TableCell data-slot="table-cell">
                     <Checkbox
                       checked={selectedActivityIds.includes(activity.id)}
                       onCheckedChange={() => toggleActivity(activity.id)}
                       disabled={isLoading}
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell data-slot="table-cell">
                     <div className="flex flex-col">
                       <span className="font-medium">{activity.name}</span>
-                      <span className="body-sm text-foreground-muted">
+                      <span className="body-sm">
                         {activity.description || "No description"}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm text-foreground-muted w-0 whitespace-nowrap">
+                  <TableCell data-slot="table-cell" className="text-sm w-0 whitespace-nowrap">
                     {activity.category || "No category"}
                   </TableCell>
-                  <TableCell className="text-center text-sm">
-                    10<span className="text-foreground-muted">/10</span>
+                  <TableCell data-slot="table-cell" className="text-center text-sm">
+                    10<span>/10</span>
                   </TableCell>
-                  <TableCell className="text-center text-sm">
-                    8<span className="text-foreground-muted">/10</span>
+                  <TableCell data-slot="table-cell" className="text-center text-sm">
+                    8<span>/10</span>
                   </TableCell>
-                  <TableCell className="text-center font-semibold">
-                    18
-                    <span className="text-foreground-muted text-sm font-normal">
-                      /20
-                    </span>
+                  <TableCell data-slot="table-cell" className="text-center font-semibold">
+                    18<span className="text-sm font-normal">/20</span>
                   </TableCell>
-                  <TableCell className="text-center">
-                    <Toggle size="sm">
-                      <Heart className="text-foreground-muted" />
+                  <TableCell data-slot="table-cell" className="text-center">
+                    <Toggle data-slot="toggle" size="sm">
+                      {/* Replaced empty className with size-4 */}
+                      <Heart className="size-4" />
                     </Toggle>
                   </TableCell>
-                  <TableCell className="text-center text-foreground-muted">
+                  <TableCell data-slot="table-cell" className="text-center">
                     {activity._count?.ratings || 0}
                   </TableCell>
                 </TableRow>
@@ -193,19 +181,22 @@ export default function TeamActivitiesConfig({
             </TableBody>
           </Table>
         )}
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
+
+        <Pagination data-slot="pagination">
+          <PaginationContent data-slot="pagination-content">
+            <PaginationItem data-slot="pagination-item">
+              <PaginationPrevious data-slot="pagination-previous" href="#" />
             </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
+            <PaginationItem data-slot="pagination-item">
+              <PaginationLink data-slot="pagination-link" href="#">
+                1
+              </PaginationLink>
             </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
+            <PaginationItem data-slot="pagination-item">
+              <PaginationEllipsis data-slot="pagination-ellipsis" />
             </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
+            <PaginationItem data-slot="pagination-item">
+              <PaginationNext data-slot="pagination-next" href="#" />
             </PaginationItem>
           </PaginationContent>
         </Pagination>
@@ -213,3 +204,5 @@ export default function TeamActivitiesConfig({
     </div>
   );
 }
+
+export default TeamActivitiesConfig;

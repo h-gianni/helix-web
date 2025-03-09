@@ -20,7 +20,11 @@ import {
   SelectValue,
 } from "@/components/ui/core/Select";
 import { AlertCircle } from "lucide-react";
-import { useJobGrades, useAddMember, useMemberModalStore } from "@/store/member-store";
+import {
+  useJobGrades,
+  useAddMember,
+  useMemberModalStore,
+} from "@/store/member-store";
 
 interface AddMemberModalProps {
   isOpen: boolean;
@@ -28,11 +32,7 @@ interface AddMemberModalProps {
   teamId?: string;
 }
 
-export function AddMemberModal({
-  isOpen,
-  onClose,
-  teamId,
-}: AddMemberModalProps) {
+export function AddMemberModal({ isOpen, onClose, teamId }: AddMemberModalProps) {
   const { formData, setFormData, resetForm } = useMemberModalStore();
   const { data: jobGrades, isLoading: isLoadingGrades } = useJobGrades();
   const { mutate: addMember, status, error } = useAddMember();
@@ -40,7 +40,6 @@ export function AddMemberModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!teamId) return;
 
     const { email, fullName } = formData;
@@ -53,30 +52,30 @@ export function AddMemberModal({
 
     // Create FormData instance
     const submitData = new FormData();
-    submitData.append('email', trimmedEmail);
-    submitData.append('fullName', trimmedFullName);
-    
+    submitData.append("email", trimmedEmail);
+    submitData.append("fullName", trimmedFullName);
+
     if (formData.title.trim()) {
-      submitData.append('title', formData.title.trim());
+      submitData.append("title", formData.title.trim());
     }
-    
+
     if (formData.jobGradeId) {
-      submitData.append('jobGradeId', formData.jobGradeId);
+      submitData.append("jobGradeId", formData.jobGradeId);
     }
-    
+
     if (formData.joinedDate) {
-      submitData.append('joinedDate', formData.joinedDate);
+      submitData.append("joinedDate", formData.joinedDate);
     }
-    
+
     if (formData.profilePhoto) {
-      submitData.append('profilePhoto', formData.profilePhoto);
+      submitData.append("profilePhoto", formData.profilePhoto);
     }
 
     addMember(
       {
         teamId,
         email: formData.email,
-    fullName: formData.fullName,
+        fullName: formData.fullName,
         ...Object.fromEntries(submitData),
       },
       {
@@ -94,16 +93,17 @@ export function AddMemberModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add Team Member</DialogTitle>
+    <Dialog data-slot="dialog" open={isOpen} onOpenChange={handleClose}>
+      <DialogContent data-slot="dialog-content" className="sm:max-w-[425px]">
+        <DialogHeader data-slot="dialog-header">
+          <DialogTitle data-slot="dialog-title">Add Team Member</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="grid gap-4 py-4">
           {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
+            <Alert data-slot="alert" variant="destructive">
+              {/* Replace h-4 w-4 with size-4 */}
+              <AlertCircle className="size-4" />
               <p className="text-sm">
                 {error instanceof Error ? error.message : "An error occurred"}
               </p>
@@ -113,6 +113,7 @@ export function AddMemberModal({
           <div className="grid gap-2">
             <Label htmlFor="email">Company Email*</Label>
             <Input
+              data-slot="input"
               id="email"
               type="email"
               value={formData.email}
@@ -125,6 +126,7 @@ export function AddMemberModal({
           <div className="grid gap-2">
             <Label htmlFor="fullName">Full Name*</Label>
             <Input
+              data-slot="input"
               id="fullName"
               value={formData.fullName}
               onChange={(e) => setFormData({ fullName: e.target.value })}
@@ -136,6 +138,7 @@ export function AddMemberModal({
           <div className="grid gap-2">
             <Label htmlFor="title">Job Title</Label>
             <Input
+              data-slot="input"
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({ title: e.target.value })}
@@ -146,15 +149,16 @@ export function AddMemberModal({
           <div className="grid gap-2">
             <Label htmlFor="jobGrade">Job Grade</Label>
             <Select
+              data-slot="select"
               value={formData.jobGradeId}
               onValueChange={(value) => setFormData({ jobGradeId: value })}
             >
-              <SelectTrigger id="jobGrade">
-                <SelectValue placeholder="Select job grade" />
+              <SelectTrigger data-slot="select-trigger" id="jobGrade">
+                <SelectValue data-slot="select-value" placeholder="Select job grade" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent data-slot="select-content">
                 {jobGrades?.map((grade) => (
-                  <SelectItem key={grade.id} value={grade.id}>
+                  <SelectItem data-slot="select-item" key={grade.id} value={grade.id}>
                     {`${grade.level} / ${grade.grade}`}
                   </SelectItem>
                 ))}
@@ -165,6 +169,7 @@ export function AddMemberModal({
           <div className="grid gap-2">
             <Label htmlFor="joinedDate">Joined Date</Label>
             <Input
+              data-slot="input"
               id="joinedDate"
               type="date"
               value={formData.joinedDate}
@@ -175,6 +180,7 @@ export function AddMemberModal({
           <div className="grid gap-2">
             <Label htmlFor="profilePhoto">Profile Photo</Label>
             <Input
+              data-slot="input"
               id="profilePhoto"
               type="file"
               onChange={(e) => {
@@ -186,8 +192,9 @@ export function AddMemberModal({
             />
           </div>
 
-          <DialogFooter>
+          <DialogFooter data-slot="dialog-footer">
             <Button
+              data-slot="button"
               type="button"
               variant="outline"
               onClick={handleClose}
@@ -196,6 +203,7 @@ export function AddMemberModal({
               Cancel
             </Button>
             <Button
+              data-slot="button"
               type="submit"
               disabled={isSubmitting || !formData.email || !formData.fullName}
             >

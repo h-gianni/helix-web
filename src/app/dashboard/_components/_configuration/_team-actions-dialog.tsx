@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogBody,
   DialogFooter,
 } from "@/components/ui/core/Dialog";
 import { Button } from "@/components/ui/core/Button";
@@ -18,7 +17,7 @@ import {
 } from "@/components/ui/core/Tooltip";
 import { cn } from "@/lib/utils";
 import { activityData } from "@/data/org-actions-data";
-import { useConfigStore } from '@/store/config-store';
+import { useConfigStore } from "@/store/config-store";
 
 interface ActivityState {
   favorite: boolean;
@@ -37,42 +36,40 @@ export interface TeamActionsDialogProps {
   team: Team;
 }
 
-interface DragData {
-  category: string;
-  activity: string;
-  index: number;
-}
-
-const TeamActionsDialog: React.FC<TeamActionsDialogProps> = ({
-  isOpen,
-  onClose,
-  team,
-}) => {
-  const selectedActivities = useConfigStore((state) => state.config.activities.selected);
+function TeamActionsDialog({ isOpen, onClose, team }: TeamActionsDialogProps) {
+  const selectedActivities = useConfigStore(
+    (state) => state.config.activities.selected
+  );
   const favorites = useConfigStore((state) => state.config.activities.favorites);
   const hidden = useConfigStore((state) => state.config.activities.hidden);
   const updateFavorites = useConfigStore((state) => state.updateFavorites);
   const updateHidden = useConfigStore((state) => state.updateHidden);
-  
+
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [activities, setActivities] = useState<Record<string, string[]>>({});
-  const [activityStates, setActivityStates] = useState<Record<string, ActivityState>>({});
+  const [activityStates, setActivityStates] =
+    useState<Record<string, ActivityState>>({});
 
   useEffect(() => {
-    const teamActivities = team.functions.reduce((acc: Record<string, string[]>, func) => {
-      if (activityData[func]) {
-        acc[func] = activityData[func].filter(act => selectedActivities.includes(act));
-      }
-      return acc;
-    }, {});
+    const teamActivities = team.functions.reduce(
+      (acc: Record<string, string[]>, func) => {
+        if (activityData[func]) {
+          acc[func] = activityData[func].filter((act) =>
+            selectedActivities.includes(act)
+          );
+        }
+        return acc;
+      },
+      {}
+    );
     setActivities(teamActivities);
 
     const states: Record<string, ActivityState> = {};
     Object.entries(teamActivities).forEach(([category, acts]) => {
-      acts.forEach(act => {
+      acts.forEach((act) => {
         states[act] = {
           favorite: favorites?.[category]?.includes(act) || false,
-          hidden: hidden?.[category]?.includes(act) || false
+          hidden: hidden?.[category]?.includes(act) || false,
         };
       });
     });
@@ -82,31 +79,32 @@ const TeamActionsDialog: React.FC<TeamActionsDialogProps> = ({
   const toggleFavorite = (act: string, category: string): void => {
     const categoryActivities = activities[category] || [];
     const favoritesInCategory = categoryActivities.filter(
-      a => activityStates[a]?.favorite
+      (a) => activityStates[a]?.favorite
     ).length;
 
+    // Don’t allow more than 5 favorites
     if (favoritesInCategory >= 5 && !activityStates[act]?.favorite) {
       return;
     }
 
     const newState = !activityStates[act]?.favorite;
-    setActivityStates(prev => ({
+    setActivityStates((prev) => ({
       ...prev,
-      [act]: { 
-        ...prev[act], 
+      [act]: {
+        ...prev[act],
         favorite: newState,
-        hidden: false
-      }
+        hidden: false,
+      },
     }));
 
     const currentFavorites = favorites?.[category] || [];
     const updatedFavorites = newState
       ? [...currentFavorites, act]
-      : currentFavorites.filter(a => a !== act);
+      : currentFavorites.filter((a) => a !== act);
     updateFavorites(category, updatedFavorites);
 
     if (hidden?.[category]?.includes(act)) {
-      const updatedHidden = (hidden[category] || []).filter(a => a !== act);
+      const updatedHidden = (hidden[category] || []).filter((a) => a !== act);
       updateHidden(category, updatedHidden);
     }
   };
@@ -114,49 +112,67 @@ const TeamActionsDialog: React.FC<TeamActionsDialogProps> = ({
   const toggleVisibility = (act: string, category: string): void => {
     const categoryActivities = activities[category] || [];
     const visibleInCategory = categoryActivities.filter(
-      a => !activityStates[a]?.hidden
+      (a) => !activityStates[a]?.hidden
     ).length;
 
+    // Must keep at least 1 visible
     if (visibleInCategory <= 1 && !activityStates[act]?.hidden) {
       return;
     }
 
     const newState = !activityStates[act]?.hidden;
-    setActivityStates(prev => ({
+    setActivityStates((prev) => ({
       ...prev,
-      [act]: { 
-        ...prev[act], 
+      [act]: {
+        ...prev[act],
         hidden: newState,
-        favorite: false
-      }
+        favorite: false,
+      },
     }));
 
     const currentHidden = hidden?.[category] || [];
     const updatedHidden = newState
       ? [...currentHidden, act]
-      : currentHidden.filter(a => a !== act);
+      : currentHidden.filter((a) => a !== act);
     updateHidden(category, updatedHidden);
 
     if (favorites?.[category]?.includes(act)) {
-      const updatedFavorites = (favorites[category] || []).filter(a => a !== act);
+      const updatedFavorites = (favorites[category] || []).filter(
+        (a) => a !== act
+      );
       updateFavorites(category, updatedFavorites);
     }
   };
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, category: string, activity: string, index: number): void => {
+  interface DragData {
+    category: string;
+    activity: string;
+    index: number;
+  }
+
+  const handleDragStart = (
+    e: React.DragEvent<HTMLDivElement>,
+    category: string,
+    activity: string,
+    index: number
+  ): void => {
     setDraggedItem(activity);
     const dragData: DragData = { category, activity, index };
-    e.dataTransfer.setData('text/plain', JSON.stringify(dragData));
+    e.dataTransfer.setData("text/plain", JSON.stringify(dragData));
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
     e.preventDefault();
   };
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetCategory: string, targetIndex: number): void => {
+  const handleDrop = (
+    e: React.DragEvent<HTMLDivElement>,
+    targetCategory: string,
+    targetIndex: number
+  ): void => {
     e.preventDefault();
-    const data = JSON.parse(e.dataTransfer.getData('text/plain')) as DragData;
-    
+    const data = JSON.parse(e.dataTransfer.getData("text/plain")) as DragData;
+
     if (data.category === targetCategory) {
       const newActivities = { ...activities };
       const categoryActivities = [...newActivities[targetCategory]];
@@ -165,11 +181,14 @@ const TeamActionsDialog: React.FC<TeamActionsDialogProps> = ({
       newActivities[targetCategory] = categoryActivities;
       setActivities(newActivities);
     }
-    
+
     setDraggedItem(null);
   };
 
-  const getCategoryActivities = (categoryKey: string, categoryActs: string[]): string[] => {
+  const getCategoryActivities = (
+    categoryKey: string,
+    categoryActs: string[]
+  ): string[] => {
     return [...categoryActs].sort((a, b) => {
       const stateA = activityStates[a];
       const stateB = activityStates[b];
@@ -182,15 +201,26 @@ const TeamActionsDialog: React.FC<TeamActionsDialogProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl h-[90vh]" scrollable>
-        <DialogHeader className="p-6 border-b">
-          <DialogTitle>
+    <Dialog
+      data-slot="dialog"
+      open={isOpen}
+      onOpenChange={onClose}
+    >
+      {/* 
+        No more DialogBody, just place the content 
+        directly in DialogContent and apply overflow. 
+      */}
+      <DialogContent
+        data-slot="dialog-content"
+        className="max-w-4xl h-[90vh] overflow-y-auto"
+      >
+        <DialogHeader data-slot="dialog-header" className="p-6 border-b">
+          <DialogTitle data-slot="dialog-title">
             <div className="flex flex-col gap-2">
               <h2 className="heading-2">{team.name}'s Actions</h2>
               <div className="flex gap-2">
                 {team.functions.map((func) => (
-                  <Badge key={func} variant="secondary">
+                  <Badge data-slot="badge" key={func} variant="secondary">
                     {func}
                   </Badge>
                 ))}
@@ -199,36 +229,40 @@ const TeamActionsDialog: React.FC<TeamActionsDialogProps> = ({
           </DialogTitle>
         </DialogHeader>
 
-        <DialogBody>
-          <div className="space-y-6">
-            {Object.entries(activities).map(([category, categoryActivities]) => (
-              categoryActivities.length > 0 && (
-                <div key={category} className="space-y-2">
-                  <h3 className="heading-4 capitalize">{category}</h3>
-                  <div className="w-full -space-y-px">
-                    {getCategoryActivities(category, categoryActivities).map((activity, index) => (
+        {/* Replace <DialogBody> with a simple <div> or <section> */}
+        <div className="p-4 space-y-6">
+          {Object.entries(activities).map(([category, categoryActivities]) =>
+            categoryActivities.length > 0 ? (
+              <div key={category} className="space-y-2">
+                <h3 className="heading-4 capitalize">{category}</h3>
+                <div className="w-full -space-y-px">
+                  {getCategoryActivities(category, categoryActivities).map(
+                    (activity, index) => (
                       <div
                         key={activity}
                         draggable
-                        onDragStart={(e) => handleDragStart(e, category, activity, index)}
+                        onDragStart={(e) =>
+                          handleDragStart(e, category, activity, index)
+                        }
                         onDragOver={handleDragOver}
                         onDrop={(e) => handleDrop(e, category, index)}
                         className={cn(
                           "flex items-center justify-between bg-white border px-4 py-3 border-border",
-                          draggedItem === activity && "shadow-lg",
-                          activityStates[activity]?.hidden && "text-foreground-muted"
+                          draggedItem === activity && "shadow-lg"
                         )}
                       >
                         <div className="flex items-center gap-4 flex-1">
-                          <GripHorizontal className="h-4 w-4 cursor-grab text-foreground/25" />
+                          <GripHorizontal className="size-4 cursor-grab text-foreground/25" />
                           <span className="text-base">{activity}</span>
                         </div>
                         <div className="flex gap-1">
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
+                          {/* Favorite toggle */}
+                          <TooltipProvider data-slot="tooltip-provider">
+                            <Tooltip data-slot="tooltip">
+                              <TooltipTrigger data-slot="tooltip-trigger" asChild>
                                 <div>
                                   <Button
+                                    data-slot="button"
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => toggleFavorite(activity, category)}
@@ -237,72 +271,81 @@ const TeamActionsDialog: React.FC<TeamActionsDialogProps> = ({
                                       activityStates[activity]?.favorite && "text-accent"
                                     )}
                                   >
-                                    <Heart 
+                                    <Heart
                                       className={cn(
-                                        "h-4 w-4",
+                                        "size-4",
                                         activityStates[activity]?.favorite && "fill-current"
-                                      )} 
+                                      )}
                                     />
                                   </Button>
                                 </div>
                               </TooltipTrigger>
                               {activityStates[activity]?.hidden ? (
-                                <TooltipContent>
+                                <TooltipContent data-slot="tooltip-content">
                                   Cannot favorite a hidden action
                                 </TooltipContent>
-                              ) : getCategoryActivities(category, activities[category]).filter(a => activityStates[a]?.favorite).length >= 5 && !activityStates[activity]?.favorite && (
-                                <TooltipContent>
+                              ) : getCategoryActivities(category, activities[category])
+                                  .filter((a) => activityStates[a]?.favorite).length >= 5 &&
+                                !activityStates[activity]?.favorite ? (
+                                <TooltipContent data-slot="tooltip-content">
                                   Maximum 5 favorites per category
                                 </TooltipContent>
-                              )}
+                              ) : null}
                             </Tooltip>
                           </TooltipProvider>
 
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
+                          {/* Visibility toggle */}
+                          <TooltipProvider data-slot="tooltip-provider">
+                            <Tooltip data-slot="tooltip">
+                              <TooltipTrigger data-slot="tooltip-trigger" asChild>
                                 <div>
                                   <Button
+                                    data-slot="button"
                                     variant="ghost"
                                     size="sm"
                                     onClick={() => toggleVisibility(activity, category)}
                                     disabled={activityStates[activity]?.favorite}
                                   >
                                     {activityStates[activity]?.hidden ? (
-                                      <EyeOff className="h-4 w-4" />
+                                      <EyeOff className="size-4" />
                                     ) : (
-                                      <Eye className="h-4 w-4" />
+                                      <Eye className="size-4" />
                                     )}
                                   </Button>
                                 </div>
                               </TooltipTrigger>
                               {activityStates[activity]?.favorite ? (
-                                <TooltipContent>
+                                <TooltipContent data-slot="tooltip-content">
                                   Cannot hide a favorite action
                                 </TooltipContent>
-                              ) : activities[category].filter(a => !activityStates[a]?.hidden).length <= 1 && !activityStates[activity]?.hidden && (
-                                <TooltipContent>
+                              ) : activities[category].filter(
+                                  (a) => !activityStates[a]?.hidden
+                                ).length <= 1 &&
+                                !activityStates[activity]?.hidden ? (
+                                <TooltipContent data-slot="tooltip-content">
                                   Must keep at least 1 visible action
                                 </TooltipContent>
-                              )}
+                              ) : null}
                             </Tooltip>
                           </TooltipProvider>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    )
+                  )}
                 </div>
-              )
-            ))}
-          </div>
-        </DialogBody>
+              </div>
+            ) : null
+          )}
+        </div>
 
-        <DialogFooter className="p-6 border-t">
-          <Button onClick={onClose}>Close</Button>
+        <DialogFooter data-slot="dialog-footer" className="p-6 border-t">
+          <Button data-slot="button" onClick={onClose}>
+            Close
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 export default TeamActionsDialog;

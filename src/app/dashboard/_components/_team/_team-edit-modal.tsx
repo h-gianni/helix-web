@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -13,9 +13,7 @@ import { Input } from "@/components/ui/core/Input";
 import { Textarea } from "@/components/ui/core/Textarea";
 import { Label } from "@/components/ui/core/Label";
 import { Alert } from "@/components/ui/core/Alert";
-import {
-  AlertCircle,
-} from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 interface TeamEditModalProps {
   isOpen: boolean;
@@ -33,7 +31,7 @@ export function TeamEditModal({
   onSave,
 }: TeamEditModalProps) {
   const [name, setName] = useState(teamName);
-  const [description, setDescription] = useState(teamDescription || '');
+  const [description, setDescription] = useState(teamDescription || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,18 +42,19 @@ export function TeamEditModal({
       }
       setIsSubmitting(true);
       setError(null);
+
       await onSave(name.trim(), description.trim() || null);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleClose = () => {
-    if (name !== teamName || description !== (teamDescription || '')) {
-      if (!confirm('You have unsaved changes. Are you sure you want to close?')) {
+    if (name !== teamName || description !== (teamDescription || "")) {
+      if (!confirm("You have unsaved changes. Are you sure you want to close?")) {
         return;
       }
     }
@@ -63,16 +62,17 @@ export function TeamEditModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit Team Details</DialogTitle>
+    <Dialog data-slot="dialog" open={isOpen} onOpenChange={handleClose}>
+      <DialogContent data-slot="dialog-content" className="sm:max-w-[425px]">
+        <DialogHeader data-slot="dialog-header">
+          <DialogTitle data-slot="dialog-title">Edit Team Details</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
           {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
+            <Alert data-slot="alert" variant="destructive">
+              {/* Replaced h-4 w-4 with size-4 */}
+              <AlertCircle className="size-4" />
               <p className="text-sm">{error}</p>
             </Alert>
           )}
@@ -101,8 +101,9 @@ export function TeamEditModal({
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter data-slot="dialog-footer">
           <Button
+            data-slot="button"
             variant="outline"
             onClick={handleClose}
             disabled={isSubmitting}
@@ -110,6 +111,7 @@ export function TeamEditModal({
             Cancel
           </Button>
           <Button
+            data-slot="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
           >

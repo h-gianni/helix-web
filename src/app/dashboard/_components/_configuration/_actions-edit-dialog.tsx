@@ -12,17 +12,17 @@ interface ActionsDialogProps {
   onClose: () => void;
 }
 
-const ActionsDialog: React.FC<ActionsDialogProps> = ({
+function ActionsDialog({
   isOpen,
   onClose,
-}) => {
+}: ActionsDialogProps) {
   const [selectedCategory, setSelectedCategory] = useState("engineering");
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl">
-        <DialogHeader>
-          <DialogTitle>Edit Organization Actions</DialogTitle>
+      <DialogContent data-slot="dialog-content" className="max-w-4xl">
+        <DialogHeader data-slot="dialog-header">
+          <DialogTitle data-slot="dialog-title">Edit Organization Actions</DialogTitle>
         </DialogHeader>
         <div className="p-6">
           <ActionsConfig 
@@ -33,6 +33,6 @@ const ActionsDialog: React.FC<ActionsDialogProps> = ({
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 export default ActionsDialog;

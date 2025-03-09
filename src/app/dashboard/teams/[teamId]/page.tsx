@@ -98,28 +98,35 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
     try {
       await deleteTeam.mutateAsync(params.teamId);
       router.push("/dashboard/teams");
-    } catch (error) {
-      console.error("Error deleting team:", error);
+    } catch (err) {
+      console.error("Error deleting team:", err);
     }
   };
 
   if (isLoading) {
     return (
-      <div className="loader"><Loader size="base" label="Loading..." /></div>
+      <div className="loader">
+        <Loader size="base" label="Loading..." />
+      </div>
     );
   }
 
   if (error) {
     return (
       <div className="flex flex-col items-center gap-4">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+        <Alert data-slot="alert" variant="destructive">
+          <AlertCircle className="size-4" />
           <p className="text-sm">
             {error instanceof Error ? error.message : "An error occurred"}
           </p>
         </Alert>
-        <Button variant="ghost" onClick={() => router.back()} className="gap-2">
-          <ArrowLeft className="h-4 w-4" />
+        <Button
+          data-slot="button"
+          variant="ghost"
+          onClick={() => router.back()}
+          className="gap-2"
+        >
+          <ArrowLeft className="size-4" />
           Go Back
         </Button>
       </div>
@@ -129,12 +136,17 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
   if (!team) {
     return (
       <div className="flex flex-col items-center gap-4">
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
+        <Alert data-slot="alert" variant="destructive">
+          <AlertCircle className="size-4" />
           <p className="text-sm">Team not found</p>
         </Alert>
-        <Button variant="ghost" onClick={() => router.back()} className="gap-2">
-          <ArrowLeft className="h-4 w-4" />
+        <Button
+          data-slot="button"
+          variant="ghost"
+          onClick={() => router.back()}
+          className="gap-2"
+        >
+          <ArrowLeft className="size-4" />
           Go Back
         </Button>
       </div>
@@ -160,28 +172,38 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         actions={
           <>
             <Button
+              data-slot="button"
               onClick={() => setAddMemberModalOpen(true)}
               className="gap-2"
             >
-              <UserPlus className="h-4 w-4" />
+              <UserPlus className="size-4" />
               Add Member
             </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <MoreVertical className="h-4 w-4" />
+            <DropdownMenu data-slot="dropdown-menu">
+              <DropdownMenuTrigger data-slot="dropdown-menu-trigger" asChild>
+                <Button
+                  data-slot="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                >
+                  <MoreVertical className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setEditModalOpen(true)}>
-                  <PenSquare className="mr-2 h-4 w-4" />
+              <DropdownMenuContent data-slot="dropdown-menu-content" align="end">
+                <DropdownMenuItem
+                  data-slot="dropdown-menu-item"
+                  onClick={() => setEditModalOpen(true)}
+                >
+                  <PenSquare className="size-4 mr-2" />
                   Team Settings
                 </DropdownMenuItem>
                 <DropdownMenuItem
+                  data-slot="dropdown-menu-item"
                   onClick={() => setDeleteDialogOpen(true)}
                   className="text-destructive focus:text-destructive"
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
+                  <Trash2 className="size-4 mr-2" />
                   Delete Team
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -218,19 +240,28 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         onSave={handleSaveTeamDetails}
       />
 
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Team</AlertDialogTitle>
-            <AlertDialogDescription>
+      <AlertDialog
+        data-slot="alert-dialog"
+        open={isDeleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+      >
+        <AlertDialogContent data-slot="alert-dialog-content">
+          <AlertDialogHeader data-slot="alert-dialog-header">
+            <AlertDialogTitle data-slot="alert-dialog-title">
+              Delete Team
+            </AlertDialogTitle>
+            <AlertDialogDescription data-slot="alert-dialog-description">
               Are you sure you want to delete this team? This action cannot be
               undone. All team members, activities, and performance data will be
               permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogFooter data-slot="alert-dialog-footer">
+            <AlertDialogCancel data-slot="alert-dialog-cancel">
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
+              data-slot="alert-dialog-action"
               onClick={handleDeleteTeam}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >

@@ -21,28 +21,32 @@ import Link from "next/link";
 import { EditMemberModal } from "../../../../_components/_member/_edit-member-modal";
 import PerformanceRatingModal from "@/app/dashboard/_components/_performance-scoring-modal";
 import RatingsSection from "../../../../_components/_member/_ratings-section";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/core/Tabs";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/components/ui/core/Tabs";
 import MemberDashboard from "../../../../_components/_member/_member-dashboard";
 import { useMemberDetails, useMemberStore } from "@/store/member-store";
 
 export default function MemberDetailsPage() {
   const params = useParams() as { teamId: string; memberId: string };
   const router = useRouter();
-  
-  const { 
+
+  const {
     selectedTab,
     isEditModalOpen,
     isRatingModalOpen,
     setSelectedTab,
     setEditModalOpen,
-    setRatingModalOpen 
+    setRatingModalOpen,
   } = useMemberStore();
 
-  const { 
-    data: member,
-    isLoading,
-    error
-  } = useMemberDetails({ teamId: params.teamId, memberId: params.memberId });
+  const { data: member, isLoading, error } = useMemberDetails({
+    teamId: params.teamId,
+    memberId: params.memberId,
+  });
 
   const breadcrumbItems = [
     { href: "/dashboard/teams", label: "Teams" },
@@ -51,30 +55,37 @@ export default function MemberDetailsPage() {
       label: member?.team?.name || "Team",
     },
     {
-      label: member?.firstName && member?.lastName
-        ? `${member.firstName} ${member.lastName}`
-        : member?.user?.email || "Member Details",
+      label:
+        member?.firstName && member?.lastName
+          ? `${member.firstName} ${member.lastName}`
+          : member?.user?.email || "Member Details",
     },
   ];
 
   if (isLoading) {
-    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
+    return (
+      <div className="loader">
+        <Loader size="base" label="Loading..." />
+      </div>
+    );
   }
 
   if (error || !member) {
     return (
       <div className="ui-loader-error">
-        <Alert variant="destructive">
-          <AlertCircle />
-          <AlertDescription>
+        <Alert data-slot="alert" variant="destructive">
+          {/* Replace h-# w-# with size-4 if needed */}
+          <AlertCircle className="size-4" />
+          <AlertDescription data-slot="alert-description">
             {error instanceof Error ? error.message : "Member not found"}
           </AlertDescription>
         </Alert>
         <Button
+          data-slot="button"
           variant="secondary"
           onClick={() => router.push(`/dashboard/teams/${params.teamId}`)}
         >
-          <ArrowLeft /> Back to Team
+          <ArrowLeft className="size-4" /> Back to Team
         </Button>
       </div>
     );
@@ -92,33 +103,35 @@ export default function MemberDetailsPage() {
         backButton={{
           onClick: () => router.push(`/dashboard/teams/${params.teamId}`),
         }}
-        icon={member.isAdmin && <Crown className="ui-text-warning" />}
+        icon={member.isAdmin && <Crown className="text-warning size-4" />}
         actions={
           <>
             <Button
+              data-slot="button"
               variant="secondary"
               onClick={() => setRatingModalOpen(true)}
             >
-              <Plus /> Add Rating
+              <Plus className="size-4" /> Add Rating
             </Button>
-            <Button variant="default">
-            <ChartNoAxesCombined /> Generate Performance Review
+            <Button data-slot="button" variant="default">
+              <ChartNoAxesCombined className="size-4" /> Generate Performance Review
             </Button>
           </>
         }
       />
 
       <main className="layout-page-main">
-        <div className="flex gap-2 flex-row-reverse">
+        <div className="flex flex-row-reverse gap-2">
           <div className="w-80">
             <ProfileCard
               align="vertical"
               fields={[
                 {
                   label: "Full Name",
-                  value: member.firstName && member.lastName
-                    ? `${member.firstName} ${member.lastName}`
-                    : "Not set",
+                  value:
+                    member.firstName && member.lastName
+                      ? `${member.firstName} ${member.lastName}`
+                      : "Not set",
                 },
                 {
                   label: "Email",
@@ -137,7 +150,7 @@ export default function MemberDetailsPage() {
                   value: (
                     <>
                       {member.isAdmin ? "Admin" : "Member"}
-                      {member.isAdmin && <Crown className="h-4 w-4 text-warning-400" />}
+                      {member.isAdmin && <Crown className="size-4 text-warning-400" />}
                     </>
                   ),
                 },
@@ -157,10 +170,7 @@ export default function MemberDetailsPage() {
               </TabsList>
 
               <TabsContent value="dashboard">
-                <MemberDashboard
-                  teamId={params.teamId}
-                  memberId={params.memberId}
-                />
+                <MemberDashboard teamId={params.teamId} memberId={params.memberId} />
               </TabsContent>
 
               <TabsContent value="ratings">
@@ -172,64 +182,18 @@ export default function MemberDetailsPage() {
               </TabsContent>
 
               <TabsContent value="feedbacks">
-                <div className="missing-content">
-                  No feedback yet.
-                </div>
+                <div className="missing-content">No feedback yet.</div>
               </TabsContent>
 
               {/* <TabsContent value="goals">
-                <div className="w-full">
-                  <div className="flex justify-end mb-4">
-                    <Button variant="default" asChild>
-                      <Link
-                        href={`/dashboard/teams/${params.teamId}/members/${params.memberId}/goals/add`}
-                      >
-                        <Target /> Add Goal
-                      </Link>
-                    </Button>
-                  </div>
-
-                  {!member.goals?.length ? (
-                    <div className="missing-content">No goals set yet.</div>
-                  ) : (
-                    <div className="space-y-4">
-                      {member.goals.map((goal) => (
-                        <Card key={goal.id}>
-                          <CardContent className="p-4">
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <p className="font-medium">Year: {goal.year}</p>
-                                <p className="text-foreground-muted">
-                                  {goal.description}
-                                </p>
-                              </div>
-                              <Button
-                                variant="secondary"
-                                asChild
-                              >
-                                <Link
-                                  href={`/dashboard/teams/${params.teamId}/members/${params.memberId}/goals/${goal.id}/edit`}
-                                >
-                                  <PenSquare /> Edit
-                                </Link>
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                ...
               </TabsContent> */}
             </Tabs>
           </div>
         </div>
       </main>
 
-      <EditMemberModal
-        memberId={params.memberId}
-        teamId={params.teamId}
-      />
+      <EditMemberModal memberId={params.memberId} teamId={params.teamId} />
 
       <PerformanceRatingModal
         teamId={params.teamId}

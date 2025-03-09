@@ -124,7 +124,7 @@ export const Testimonials = () => (
                 {testimonial.quote}
               </h3>
               <p className="marketing-body-sm">{testimonial.outcome}</p>
-              <div className="mt-4 marketing-body-xs text-foreground-muted">
+              <div className="mt-4 marketing-body-xs">
                 — <span className="font-semibold text-foreground">{testimonial.name}</span>, {testimonial.title}
               </div>
             </div>

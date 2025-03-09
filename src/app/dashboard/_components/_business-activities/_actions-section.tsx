@@ -1,5 +1,6 @@
-'use client';
+"use client";
 
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/core/Button";
 import {
   Table,
@@ -11,7 +12,13 @@ import {
 } from "@/components/ui/core/Table";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Loader } from "@/components/ui/core/Loader";
-import { Target, Edit, Trash2, AlertCircle, Heart } from "lucide-react";
+import {
+  Target,
+  Edit,
+  Trash2,
+  AlertCircle,
+  Heart,
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -33,11 +40,11 @@ import {
 } from "@/components/ui/core/Pagination";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { Badge } from "@/components/ui/core/Badge";
-import { useActivities, useDeleteActivity, useActivitiesStore } from '@/store/business-activity-store';
-import { useEffect } from "react";
-// import type { BusinessActivityResponse } from "@/lib/types/api";
-import { ActivityModal } from "./_actions-modal";
-import type { ApiResponse, BusinessActivityResponse } from "@/lib/types/api";
+import {
+  useActivities,
+  useDeleteActivity,
+  useActivitiesStore,
+} from "@/store/business-activity-store";
 
 interface ActivitiesSectionProps {
   shouldRefresh: boolean;
@@ -50,22 +57,22 @@ export function ActivitiesSection({
   onRefreshComplete,
   onUpdate,
 }: ActivitiesSectionProps) {
-  const { 
+  const {
     data: activities,
     isLoading,
     error,
-    refetch
+    refetch,
   } = useActivities();
 
   const deleteActivity = useDeleteActivity();
-  
-  const { 
+
+  const {
     selectedActivity,
     isEditModalOpen,
     isDeleteDialogOpen,
     setSelectedActivity,
     setEditModalOpen,
-    setDeleteDialogOpen
+    setDeleteDialogOpen,
   } = useActivitiesStore();
 
   useEffect(() => {
@@ -78,21 +85,19 @@ export function ActivitiesSection({
 
   const handleDelete = async () => {
     if (!selectedActivity) return;
-    
     try {
       await deleteActivity.mutateAsync(selectedActivity.id);
       await onUpdate();
       setDeleteDialogOpen(false);
       setSelectedActivity(null);
     } catch (err) {
-      console.error('Failed to delete activity:', err);
+      console.error("Failed to delete activity:", err);
     }
   };
 
-
   useEffect(() => {
     if (activities) {
-      console.log('Activities data:', activities);
+      console.log("Activities data:", activities);
     }
   }, [activities]);
 
@@ -106,14 +111,13 @@ export function ActivitiesSection({
 
   if (!activities || activities.length === 0) {
     return (
-      <Card>
-        <CardContent>
+      <Card data-slot="card">
+        <CardContent data-slot="card-content">
           <div className="space-y-base text-center">
-            <Target className="mx-auto h-12 w-12 text-muted-foreground" />
+            {/* Replaced h-12 w-12 with size-12 */}
+            <Target className="mx-auto size-12 text-muted-foreground" />
             <div className="space-y-2">
-              <h3 className="text-lg font-medium">
-                No business activities yet
-              </h3>
+              <h3 className="text-lg font-medium">No business activities yet</h3>
               <p className="text-sm text-muted-foreground">
                 Create business activities to track team performance.
               </p>
@@ -127,11 +131,13 @@ export function ActivitiesSection({
   return (
     <div className="space-y-2">
       {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription className="flex items-center gap-2">
-            {error instanceof Error ? error.message : 'An error occurred'}
+        <Alert data-slot="alert" variant="destructive">
+          {/* Replaced h-4 w-4 with size-4 */}
+          <AlertCircle className="size-4" />
+          <AlertDescription data-slot="alert-description" className="flex items-center gap-2">
+            {error instanceof Error ? error.message : "An error occurred"}
             <Button
+              data-slot="button"
               variant="secondary"
               onClick={() => refetch()}
               disabled={isLoading}
@@ -144,76 +150,81 @@ export function ActivitiesSection({
 
       <div className="view-controls-bar">To be added: sorting and filters</div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Activity</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead className="w-0 whitespace-nowrap">
+      <Table data-slot="table">
+        <TableHeader data-slot="table-header">
+          <TableRow data-slot="table-row">
+            <TableHead data-slot="table-head">Activity</TableHead>
+            <TableHead data-slot="table-head">Category</TableHead>
+            <TableHead data-slot="table-head" className="w-0 whitespace-nowrap">
               Category Impact
             </TableHead>
-            <TableHead className="w-0 whitespace-nowrap">
+            <TableHead data-slot="table-head" className="w-0 whitespace-nowrap">
               Activity Impact
             </TableHead>
-            <TableHead className="w-0 whitespace-nowrap">
+            <TableHead data-slot="table-head" className="w-0 whitespace-nowrap">
               Total Impact
             </TableHead>
-            <TableHead className="w-0">Used</TableHead>
-            <TableHead className="w-0 text-right">Actions</TableHead>
+            <TableHead data-slot="table-head" className="w-0">
+              Used
+            </TableHead>
+            <TableHead data-slot="table-head" className="w-0 text-right">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody data-slot="table-body">
           {activities?.map((activity: any) => (
-            <TableRow key={activity.id}>
-              <TableCell>
+            <TableRow data-slot="table-row" key={activity.id}>
+              <TableCell data-slot="table-cell">
                 <div className="flex flex-col">
                   <span className="font-medium">{activity.name}</span>
-                  <span className="body-sm text-foreground-muted">
+                  <span className="body-sm ">
                     {activity.description || "No description"}
                   </span>
                 </div>
               </TableCell>
-              <TableCell className="text-sm text-foreground-muted w-0 whitespace-nowrap">
+              <TableCell data-slot="table-cell" className="w-0 whitespace-nowrap text-sm">
                 {activity.category || "No category"}
               </TableCell>
-              <TableCell className="text-center text-sm">
-                10<span className="text-foreground-muted">/10</span>
+              <TableCell data-slot="table-cell" className="text-center text-sm">
+                10<span>/10</span>
               </TableCell>
-              <TableCell className="text-center text-sm">
-                8<span className="text-foreground-muted">/10</span>
+              <TableCell data-slot="table-cell" className="text-center text-sm">
+                8<span>/10</span>
               </TableCell>
-              <TableCell className="text-center font-semibold">
-                18
-                <span className="text-foreground-muted text-sm font-normal">
-                  /20
-                </span>
+              <TableCell data-slot="table-cell" className="text-center font-semibold">
+                18 <span className="text-sm font-normal">/20</span>
               </TableCell>
-              <TableCell className="text-center text-sm">
+              <TableCell data-slot="table-cell" className="text-center text-sm">
                 {activity._count?.ratings || 0}
               </TableCell>
-              <TableCell>
+              <TableCell data-slot="table-cell">
                 <div className="flex items-center gap-2">
                   <Button
+                    data-slot="button"
                     variant="ghost"
-                    size="icon-sm"
+                    size="sm"
                     onClick={() => {
                       setSelectedActivity(activity);
                       setEditModalOpen(true);
                     }}
                     disabled={isLoading}
                   >
+                    {/* We can set an icon size if we want, e.g. className="size-4" */}
                     <Edit />
                   </Button>
 
                   <Button
-                    variant="destructive-ghost"
-                    size="icon-sm"
+                    data-slot="button"
+                    variant="destructive"
+                    size="sm"
                     onClick={() => {
                       setSelectedActivity(activity);
                       setDeleteDialogOpen(true);
                     }}
                     disabled={isLoading}
                   >
+                    {/* We can set an icon size if we want, e.g. className="size-4" */}
                     <Trash2 />
                   </Button>
                 </div>
@@ -222,25 +233,29 @@ export function ActivitiesSection({
           ))}
         </TableBody>
       </Table>
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
+
+      <Pagination data-slot="pagination">
+        <PaginationContent data-slot="pagination-content">
+          <PaginationItem data-slot="pagination-item">
+            <PaginationPrevious data-slot="pagination-previous" href="#" />
           </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
+          <PaginationItem data-slot="pagination-item">
+            <PaginationLink data-slot="pagination-link" href="#">
+              1
+            </PaginationLink>
           </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
+          <PaginationItem data-slot="pagination-item">
+            <PaginationEllipsis data-slot="pagination-ellipsis" />
           </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
+          <PaginationItem data-slot="pagination-item">
+            <PaginationNext data-slot="pagination-next" href="#" />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
 
-      {/* Edit Modal */}
-      {/* <ActivityModal
+      {/* The ActivityModal is presumably defined but commented out in your original code */}
+      {/* 
+      <ActivityModal
         isOpen={isEditModalOpen}
         onClose={() => {
           setEditModalOpen(false);
@@ -248,41 +263,42 @@ export function ActivitiesSection({
         }}
         activity={selectedActivity}
         onSuccess={onUpdate}
-      /> */}
+      />
+      */}
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog
+        data-slot="alert-dialog"
         open={isDeleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
       >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Business Activity</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this business activity? This
-              action cannot be undone. All associated ratings and feedback will
-              be permanently deleted.
+        <AlertDialogContent data-slot="alert-dialog-content">
+          <AlertDialogHeader data-slot="alert-dialog-header">
+            <AlertDialogTitle data-slot="alert-dialog-title">
+              Delete Business Activity
+            </AlertDialogTitle>
+            <AlertDialogDescription data-slot="alert-dialog-description">
+              Are you sure you want to delete this business activity? This action
+              cannot be undone. All associated ratings and feedback will be
+              permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
+          <AlertDialogFooter data-slot="alert-dialog-footer">
             <AlertDialogCancel asChild>
-              <Button variant="ghost" disabled={isLoading}>
+              <Button data-slot="button" variant="ghost" disabled={isLoading}>
                 Cancel
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button
+                data-slot="button"
                 variant="destructive"
                 onClick={handleDelete}
                 disabled={isLoading}
               >
                 {isLoading ? (
                   <div className="loader">
-                    <Loader
-                      size="base"
-                      label="Deleting..."
-                      className="text-destructive"
-                    />
+                    <Loader size="base" label="Deleting..." className="text-destructive" />
                   </div>
                 ) : (
                   "Delete Activity"

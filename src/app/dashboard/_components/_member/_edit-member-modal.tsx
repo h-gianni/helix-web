@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -28,9 +28,10 @@ interface MemberUpdateData {
   isAdmin: boolean;
 }
 
-export function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
+function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
   const { isEditModalOpen, setEditModalOpen } = useMemberStore();
   const updateMember = useUpdateMember();
+
   const [formData, setFormData] = useState<MemberUpdateData>({
     firstName: "",
     lastName: "",
@@ -40,7 +41,7 @@ export function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
 
   useEffect(() => {
     if (!isEditModalOpen) return;
-    
+
     async function fetchMemberData() {
       try {
         const response = await fetch(`/api/teams/${teamId}/members/${memberId}`);
@@ -69,7 +70,7 @@ export function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
       await updateMember.mutateAsync({
         teamId,
         memberId,
-        ...formData
+        ...formData,
       });
       setEditModalOpen(false);
     } catch (error) {
@@ -86,19 +87,24 @@ export function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
   }
 
   return (
-    <Dialog open={isEditModalOpen} onOpenChange={setEditModalOpen}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit Member</DialogTitle>
+    <Dialog
+      data-slot="dialog"
+      open={isEditModalOpen}
+      onOpenChange={setEditModalOpen}
+    >
+      <DialogContent data-slot="dialog-content" className="sm:max-w-[425px]">
+        <DialogHeader data-slot="dialog-header">
+          <DialogTitle data-slot="dialog-title">Edit Member</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
           {updateMember.error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
+            <Alert data-slot="alert" variant="destructive">
+              {/* Replaced h-4 w-4 with size-4 */}
+              <AlertCircle className="size-4" />
               <p className="text-sm">
-                {updateMember.error instanceof Error 
-                  ? updateMember.error.message 
+                {updateMember.error instanceof Error
+                  ? updateMember.error.message
                   : "Failed to update member"}
               </p>
             </Alert>
@@ -138,23 +144,23 @@ export function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
 
           <div className="flex items-center space-x-2">
             <Checkbox
+              data-slot="checkbox"
               id="isAdmin"
               checked={formData.isAdmin}
-              onCheckedChange={(checked) => 
-                setFormData(prev => ({ ...prev, isAdmin: checked === true }))
+              onCheckedChange={(checked) =>
+                setFormData((prev) => ({ ...prev, isAdmin: checked === true }))
               }
             />
             <div className="grid gap-1.5 leading-none">
               <Label htmlFor="isAdmin">Admin Access</Label>
-              <p className="text-sm text-foreground-muted">
-                Grant admin privileges to this member
-              </p>
+              <p className="text-sm">Grant admin privileges to this member</p>
             </div>
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter data-slot="dialog-footer">
           <Button
+            data-slot="button"
             variant="outline"
             onClick={() => setEditModalOpen(false)}
             disabled={updateMember.isPending}
@@ -162,6 +168,7 @@ export function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
             Cancel
           </Button>
           <Button
+            data-slot="button"
             onClick={handleSubmit}
             disabled={updateMember.isPending}
           >
@@ -172,3 +179,5 @@ export function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
     </Dialog>
   );
 }
+
+export { EditMemberModal };

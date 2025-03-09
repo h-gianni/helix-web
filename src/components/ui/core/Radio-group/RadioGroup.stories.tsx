@@ -338,7 +338,7 @@ export const WithPricing: Story = {
                       <span className="text-lg font-semibold leading-none text-right text-primary">
                         {plan.price}
                       </span>
-                      <span className="text-sm font-normal text-right text-foreground-weak">
+                      <span className="text-sm font-normal text-right">
                         {" "}
                         {plan.period}
                       </span>

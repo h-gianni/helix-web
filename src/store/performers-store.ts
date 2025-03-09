@@ -88,7 +88,7 @@ export const performanceCategories: PerformanceCategory[] = [
     label: "Not Rated",
     minRating: 0,
     maxRating: 0,
-    className: "text-foreground-muted",
+    className: "",
     Icon: AlertCircle,
     description: "Team members pending their first performance rating",
   },
@@ -149,7 +149,7 @@ export const usePerformersStore = create<PerformersStore>((set) => ({
         label: "No trend available",
         minRating: 0,
         maxRating: 0,
-        className: "text-foreground-muted text-sm font-normal",
+        className: "text-sm font-normal",
         Icon: TrendingUp,
       };
     }
@@ -162,7 +162,7 @@ export const usePerformersStore = create<PerformersStore>((set) => ({
         label: "Unknown",
         minRating: 0,
         maxRating: 0,
-        className: "text-foreground-muted",
+        className: "",
         Icon: TrendingUp,
       }
     );

@@ -1,5 +1,6 @@
-'use client';
+"use client";
 
+import React from "react";
 import {
   Table,
   TableBody,
@@ -21,78 +22,70 @@ interface RatingsSectionProps {
   onAddRating: () => void;
 }
 
-export default function RatingsSection({
-  teamId,
-  memberId,
-  onAddRating,
-}: RatingsSectionProps) {
-  const { 
-    data,
-    isLoading,
-    error,
-    refetch
-  } = useMemberRatings({ teamId, memberId });
+function RatingsSection({ teamId, memberId, onAddRating }: RatingsSectionProps) {
+  const { data, isLoading, error, refetch } = useMemberRatings({
+    teamId,
+    memberId,
+  });
 
   if (isLoading) {
-    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
+    return (
+      <div className="loader">
+        <Loader size="base" label="Loading..." />
+      </div>
+    );
   }
 
   if (error) {
     return (
       <div className="space-y-base">
-        <Alert variant="destructive">
-          <AlertCircle />
-          <AlertDescription>
+        <Alert data-slot="alert" variant="destructive">
+          {/* Add size-4 for the icon */}
+          <AlertCircle className="size-4" />
+          <AlertDescription data-slot="alert-description">
             {error instanceof Error ? error.message : "Failed to load ratings"}
           </AlertDescription>
         </Alert>
-        <Button
-          variant="default"
-          onClick={() => refetch()}
-        >
-          <RotateCcw /> Retry
+        <Button data-slot="button" variant="default" onClick={() => refetch()}>
+          <RotateCcw className="size-4" /> Retry
         </Button>
       </div>
     );
   }
 
   if (!data?.ratings.length) {
-    return (
-      <div className="missing-content">
-        No ratings yet.
-      </div>
-    );
+    return <div className="missing-content">No ratings yet.</div>;
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Activity</TableHead>
-          <TableHead>Rating</TableHead>
-          <TableHead>Description</TableHead>
-          <TableHead>Date</TableHead>
+    <Table data-slot="table">
+      <TableHeader data-slot="table-header">
+        <TableRow data-slot="table-row">
+          <TableHead data-slot="table-head">Activity</TableHead>
+          <TableHead data-slot="table-head">Rating</TableHead>
+          <TableHead data-slot="table-head">Description</TableHead>
+          <TableHead data-slot="table-head">Date</TableHead>
         </TableRow>
       </TableHeader>
-      <TableBody>
+      <TableBody data-slot="table-body">
         {data.ratings.map((rating) => (
-          <TableRow key={rating.id}>
-            <TableCell className="font-medium text-foreground-strong">
-              {rating.activity?.name || 'N/A'}
+          <TableRow data-slot="table-row" key={rating.id}>
+            <TableCell data-slot="table-cell" className="font-medium">
+              {rating.activity?.name || "N/A"}
             </TableCell>
-            <TableCell>
+            <TableCell data-slot="table-cell">
               <StarRating
                 value={rating.value}
-                disabled={true}
+                disabled
                 size="sm"
-                showValue={true}
+                showValue
                 showRatingsCount={false}
               />
             </TableCell>
-            <TableCell className="text-foreground max-w-md">
-              {rating.activity?.description || 'No description'}
+            <TableCell data-slot="table-cell" className="text-foreground max-w-md">
+              {rating.activity?.description || "No description"}
             </TableCell>
-            <TableCell className="text-foreground-weak">
+            <TableCell data-slot="table-cell">
               {new Date(rating.createdAt).toLocaleDateString()}
             </TableCell>
           </TableRow>
@@ -101,3 +94,5 @@ export default function RatingsSection({
     </Table>
   );
 }
+
+export default RatingsSection;

@@ -4,7 +4,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogBody,
   DialogFooter,
 } from "@/components/ui/core/Dialog";
 import { Button } from "@/components/ui/core/Button";
@@ -31,29 +30,20 @@ const steps = [
   { id: "summary", title: "Summary" },
 ];
 
-const SetupDialog: React.FC<SetupDialogProps> = ({
+function SetupDialog({
   isOpen,
   onClose,
   onCompleteSetup,
-}) => {
+}: SetupDialogProps) {
   const [currentStep, setCurrentStep] = React.useState(0);
   const [selectedCategory, setSelectedCategory] = React.useState("engineering");
 
-  // Get the first category from action categories on initial load
   const { config } = useConfigStore();
 
   const isLastStep = currentStep === steps.length - 1;
   const isFirstStep = currentStep === 0;
 
   const handleNext = () => {
-
-  // You can save the current category before moving to the next step
-  if (steps[currentStep].id === "activities") {
-    // You could potentially store the last selected category in the config store
-    // for persistence if needed
-  }
-
-
     if (isLastStep) {
       onCompleteSetup();
       return;
@@ -81,25 +71,25 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
       case "team":
         return <TeamSetup />;
 
-        case "summary":
-          return (
-            <div className="space-y-4">
-              <OrganizationSummary />
-              <TeamsSummary onEdit={() => setCurrentStep(2)} variant="setup" />
-              <OrgActionsSummary  />
-            </div>
-          );
-      }
-    };
+      case "summary":
+        return (
+          <div className="space-y-4">
+            <OrganizationSummary />
+            <TeamsSummary onEdit={() => setCurrentStep(2)} variant="setup" />
+            <OrgActionsSummary />
+          </div>
+        );
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl h-[90vh]" scrollable>
-        <DialogHeader className="p-6 border-b">
-          <DialogTitle>
+      <DialogContent data-slot="dialog-content" className="max-w-6xl h-[90vh] overflow-y-auto">
+        <DialogHeader data-slot="dialog-header" className="p-6 border-b">
+          <DialogTitle data-slot="dialog-title">
             <div className="flex flex-col gap-2 w-full">
               <div className="flex items-baseline gap-2">
-                <span className="heading-2 text-foreground-muted">
+                <span className="heading-2">
                   Step {currentStep + 1} of {steps.length}:
                 </span>
                 <span className="heading-2">{steps[currentStep].title}</span>
@@ -108,31 +98,34 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
           </DialogTitle>
         </DialogHeader>
 
-        <DialogBody>
+        {/* Dialog Content */}
+        <div data-slot="dialog-body" className="p-6 flex-1 overflow-auto">
           {renderStepContent()}
-        </DialogBody>
+        </div>
 
-        <DialogFooter className="p-6">
+        <DialogFooter data-slot="dialog-footer" className="p-6">
           <Progress
+            data-slot="progress"
             value={((currentStep + 1) / steps.length) * 100}
             className="absolute top-0 left-0 w-full rounded-none h-[2px]"
           />
           <div className="flex justify-between w-full">
             <Button
+              data-slot="button"
               variant="outline"
               onClick={handleBack}
               disabled={isFirstStep}
             >
-              <ArrowLeft />
+              <ArrowLeft className="size-4" />
               Back
             </Button>
-            <Button onClick={handleNext}>
+            <Button data-slot="button" onClick={handleNext}>
               {isLastStep ? (
                 "Complete Setup"
               ) : (
                 <>
                   Next
-                  <ArrowRight />
+                  <ArrowRight className="size-4" />
                 </>
               )}
             </Button>
@@ -141,6 +134,6 @@ const SetupDialog: React.FC<SetupDialogProps> = ({
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 export default SetupDialog;

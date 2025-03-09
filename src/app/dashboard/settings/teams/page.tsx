@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
 import { useTeams } from "@/lib/context/teams-context";
@@ -16,18 +16,21 @@ import {
 } from "@/components/ui/core/Select";
 import { Loader } from "@/components/ui/core/Loader";
 import TeamActivitiesConfig from "../../_components/_teams/_team-activities-config";
-import { useTeamSettingsStore, useTeamDetails } from '@/store/team-settings-store';
+import {
+  useTeamSettingsStore,
+  useTeamDetails,
+} from "@/store/team-settings-store";
 
 export default function TeamsSettingsPage() {
-  const { teams, isLoading: isTeamsLoading } = useTeams();
   const router = useRouter();
+  const { teams, isLoading: isTeamsLoading } = useTeams();
   const { selectedTeamId, setSelectedTeamId } = useTeamSettingsStore();
-  
-  const { 
+
+  const {
     data: teamDetails,
     isLoading,
     error,
-    refetch
+    refetch,
   } = useTeamDetails(selectedTeamId);
 
   // Determine page title based on number of teams
@@ -50,7 +53,11 @@ export default function TeamsSettingsPage() {
   };
 
   if (isTeamsLoading) {
-    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
+    return (
+      <div className="loader">
+        <Loader size="base" label="Loading..." data-slot="loader" />
+      </div>
+    );
   }
 
   if (teams.length === 0) {
@@ -64,9 +71,10 @@ export default function TeamsSettingsPage() {
           }}
         />
         <main className="layout-page-main">
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
+          <Alert data-slot="alert" variant="destructive">
+            {/* Replaced h-4 w-4 with size-4 */}
+            <AlertCircle className="size-4" />
+            <AlertDescription data-slot="alert-description">
               No teams available. Please create a team first.
             </AlertDescription>
           </Alert>
@@ -96,15 +104,16 @@ export default function TeamsSettingsPage() {
               Select Team
             </label>
             <Select
+              data-slot="select"
               value={selectedTeamId || ""}
               onValueChange={handleTeamChange}
             >
-              <SelectTrigger id="teamSelect" className="w-full">
-                <SelectValue placeholder="Select a team" />
+              <SelectTrigger data-slot="select-trigger" id="teamSelect" className="w-full">
+                <SelectValue data-slot="select-value" placeholder="Select a team" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent data-slot="select-content">
                 {teams.map((team) => (
-                  <SelectItem key={team.id} value={team.id}>
+                  <SelectItem data-slot="select-item" key={team.id} value={team.id}>
                     {team.name}
                   </SelectItem>
                 ))}
@@ -115,10 +124,10 @@ export default function TeamsSettingsPage() {
 
         {/* Error State */}
         {error && (
-          <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              {error instanceof Error ? error.message : 'An error occurred'}
+          <Alert data-slot="alert" variant="destructive">
+            <AlertCircle className="size-4" />
+            <AlertDescription data-slot="alert-description">
+              {error instanceof Error ? error.message : "An error occurred"}
             </AlertDescription>
           </Alert>
         )}
@@ -128,14 +137,13 @@ export default function TeamsSettingsPage() {
           <div>
             {/* Loading State */}
             {isLoading ? (
-              <div className="loader"><Loader size="base" label="Loading..." /></div>
+              <div className="loader">
+                <Loader size="base" label="Loading..." data-slot="loader" />
+              </div>
             ) : (
               <>
                 {/* Team Activities Config */}
-                <TeamActivitiesConfig
-                  teamId={selectedTeamId}
-                  onUpdate={refetch}
-                />
+                <TeamActivitiesConfig teamId={selectedTeamId} onUpdate={refetch} />
                 {/* Future team settings components will go here */}
                 {/* <TeamGeneralSettings teamId={selectedTeamId} /> */}
                 {/* <TeamMembersConfig teamId={selectedTeamId} /> */}

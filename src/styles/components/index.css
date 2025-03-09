@@ -1,23 +1,7 @@
 /* src/styles/components/index.css */
 
-/* Libraries */
+/* Reset can still be imported, but consider moving to globals.css */
 @import '../lib/reset.css';
-@import '../lib/animations.css';
-
-/* Tokens */
-@import '../tokens/colors.css';
-@import '../tokens/typography.css';
-@import '../tokens/spacing.css';
-@import '../tokens/shadows.css';
-
-/* Themes */
-@import '../themes/base.css';
-@import '../themes/dark.css';
-@import '../themes/utils.css';
-
-/* Components */
-@import './typography.css';
-@import './spacing.css';
 
 /* Components core */
 @import './core/button.css';

@@ -85,9 +85,9 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
                 value={starNumber.toString()}
                 disabled={disabled}
                 className={cn(
-                  "inline-flex items-center justify-center p-0.5",
-                  "hover:text-warning focus-visible:outline-none",
-                  "disabled:pointer-events-none disabled:opacity-50",
+                  "inline-flex items-center justify-center p-0.5 star-color-off",
+                  "hover:star-color-on focus-visible:outline-none",
+                  "disabled:pointer-events-none",
                   {
                     "cursor-pointer": !disabled,
                   }
@@ -98,13 +98,13 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
                 {isHalfStar ? (
                   <div className="relative">
                     <Star
-                      className={cn("text-foreground-muted")}
+                      className={cn("")}
                       strokeWidth={1.5}
                       size={size === "sm" ? 16 : size === "lg" ? 24 : 20}
                     />
                     <StarHalf
                       className={cn(
-                        "absolute inset-0 text-warning fill-warning",
+                        "absolute inset-0 star-color-on",
                         "transition-colors duration-200"
                       )}
                       strokeWidth={1.5}
@@ -114,7 +114,7 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
                 ) : (
                   <Star
                     className={cn(
-                      isFullStar ? "text-warning fill-warning" : "text-foreground-muted",
+                      isFullStar ? "star-color-on" : "",
                       "transition-colors duration-200"
                     )}
                     strokeWidth={1.5}
@@ -127,12 +127,12 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
         </ToggleGroup.Root>
 
         {(showValue || showRatingsCount) && (
-          <div className="flex items-center gap-1 text-foreground-muted">
+          <div className="flex items-baseline gap-1">
             {showValue && value > 0 && (
-              <span className="heading-4">{value.toFixed(1)}</span>
+              <span className="heading-5">{value.toFixed(1)}</span>
             )}
             {showRatingsCount && ratingsCount !== undefined && ratingsCount > 0 && (
-              <span className="text-xs">({ratingsCount})</span>
+              <span className="text-sm leading-none text-foreground-weak">({ratingsCount})</span>
             )}
           </div>
         )}

@@ -5,20 +5,19 @@ import { ActionCategory } from '@/lib/types/api/action';
 interface OrganizationCategoriesProps {
   onSelect: (category: string) => void;
   selectedActivities: ActionCategory[];
-  selectedCategory: string; // Add selectedCategory prop
+  selectedCategory: string;
 }
 
-export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
+export function OrganizationCategories({
   onSelect,
   selectedActivities,
-  selectedCategory, // Destructure selectedCategory
-}) => {
+  selectedCategory,
+}: OrganizationCategoriesProps) {
   const [coreCategories, setCoreCategories] = useState<ActionCategory[]>([]);
   const [generalCategories, setGeneralCategories] = useState<ActionCategory[]>([]);
 
   const coreList = ['cm7nd5atu00025n7jczacmikq', 'cm7nd5au5000n5n7jhc6x2khk', 'cm7nd5au900185n7j5qozgig9'];
 
-  // Function to get the count of selected action items in a category
   const getSelectedCount = (categoryId: string): number => {
     const category = selectedActivities.find(cat => cat.id === categoryId);
     if (category && category.actions) {
@@ -27,7 +26,6 @@ export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
     return 0;
   };
 
-  // Process the categories as soon as selectedActivities changes
   useEffect(() => {
     if (selectedActivities && selectedActivities.length > 0) {
       const coreItems = selectedActivities.filter(category => coreList.includes(category.id));
@@ -39,19 +37,19 @@ export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
   }, [selectedActivities]);
 
   const handleCategorySelect = (categoryId: string) => {
-    onSelect(categoryId); // Call the onSelect callback to update the selectedCategory in the parent
+    onSelect(categoryId);
   };
 
-  const CategoryItem: React.FC<{
-    category: ActionCategory;
-    isSelected: boolean;
-    onSelect: (categoryId: string) => void;
-    selectedCount: number;
-  }> = ({
+  const CategoryItem = ({
     category,
     isSelected,
     onSelect,
     selectedCount,
+  }: {
+    category: ActionCategory;
+    isSelected: boolean;
+    onSelect: (categoryId: string) => void;
+    selectedCount: number;
   }) => {
     return (
       <li
@@ -62,7 +60,7 @@ export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
       >
         <span>{category.name}</span>
         {selectedCount > 0 && (
-          <Badge variant="default">
+          <Badge data-slot="badge" variant="default">
             {selectedCount}
           </Badge>
         )}
@@ -73,7 +71,7 @@ export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-sm font-semibold text-foreground-muted mb-2">
+        <h3 className="text-sm font-semibold mb-2">
           General Responsibilities
         </h3>
         <ul className="space-y-0">
@@ -81,7 +79,7 @@ export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
             <CategoryItem 
               key={category.id} 
               category={category} 
-              isSelected={selectedCategory === category.id} // Use selectedCategory from props
+              isSelected={selectedCategory === category.id}
               onSelect={handleCategorySelect}
               selectedCount={getSelectedCount(category.id)}
             />
@@ -90,7 +88,7 @@ export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-foreground-muted mb-2">
+        <h3 className="text-sm font-semibold mb-2">
           Core Responsibilities
         </h3>
         <ul className="space-y-0">
@@ -98,7 +96,7 @@ export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
             <CategoryItem 
               key={category.id} 
               category={category} 
-              isSelected={selectedCategory === category.id} // Use selectedCategory from props
+              isSelected={selectedCategory === category.id}
               onSelect={handleCategorySelect}
               selectedCount={getSelectedCount(category.id)}
             />
@@ -107,6 +105,6 @@ export const OrganizationCategories: React.FC<OrganizationCategoriesProps> = ({
       </div>
     </div>
   );
-};
+}
 
 export default OrganizationCategories;

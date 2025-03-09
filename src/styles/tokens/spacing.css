@@ -1,6 +1,7 @@
 /* tokens/spacing.css */
 :root {
     /* Core Spacing Scale */
+    --spacing: 0.25rem;  /* 4px - base unit */
     --space-2xs: 0.25rem;  /* 4px */
     --space-xs: 0.5rem;    /* 8px */
     --space-sm: 0.75rem;   /* 12px */
@@ -21,4 +22,4 @@
     --size-icon-sm: 0.75rem;  /* 12px */
     --size-icon-base: 1rem;   /* 16px */
     --size-icon-lg: 1.25rem;  /* 20px */
-   }
+}

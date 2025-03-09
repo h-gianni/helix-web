@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Roboto_Flex } from "next/font/google";
 import "../styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { ThemeProvider } from "@/components/theme/theme-provider";
 import { TeamsProvider } from "@/lib/context/teams-context";
 import Providers from "./_components/Provider";
 
@@ -23,9 +23,8 @@ const robotoFlex = Roboto_Flex({
   ]
 });
 
-
 export const metadata: Metadata = {
-  title: "UpScore",
+  title: "JustScore",
   description: "Performance Management Platform",
 };
 
@@ -39,15 +38,16 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={`${robotoFlex.variable} antialiased`}>
-          <ThemeProvider defaultTheme="system" storageKey="ui-theme">
+          <ThemeProvider
+            defaultTheme="system"
+            storageKey="ui-theme"
+          >
             <TeamsProvider>
               <Providers>{children}</Providers>
-            
             </TeamsProvider>
           </ThemeProvider>
         </body>
       </html>
-     
     </ClerkProvider>
   );
 }

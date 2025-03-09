@@ -51,135 +51,201 @@ export interface MemberCardProps extends React.HTMLAttributes<HTMLDivElement> {
   category: PerformanceCategory;
   onDelete?: (member: Member) => void;
   onGenerateReview?: (member: Member) => void;
-  variant?: "default" | "compact";
+  variant?: "horiz" | "vert";
   onNavigate?: (path: string) => void;
 }
 
-const MemberCard = React.forwardRef<HTMLDivElement, MemberCardProps>(
-  (
-    {
-      className,
-      member,
-      teamId,
-      teams,
-      category,
-      onDelete,
-      onGenerateReview,
-      variant = "default",
-      onNavigate,
-      ...props
-    },
-    ref
-  ) => {
-    const router = useRouter();
-    const effectiveTeamId = teamId ?? member.teamId;
-    const encodedTeamId = encodeURIComponent(effectiveTeamId);
-    const encodedMemberId = encodeURIComponent(member.id);
+function MemberCard({
+  className,
+  member,
+  teamId,
+  teams,
+  category,
+  onDelete,
+  onGenerateReview,
+  variant = "horiz",
+  onNavigate,
+  ...props
+}: MemberCardProps) {
+  const router = useRouter();
+  const effectiveTeamId = teamId ?? member.teamId;
+  const encodedTeamId = encodeURIComponent(effectiveTeamId);
+  const encodedMemberId = encodeURIComponent(member.id);
 
-    const handleViewDetails = () => {
-      const path = `/dashboard/teams/${encodedTeamId}/members/${encodedMemberId}`;
-      if (onNavigate) {
-        onNavigate(path);
-      } else {
-        router.push(path);
-      }
-    };
+  const handleViewDetails = () => {
+    const path = `/dashboard/teams/${encodedTeamId}/members/${encodedMemberId}`;
+    if (onNavigate) {
+      onNavigate(path);
+    } else {
+      router.push(path);
+    }
+  };
 
-    return (
-      <Card
-        ref={ref}
+  const isVertical = variant === "vert";
+
+  return (
+    <Card
+      data-slot="card"
+      className={cn(
+        "flex flex-col",
+        isVertical && "relative",
+        className
+      )}
+      {...props}
+    >
+      <CardHeader 
+        data-slot="card-header" 
         className={cn(
-          "flex flex-col",
-          variant === "compact" && "p-4",
-          className
+          "space-y-4",
+          isVertical && "flex flex-col items-center pt-6"
         )}
-        {...props}
       >
-        <CardHeader className={cn("space-y-4", variant === "compact" && "p-0")}>
-          <div className="flex items-start justify-between">
-            <div className="flex gap-4">
-              <Avatar className="h-10 w-10">
-                <AvatarFallback className="text-lg">
-                  {member.name.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="space-y-0.5">
-                <h3 className="heading-4">
-                  <button
-                    onClick={handleViewDetails}
-                    className="hover:underline"
-                  >
-                    {member.name}
-                  </button>
-                </h3>
-                <p className="text-sm text-foreground-muted">
-                  {member.title || "No title"}
-                </p>
-              </div>
-            </div>
+        {isVertical && (
+          <div className="absolute top-2 right-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
+                  data-slot="button"
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8"
+                  className="size-8"
                   aria-label="Member actions"
                 >
-                  <MoreVertical className="h-4 w-4" />
+                  <MoreVertical className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleViewDetails}>
-                  <ChevronRight className="mr-2 h-4 w-4" />
+              <DropdownMenuContent data-slot="dropdown-content" align="end">
+                <DropdownMenuItem data-slot="dropdown-item" onClick={handleViewDetails}>
+                  <ChevronRight className="mr-1" />
                   View Details
                 </DropdownMenuItem>
                 {onGenerateReview && (
-                  <DropdownMenuItem onClick={() => onGenerateReview(member)}>
-                    <FileText className="mr-2 h-4 w-4" />
+                  <DropdownMenuItem data-slot="dropdown-item" onClick={() => onGenerateReview(member)}>
+                    <FileText className="mr-1" />
                     Generate Performance Review
                   </DropdownMenuItem>
                 )}
                 {onDelete && (
                   <DropdownMenuItem
+                    data-slot="dropdown-item"
                     onClick={() => onDelete(member)}
                     className="text-destructive focus:text-destructive"
                   >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    <Trash2 className="mr-1" />
                     Delete
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </CardHeader>
-        <CardContent
-          className={cn(
-            "flex-1 space-y-4 pt-2",
-            variant === "compact" && "p-0 pt-2"
-          )}
-        >
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              {category.Icon && (
-                <category.Icon className={cn("h-4 w-4", category.className)} />
+        )}
+        <div className={cn(
+          "flex",
+          isVertical 
+            ? "flex-col items-center text-center" 
+            : "items-start justify-between"
+        )}>
+          <div className={cn(
+            "flex",
+            isVertical 
+              ? "flex-col items-center gap-2" 
+              : "gap-4"
+          )}>
+            <Avatar 
+              data-slot="avatar" 
+              className={cn(
+                isVertical ? "size-14" : "size-8"
               )}
-              <span className={cn("heading-4", category.className)}>
-                {category.label}
-              </span>
+            >
+              <AvatarFallback 
+                data-slot="avatar-fallback" 
+                className={cn(
+                  isVertical ? "text-base" : "text-sm"
+                )}
+              >
+                {member.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <div className={isVertical ? "text-center" : ""}>
+              <h3 className="heading-5">
+                <button
+                  onClick={handleViewDetails}
+                  className="hover:underline"
+                >
+                  {member.name}
+                </button>
+              </h3>
+              <p className="text-sm text-foreground-weak">
+                {member.title || "No title"}
+              </p>
             </div>
-            <StarRating
-              value={member.averageRating}
-              disabled
-              size="sm"
-              ratingsCount={member.ratingsCount}
-            />
           </div>
-        </CardContent>
-      </Card>
-    );
-  }
-);
-
-MemberCard.displayName = "MemberCard";
+          
+          {!isVertical && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  data-slot="button"
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                  aria-label="Member actions"
+                >
+                  <MoreVertical className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent data-slot="dropdown-content" align="end">
+                <DropdownMenuItem data-slot="dropdown-item" onClick={handleViewDetails}>
+                  <ChevronRight className="mr-1" />
+                  View Details
+                </DropdownMenuItem>
+                {onGenerateReview && (
+                  <DropdownMenuItem data-slot="dropdown-item" onClick={() => onGenerateReview(member)}>
+                    <FileText className="mr-1" />
+                    Generate Performance Review
+                  </DropdownMenuItem>
+                )}
+                {onDelete && (
+                  <DropdownMenuItem
+                    data-slot="dropdown-item"
+                    onClick={() => onDelete(member)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="mr-1" />
+                    Delete
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent
+        data-slot="card-content"
+        className="flex-1 space-y-4"
+      >
+        <div className={cn(
+          "flex items-start justify-between gap-2 md:gap-4",
+          isVertical ? "flex-col items-center" : "flex-col md:flex-row"
+        )}>
+          <div className="flex items-center gap-2">
+            {category.Icon && (
+              <category.Icon className={cn("size-4", category.className)} />
+            )}
+            <span className={cn("text-sm font-medium", category.className)}>
+              {category.label}
+            </span>
+          </div>
+          <StarRating
+            value={member.averageRating}
+            disabled
+            size="sm"
+            ratingsCount={member.ratingsCount}
+          />
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export { MemberCard };

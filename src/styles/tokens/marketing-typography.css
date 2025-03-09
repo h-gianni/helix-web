@@ -1,28 +1,28 @@
 /* src/styles/tokens/marketing-typography.css */
 :root {
-    /* Marketing-specific font family */
-    --font-marketing: "Inter", "DM Sans", system-ui, -apple-system, sans-serif;
-    
-    /* Marketing-specific font sizes - potentially larger or with different scale */
-    --font-marketing-2xs: 11px;
-    --font-marketing-xs: 12px;
-    --font-marketing-sm: 14px;
-    --font-marketing-base: 16px;
-    --font-marketing-lg: 20px;
-    --font-marketing-xl: 24px;
-    --font-marketing-2xl: 30px;
-    --font-marketing-3xl: 36px;
-    --font-marketing-4xl: 48px;
-    --font-marketing-5xl: 60px;
+  /* Marketing-specific font family */
+  --font-marketing: "Inter", "DM Sans", system-ui, -apple-system, sans-serif;
   
-    /* Marketing-specific line heights - potentially more generous */
-    --leading-marketing-none: 1;
-    --leading-marketing-tight: 1.1;
-    --leading-marketing-snug: 1.25;
-    --leading-marketing-normal: 1.4;
-    --leading-marketing-relaxed: 1.6;
-    --leading-marketing-loose: 1.8;
-    
-    /* Marketing-specific letter spacing - potentially tighter for headlines */
-    --tracking-marketing-headline: -0.03em;
-  }
+  /* Marketing-specific font sizes - potentially larger or with different scale */
+  --font-marketing-2xs: 11px;
+  --font-marketing-xs: 12px;
+  --font-marketing-sm: 14px;
+  --font-marketing-base: 16px;
+  --font-marketing-lg: 20px;
+  --font-marketing-xl: 24px;
+  --font-marketing-2xl: 30px;
+  --font-marketing-3xl: 36px;
+  --font-marketing-4xl: 48px;
+  --font-marketing-5xl: 60px;
+
+  /* Marketing-specific line heights - potentially more generous */
+  --leading-marketing-none: 1;
+  --leading-marketing-tight: 1.1;
+  --leading-marketing-snug: 1.25;
+  --leading-marketing-normal: 1.4;
+  --leading-marketing-relaxed: 1.6;
+  --leading-marketing-loose: 1.8;
+  
+  /* Marketing-specific letter spacing - potentially tighter for headlines */
+  --tracking-marketing-headline: -0.03em;
+}

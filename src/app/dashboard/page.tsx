@@ -40,16 +40,18 @@ const TeamsContent = ({ performers, teams, router }: TeamsContentProps) => {
        actions={
          <>
            <Button
+             data-slot="button"
              variant="secondary"
              onClick={() => router.push("/dashboard/feedback")}
            >
-             <MessageSquare /> Add Feedback
+             <MessageSquare className="size-4" /> Add Feedback
            </Button>
            <Button
+             data-slot="button"
              variant="default"
              onClick={() => openRatingModal(true)}
            >
-             <Star /> Rate Performance
+             <Star className="size-4" /> Rate Performance
            </Button>
          </>
        }
@@ -115,20 +117,21 @@ export default function DashboardPage() {
  if (error) {
    return (
      <div className="ui-loader-error">
-       <Alert variant="destructive">
-         <AlertCircle />
-         <AlertDescription>
+       <Alert data-slot="alert" variant="destructive">
+         <AlertCircle className="size-4" />
+         <AlertDescription data-slot="alert-description">
            {error instanceof Error ? error.message : "An error occurred"}
          </AlertDescription>
        </Alert>
        <Button
+         data-slot="button"
          variant="secondary"
          onClick={() => {
            refetchTeams();
            refetchPerformers();
          }}
        >
-         <RotateCcw /> Retry
+         <RotateCcw className="size-4" /> Retry
        </Button>
      </div>
    );

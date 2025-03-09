@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/core/Card";
+import React, { useState } from "react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/core/Card";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
 import { Users, Settings, FileSpreadsheet } from "lucide-react";
 import { cn } from "@/lib/utils";
-import TeamActionsDialog from '@/app/dashboard/_components/_configuration/_team-actions-dialog';
+import TeamActionsDialog from "@/app/dashboard/_components/_configuration/_team-actions-dialog";
 
 const MAX_AVATARS = 5;
 
@@ -20,24 +26,25 @@ interface TeamCardProps {
   id: string;
   name: string;
   functions: string[];
+  categories?: string[];
   members?: TeamMember[];
   averagePerformance?: number;
-  size?: 'sm' | 'base' | 'lg';
+  size?: "sm" | "base" | "lg";
   onClick?: () => void;
   onRefineActions?: () => void;
   onEdit?: () => void;
 }
 
-export const TeamCard = ({
+export function TeamCard({
   id,
   name,
   functions,
   members = [],
   averagePerformance,
-  size = 'base',
+  size = "base",
   onClick,
-  onEdit
-}: TeamCardProps) => {
+  onEdit,
+}: TeamCardProps) {
   const [isActionsDialogOpen, setIsActionsDialogOpen] = useState(false);
   const memberCount = members.length;
 
@@ -46,24 +53,25 @@ export const TeamCard = ({
       {memberCount > 0 && (
         <div className="flex -space-x-2">
           {members.slice(0, MAX_AVATARS).map((member) => (
-            <Avatar 
-              key={member.id} 
-              className="h-6 w-6 border-2 border-background"
+            <Avatar
+              key={member.id}
+              data-slot="avatar"
+              className="size-8 border-2 border-white"
             >
-              <AvatarFallback className="text-xs">
-                {member.name?.charAt(0).toUpperCase() || '?'}
+              <AvatarFallback data-slot="avatar-fallback" className="text-xs">
+                {member.name?.charAt(0).toUpperCase() || "?"}
               </AvatarFallback>
             </Avatar>
           ))}
           {memberCount > MAX_AVATARS && (
-            <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-background bg-muted text-xs">
+            <div className="flex size-6 items-center justify-center rounded-full border-2 border-background bg-muted text-xs">
               +{memberCount - MAX_AVATARS}
             </div>
           )}
         </div>
       )}
-      <p className="body-sm text-foreground-weak">
-        {memberCount} {memberCount === 1 ? 'member' : 'members'}
+      <p className="body-sm">
+        {memberCount} {memberCount === 1 ? "member" : "members"}
       </p>
     </div>
   );
@@ -71,11 +79,15 @@ export const TeamCard = ({
   const cardContent = {
     sm: (
       <>
-        <CardContent className="space-y-4">
-          <h3 className="heading-4">{name}</h3>
+      <CardHeader data-slot="card-header">
+        <CardTitle>{name}</CardTitle>
+      </CardHeader>
+        <CardContent data-slot="card-content" className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {functions.map((func) => (
-              <Badge key={func} variant="secondary">{func}</Badge>
+              <Badge key={func} data-slot="badge" variant="secondary">
+                {func}
+              </Badge>
             ))}
           </div>
         </CardContent>
@@ -83,36 +95,45 @@ export const TeamCard = ({
     ),
     base: (
       <>
-        <CardContent className="space-y-4">
-          <h3 className="heading-4">{name}</h3>
+        <CardHeader data-slot="card-header">
+          <CardTitle>{name}</CardTitle>
+        </CardHeader>
+        <CardContent data-slot="card-content" className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              {functions.map((func) => (
+                <Badge key={func} data-slot="badge" variant="secondary">
+                  {func}
+                </Badge>
+              ))}
+            </div>
           {renderAvatarGroup()}
-          <div className="flex flex-wrap gap-2">
-            {functions.map((func) => (
-              <Badge key={func} variant="secondary">{func}</Badge>
-            ))}
-          </div>
         </CardContent>
-        <CardFooter className="justify-end border-t p-4">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+        <CardFooter
+          data-slot="card-footer"
+          className="justify-end border-t border-border-light p-2"
+        >
+          <Button
+            data-slot="button"
+            variant="ghost"
+            size="sm"
             onClick={(e) => {
               e.stopPropagation();
               setIsActionsDialogOpen(true);
             }}
           >
-            <FileSpreadsheet className="h-4 w-4" />
+            <FileSpreadsheet className="size-4" />
             Refine actions
           </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            data-slot="button"
+            variant="ghost"
+            size="sm"
             onClick={(e) => {
               e.stopPropagation();
               onEdit?.();
             }}
           >
-            <Settings className="h-4 w-4" />
+            <Settings className="size-4" />
             Edit
           </Button>
         </CardFooter>
@@ -120,39 +141,48 @@ export const TeamCard = ({
     ),
     lg: (
       <>
-        <CardHeader className="p-4 pb-0">
-          <div className="flex justify-between items-start gap-8">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary">
-              <Users className="h-5 w-5" />
+        <CardHeader data-slot="card-header">
+          <div className="relative">
+            <div className="space-y-2">
+              <div className="flex size-10 items-center justify-center rounded-full bg-secondary">
+                <Users className="size-4" />
+              </div>
+              <h3 className="heading-2">{name}</h3>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="absolute top-0 right-0 flex flex-wrap gap-2">
               {functions.map((func) => (
-                <Badge key={func} variant="secondary">{func}</Badge>
+                <Badge key={func} data-slot="badge" variant="secondary">
+                  {func}
+                </Badge>
               ))}
             </div>
           </div>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4 p-4 pt-0">
+        <CardContent
+          data-slot="card-content"
+          className="flex flex-col gap-4 pt-0"
+        >
           <div className="flex-1 text-left space-y-1.5">
-            <h3 className="heading-2">{name}</h3>
             {renderAvatarGroup()}
           </div>
-          <div className="text-sm text-foreground-muted">
+          <div className="text-sm">
             Average team performance:
             {averagePerformance?.toFixed(1) || "Not rated"}
           </div>
         </CardContent>
       </>
-    )
+    ),
   };
 
   return (
     <>
-      <Card 
-        onClick={onClick} 
+      <Card
+        data-slot="card"
+        onClick={onClick}
         className={cn(
           "w-full",
-          onClick && "hover:border-input hover:shadow transition-all cursor-pointer"
+          onClick &&
+            "hover:border-border hover:shadow-base transition-all cursor-pointer"
         )}
       >
         {cardContent[size]}
@@ -165,6 +195,6 @@ export const TeamCard = ({
       />
     </>
   );
-};
+}
 
 export default TeamCard;

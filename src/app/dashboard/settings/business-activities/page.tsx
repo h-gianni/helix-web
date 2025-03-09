@@ -1,37 +1,17 @@
-'use client'
-import { useState, useCallback } from "react";
+"use client";
+
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
 import { PageHeader } from "@/components/ui/composite/Page-header";
 import { ActivitiesSection } from "../../_components/_business-activities/_actions-section";
 import { Button } from "@/components/ui/core/Button";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/core/Toggle-group";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/core/Select";
-import { Plus, Import } from "lucide-react";
+import { Plus } from "lucide-react";
 import { ActivityModal } from "../../_components/_business-activities/_actions-modal";
 
 export default function BusinessActivitiesSettingsPage() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [shouldRefreshList, setShouldRefreshList] = useState(false);
-
-  // Ensure breadcrumb items are properly typed
-  const breadcrumbItems = [
-    { 
-      label: "Settings", 
-      href: "/dashboard/settings" 
-    },
-    { 
-      label: "Business Activities",
-      href: undefined // explicitly set undefined for the current page
-    }
-  ] as const;
 
   const handleModalClose = useCallback(() => {
     setIsModalOpen(false);
@@ -52,8 +32,11 @@ export default function BusinessActivitiesSettingsPage() {
 
   return (
     <>
-      {/* <PageBreadcrumbs items={breadcrumbItems} /> */}
-      
+      {/* 
+        If you’d like to display breadcrumbs, you can uncomment or re-enable
+        <PageBreadcrumbs items={[{ label: "Settings", href: "/dashboard/settings" }, { label: "Business Activities" }]} />
+      */}
+
       <PageHeader
         title="Org Activities"
         caption="Select the activities relevant to your organisation so you can rate the team members' performance on what is relevant to the organization."
@@ -61,11 +44,13 @@ export default function BusinessActivitiesSettingsPage() {
           onClick: handleBackClick,
         }}
         actions={
-          <Button variant="default" onClick={() => setIsModalOpen(true)}>
-            <Plus /> Add Activity
+          <Button data-slot="button" variant="default" onClick={() => setIsModalOpen(true)}>
+            {/* Replaced any h-4 w-4 with size-4 */}
+            <Plus className="size-4" /> Add Activity
           </Button>
         }
       />
+
       <main className="layout-page-main">
         <ActivitiesSection
           onUpdate={handleUpdate}
@@ -74,9 +59,10 @@ export default function BusinessActivitiesSettingsPage() {
         />
       </main>
 
-      {/* Only render modal when open to avoid unnecessary rendering */}
+      {/* Conditionally render the modal only when open */}
       {isModalOpen && (
         <ActivityModal
+          data-slot="activity-modal"
           isOpen={true}
           onClose={handleModalClose}
           activity={null}

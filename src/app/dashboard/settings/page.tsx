@@ -1,8 +1,8 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { useState, useEffect } from "react";
 import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
 import { PageHeader } from "@/components/ui/composite/Page-header";
 import { ProfileCard } from "@/components/ui/composite/Profile-card";
@@ -92,51 +92,51 @@ export default function SettingsPage() {
       <PageHeader title="Settings" />
 
       <main className="layout-page-main">
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-            <ProfileCard
-              align="horizontal"
-              imageUrl="/api/placeholder/96/96"
-              fields={[
-                {
-                  label: "Full Name",
-                  value: `${profile.firstName} ${profile.lastName}`,
-                  variant: "title",
-                },
-                {
-                  label: "Email (account ID)",
-                  value: profile.email,
-                  variant: "strong",
-                },
-                {
-                  label: "Job Title",
-                  value: profile.title || (
-                    <span className="ui-text-body-helper">Not set</span>
-                  ),
-                },
-              ]}
-              onEdit={() => setIsEditModalOpen(true)}
-              editButtonPosition="topRight"
-              editButtonText="Edit"
-            />
-            
-          <OrganizationSummary
-            onEdit={() =>
-              router.push("/dashboard/settings/business-activities")
-            }
-          />
-          <TeamsSummary
-            onEdit={() => router.push("/dashboard/settings/teams")}
-          />
-          <OrgActionsSummary
-            onEdit={() =>
-              router.push("/dashboard/settings/business-activities")
-            }
-          />
+        {error && (
+          <Alert data-slot="alert" variant="destructive">
+            {/* Replace h-4 w-4 with size-4 if needed */}
+            <AlertCircle className="size-4" />
+            <AlertDescription data-slot="alert-description">
+              {error}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <ProfileCard
+          align="horizontal"
+          imageUrl="/api/placeholder/96/96"
+          fields={[
+            {
+              label: "Full Name",
+              value: `${profile.firstName} ${profile.lastName}`,
+              variant: "title",
+            },
+            {
+              label: "Email (account ID)",
+              value: profile.email,
+              variant: "strong",
+            },
+            {
+              label: "Job Title",
+              value: profile.title || (
+                <span className="ui-text-body-helper">Not set</span>
+              ),
+            },
+          ]}
+          onEdit={() => setIsEditModalOpen(true)}
+          editButtonPosition="topRight"
+          editButtonText="Edit"
+        />
+
+        <OrganizationSummary
+          onEdit={() => router.push("/dashboard/settings/business-activities")}
+        />
+
+        <TeamsSummary onEdit={() => router.push("/dashboard/settings/teams")} />
+
+        <OrgActionsSummary
+          onEdit={() => router.push("/dashboard/settings/business-activities")}
+        />
 
         <ProfileModal
           isOpen={isEditModalOpen}

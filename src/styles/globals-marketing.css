@@ -1,14 +1,9 @@
-/* globals.css */
+@import "tailwindcss";
 
-@import "./components/marketing.css";
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+/* Import tokens */
+@import "./tokens/marketing-typography.css";
 
 @layer base {
-
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -17,25 +12,47 @@
   section {
     @apply w-full py-12 lg:py-32 px-4 lg:px-8;
   }
-  /* Hero Section */
+  
   section:first-of-type {
     @apply w-full pt-0 lg:pt-32 bg-white;
   }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-foreground-strong: var(--foreground-strong);
+  --color-foreground-weak: var(--foreground-weak);
+  --color-foreground-muted: var(--foreground-muted);
+}
+
+@layer components {
   .section-container {
     @apply lg:container mx-auto space-y-8 lg:space-y-14;
   }
+  
   .section-header {
     @apply max-w-xl space-y-6 px-4 lg:px-0;
   }
+  
   .hero {
     @apply max-w-2xl space-y-6 lg:space-y-8 pb-8 lg:pb-20 px-4 lg:px-0;
   }
-  .section-header-centered {
-    @apply section-header flex flex-col justify-center text-center mx-auto;
-  }
-  .hero-centered {
-    @apply hero flex flex-col justify-center text-center mx-auto;
-  }
-
   
+  .section-header-centered {
+    @apply flex flex-col justify-center text-center mx-auto max-w-xl space-y-6 px-4 lg:px-0;
+  }
+  
+  .hero-centered {
+    @apply flex flex-col justify-center text-center mx-auto max-w-2xl space-y-6 lg:space-y-8 pb-8 lg:pb-20 px-4 lg:px-0;
+  }
 }
+
+/* Import marketing components after your component definitions */
+@import "./components/marketing/typography.css";
+@import "./components/marketing/hero.css";
+@import "./components/marketing/feature.css";
+@import "./components/marketing/testimonial.css";
+@import "./components/marketing/cta.css";
+@import "./components/marketing/navbar.css";
+@import "./components/marketing/footer.css";

@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogBody,
 } from "@/components/ui/core/Dialog";
 import { Button } from "@/components/ui/core/Button";
 import { Input } from "@/components/ui/core/Input";
@@ -40,12 +39,9 @@ import {
   useCreateActivity,
   useUpdateActivity,
   useImportActivities,
-  useActivityModalStore
-} from '@/store/activity-modal-store';
+  useActivityModalStore,
+} from "@/store/activity-modal-store";
 import { useCategories } from "@/store/category-store";
-
-
-
 
 interface ActivityModalProps {
   isOpen: boolean;
@@ -69,15 +65,10 @@ export function ActivityModal({
     hasChanges,
   } = useActivityModalStore();
 
-
-
-  const { data: categories = [], isLoading: isCategoriesLoading } = useCategories()
-  const createActivity = useCreateActivity()
-  const updateActivity = useUpdateActivity()
-  const importActivities = useImportActivities()
-
-  
-
+  const { data: categories = [], isLoading: isCategoriesLoading } = useCategories();
+  const createActivity = useCreateActivity();
+  const updateActivity = useUpdateActivity();
+  const importActivities = useImportActivities();
 
   const isSubmitting =
     createActivity.isPending ||
@@ -88,14 +79,11 @@ export function ActivityModal({
 
   useEffect(() => {
     if (activity) {
-
-   
-  
       setFormData({
         name: activity.activity.name,
-        description: activity.activity.description || '',
-        activityType: 'from-scratch'
-      })
+        description: activity.activity.description || "",
+        activityType: "from-scratch",
+      });
     } else {
       reset();
     }
@@ -145,7 +133,9 @@ export function ActivityModal({
           break;
 
         case "from-scratch":
+        default:
           if (activity) {
+            // Editing an existing activity
             await updateActivity.mutateAsync({
               id: activity.id,
               name: formData.name.trim(),
@@ -153,6 +143,7 @@ export function ActivityModal({
               impactScale: formData.impactScale,
             });
           } else {
+            // Creating a new activity
             await createActivity.mutateAsync({
               name: formData.name.trim(),
               description: formData.description.trim() || undefined,
@@ -165,7 +156,7 @@ export function ActivityModal({
       onUpdate?.();
       onClose();
     } catch (err) {
-      // Error handling is managed by React Query
+      // Errors are handled by React Query
     }
   };
 
@@ -175,126 +166,132 @@ export function ActivityModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-6xl h-full" scrollable>
-        <DialogHeader className="p-8 pt-6 pb-0">
-          <DialogTitle>
+    <Dialog data-slot="dialog" open={isOpen} onOpenChange={handleClose}>
+      {/* Removed scrollable + removed DialogBody in favor of standard content + overflow if needed */}
+      <DialogContent data-slot="dialog-content" className="max-w-6xl h-full overflow-y-auto">
+        <DialogHeader data-slot="dialog-header" className="p-8 pt-6 pb-0">
+          <DialogTitle data-slot="dialog-title">
             {activity ? "Edit Org Activities" : "Add Org Activities"}
           </DialogTitle>
         </DialogHeader>
 
-        <DialogBody className="space-y-6">
+        {/* Main content goes directly here */}
+        <div className="space-y-6 px-8 py-4">
           {error && (
-            <Alert variant="destructive">
-              <AlertCircle className="h-4 w-4" />
+            <Alert data-slot="alert" variant="destructive">
+              <AlertCircle className="size-4" />
               <p className="text-sm">{error.message}</p>
             </Alert>
           )}
 
           <RadioGroup
+            data-slot="radio-group"
             value={formData.activityType}
             onValueChange={(value) =>
               setFormData({
-                activityType: value as
-                  | "from-categories"
-                  | "from-import"
-                  | "from-scratch",
+                activityType: value as "from-categories" | "from-import" | "from-scratch",
               })
             }
             className="flex gap-8"
           >
-            <div className="flex gap-2 items-center">
-              <RadioGroupItem value="from-categories" id="from-categories" />
-              <Label htmlFor="from-categories">
-                Select from pre-built categories
-              </Label>
+            <div className="flex items-center gap-2">
+              <RadioGroupItem data-slot="radio-group-item" value="from-categories" id="from-categories" />
+              <Label htmlFor="from-categories">Select from pre-built categories</Label>
             </div>
-            <div className="flex gap-2 items-center">
-              <RadioGroupItem value="from-import" id="from-import" />
+            <div className="flex items-center gap-2">
+              <RadioGroupItem data-slot="radio-group-item" value="from-import" id="from-import" />
               <Label htmlFor="from-import">Import your own activities</Label>
             </div>
-            <div className="flex gap-2 items-center">
-              <RadioGroupItem value="from-scratch" id="from-scratch" />
+            <div className="flex items-center gap-2">
+              <RadioGroupItem data-slot="radio-group-item" value="from-scratch" id="from-scratch" />
               <Label htmlFor="from-scratch">Create from scratch</Label>
             </div>
           </RadioGroup>
 
+          {/* from-categories */}
           {formData.activityType === "from-categories" && (
             <div className="space-y-4">
               <div className="w-fit space-y-0.5">
                 <Label>Categories</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                <Select data-slot="select">
+                  <SelectTrigger data-slot="select-trigger">
+                    <SelectValue data-slot="select-value" placeholder="Select category" />
                   </SelectTrigger>
-                  <SelectContent>
-  {categories.map((category) => (
-    <SelectItem key={category.id} value={category.id}>
-      {category.name}
-    </SelectItem>
-  ))}
-</SelectContent>
+                  <SelectContent data-slot="select-content">
+                    {categories.map((category) => (
+                      <SelectItem data-slot="select-item" key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
-<Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-0">
+              <Table data-slot="table">
+                <TableHeader data-slot="table-header">
+                  <TableRow data-slot="table-row">
+                    <TableHead data-slot="table-head" className="w-0">
                       <Checkbox />
                     </TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Activity</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead className="w-[100px] text-center">
+                    <TableHead data-slot="table-head">Category</TableHead>
+                    <TableHead data-slot="table-head">Activity</TableHead>
+                    <TableHead data-slot="table-head">Description</TableHead>
+                    <TableHead data-slot="table-head" className="w-[100px] text-center">
                       Impact Scale
                     </TableHead>
                   </TableRow>
                 </TableHeader>
-              <TableBody>
-  {categories.map((category) => 
-    category.activities.map((activity) => (
-      <TableRow key={activity.id}>
-        <TableCell>
-          <Checkbox 
-            checked={formData.selectedCategories.includes(activity.id)}
-            onCheckedChange={(checked) => {
-              if (checked) {
-                setFormData({
-                  selectedCategories: [...formData.selectedCategories, activity.id]
-                })
-              } else {
-                setFormData({
-                  selectedCategories: formData.selectedCategories.filter(id => id !== activity.id)
-                })
-              }
-            }}
-          />
-        </TableCell>
-        <TableCell>{category.name}</TableCell>
-        <TableCell>{activity.name}</TableCell>
-        <TableCell className="max-w-md">{activity.description}</TableCell>
-        <TableCell className="text-center">{activity.impactScale}</TableCell>
-      </TableRow>
-    ))
-  )}
-</TableBody>
+                <TableBody data-slot="table-body">
+                  {categories.map((category) =>
+                    category.activities.map((act) => (
+                      <TableRow data-slot="table-row" key={act.id}>
+                        <TableCell data-slot="table-cell">
+                          <Checkbox
+                            checked={formData.selectedCategories.includes(act.id)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setFormData({
+                                  selectedCategories: [...formData.selectedCategories, act.id],
+                                });
+                              } else {
+                                setFormData({
+                                  selectedCategories: formData.selectedCategories.filter(
+                                    (id) => id !== act.id
+                                  ),
+                                });
+                              }
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell data-slot="table-cell">{category.name}</TableCell>
+                        <TableCell data-slot="table-cell">{act.name}</TableCell>
+                        <TableCell data-slot="table-cell" className="max-w-md">
+                          {act.description}
+                        </TableCell>
+                        <TableCell data-slot="table-cell" className="text-center">
+                          {act.impactScale}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
               </Table>
-              </div>
+            </div>
           )}
 
+          {/* from-scratch */}
           {formData.activityType === "from-scratch" && (
-            <div className="flex flex-col max-w-copy-base gap-4">
+            <div className="flex max-w-copy-base flex-col gap-4">
               <div className="w-fit space-y-0.5">
                 <Label>Categories</Label>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select category" />
+                <Select data-slot="select">
+                  <SelectTrigger data-slot="select-trigger">
+                    <SelectValue data-slot="select-value" placeholder="Select category" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="01">
+                  <SelectContent data-slot="select-content">
+                    <SelectItem data-slot="select-item" value="01">
                       Custom
                     </SelectItem>
-                    <SelectItem value="02">
+                    <SelectItem data-slot="select-item" value="02">
                       Must show the categories list
                     </SelectItem>
                   </SelectContent>
@@ -303,6 +300,7 @@ export function ActivityModal({
               <div className="space-y-0.5">
                 <Label htmlFor="name">Activity Name</Label>
                 <Input
+                  data-slot="input"
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ name: e.target.value })}
@@ -314,6 +312,7 @@ export function ActivityModal({
               <div className="space-y-0.5">
                 <Label htmlFor="description">Description</Label>
                 <Textarea
+                  data-slot="textarea"
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ description: e.target.value })}
@@ -324,17 +323,19 @@ export function ActivityModal({
 
               <div className="w-[200px]">
                 <Label htmlFor="impact">Impact Scale</Label>
-                {/* <Select 
+                {/* If you want a working select for impact scale, remove comment and add data-slot */}
+                {/* <Select
+                  data-slot="select"
                   id="impact"
                   value={formData.impactScale}
                   onValueChange={(value) => setFormData({ impactScale: value })}
                 >
-                  <SelectTrigger id="impact">
-                    <SelectValue placeholder="Select impact..." />
+                  <SelectTrigger data-slot="select-trigger" id="impact">
+                    <SelectValue data-slot="select-value" placeholder="Select impact..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent data-slot="select-content">
                     {[...Array(10)].map((_, i) => (
-                      <SelectItem key={i + 1} value={String(i + 1)}>
+                      <SelectItem data-slot="select-item" key={i + 1} value={String(i + 1)}>
                         {i + 1}
                       </SelectItem>
                     ))}
@@ -344,15 +345,13 @@ export function ActivityModal({
             </div>
           )}
 
+          {/* from-import */}
           {formData.activityType === "from-import" && (
             <div className="grid gap-4">
               <div
                 className={cn(
-                  "relative flex flex-col items-center justify-center h-64 rounded-lg border-2 border-dashed",
-                  dragActive
-                    ? "border-primary bg-primary/5"
-                    : "border-input hover:bg-secondary",
-                  "transition-colors duration-200"
+                  "relative flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors duration-200",
+                  dragActive ? "border-primary bg-primary/5" : "border-input hover:bg-secondary"
                 )}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -362,56 +361,52 @@ export function ActivityModal({
                 {!formData.uploadedFile ? (
                   <>
                     <input
+                      data-slot="file-input"
                       type="file"
                       accept=".csv"
-                      // onChange={handleFileSelect}
-                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      className="absolute inset-0 cursor-pointer opacity-0"
+                      onChange={handleFileSelect}
                     />
                     <div className="flex flex-col items-center gap-2 text-center">
-                      <div className="p-3 rounded-full bg-primary/10">
-                        <Upload className="h-6 w-6 text-primary" />
+                      <div className="rounded-full bg-primary/10 p-3">
+                        <Upload className="size-6 text-primary" />
                       </div>
                       <div className="space-y-1">
-                        <p className="font-medium">
-                          Drop CSV file here or click to upload
-                        </p>
-                        <p className="text-sm text-foreground-muted">
-                          Only CSV files are supported
-                        </p>
+                        <p className="font-medium">Drop CSV file here or click to upload</p>
+                        <p className="text-sm">Only CSV files are supported</p>
                       </div>
                     </div>
                   </>
                 ) : (
-                  <div className="flex items-center justify-between w-full p-4 rounded-lg bg-accent">
+                  <div className="flex w-full items-center justify-between rounded-lg bg-accent p-4">
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-primary/10">
-                        <FileText className="h-6 w-6 text-primary" />
+                      <div className="rounded-lg bg-primary/10 p-2">
+                        <FileText className="size-6 text-primary" />
                       </div>
                       <div>
-                        <p className="font-medium">
-                          {formData.uploadedFile.name}
-                        </p>
-                        <p className="text-sm text-foreground-muted">
+                        <p className="font-medium">{formData.uploadedFile.name}</p>
+                        <p className="text-sm">
                           {(formData.uploadedFile.size / 1024).toFixed(2)} KB
                         </p>
                       </div>
                     </div>
                     <Button
+                      data-slot="button"
                       variant="ghost"
                       size="icon"
                       onClick={() => setFormData({ uploadedFile: null })}
                     >
-                      <X className="h-4 w-4" />
+                      <X className="size-4" />
                     </Button>
                   </div>
                 )}
               </div>
 
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <div className="text-sm space-y-2">
+              <Alert data-slot="alert">
+                <AlertCircle className="size-4" />
+                <div className="space-y-2 text-sm">
                   <p>Required CSV format:</p>
-                  <ul className="list-disc pl-4 space-y-1">
+                  <ul className="list-disc space-y-1 pl-4">
                     <li>Category (text)</li>
                     <li>Action Title (text)</li>
                     <li>Description (text)</li>
@@ -421,17 +416,14 @@ export function ActivityModal({
               </Alert>
             </div>
           )}
-        </DialogBody>
+        </div>
 
-        <DialogFooter className="p-6 border-t">
-          <Button
-            variant="outline"
-            onClick={handleClose}
-            disabled={isSubmitting}
-          >
+        <DialogFooter data-slot="dialog-footer" className="border-t p-6">
+          <Button data-slot="button" variant="outline" onClick={handleClose} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button
+            data-slot="button"
             onClick={handleSubmit}
             disabled={isSubmitting || !hasChanges(activity)}
           >

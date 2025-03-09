@@ -1,4 +1,3 @@
-// src/app/dashboard/_component/_performanceRatingModal.tsx
 "use client";
 
 import React, { useEffect } from "react";
@@ -38,7 +37,7 @@ interface PerformanceRatingModalProps {
   memberTitle?: string | null;
 }
 
-export default function PerformanceRatingModal({
+function PerformanceRatingModal({
   teamId,
   memberId,
   memberName,
@@ -82,13 +81,7 @@ export default function PerformanceRatingModal({
     const currentTeamId = selectedTeamId || teamId;
     const currentMemberId = selectedMemberId || memberId;
 
-    if (
-      !currentTeamId ||
-      !currentMemberId ||
-      !selectedActivityId ||
-      rating === 0
-    )
-      return;
+    if (!currentTeamId || !currentMemberId || !selectedActivityId || rating === 0) return;
 
     try {
       await submitRating.mutateAsync({
@@ -118,19 +111,19 @@ export default function PerformanceRatingModal({
   const hasTeams = teams && teams.length > 0;
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Add Performance Rating</DialogTitle>
-          <DialogDescription>
+    <Dialog data-slot="dialog" open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent data-slot="dialog-content">
+        <DialogHeader data-slot="dialog-header">
+          <DialogTitle data-slot="dialog-title">Add Performance Rating</DialogTitle>
+          <DialogDescription data-slot="dialog-description">
             Rate team member performance with feedback.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {submitRating.error && (
-            <Alert variant="destructive">
-              <AlertDescription>
+            <Alert data-slot="alert" variant="destructive">
+              <AlertDescription data-slot="alert-description">
                 {submitRating.error instanceof Error
                   ? submitRating.error.message
                   : "Failed to submit rating"}
@@ -140,16 +133,13 @@ export default function PerformanceRatingModal({
 
           {memberName && (
             <div className="space-y-2">
-              <Label>Member</Label>
+              <Label data-slot="label">Member</Label>
               <div className="flex items-center gap-2 p-3 rounded border bg-muted">
-                <User className="h-4 w-4 text-foreground-muted" />
+                {/* Replaced h-4 w-4 with size-4 */}
+                <User className="size-4 text-foreground/70" />
                 <span>
                   {memberName}
-                  {memberTitle && (
-                    <span className="text-foreground-muted ml-1">
-                      - {memberTitle}
-                    </span>
-                  )}
+                  {memberTitle && <span className="ml-1">- {memberTitle}</span>}
                 </span>
               </div>
             </div>
@@ -157,24 +147,24 @@ export default function PerformanceRatingModal({
 
           {!teamId && hasTeams && (
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-foreground">
+              <Label data-slot="label" className="text-sm font-medium text-foreground">
                 Select Team
-              </label>
+              </Label>
               <Select
+                data-slot="select"
                 value={selectedTeamId ?? ""}
                 onValueChange={setSelectedTeamId}
                 disabled={teamsLoading}
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger data-slot="select-trigger" className="w-full">
                   <SelectValue
-                    placeholder={
-                      teamsLoading ? "Loading teams..." : "Select a team"
-                    }
+                    data-slot="select-value"
+                    placeholder={teamsLoading ? "Loading teams..." : "Select a team"}
                   />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent data-slot="select-content">
                   {teams.map((team) => (
-                    <SelectItem key={team.id} value={team.id}>
+                    <SelectItem data-slot="select-item" key={team.id} value={team.id}>
                       {team.name}
                     </SelectItem>
                   ))}
@@ -185,91 +175,100 @@ export default function PerformanceRatingModal({
 
           {!memberId && currentTeamId && (
             <div className="flex flex-col gap-2">
-  <label className="text-sm font-medium text-foreground">Select Member</label>
-  <Select value={selectedMemberId ?? ""} onValueChange={setSelectedMemberId} disabled={membersLoading}>
-    <SelectTrigger className="w-full">
-      <SelectValue placeholder={membersLoading ? "Loading members..." : "Select a member"} />
-    </SelectTrigger>
-    <SelectContent>
-      {members.map((member) => (
-        <SelectItem key={member.id} value={member.id}>
-          {member.user.name || member.user.email}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-</div>
-
+              <Label data-slot="label" className="text-sm font-medium text-foreground">
+                Select Member
+              </Label>
+              <Select
+                data-slot="select"
+                value={selectedMemberId ?? ""}
+                onValueChange={setSelectedMemberId}
+                disabled={membersLoading}
+              >
+                <SelectTrigger data-slot="select-trigger" className="w-full">
+                  <SelectValue
+                    data-slot="select-value"
+                    placeholder={membersLoading ? "Loading members..." : "Select a member"}
+                  />
+                </SelectTrigger>
+                <SelectContent data-slot="select-content">
+                  {members.map((member) => (
+                    <SelectItem data-slot="select-item" key={member.id} value={member.id}>
+                      {member.user.name || member.user.email}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           )}
 
-<div className="flex flex-col gap-2">
-  <label className="text-sm font-medium text-foreground">Select Activity</label>
-  <Select 
-    value={selectedActivityId ?? ""} 
-    onValueChange={setSelectedActivityId} 
-    disabled={activitiesLoading || !currentTeamId || !currentMemberId}
-  >
-    <SelectTrigger className="w-full">
-      <SelectValue
-        placeholder={
-          activitiesLoading
-            ? "Loading activities..."
-            : !currentTeamId || !currentMemberId
-            ? "Select team and member first"
-            : "Select an activity"
-        }
-      />
-    </SelectTrigger>
-    <SelectContent>
-      {activities.length === 0 ? (
-        <div className="p-2 text-sm text-foreground-muted">
-          {activitiesLoading ? "Loading..." : "No activities available"}
-        </div>
-      ) : (
-        activities.map((activity) => (
-          <SelectItem key={activity.id} value={activity.id}>
-            {activity.name}
-          </SelectItem>
-        ))
-      )}
-    </SelectContent>
-  </Select>
-</div>
-
+          <div className="flex flex-col gap-2">
+            <Label data-slot="label" className="text-sm font-medium text-foreground">
+              Select Activity
+            </Label>
+            <Select
+              data-slot="select"
+              value={selectedActivityId ?? ""}
+              onValueChange={setSelectedActivityId}
+              disabled={activitiesLoading || !currentTeamId || !currentMemberId}
+            >
+              <SelectTrigger data-slot="select-trigger" className="w-full">
+                <SelectValue
+                  data-slot="select-value"
+                  placeholder={
+                    activitiesLoading
+                      ? "Loading activities..."
+                      : !currentTeamId || !currentMemberId
+                      ? "Select team and member first"
+                      : "Select an activity"
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent data-slot="select-content">
+                {activities.length === 0 ? (
+                  <div className="p-2 text-sm">
+                    {activitiesLoading ? "Loading..." : "No activities available"}
+                  </div>
+                ) : (
+                  activities.map((activity) => (
+                    <SelectItem data-slot="select-item" key={activity.id} value={activity.id}>
+                      {activity.name}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+          </div>
 
           <div className="space-y-2">
-            <Label>Rating</Label>
+            <Label data-slot="label">Rating</Label>
             <div className="flex justify-center py-2">
-              <StarRating
-                value={rating}
-                onChange={setRating}
-                size="lg"
-                showValue={true}
-              />
+              {/* Possibly also add data-slot to StarRating if needed */}
+              <StarRating value={rating} onChange={setRating} size="lg" showValue />
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-  <label className="text-sm font-medium text-foreground" htmlFor="feedback">
-    Feedback (Optional)
-  </label>
-  <Textarea
-    id="feedback"
-    value={feedback}
-    onChange={(e) => setFeedback(e.target.value)}
-    placeholder="Enter feedback..."
-    rows={3}
-    maxLength={250}
-    className="w-full resize-none"
-  />
-  <div className="text-right text-xs text-foreground-muted">
-    {feedback.length} / 250
-  </div>
-</div>
+            <Label data-slot="label" className="text-sm font-medium text-foreground" htmlFor="feedback">
+              Feedback (Optional)
+            </Label>
+            <Textarea
+              data-slot="textarea"
+              id="feedback"
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder="Enter feedback..."
+              rows={3}
+              maxLength={250}
+              className="w-full resize-none"
+            />
+            <div className="text-right text-xs">
+              {feedback.length} / 250
+            </div>
+          </div>
 
-
-          <DialogFooter>
+          <DialogFooter data-slot="dialog-footer">
             <Button
+              data-slot="button"
               variant="secondary"
               onClick={handleReset}
               disabled={submitRating.isPending}
@@ -278,29 +277,32 @@ export default function PerformanceRatingModal({
               Reset
             </Button>
             <Button
-  variant="default"
-  type="submit"
-  disabled={
-    submitRating.isPending ||
-    !currentTeamId ||
-    !currentMemberId ||
-    !selectedActivityId ||
-    rating === 0
-  }
->
-  {submitRating.isPending ? (
-    <span className="flex items-center gap-2">
-      <Loader className="h-4 w-4 animate-spin" />
-      Saving...
-    </span>
-  ) : (
-    "Save Rating"
-  )}
-</Button>
-
+              data-slot="button"
+              variant="default"
+              type="submit"
+              disabled={
+                submitRating.isPending ||
+                !currentTeamId ||
+                !currentMemberId ||
+                !selectedActivityId ||
+                rating === 0
+              }
+            >
+              {submitRating.isPending ? (
+                <span className="flex items-center gap-2">
+                  {/* Replaced h-4 w-4 with size-4 */}
+                  <Loader className="size-4 animate-spin" />
+                  Saving...
+                </span>
+              ) : (
+                "Save Rating"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
   );
 }
+
+export default PerformanceRatingModal;

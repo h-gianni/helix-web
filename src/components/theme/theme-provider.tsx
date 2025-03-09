@@ -1,4 +1,3 @@
-// components/theme/ThemeProvider.tsx
 'use client';
 
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -21,21 +20,36 @@ const initialState: ThemeProviderState = {
   setTheme: () => null,
 };
 
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
+const ThemeProviderContext = createContext<ThemeProviderState | null>(null);
 
 export function ThemeProvider({
   children,
   defaultTheme = 'system',
   storageKey = 'ui-theme',
-  ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem(storageKey) as Theme) || defaultTheme;
+    }
+    return defaultTheme;
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    
-    root.setAttribute('data-theme', theme === 'system' ? systemTheme : theme);
+
+    // Remove any existing theme classes
+    root.classList.remove('light', 'dark');
+
+    // Apply the correct theme
+    if (theme === 'system') {
+      root.classList.add(systemTheme);
+    } else {
+      root.classList.add(theme);
+    }
+
+    // Ensure the `color-scheme` meta tag is updated
+    root.style.colorScheme = theme === 'system' ? systemTheme : theme;
   }, [theme]);
 
   useEffect(() => {
@@ -43,7 +57,9 @@ export function ThemeProvider({
     const handleChange = () => {
       if (theme === 'system') {
         const systemTheme = mediaQuery.matches ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', systemTheme);
+        document.documentElement.classList.remove('light', 'dark');
+        document.documentElement.classList.add(systemTheme);
+        document.documentElement.style.colorScheme = systemTheme;
       }
     };
 
@@ -52,20 +68,19 @@ export function ThemeProvider({
   }, [theme]);
 
   useEffect(() => {
-    const stored = localStorage.getItem(storageKey);
-    if (stored && (stored === 'light' || stored === 'dark' || stored === 'system')) {
-      setTheme(stored);
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.add(theme);
+      document.documentElement.style.colorScheme = theme;
     }
-  }, [storageKey]);
+  }, [theme]);
 
   return (
     <ThemeProviderContext.Provider
-      {...props}
       value={{
         theme,
-        setTheme: (theme) => {
-          localStorage.setItem(storageKey, theme);
-          setTheme(theme);
+        setTheme: (newTheme) => {
+          localStorage.setItem(storageKey, newTheme);
+          setTheme(newTheme);
         },
       }}
     >
@@ -76,9 +91,8 @@ export function ThemeProvider({
 
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
 };
-

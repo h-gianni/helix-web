@@ -1,32 +1,32 @@
 /* themes/dark.css */
 [data-theme="dark"] {
-    --background: var(--gray-700);
-    --foreground: var(--gray-50);
+    --background: var(--neutral-darkest);
+    --foreground: var(--neutral-lightest);
    
-    --card: var(--gray-600);
-    --card-foreground: var(--gray-50);
+    --card: var(--neutral-darker);
+    --card-foreground: var(--neutral-lightest);
    
-    --popover: var(--gray-600);
-    --popover-foreground: var(--gray-50);
+    --popover: var(--neutral-darker);
+    --popover-foreground: var(--neutral-lightest);
    
-    --primary: var(--primary-200);
-    --primary-foreground: var(--gray-700);
+    --primary: var(--primary-light);
+    --primary-foreground: var(--neutral-darkest);
    
-    --secondary: var(--gray-500);
-    --secondary-foreground: var(--gray-50);
+    --secondary: var(--neutral-lightest0);
+    --secondary-foreground: var(--neutral-lightest);
    
-    --muted: var(--gray-500);
-    --muted-foreground: var(--gray-200);
+    --muted: var(--neutral-lightest0);
+    --muted-foreground: var(--neutral-light);
    
-    --accent: var(--accent-200);
-    --accent-foreground: var(--gray-700);
+    --accent: var(--accent-light);
+    --accent-foreground: var(--neutral-darkest);
    
-    --destructive: var(--destructive-200);
-    --destructive-foreground: var(--gray-700);
+    --destructive: var(--destructive-light);
+    --destructive-foreground: var(--neutral-darkest);
    
-    --border: var(--gray-500);
-    --input: var(--gray-500);
-    --ring: var(--primary-200);
+    --border: var(--neutral-lightest0);
+    --input: var(--neutral-lightest0);
+    --ring: var(--primary-light);
    
     --shadow-sm: none;
     --shadow-base: none;

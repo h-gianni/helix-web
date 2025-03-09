@@ -1,40 +1,47 @@
-import React from 'react';
+import React from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogBody,
 } from "@/components/ui/core/Dialog";
 import { Button } from "@/components/ui/core/Button";
-import OrganizationConfig from './_organization';
+import OrganizationConfig from "./_organization";
 
 interface OrganizationDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const OrganizationDialog: React.FC<OrganizationDialogProps> = ({
-  isOpen,
-  onClose,
-}) => {
+function OrganizationDialog({ isOpen, onClose }: OrganizationDialogProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Edit Organization</DialogTitle>
+    <Dialog
+      data-slot="dialog"
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}
+    >
+      <DialogContent data-slot="dialog-content">
+        <DialogHeader data-slot="dialog-header">
+          <DialogTitle data-slot="dialog-title">Edit Organization</DialogTitle>
         </DialogHeader>
-        <DialogBody>
+
+        {/* Dialog content directly inside DialogContent */}
+        <div data-slot="dialog-body" className="p-4">
           <OrganizationConfig />
-        </DialogBody>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
-          <Button onClick={onClose}>Save Changes</Button>
+        </div>
+
+        <DialogFooter data-slot="dialog-footer">
+          <Button data-slot="button" variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button data-slot="button" onClick={onClose}>
+            Save Changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 export default OrganizationDialog;

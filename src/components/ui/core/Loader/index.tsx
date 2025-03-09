@@ -19,7 +19,7 @@ const Loader = ({ size = "base", label, className, ...props }: LoaderProps) => {
   return (
     <div className={cn("flex items-center gap-2", className)} {...props}>
       <LoaderCircle className={cn("animate-spin text-foreground", sizeClasses[size])} />
-      {label && <span className="text-base text-foreground-weak">{label}</span>}
+      {label && <span className="text-base">{label}</span>}
     </div>
   );
 };
