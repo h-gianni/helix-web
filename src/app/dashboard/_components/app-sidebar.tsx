@@ -9,13 +9,15 @@ import {
   SidebarHeader,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
-} from "@/components/ui/composite/Side-bar";
+} from "@/components/ui/composite/Sidebar";
 import { useTeams } from "@/lib/context/teams-context";
 
 interface Team {
@@ -56,12 +58,6 @@ const mainNavItems: NavItem[] = [
     to: "/dashboard/settings",
     icon: Settings,
     label: "Settings",
-    // Example of optional subItems, if needed in the future
-    // subItems: [
-    //   { to: "/dashboard/settings/business-activities", label: "Org Activities" },
-    //   { to: "/dashboard/settings/teams", label: "Teams Activities" },
-    //   { to: "/dashboard/settings/profile", label: "Profile" },
-    // ],
   },
 ];
 
@@ -90,10 +86,9 @@ function AppSidebar() {
   };
 
   return (
-    <Sidebar data-slot="sidebar">
-      <SidebarHeader data-slot="sidebar-header">
+    <Sidebar>
+      <SidebarHeader>
         <div className="flex items-center gap-3 px-4 py-4">
-          {/* Replace h-8 w-8 with size-8 */}
           <div className="size-8 flex items-center justify-center rounded bg-accent text-accent-foreground">
             <span className="text-lg font-bold">U</span>
           </div>
@@ -101,13 +96,16 @@ function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent data-slot="sidebar-content">
-        <SidebarGroup data-slot="sidebar-group">
-          <SidebarMenu data-slot="sidebar-menu">
-            {renderNavItems().map((item) => (
-              <NavMenuItem key={item.label} item={item} />
-            ))}
-          </SidebarMenu>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {renderNavItems().map((item) => (
+                <NavMenuItem key={item.label} item={item} />
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
@@ -123,30 +121,24 @@ function NavMenuItem({ item }: NavMenuItemProps) {
 
   return (
     <>
-      <SidebarMenuItem data-slot="sidebar-menu-item">
+      <SidebarMenuItem>
         <SidebarMenuButton
-          data-slot="sidebar-menu-button"
           asChild
           isActive={isActive}
           tooltip={item.label}
         >
           <Link href={item.to}>
-            {/* Apply size-4 to the icon */}
-            <Icon className="size-4" />
-            <span className="font-medium">{item.label}</span>
+            <Icon className="size-4 shrink-0" />
+            <span>{item.label}</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
 
-      {item.subItems && (
-        <SidebarMenuSub data-slot="sidebar-menu-sub">
+      {item.subItems && item.subItems.length > 0 && (
+        <SidebarMenuSub>
           {item.subItems.map((subItem) => (
-            <SidebarMenuSubItem
-              data-slot="sidebar-menu-subitem"
-              key={subItem.to}
-            >
+            <SidebarMenuSubItem key={subItem.to}>
               <SidebarMenuSubButton
-                data-slot="sidebar-menu-subbutton"
                 asChild
                 isActive={pathname === subItem.to}
               >

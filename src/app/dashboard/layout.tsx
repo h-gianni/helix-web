@@ -1,6 +1,6 @@
 import React from "react";
-import AppSidebar from "./_components/_app-side-bar";
-import { SidebarProvider } from "@/components/ui/composite/Side-bar";
+import AppSidebar from "./_components/app-sidebar";
+import { SidebarProvider } from "@/components/ui/composite/Sidebar";
 
 export default function DashboardLayout({
   children,
@@ -10,9 +10,7 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <div className="layout-page">
-        {children}
-      </div>
+      <main>{children}</main>
     </SidebarProvider>
   );
 }

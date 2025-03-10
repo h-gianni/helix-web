@@ -17,7 +17,7 @@ import {
   SidebarInset,
   SidebarTrigger,
   useSidebar,
-} from "@/components/ui/composite/Side-bar";
+} from "@/components/ui/composite/Sidebar";
 import {
   Collapsible,
   CollapsibleContent,

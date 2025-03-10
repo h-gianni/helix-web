@@ -104,7 +104,7 @@ export const Navbar = () => {
         <div className="flex items-center gap-4 lg:gap-6">
           <div className="flex items-center gap-2">
             <span className="size-6 rounded-full bg-accent"></span>
-          <p className="marketing-h4">ScoreAndGo</p>
+          <p className="marketing-h4">JustScore</p>
           </div>
 
           {/* DESKTOP NAVIGATION */}

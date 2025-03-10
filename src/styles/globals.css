@@ -27,6 +27,8 @@
   }
 }
 
+/**************** TYPOGRAPHY */
+
 /* Display */
 .display-1 {
   @apply text-4xl font-bold tracking-tight leading-tight text-foreground-strong;
@@ -94,6 +96,16 @@
   @apply text-sm font-normal tracking-normal leading-snug;
 }
 
+
+/************************* LAYOUT + SPACING */
+
+/* .layout-page {
+  @apply w-full p-6;
+} */
+.layout-page-main {
+  @apply p-6 space-y-4 py-4 w-full;
+}
+
 /* Layout Spacing */
 .layout-padding {
   @apply p-4 md:p-6 lg:p-8;
@@ -108,6 +120,57 @@
 }
 .section-gap {
   @apply space-y-4;
+}
+
+/* Content Blocks */
+.content-stack {
+  @apply space-y-2;
+}
+.content-padding {
+  @apply p-3;
+}
+
+/* Form Elements */
+.input-padding {
+  @apply px-3 py-2;
+}
+.input-gap {
+  @apply space-y-1.5;
+}
+
+/* Interactive Elements */
+.button-padding-sm {
+  @apply px-3 py-1.5;
+}
+.button-padding {
+  @apply px-4 py-2;
+}
+.button-padding-lg {
+  @apply px-5 py-2.5;
+}
+
+/* Component Containers */
+.card-padding {
+  @apply p-4;
+}
+.card-gap {
+  @apply space-y-4;
+}
+
+/* Navigation */
+.nav-padding {
+  @apply px-3 py-2;
+}
+.nav-item-gap {
+  @apply space-x-2;
+}
+
+/* List Structures */
+.list-gap {
+  @apply space-y-1;
+}
+.list-item-padding {
+  @apply px-2 py-1;
 }
 
 /* Star rating color */

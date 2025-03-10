@@ -22,4 +22,8 @@
     --size-icon-sm: 0.75rem;  /* 12px */
     --size-icon-base: 1rem;   /* 16px */
     --size-icon-lg: 1.25rem;  /* 20px */
+
+    /* Sidebar */
+    --sidebar-width: 16rem;
+    --sidebar-width-icon: 3rem;
 }

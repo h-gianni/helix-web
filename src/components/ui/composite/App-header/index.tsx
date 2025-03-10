@@ -10,7 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/core/Breadcrumb";
-import { SidebarTrigger } from "@/components/ui/composite/Side-bar";
+import { SidebarTrigger } from "@/components/ui/composite/Sidebar";
 import { Button } from "@/components/ui/core/Button";
 import {
   Avatar,
@@ -89,7 +89,7 @@ const UserNav = () => {
 
 export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
   return (
-    <div className="flex items-center justify-between gap-8 pb-4">
+    <header className="flex items-center justify-between gap-8 pb-4">
       <div className="flex items-center gap-1">
         <SidebarTrigger />
         <Breadcrumb className="border-l border-input px-4" data-slot="breadcrumb">
@@ -128,6 +128,6 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
         </Button>
         <UserNav />
       </div>
-    </div>
+    </header>
   );
 }
