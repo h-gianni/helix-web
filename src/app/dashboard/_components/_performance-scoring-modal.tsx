@@ -70,6 +70,8 @@ function PerformanceRatingModal({
 
   // Initialize with props when the modal opens
   useEffect(() => {
+    console.log(teams, '-------------team')
+
     if (isOpen) {
       if (teamId) setSelectedTeamId(teamId);
       if (memberId) setSelectedMemberId(memberId);

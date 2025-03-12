@@ -32,7 +32,7 @@ async function checkTeamAccess(teamId: string, userId: string) {
 
 async function validateActivity(teamId: string, activityId: string) {
   console.log("Validating activity:", { teamId, activityId }); // Debug log
-  const activity = await prisma.businessActivity.findFirst({
+  const activity = await prisma.orgAction.findFirst({
     where: {
       id: activityId,
       teamId: teamId,
@@ -65,29 +65,31 @@ export async function GET(
     }
 
     const url = new URL(request.url);
-    const activityId = url.searchParams.get("activityId");
+    const actionId = url.searchParams.get("activityId"); // Keep param name for backward compatibility
     const limit = parseInt(url.searchParams.get("limit") || "10");
     const page = parseInt(url.searchParams.get("page") || "1");
     const skip = (page - 1) * limit;
 
     const where = {
       teamMemberId: params.memberId,
-      ...(activityId ? { activityId } : {}),
+      ...(actionId ? { actionId } : {}),
     };
 
-    const [ratings, total] = await Promise.all([
-      prisma.memberRating.findMany({
+    const [scores, total] = await Promise.all([
+      prisma.memberScore.findMany({
         where,
         select: {
           id: true,
           value: true,
           teamMemberId: true,
-          activityId: true,
+          actionId: true,
           createdAt: true,
           updatedAt: true,
           teamMember: {
             select: {
               id: true,
+              firstName: true,
+              lastName: true,
               user: {
                 select: {
                   id: true,
@@ -97,11 +99,9 @@ export async function GET(
               },
             },
           },
-          activity: {
-            select: {
-              id: true,
-              name: true,
-              description: true,
+          action: {
+            include: {
+              action: true,
             },
           },
         },
@@ -111,18 +111,34 @@ export async function GET(
         skip,
         take: limit,
       }),
-      prisma.memberRating.count({ where }),
+      prisma.memberScore.count({ where }),
     ]);
 
-    const averageRating =
-      ratings.length > 0
-        ? ratings.reduce((sum, rating) => sum + rating.value, 0) / ratings.length
+    // Transform to match expected response format
+    const transformedScores = scores.map(score => ({
+      id: score.id,
+      value: score.value,
+      teamMemberId: score.teamMemberId,
+      activityId: score.actionId, // Map to expected client field
+      createdAt: score.createdAt,
+      updatedAt: score.updatedAt,
+      teamMember: score.teamMember,
+      activity: { // Transform OrgAction + Action to expected Activity format
+        id: score.actionId,
+        name: score.action.action.name,
+        description: score.action.action.description,
+      },
+    }));
+
+    const averageScore =
+      scores.length > 0
+        ? scores.reduce((sum, score) => sum + score.value, 0) / scores.length
         : 0;
 
     return NextResponse.json({
       success: true,
       data: {
-        ratings: ratings as RatingResponse[],
+        ratings: transformedScores, // Keep field name for backward compatibility
         pagination: {
           total,
           pages: Math.ceil(total / limit),
@@ -130,13 +146,13 @@ export async function GET(
           limit,
         },
         stats: {
-          average: averageRating,
+          average: averageScore,
           count: total,
         },
       },
     });
   } catch (error) {
-    console.error("Error fetching ratings:", error);
+    console.error("Error fetching scores:", error);
     return NextResponse.json<ApiResponse<never>>(
       { success: false, error: "Internal server error" },
       { status: 500 }
@@ -166,56 +182,135 @@ export async function POST(
 
     const { activityId, value } = body;
 
-    // Validate activity association
-    const isValidActivity = await validateActivity(params.teamId, activityId);
-    if (!isValidActivity) {
+    // Validate that the teamMember exists and belongs to the team
+    const teamMember = await prisma.teamMember.findFirst({
+      where: {
+        id: params.memberId,
+        teamId: params.teamId,
+        deletedAt: null
+      }
+    });
+
+    if (!teamMember) {
       return NextResponse.json<ApiResponse<never>>(
         {
           success: false,
-          error: "Activity is not associated with this team",
+          error: "Team member not found or not associated with this team",
+        },
+        { status: 404 }
+      );
+    }
+
+    // Validate orgAction association
+    const orgAction = await prisma.orgAction.findFirst({
+      where: {
+        id: activityId,
+        teamId: params.teamId,
+        deletedAt: null
+      }
+    });
+
+    if (!orgAction) {
+      return NextResponse.json<ApiResponse<never>>(
+        {
+          success: false,
+          error: "Action is not associated with this team",
         },
         { status: 400 }
       );
     }
 
-    // Create the rating
-    const rating = await prisma.memberRating.create({
-      data: {
+    // Check if a score already exists for this member and action
+    const existingScore = await prisma.memberScore.findFirst({
+      where: {
         teamMemberId: params.memberId,
-        activityId,
-        value,
-      },
-      select: {
-        id: true,
-        value: true,
-        teamMemberId: true,
-        activityId: true,
-        createdAt: true,
-        updatedAt: true,
-        teamMember: {
-          select: {
-            id: true,
-            user: {
-              select: {
-                id: true,
-                email: true,
-                name: true,
-              },
-            },
-          },
-        },
-        activity: {
-          select: {
-            id: true,
-            name: true,
-            description: true,
-          },
-        },
-      },
+        actionId: activityId
+      }
     });
 
-    return NextResponse.json<ApiResponse<RatingResponse>>(
-      { success: true, data: rating as RatingResponse },
+    let score;
+    
+    if (existingScore) {
+      // Update existing score
+      score = await prisma.memberScore.update({
+        where: {
+          id: existingScore.id
+        },
+        data: {
+          value: value
+        },
+        include: {
+          teamMember: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              user: {
+                select: {
+                  id: true,
+                  email: true,
+                  name: true,
+                }
+              }
+            }
+          },
+          action: {
+            include: {
+              action: true
+            }
+          }
+        }
+      });
+    } else {
+      // Create new score
+      score = await prisma.memberScore.create({
+        data: {
+          teamMemberId: params.memberId,
+          actionId: activityId,
+          value: value,
+        },
+        include: {
+          teamMember: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              user: {
+                select: {
+                  id: true,
+                  email: true,
+                  name: true,
+                }
+              }
+            }
+          },
+          action: {
+            include: {
+              action: true
+            }
+          }
+        }
+      });
+    }
+
+    // Transform the response to match expected format
+    const transformedResponse = {
+      id: score.id,
+      value: score.value,
+      teamMemberId: score.teamMemberId,
+      actionId: score.actionId,
+      createdAt: score.createdAt,
+      updatedAt: score.updatedAt,
+      teamMember: score.teamMember,
+      activity: {
+        id: score.action.id,
+        name: score.action.action.name,
+        description: score.action.action.description
+      }
+    };
+
+    return NextResponse.json<ApiResponse<typeof transformedResponse>>(
+      { success: true, data: transformedResponse },
       { status: 201 }
     );
   } catch (error) {

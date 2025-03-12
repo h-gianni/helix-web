@@ -64,6 +64,12 @@ export const GET = withErrorHandler(async (
     },
     include: {
       team: true,
+      action: {
+        include: {
+          category: true  // Include the action category details if needed
+        }
+      },
+      user: true,  // Include the user who created the action
       _count: {
         select: {
           scores: true,
@@ -72,29 +78,35 @@ export const GET = withErrorHandler(async (
     },
   });
 
-  // Transform the response to match the old format
+  // Transform the response to include action details
   const transformedActivities = activities.map(activity => ({
     id: activity.id,
-    // name: activity.name,
-    // description: activity.description,
-    // category: activity.category || '',
+    name: activity.action.name,
+    description: activity.action.description,
+    category: activity.action.category?.name || '',
+    impactScale: activity.action.impactScale,
     priority: activity.priority,
     status: activity.status,
     dueDate: activity.dueDate,
     teamId: activity.teamId,
+    teamName: activity.team.name,
     createdAt: activity.createdAt,
     updatedAt: activity.updatedAt,
     deletedAt: activity.deletedAt,
     ratingsCount: activity._count.scores,
     addedAt: activity.createdAt,
     createdBy: activity.createdBy,
+    createdByName: activity.user?.name || '',
+    actionId: activity.actionId,
   }));
+
 
   return NextResponse.json({
     success: true,
     data: transformedActivities,
   });
 });
+
 
 export const PUT = withErrorHandler(async (
   request: Request,
