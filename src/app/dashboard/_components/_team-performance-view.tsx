@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TrendingUp } from "lucide-react";
 import { MemberCard } from "@/components/ui/composite/Member-card";
@@ -30,7 +30,7 @@ interface TeamPerformanceViewProps {
   showAvatar?: boolean;
   showActions?: boolean;
   onMemberDelete?: (member: MemberPerformance) => void;
-  mode?: "compact" | "full";
+  mode?: "desktop" | "mobile";
   viewType?: "table" | "grid";
   onViewChange?: (value: "table" | "grid") => void;
 }
@@ -42,7 +42,7 @@ export function TeamPerformanceView({
   showAvatar = true,
   showActions = true,
   onMemberDelete,
-  mode = "full",
+  mode = "mobile",
   viewType = "grid",
   onViewChange,
 }: TeamPerformanceViewProps) {
@@ -52,6 +52,73 @@ export function TeamPerformanceView({
   const { mutate: generateReview } = useGenerateReview();
 
   const sortedMembers = getSortedMembers(members);
+
+  // Determine initial view type based on member count
+  const getDefaultViewByMemberCount = () => {
+    return members.length > 5 ? "table" : "grid";
+  };
+
+  // Create state for effective view type with initial value
+  const [effectiveViewType, setEffectiveViewType] = useState(() => {
+    // On first render, determine view based on member count
+    // If viewType is explicitly provided, use that instead
+    return viewType !== "grid" && viewType !== "table" 
+      ? getDefaultViewByMemberCount()
+      : viewType;
+  });
+
+  // Update view type when viewType prop changes or when members count changes
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        // Force card view on mobile
+        setEffectiveViewType("grid");
+      } else {
+        // On desktop, check if viewType is explicitly provided
+        if (viewType === "grid" || viewType === "table") {
+          setEffectiveViewType(viewType);
+        } else {
+          // Otherwise use member count logic
+          setEffectiveViewType(getDefaultViewByMemberCount());
+        }
+      }
+    };
+
+    // Initial check
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, [viewType, members.length]);
+
+  // Determine the correct variant based on screen width
+  const getCorrectVariant = () => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768 ? "mobile" : mode;
+    }
+    return mode; // Default to the prop value during SSR
+  };
+
+  const [cardVariant, setCardVariant] = React.useState(mode);
+
+  // Update variant on mount and when screen size changes
+  React.useEffect(() => {
+    const handleResize = () => {
+      setCardVariant(window.innerWidth < 768 ? "mobile" : mode);
+    };
+    
+    // Initial check
+    handleResize();
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, [mode]);
 
   const handleGenerateReview = (member: MemberPerformance) => {
     generateReview(member.id);
@@ -73,7 +140,7 @@ export function TeamPerformanceView({
 
   return (
     <div className="space-y-4">
-      {viewType === "table" ? (
+      {effectiveViewType === "table" ? (
         <MembersTable
           members={sortedMembers}
           teams={teams}
@@ -87,7 +154,7 @@ export function TeamPerformanceView({
           getPerformanceCategory={getPerformanceCategory}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
           {sortedMembers.map((member) => {
             const category = getPerformanceCategory(member.averageRating, member.ratingsCount);
             return (
@@ -99,7 +166,7 @@ export function TeamPerformanceView({
                 category={category}
                 onDelete={onMemberDelete}
                 onGenerateReview={handleGenerateReview}
-                variant={mode === "compact" ? "compact" : "default"}
+                variant={cardVariant}
                 onNavigate={handleNavigate}
               />
             );

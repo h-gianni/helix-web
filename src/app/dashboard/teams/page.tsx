@@ -36,10 +36,13 @@ function TeamsGrid({ teams }: { teams: TeamResponse[] }) {
           id={team.id}
           name={team.name}
           functions={team.teamFunction ? [team.teamFunction.name] : []}
-          members={team.members.map((member) => ({
-            ...member,
-            name: member.name ?? "Unknown",
-          }))}
+          members={Array.isArray(team.members) 
+            ? team.members.map((member) => ({
+                ...member,
+                name: member.name ?? "Unknown",
+              }))
+            : []
+          }
           averagePerformance={team.averagePerformance}
           size="lg"
           onClick={() => router.push(`/dashboard/teams/${team.id}`)}

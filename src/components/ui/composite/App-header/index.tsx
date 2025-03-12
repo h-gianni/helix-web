@@ -17,13 +17,7 @@ import {
   AvatarImage,
   AvatarFallback,
 } from "@/components/ui/core/Avatar";
-import {
-  Bell,
-  Star,
-  Settings,
-  CreditCard,
-  LogOut,
-} from "lucide-react";
+import { Bell, Star, Settings, CreditCard, LogOut } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -33,6 +27,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/core/Dropdown-menu";
 import { UserButton } from "@clerk/nextjs";
+import { useSetupProgress } from "@/hooks/useSetupProgress";
 
 export interface BreadcrumbItem {
   href?: string;
@@ -47,20 +42,30 @@ const UserNav = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           className="relative size-8 rounded-full"
           data-slot="dropdown-trigger"
         >
           <Avatar data-slot="avatar">
-            <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
+            <AvatarImage
+              src="https://github.com/shadcn.png"
+              alt="User avatar"
+            />
             <AvatarFallback>GF</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount data-slot="dropdown-content">
-        <UserButton/>
-        <DropdownMenuLabel data-slot="dropdown-label">My Account</DropdownMenuLabel>
+      <DropdownMenuContent
+        className="w-56"
+        align="end"
+        forceMount
+        data-slot="dropdown-content"
+      >
+        {/* <UserButton/> */}
+        <DropdownMenuLabel data-slot="dropdown-label">
+          My Account
+        </DropdownMenuLabel>
         <DropdownMenuItem data-slot="dropdown-item">
           <Star className="mr-2 size-4" />
           <span>Upgrade to Pro</span>
@@ -88,43 +93,55 @@ const UserNav = () => {
 };
 
 export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
+  const { showMainDashboard } = useSetupProgress();
+
   return (
     <header className="flex items-center justify-between gap-8 pb-4">
-      <div className="flex items-center gap-1">
-        <SidebarTrigger />
-        <Breadcrumb className="border-l border-input px-4" data-slot="breadcrumb">
-          <BreadcrumbList data-slot="breadcrumb-list">
-            <BreadcrumbItem data-slot="breadcrumb-item">
-              <BreadcrumbLink asChild data-slot="breadcrumb-link">
-                <Link href="/dashboard">Dashboard</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator data-slot="breadcrumb-separator" />
-            {items.map((item, index) => {
-              const isLast = index === items.length - 1;
-              return (
-                <React.Fragment key={item.label}>
-                  <BreadcrumbItem data-slot="breadcrumb-item">
-                    {isLast ? (
-                      <BreadcrumbPage data-slot="breadcrumb-page">{item.label}</BreadcrumbPage>
-                    ) : (
-                      <BreadcrumbLink asChild data-slot="breadcrumb-link">
-                        <Link href={item.href ?? "#"}>{item.label}</Link>
-                      </BreadcrumbLink>
+      {showMainDashboard ? (
+        <div className="flex items-center gap-1 -ml-1.5">
+          <SidebarTrigger />
+          <Breadcrumb
+            className="border-l border-input px-4"
+            data-slot="breadcrumb"
+          >
+            <BreadcrumbList data-slot="breadcrumb-list">
+              <BreadcrumbItem data-slot="breadcrumb-item">
+                <BreadcrumbLink asChild data-slot="breadcrumb-link">
+                  <Link href="/dashboard">Dashboard</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator data-slot="breadcrumb-separator" />
+              {items.map((item, index) => {
+                const isLast = index === items.length - 1;
+                return (
+                  <React.Fragment key={item.label}>
+                    <BreadcrumbItem data-slot="breadcrumb-item">
+                      {isLast ? (
+                        <BreadcrumbPage data-slot="breadcrumb-page">
+                          {item.label}
+                        </BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink asChild data-slot="breadcrumb-link">
+                          <Link href={item.href ?? "#"}>{item.label}</Link>
+                        </BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                    {!isLast && (
+                      <BreadcrumbSeparator data-slot="breadcrumb-separator" />
                     )}
-                  </BreadcrumbItem>
-                  {!isLast && <BreadcrumbSeparator data-slot="breadcrumb-separator" />}
-                </React.Fragment>
-              );
-            })}
-          </BreadcrumbList>
-        </Breadcrumb>
-      </div>
+                  </React.Fragment>
+                );
+              })}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+      ) : (
+        <div></div> // Empty div to maintain the flex layout
+      )}
       <div className="flex items-center gap-4">
-     {<UserButton />}
+        {<UserButton />}
         <Button variant="ghost" size="icon" aria-label="Notifications">
-          <Bell className="h-4 w-4" />
-  
+          <Bell />
         </Button>
         <UserNav />
       </div>

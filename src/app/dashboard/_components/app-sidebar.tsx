@@ -89,16 +89,15 @@ function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center gap-3 px-4 py-4">
-          <div className="size-8 flex items-center justify-center rounded bg-accent text-accent-foreground">
+          <div className="size-8 flex items-center justify-center rounded-full bg-neutral-darkest text-white">
             <span className="text-lg font-bold">U</span>
           </div>
-          <span className="text-lg font-semibold">UpScore</span>
+          <span className="text-lg text-foreground-strong font-semibold">JustScore</span>
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="px-2">
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {renderNavItems().map((item) => (

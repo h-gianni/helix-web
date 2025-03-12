@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Building2, Users, Target, Check } from "lucide-react";
 import { Button } from "@/components/ui/core/Button";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { Badge } from "@/components/ui/core/Badge";
+import { Separator } from "@/components/ui/core/Separator";
 import { cn } from "@/lib/utils";
 import { useTeams } from "@/store/team-store";
 import { useSetupStore } from "@/store/setup-store";
@@ -14,7 +14,6 @@ interface OnboardingProps {
 }
 
 export function Onboarding({ onCreateTeam }: OnboardingProps) {
-  const router = useRouter();
   const { data: teams = [] } = useTeams();
   const [isSetupDialogOpen, setIsSetupDialogOpen] = useState(false);
   const { currentStep, steps, completeStep, completeSetup } = useSetupStore();
@@ -30,60 +29,43 @@ export function Onboarding({ onCreateTeam }: OnboardingProps) {
   const setupSteps = [
     {
       icon: Building2,
-      activeTitle: "1. Configure your Org",
+      activeTitle: "1. Configure your Organisation",
       completedTitle: "Org configured",
       description:
         "These are activities that are important and relevant to your organisation.",
       time: "Est. 1-5 min",
-      activeAction: "Configure your Org",
-      completedAction: "Org settings",
-      onClick: () => setIsSetupDialogOpen(true),
-      completedClick: () =>
-        router.push("/dashboard/settings/business-activities"),
-      isActive: currentStep === 1,
       isCompleted: steps.addActivities,
     },
+    // {
+    //   icon: Target,
+    //   activeTitle: "2. Select your Org actions",
+    //   completedTitle: "Team configured",
+    //   description:
+    //     "You might have more than one team with different activities because of different responsibilities.",
+    //   time: "Est. 1-5 min",
+    //   isCompleted: steps.configureTeamActivities,
+    // },
     {
       icon: Users,
-      activeTitle: "2. Create a Team",
+      activeTitle: "2. Setup your Team/s",
       completedTitle: "Team added",
       description:
         "Create your team and add team members to it. You can create more than one team.",
-      time: "Est. 15 sec",
-      activeAction: "Create a team",
-      completedAction: "Go to Teams",
-      onClick: onCreateTeam,
-      completedClick: () => router.push("/dashboard/teams"),
-      isActive: currentStep === 2,
+      time: "Max 15 sec per team",
       isCompleted: steps.createTeam,
-    },
-    {
-      icon: Target,
-      activeTitle: "3. Configure your team",
-      completedTitle: "Team configured",
-      description:
-        "You might have more than one team with different activities because of different responsibilities.",
-      time: "Est. 10 to 45 sec",
-      activeAction: "Configure your team",
-      completedAction: "Go to Team settings",
-      onClick: () => setIsSetupDialogOpen(true),
-      completedClick: () => router.push("/dashboard/settings/teams"),
-      isActive: currentStep === 3,
-      isCompleted: steps.configureTeamActivities,
     },
   ];
 
   return (
     <>
-      <div className="grid gap-4 md:grid-cols-3">
-        {setupSteps.map((step) => (
-          <Card
-            data-slot="card"
-            key={step.activeTitle}
-            className={cn(step.isActive && "ring-2 ring-primary shadow-lg")}
-          >
-            <CardContent data-slot="card-content">
-              <div className="flex flex-col h-full gap-4 p-4">
+      <Card data-slot="card" className="max-w-4xl mx-auto">
+        <CardContent data-slot="card-content">
+          <div className="grid md:gap-4 md:grid-cols-2">
+            {setupSteps.map((step, index) => (
+              <div
+                className="flex flex-col items-center h-full gap-4 p-4"
+                key={step.activeTitle}
+              >
                 <div className="flex justify-between items-start gap-8">
                   <div
                     className={cn(
@@ -97,44 +79,42 @@ export function Onboarding({ onCreateTeam }: OnboardingProps) {
                       <step.icon className="size-5 text-primary" />
                     )}
                   </div>
-                  <Badge
-                    data-slot="badge"
-                    variant="secondary"
-                    className={step.isCompleted ? "opacity-50" : "opacity-100"}
-                  >
-                    {step.isCompleted ? "Completed" : step.time}
-                  </Badge>
                 </div>
 
-                <div className="flex-1 text-left space-y-1.5">
+                <div className="flex-1 text-center space-y-1.5">
                   <h3 className="heading-3">
                     {step.isCompleted ? step.completedTitle : step.activeTitle}
                   </h3>
-                  <p className="body-sm">
-                    {step.description}
-                  </p>
-                </div>
-
-                <div className="flex flex-col gap-4">
-                  <Button
-                    data-slot="button"
-                    variant={step.isCompleted ? "outline" : "default"}
-                    onClick={
-                      step.isCompleted ? step.completedClick : step.onClick
-                    }
-                    disabled={!step.isActive && !step.isCompleted}
-                    className="w-full"
-                  >
-                    {step.isCompleted
-                      ? step.completedAction
-                      : step.activeAction}
-                  </Button>
+                  <p className="body-sm">{step.description}</p>
+                  <div className="py-4">
+                    <Badge
+                      data-slot="badge"
+                      variant="secondary"
+                      className={
+                        step.isCompleted ? "opacity-50" : "opacity-100"
+                      }
+                    >
+                      {step.isCompleted ? "Completed" : step.time}
+                    </Badge>
+                  </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            ))}
+          </div>
+
+          <div className="p-6 pt-10 flex items-center justify-center">
+            <Button
+              data-slot="button"
+              size="lg"
+              variant="default"
+              onClick={() => setIsSetupDialogOpen(true)}
+              className=""
+            >
+              Configure Setup
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <SetupDialog
         isOpen={isSetupDialogOpen}

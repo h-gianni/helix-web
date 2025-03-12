@@ -4,8 +4,6 @@ import type { ApiResponse } from "@/lib/types/api"
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react';
 
-
-
 // Define types for the profile data
 interface OrgName {
     id: string;

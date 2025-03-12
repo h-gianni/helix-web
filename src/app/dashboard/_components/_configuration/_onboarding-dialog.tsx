@@ -6,14 +6,21 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/core/Dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/core/Tooltip";
 import { Button } from "@/components/ui/core/Button";
+import { Separator } from "@/components/ui/core/Separator";
 import { Progress } from "@/components/ui/core/Progress";
 import { ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { useConfigStore } from "@/store/config-store";
-import { 
+import {
   useOnboardingStore,
   useCompleteOnboarding,
-  useStepValidation
+  useStepValidation,
 } from "@/store/onboarding-store";
 import OrganizationConfig from "./_organization";
 import ActionsConfig from "./_actions";
@@ -29,29 +36,23 @@ interface SetupDialogProps {
 }
 
 const steps = [
-  { id: "org", title: "Organisation Details" },
-  { id: "actions", title: "Organisation Actions List" },
+  { id: "organization", title: "Organisation & Actions" },
   { id: "team", title: "Create Team" },
   { id: "summary", title: "Summary" },
 ];
 
-function SetupDialog({
-  isOpen,
-  onClose,
-  onCompleteSetup,
-}: SetupDialogProps) {
-
+function SetupDialog({ isOpen, onClose, onCompleteSetup }: SetupDialogProps) {
   const { validateStep } = useStepValidation();
   const config = useConfigStore((state) => state.config);
 
-  const { 
-    currentStep, 
+  const {
+    currentStep,
     setCurrentStep,
-    selectedCategory, 
+    selectedCategory,
     setSelectedCategory,
     isCompleting,
     error,
-    syncTeamCategories
+    syncTeamCategories,
   } = useOnboardingStore();
 
   const completeOnboardingMutation = useCompleteOnboarding();
@@ -70,7 +71,10 @@ function SetupDialog({
 
   // Sync when selected categories change
   useEffect(() => {
-    if (currentStepId === "team" && Object.keys(config.activities.selectedByCategory || {}).length > 0) {
+    if (
+      currentStepId === "team" &&
+      Object.keys(config.activities.selectedByCategory || {}).length > 0
+    ) {
       syncTeamCategories();
     }
   }, [config.activities.selectedByCategory, currentStepId, syncTeamCategories]);
@@ -81,8 +85,9 @@ function SetupDialog({
     }
 
     // Sync categories before moving to the "team" step
-    if (currentStepId === "actions" && steps[currentStep + 1]?.id === "team") {
-      syncTeamCategories();
+    if (currentStepId === "org" && steps[currentStep + 1]?.id === "actions") {
+      // Log the organization name as we move from org step to actions step
+      console.log("Moving from org step with name:", config.organization.name);
     }
 
     if (isLastStep) {
@@ -104,28 +109,24 @@ function SetupDialog({
 
   const renderStepContent = () => {
     switch (currentStepId) {
-      case "org":
-        return <OrganizationConfig />;
-      case "actions":
+      case "organization":
         return (
-          <ActionsConfig
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-          />
+          <div className="space-y-8">
+            <OrganizationConfig />
+            <Separator />
+            <ActionsConfig
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+          </div>
         );
       case "team":
         return <TeamSetup />;
       case "summary":
         return (
-          <div className="space-y-6">
-            <OrganizationSummary />
-            <OrgActionsSummary />
-            <TeamsSummary onEdit={() => setCurrentStep(2)} variant="setup" />
-            {error && (
-              <div className="p-4 border border-destructive/50 bg-destructive/10 rounded-md text-destructive">
-                {error}
-              </div>
-            )}
+          <div className="grid grid-cols-2 gap-4">
+            <OrgActionsSummary onEdit={() => setCurrentStep(0)} />
+            <TeamsSummary onEdit={() => setCurrentStep(1)} variant="setup" />
           </div>
         );
     }
@@ -133,8 +134,13 @@ function SetupDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl h-[90vh] overflow-y-auto">
-        <DialogHeader className="p-6 border-b">
+      {/* 
+        Make DialogContent full screen with a flex column layout
+        Removed max-w-6xl in favor of full screen
+        Removed h-[90vh] in favor of h-screen 
+      */}
+      <DialogContent className="w-[96%] h-[96%] max-w-7xl p-0 m-auto rounded-md flex flex-col overflow-hidden">
+        <DialogHeader className="p-6 border-b shrink-0">
           <DialogTitle>
             <div className="flex flex-col gap-2 w-full">
               <div className="flex items-baseline gap-2">
@@ -147,16 +153,11 @@ function SetupDialog({
           </DialogTitle>
         </DialogHeader>
 
-        {/* Dialog Content */}
-        <div className="p-6 flex-1 overflow-auto">
-          {renderStepContent()}
-        </div>
+        {/* Scrollable content area that takes available height */}
+        <div className="flex-1 px-6 pt-2 pb-6 overflow-y-auto">{renderStepContent()}</div>
 
-        <DialogFooter className="p-6">
-          <Progress
-            value={((currentStep + 1) / steps.length) * 100}
-            className="absolute top-0 left-0 w-full rounded-none h-[2px]"
-          />
+        {/* Fixed footer */}
+        <DialogFooter className="relative p-6 border-t shrink-0">
           <div className="flex justify-between w-full">
             <Button
               variant="outline"
@@ -166,22 +167,45 @@ function SetupDialog({
               <ArrowLeft className="mr-2" />
               Back
             </Button>
-            <Button onClick={handleNext} disabled={isCompleting || !isStepValid}>
-              {isCompleting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : isLastStep ? (
-                "Complete Setup"
-              ) : (
-                <>
-                  Next
-                  <ArrowRight className="ml-2" />
-                </>
-              )}
-            </Button>
+
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button
+                      onClick={handleNext}
+                      disabled={isCompleting || !isStepValid}
+                    >
+                      {isCompleting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Saving...
+                        </>
+                      ) : isLastStep ? (
+                        "Complete Setup"
+                      ) : (
+                        <>
+                          Next
+                          <ArrowRight className="ml-2" />
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                {!isStepValid && currentStepId === "team" && (
+                  <TooltipContent className="max-w-xs">
+                    Please give a name to the team and have at least one action
+                    category checked.
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
           </div>
+          {/* Fixed header with Progress bar positioned on top */}
+          <Progress
+            value={((currentStep + 1) / steps.length) * 100}
+            className="absolute top-0 left-0 w-full rounded-none h-[2px] z-10"
+          />
         </DialogFooter>
       </DialogContent>
     </Dialog>

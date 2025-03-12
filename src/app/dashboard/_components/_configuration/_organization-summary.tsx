@@ -1,58 +1,66 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/core/Button";
 import { PenSquare } from "lucide-react";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/core/Card";
-import { useConfigStore } from '@/store/config-store';
-import OrganizationDialog from './_organization-edit-dialog';
-import { useProfileSync,useProfileStore , useProfile} from '@/store/user-store';
-
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+} from "@/components/ui/core/Card";
+import { useConfigStore } from "@/store/config-store";
+import OrganizationDialog from "./_organization-edit-dialog";
+import {
+  useProfileSync,
+  useProfileStore,
+  useProfile,
+} from "@/store/user-store";
 
 interface OrganizationSummaryProps {
-  onEdit?: () => void; // Optional or required, depending on your needs
+  onEdit?: () => void;
+  variant?: "setup" | "settings";
 }
 
-function OrganizationSummary({ onEdit }: OrganizationSummaryProps) {
+function OrganizationSummary({
+  onEdit,
+  variant = "settings",
+}: OrganizationSummaryProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  //const orgName = useConfigStore((state) => state.config.organization.name);
-  // const { orgName, setOrgName, initializeFromProfile } = useProfileStore();
-  const [orgNameValue, setOrgNameValue] = useState('');
-  const { data: profile, isLoading, error } = useProfile();
 
-  
+  // Get organization name directly from config store
+  const configStore = useConfigStore();
+  const configOrgName = configStore.config.organization.name;
+
+  // Use profile data for non-setup mode
+  const { data: profile, isLoading, error } = useProfile();
+  const [orgNameValue, setOrgNameValue] = useState("");
+
+  // Determine which data source to use based on variant
+  const useConfigData = variant === "setup";
+
+  // Log the data sources for debugging
   useEffect(() => {
-    // Debug logging to see what's coming back from the API
-    // console.log("Profile data:", profile);
-    // console.log("Loading state:", isLoading);
-    // console.log("Error state:", error);
-    
-    // Check if profile exists and has the expected structure
-    if (profile) {
-      // The most likely field names based on your API
-      // Let's try different possible property names
+    console.log("OrganizationSummary - Config org name:", configOrgName);
+    console.log("OrganizationSummary - Using config data:", useConfigData);
+
+    if (!useConfigData && profile) {
+      // Try to get org name from profile
       if (profile.orgName && profile.orgName.length > 0) {
-        setOrgNameValue(profile.orgName[0].name);
-        console.log("Found orgName in profile.orgNames[0]:", profile.orgName[0].name);
-      } else if (profile.orgName && profile.orgName.length > 0) {
-        setOrgNameValue(profile.orgName[0].name);
-        console.log("Found orgName in profile.orgName[0]:", profile.orgName[0].name);
-      } else if (profile.orgName) {
-        console.log("orgNames exists but is empty or not an array:", profile.orgName);
-      } else if (profile.orgName) {
-        console.log("orgName exists but is empty or not an array:", profile.orgName);
-      } else {
-        // Check all top-level keys to find the organization data
-        console.log("All profile keys:", Object.keys(profile));
-        
-        // Try to find any field that might contain "org" in its name
-        const orgRelatedFields = Object.keys(profile).filter(key => 
-          key.toLowerCase().includes('org')
+        setOrgNameValue(profile.orgName[0]?.name);
+        console.log("Found orgName in profile:", profile.orgName[0]?.name);
+      } else if (profile.customFields?.organizationName) {
+        setOrgNameValue(profile.customFields.organizationName);
+        console.log(
+          "Found orgName in customFields:",
+          profile.customFields.organizationName
         );
-        console.log("Org-related fields:", orgRelatedFields);
       }
     }
-  }, [profile, isLoading, error]);
+  }, [profile, useConfigData, configOrgName]);
 
-if (isLoading) {
+  // Get the organization name to display
+  const displayOrgName = useConfigData ? configOrgName : orgNameValue;
+
+  if (!useConfigData && isLoading) {
     return (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
@@ -70,15 +78,23 @@ if (isLoading) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Organization Details</CardTitle>
-          <Button variant="ghost" onClick={() => setIsDialogOpen(true)}>
-            <PenSquare /> Edit
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setIsDialogOpen(true);
+              onEdit?.();
+            }}
+          >
+            <PenSquare className="size-4 mr-2" /> Edit
           </Button>
         </CardHeader>
 
         <CardContent data-slot="card-content">
           <div className="text-base">
             <span className="font-medium">Name: </span>
-            <span>{profile?.orgName[0].name}</span>
+            <span>
+              {displayOrgName || "[Please set your organization name]"}
+            </span>
           </div>
         </CardContent>
       </Card>

@@ -38,11 +38,11 @@ function PageHeader({
             </Button>
           )}
           <div className="space-y-1.5">
-            <h1 className="page-header-title">
+            <h1 className="page-header-title heading-1">
               {title}
               {icon && icon}
             </h1>
-            {caption && <p className="page-header-caption">{caption}</p>}
+            {caption && <p className="page-header-caption body-base">{caption}</p>}
           </div>
         </div>
         {actions && <div className="page-header-actions">{actions}</div>}

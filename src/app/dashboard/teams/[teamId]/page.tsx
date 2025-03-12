@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
 import { PageHeader } from "@/components/ui/composite/Page-header";
@@ -61,6 +61,31 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
     setViewType,
   } = useTeamStore();
 
+  // Create state for effective view type (to handle mobile responsiveness)
+  const [effectiveViewType, setEffectiveViewType] = useState<"table" | "grid">(viewType);
+
+  // Update view type based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        // Force card view on mobile
+        setEffectiveViewType("grid");
+      } else {
+        // Use user's selected view on desktop
+        setEffectiveViewType(viewType);
+      }
+    };
+
+    // Initial check
+    handleResize();
+
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', handleResize);
+  }, [viewType]);
+
   const {
     data: team,
     isLoading: isTeamLoading,
@@ -100,6 +125,16 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
       router.push("/dashboard/teams");
     } catch (err) {
       console.error("Error deleting team:", err);
+    }
+  };
+
+  // Handle view change
+  const handleViewChange = (newViewType: "table" | "grid") => {
+    setViewType(newViewType);
+    
+    // Only apply if not on mobile
+    if (window.innerWidth >= 768) {
+      setEffectiveViewType(newViewType);
     }
   };
 
@@ -221,7 +256,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
             teamName={team.name}
             members={performanceData.members}
             viewType={viewType}
-            onViewChange={setViewType}
+            onViewChange={handleViewChange}
           />
         )}
       </main>

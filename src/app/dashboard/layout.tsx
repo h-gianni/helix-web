@@ -1,5 +1,5 @@
 import React from "react";
-import AppSidebar from "./_components/app-sidebar";
+import ConditionalSidebar from "./_components/conditional-sidebar";
 import { SidebarProvider } from "@/components/ui/composite/Sidebar";
 
 export default function DashboardLayout({
@@ -9,8 +9,10 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <AppSidebar />
-      <main>{children}</main>
+      <ConditionalSidebar />
+      <main className="layout-page">
+        {children}
+      </main>
     </SidebarProvider>
   );
 }

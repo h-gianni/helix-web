@@ -38,7 +38,7 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
     if (ratingsCount === 0 && disabled) {
       return (
         <div ref={ref} className={cn("missing-text", className)}>
-          No ratings yet
+          No scores received yet
         </div>
       );
     }

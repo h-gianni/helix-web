@@ -107,7 +107,7 @@ function MembersTable({
             <TableHead data-slot="table-head">Job Title</TableHead>
             <TableHead data-slot="table-head">Seniority</TableHead>
             <TableHead data-slot="table-head">Performance</TableHead>
-            <TableHead data-slot="table-head" className="w-[200px]">Ratings</TableHead>
+            <TableHead data-slot="table-head" className="w-[200px]">Scores</TableHead>
             {showActions && <TableHead data-slot="table-head" className="w-10" />}
           </TableRow>
         </TableHeader>

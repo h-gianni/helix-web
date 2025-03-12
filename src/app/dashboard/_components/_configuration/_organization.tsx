@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Input } from "@/components/ui/core/Input";
 import { Label } from "@/components/ui/core/Label";
 import { useConfigStore } from "@/store/config-store";
 
 function OrganizationConfig() {
   const orgName = useConfigStore((state) => state.config.organization.name);
-  const updateOrganization = useConfigStore((state) => state.updateOrganization);
+  const updateOrganization = useConfigStore(
+    (state) => state.updateOrganization
+  );
+
+  // Log when component renders
+  useEffect(() => {
+    console.log("OrganizationConfig rendered with orgName:", orgName);
+  }, [orgName]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("Organization name changed:", e.target.value);
+    updateOrganization(e.target.value);
+  };
 
   return (
     <div className="space-y-4">
@@ -17,8 +29,8 @@ function OrganizationConfig() {
           data-slot="input"
           type="text"
           id="org-name"
-          value={orgName}
-          onChange={(e) => updateOrganization(e.target.value)}
+          value={orgName || ""}
+          onChange={handleChange}
           placeholder="Enter organisation name"
         />
       </div>

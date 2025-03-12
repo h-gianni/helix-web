@@ -16,18 +16,23 @@ interface PerformersByCategoryProps {
   performers: Member[];
   teams: TeamResponse[];
   category: PerformanceCategory;
+  viewType?: "table" | "grid";
 }
 
 export function PerformersByCategory({
   category,
   performers,
   teams,
+  viewType,
 }: PerformersByCategoryProps) {
-  const { viewType } = usePerformersStore();
+  const { viewType: storeViewType } = usePerformersStore();
+  
+  // Use passed viewType prop if provided, otherwise use from store
+  const effectiveViewType = viewType || storeViewType;
 
   const categoryPerformers = performers
     .filter((performer) => {
-      if (category.label === "Not Rated") {
+      if (category.label === "Not Scored") {
         return performer.ratingsCount === 0;
       }
       return (
@@ -37,26 +42,29 @@ export function PerformersByCategory({
       );
     })
     .sort((a, b) => {
-      if (category.label === "Not Rated") {
+      if (category.label === "Not Scored") {
         return a.name.localeCompare(b.name);
       }
       return b.averageRating - a.averageRating;
     });
 
   const EmptyState = () => (
-    <div className="flex flex-col items-center justify-center pb-2">
-      <div className={`p-2 rounded-full ${category.className}`}>
-        {/* Replaced h-6 w-6 with size-6 */}
-        <category.Icon className="size-6" />
+    <div className="flex flex-col items-center justify-center space-y-2">
+      <div
+        className={`bg-secondary size-8 rounded-full flex items-center justify-center mx-auto ${
+          category.label === "Not Scored" ? "" : category.className
+        }`}
+      >
+        {category.label !== "Not Scored" && <category.Icon className="size-4" />}
       </div>
-      <div className="text-center">
+      <div className="text-center space-y-0.5">
         <h3 className="heading-3">{`No ${category.label}`}</h3>
-        <p className="text-sm max-w-md pt-1">
-          {category.label === "Not Rated"
-            ? "All team members have received at least one rating."
+        <p className="body-sm text-foreground-weak max-w-md">
+          {category.label === "Not Scored"
+            ? "All team members have received at least one score."
             : category.label.includes("Poor") || category.label.includes("Weak")
-            ? "Great news! You don't have any team members performing below expectations."
-            : `No team members currently fall into the ${category.label.toLowerCase()} category.`}
+            ? "Great news! You don't have any team member performing below expectations."
+            : `No team member currently is a ${category.label.toLowerCase()} contributor.`}
         </p>
       </div>
     </div>
@@ -65,7 +73,7 @@ export function PerformersByCategory({
   if (categoryPerformers.length === 0) {
     return (
       <Card data-slot="card">
-        <CardContent data-slot="card-content" className="p-0">
+        <CardContent data-slot="card-content">
           <EmptyState />
         </CardContent>
       </Card>
@@ -75,25 +83,30 @@ export function PerformersByCategory({
   return (
     <Card data-slot="card">
       <CardHeader data-slot="card-header">
-        <CardTitle data-slot="card-title" className="flex items-center gap-2">
-          {/* Replaced h-5 w-5 with size-5 */}
-          <category.Icon className={`size-5 ${category.className}`} />
-          <span>{category.label}</span>
-          {category.description && (
-            <span className="body-sm">
-              <span className="px-2">/</span>
-              {category.description}
-            </span>
+        <CardTitle
+          data-slot="card-title"
+          className="flex flex-col md:flex-row items-center gap-2"
+        >
+          {category.label !== "Not Scored" && (
+            <category.Icon className={`size-5 ${category.className}`} />
           )}
+          <div className="flex flex-col sm:flex-row items-baseline sm:gap-3">
+            <span className="whitespace-nowrap">{category.label}</span>
+            {category.description && (
+              <span className="body-sm text-foreground-weak">
+                {category.description}
+              </span>
+            )}
+          </div>
         </CardTitle>
       </CardHeader>
-      <CardContent data-slot="card-content" className="pt-0">
+      <CardContent data-slot="card-content">
         <TeamPerformanceView
           members={categoryPerformers}
           teams={teams}
           showAvatar={true}
-          mode="compact"
-          viewType={viewType}
+          mode="desktop"
+          viewType={effectiveViewType}
         />
       </CardContent>
     </Card>

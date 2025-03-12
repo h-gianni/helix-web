@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/core/Badge";
-import { ActionCategory } from '@/lib/types/api/action';
+import { ActionCategory } from "@/lib/types/api/action";
+import { useConfigStore } from "@/store/config-store";
 
 interface OrganizationCategoriesProps {
   onSelect: (category: string) => void;
@@ -13,26 +14,46 @@ export function OrganizationCategories({
   selectedActivities,
   selectedCategory,
 }: OrganizationCategoriesProps) {
+  const [generalCategories, setGeneralCategories] = useState<ActionCategory[]>(
+    []
+  );
   const [coreCategories, setCoreCategories] = useState<ActionCategory[]>([]);
-  const [generalCategories, setGeneralCategories] = useState<ActionCategory[]>([]);
 
-  const coreList = ['cm7nd5atu00025n7jczacmikq', 'cm7nd5au5000n5n7jhc6x2khk', 'cm7nd5au900185n7j5qozgig9'];
+  // Get access to the config store which tracks selected actions
+  const config = useConfigStore((state) => state.config);
 
+  // Define the general responsibilities categories by name
+  const generalCategoryNames = [
+    "Cultural Behaviours & Values",
+    "Customer Centricity",
+    "Teamwork",
+  ];
+
+  // Function to count only SELECTED actions in a category
   const getSelectedCount = (categoryId: string): number => {
-    const category = selectedActivities.find(cat => cat.id === categoryId);
-    if (category && category.actions) {
-      return category.actions.filter(action => action).length;
+    // Check if we have selected actions in the config store
+    if (
+      config?.activities?.selectedByCategory &&
+      config.activities.selectedByCategory[categoryId]
+    ) {
+      return config.activities.selectedByCategory[categoryId].length;
     }
+
     return 0;
   };
 
   useEffect(() => {
     if (selectedActivities && selectedActivities.length > 0) {
-      const coreItems = selectedActivities.filter(category => coreList.includes(category.id));
-      setCoreCategories(coreItems);
-
-      const generalItems = selectedActivities.filter(category => !coreList.includes(category.id));
+      // Group categories by name with exact matching
+      const generalItems = selectedActivities.filter((category) =>
+        generalCategoryNames.includes(category.name)
+      );
       setGeneralCategories(generalItems);
+
+      const coreItems = selectedActivities.filter(
+        (category) => !generalCategoryNames.includes(category.name)
+      );
+      setCoreCategories(coreItems);
     }
   }, [selectedActivities]);
 
@@ -53,7 +74,7 @@ export function OrganizationCategories({
   }) => {
     return (
       <li
-        className={`text-sm border-l border-border cursor-pointer px-3 py-2 hover:bg-muted flex justify-between items-center ${
+        className={`text-sm border-l border-border cursor-pointer px-3 py-2 hover:bg-muted flex justify-between items-center gap-4 ${
           isSelected ? "bg-primary/10 border-l-primary" : ""
         }`}
         onClick={() => onSelect(category.id)}
@@ -71,14 +92,12 @@ export function OrganizationCategories({
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-sm font-semibold mb-2">
-          General Responsibilities
-        </h3>
+        <h3 className="text-sm font-semibold mb-2">General Responsibilities</h3>
         <ul className="space-y-0">
-          {coreCategories.map((category) => (
-            <CategoryItem 
-              key={category.id} 
-              category={category} 
+          {generalCategories.map((category) => (
+            <CategoryItem
+              key={category.id}
+              category={category}
               isSelected={selectedCategory === category.id}
               onSelect={handleCategorySelect}
               selectedCount={getSelectedCount(category.id)}
@@ -89,13 +108,13 @@ export function OrganizationCategories({
 
       <div>
         <h3 className="text-sm font-semibold mb-2">
-          Core Responsibilities
+          Functional Responsibilities
         </h3>
         <ul className="space-y-0">
-          {generalCategories.map((category) => (
-            <CategoryItem 
-              key={category.id} 
-              category={category} 
+          {coreCategories.map((category) => (
+            <CategoryItem
+              key={category.id}
+              category={category}
               isSelected={selectedCategory === category.id}
               onSelect={handleCategorySelect}
               selectedCount={getSelectedCount(category.id)}
@@ -106,5 +125,3 @@ export function OrganizationCategories({
     </div>
   );
 }
-
-export default OrganizationCategories;

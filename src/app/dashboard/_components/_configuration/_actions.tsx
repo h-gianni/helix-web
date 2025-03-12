@@ -1,11 +1,25 @@
-import React, { useEffect, useState } from 'react';
+// _actions.tsx
+
+import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/core/Switch";
 import { Square, SquareCheckBig } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { OrganizationCategories } from "./_actions-categories";
-import { useConfigStore } from '@/store/config-store';
-import { useActionModalStore, useActions, useActionsByCategory, useActionStore } from '@/store/action-store';
-import { Action, ActionCategory } from '@/lib/types/api/action';
+import { Badge } from "@/components/ui/core/Badge";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/core/Accordion";
+import { useConfigStore } from "@/store/config-store";
+import {
+  useActionModalStore,
+  useActions,
+  useActionsByCategory,
+  useActionStore,
+  MANDATORY_CATEGORIES,
+} from "@/store/action-store";
+import { Action, ActionCategory } from "@/lib/types/api/action";
 
 interface ActionsConfigProps {
   selectedCategory: string;
@@ -18,162 +32,404 @@ function ActionsConfig({
   setSelectedCategory,
   preselectCategory,
 }: ActionsConfigProps) {
-  const selectedActivities = useConfigStore((state) => state.config.activities.selected);
-  const selectedByCategory = useConfigStore((state) => state.config.activities.selectedByCategory);
+  const MIN_REQUIRED_ACTIONS_PER_CATEGORY = 3;
+
+  const selectedActivities = useConfigStore(
+    (state) => state.config.activities.selected
+  );
+  const selectedByCategory = useConfigStore(
+    (state) => state.config.activities.selectedByCategory
+  );
   const updateActivities = useConfigStore((state) => state.updateActivities);
-  const updateActivitiesByCategory = useConfigStore((state) => state.updateActivitiesByCategory);
+  const updateActivitiesByCategory = useConfigStore(
+    (state) => state.updateActivitiesByCategory
+  );
 
   const { data: actionCategories, isLoading } = useActions();
-  const { selectedCategoryId, setSelectedCategoryId } = useActionModalStore();
-  const [filteredActions, setFilteredActions] = useState<ActionCategory[]>([]);
+  const [generalCategories, setGeneralCategories] = useState<ActionCategory[]>(
+    []
+  );
+  const [coreCategories, setCoreCategories] = useState<ActionCategory[]>([]);
   const [hasPreselected, setHasPreselected] = useState(false);
 
-  const { data: selectedCategoryData, isLoading: isLoadingCategory } = useActionsByCategory(selectedCategoryId ?? '');
-  const { data: preselectCategoryData, isLoading: isLoadingPreselectCategory } = 
-    useActionsByCategory(preselectCategory ?? '');
+  // Define the general responsibilities categories by name
+  const generalCategoryNames = MANDATORY_CATEGORIES;
 
   useEffect(() => {
-    if (actionCategories && actionCategories.length > 0 && !selectedCategoryId) {
-      const defaultCategory = preselectCategory || actionCategories[0].id;
-      setSelectedCategoryId(defaultCategory);
-      setSelectedCategory(defaultCategory);
-    }
-  }, [actionCategories, selectedCategoryId, setSelectedCategoryId, setSelectedCategory, preselectCategory]);
-
-  useEffect(() => {
-    if (selectedCategoryData) {
-      setFilteredActions(selectedCategoryData);
-    }
-  }, [selectedCategoryData]);
-
-  useEffect(() => {
-    if (!hasPreselected && preselectCategory && preselectCategoryData && !isLoadingPreselectCategory) {
-      const actionsToPreselect = preselectCategoryData.flatMap(category => 
-        category.actions.map(action => action.id)
+    if (actionCategories && actionCategories.length > 0) {
+      // Group categories by name with exact matching
+      const generalItems = actionCategories.filter((category) =>
+        generalCategoryNames.includes(category.name)
       );
-      
-      if (actionsToPreselect.length > 0) {
-        updateActivities(actionsToPreselect);
-        updateActivitiesByCategory(preselectCategory, actionsToPreselect);
-        setHasPreselected(true);
+      setGeneralCategories(generalItems);
+
+      const coreItems = actionCategories.filter(
+        (category) => !generalCategoryNames.includes(category.name)
+      );
+      setCoreCategories(coreItems);
+    }
+  }, [actionCategories]);
+
+  // Add preselection effect
+  useEffect(() => {
+    if (actionCategories && actionCategories.length > 0 && !hasPreselected) {
+      // Find mandatory categories
+      const mandatoryCategories = actionCategories.filter((cat) =>
+        MANDATORY_CATEGORIES.includes(cat.name)
+      );
+
+      if (mandatoryCategories.length > 0) {
+        // For each mandatory category, select at least MIN_REQUIRED_ACTIONS_PER_CATEGORY actions
+        let allMandatoryActions: string[] = [];
+
+        mandatoryCategories.forEach((category) => {
+          // Get the actions for this category
+          const categoryActions = category.actions.map((action) => action.id);
+          // Select at least MIN_REQUIRED_ACTIONS_PER_CATEGORY or all if fewer
+          const actionsToSelect = categoryActions.slice(
+            0,
+            Math.min(categoryActions.length, MIN_REQUIRED_ACTIONS_PER_CATEGORY)
+          );
+
+          // Add to global list
+          allMandatoryActions = [...allMandatoryActions, ...actionsToSelect];
+
+          // Update by category
+          if (actionsToSelect.length > 0) {
+            updateActivitiesByCategory(category.id, actionsToSelect);
+          }
+        });
+
+        if (allMandatoryActions.length > 0) {
+          updateActivities([...allMandatoryActions]);
+          setHasPreselected(true);
+        }
       }
     }
-  }, [preselectCategory, preselectCategoryData, isLoadingPreselectCategory, hasPreselected, updateActivities, updateActivitiesByCategory]);
+  }, [
+    actionCategories,
+    hasPreselected,
+    updateActivities,
+    updateActivitiesByCategory,
+  ]);
 
-  const handleSelectActivity = (activityId: string) => {
+  const handleSelectActivity = (activityId: string, categoryId: string) => {
+    // Check if this action is in a mandatory category
+    const isMandatoryCategory = MANDATORY_CATEGORIES.includes(
+      actionCategories?.find((cat) => cat.id === categoryId)?.name || ""
+    );
+
+    // If it's in a mandatory category, check if deselecting would violate the minimum
+    if (
+      isMandatoryCategory &&
+      selectedActivities.includes(activityId) &&
+      categoryId
+    ) {
+      const currentSelected =
+        (selectedByCategory && selectedByCategory[categoryId]) || [];
+
+      // If deselecting would result in fewer than minimum required actions, prevent it
+      if (currentSelected.length <= MIN_REQUIRED_ACTIONS_PER_CATEGORY) {
+        console.log(
+          `Must keep at least ${MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions selected in this category`
+        );
+        return;
+      }
+    }
+
+    // Proceed with selection/deselection
     const newActivities = selectedActivities.includes(activityId)
-      ? selectedActivities.filter(a => a !== activityId)
+      ? selectedActivities.filter((a) => a !== activityId)
       : [...selectedActivities, activityId];
     updateActivities(newActivities);
-    
-    if (selectedCategoryId) {
-      const currentCategoryActivities = selectedByCategory && 
-        selectedByCategory[selectedCategoryId] ? 
-        [...selectedByCategory[selectedCategoryId]] : 
-        [];
-      
+
+    if (categoryId) {
+      const currentCategoryActivities =
+        selectedByCategory && selectedByCategory[categoryId]
+          ? [...selectedByCategory[categoryId]]
+          : [];
+
       const isActivitySelected = selectedActivities.includes(activityId);
-      
+
       let updatedCategoryActivities;
       if (isActivitySelected) {
-        updatedCategoryActivities = currentCategoryActivities.filter(id => id !== activityId);
+        updatedCategoryActivities = currentCategoryActivities.filter(
+          (id) => id !== activityId
+        );
       } else {
         updatedCategoryActivities = [...currentCategoryActivities, activityId];
       }
-      
-      updateActivitiesByCategory(selectedCategoryId, updatedCategoryActivities);
+
+      updateActivitiesByCategory(categoryId, updatedCategoryActivities);
     }
   };
 
-  const handleSelectCategory = (categoryId: string) => {
-    setSelectedCategoryId(categoryId);
-    setSelectedCategory(categoryId);
+  // Get selected count for a category
+  const getSelectedCount = (categoryId: string): number => {
+    return selectedByCategory && selectedByCategory[categoryId]
+      ? selectedByCategory[categoryId].length
+      : 0;
   };
 
-  const areAllCurrentCategoryActionsSelected = 
-    filteredActions.length > 0 &&
-    filteredActions.every((category) =>
-      category.actions.every((action) => selectedActivities.includes(action.id))
+  // Check if all actions in a category are selected
+  const areAllCategoryActionsSelected = (category: ActionCategory): boolean => {
+    return category.actions.every((action) =>
+      selectedActivities.includes(action.id)
     );
+  };
 
-  const toggleSelectAllCurrentCategoryActions = (checked: boolean) => {
-    const currentCategoryActionIds = filteredActions.flatMap((category) =>
-      category.actions.map((action) => action.id)
-    );
+  // Toggle select all actions in a category
+  const toggleSelectAllCategoryActions = (
+    category: ActionCategory,
+    checked: boolean
+  ) => {
+    const categoryActionIds = category.actions.map((action) => action.id);
 
     if (checked) {
-      const newActivities = [...new Set([...selectedActivities, ...currentCategoryActionIds])];
+      const newActivities = [
+        ...new Set([...selectedActivities, ...categoryActionIds]),
+      ];
       updateActivities(newActivities);
-      
-      if (selectedCategoryId) {
-        updateActivitiesByCategory(selectedCategoryId, currentCategoryActionIds);
-      }
+      updateActivitiesByCategory(category.id, categoryActionIds);
     } else {
-      const newActivities = selectedActivities.filter(
-        (activityId) => !currentCategoryActionIds.includes(activityId)
-      );
-      updateActivities(newActivities);
-      
-      if (selectedCategoryId) {
-        updateActivitiesByCategory(selectedCategoryId, []);
+      // Check if this is a mandatory category
+      const isMandatory = MANDATORY_CATEGORIES.includes(category.name);
+
+      if (isMandatory) {
+        // For mandatory categories, keep the minimum required
+        const actionsToKeep = categoryActionIds.slice(
+          0,
+          MIN_REQUIRED_ACTIONS_PER_CATEGORY
+        );
+
+        // Update activities excluding all but the kept ones
+        const newActivities = selectedActivities.filter(
+          (activityId) =>
+            !categoryActionIds.includes(activityId) ||
+            actionsToKeep.includes(activityId)
+        );
+        updateActivities(newActivities);
+
+        updateActivitiesByCategory(category.id, actionsToKeep);
+      } else {
+        // For non-mandatory categories, proceed as normal
+        const newActivities = selectedActivities.filter(
+          (activityId) => !categoryActionIds.includes(activityId)
+        );
+        updateActivities(newActivities);
+        updateActivitiesByCategory(category.id, []);
       }
     }
+  };
+
+  if (isLoading) {
+    return <div>Loading actions...</div>;
+  }
+
+  const renderCategoryActions = (category: ActionCategory) => {
+    const isMandatoryCategory = MANDATORY_CATEGORIES.includes(category.name);
+    const selectedCount = getSelectedCount(category.id);
+
+    return (
+      <div className="space-y-1.5">
+        {/* {isMandatoryCategory && (
+          <div className="text-xs text-primary italic mb-2 px-4">
+            At least {MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions must be
+            selected in this category. Currently {selectedCount}/
+            {MIN_REQUIRED_ACTIONS_PER_CATEGORY} selected
+          </div>
+        )} */}
+
+        <div className="flex items-center gap-2 pb-2">
+          <Switch
+            data-slot="switch"
+            checked={areAllCategoryActionsSelected(category)}
+            onCheckedChange={(checked) =>
+              toggleSelectAllCategoryActions(category, checked)
+            }
+            disabled={
+              isMandatoryCategory && areAllCategoryActionsSelected(category)
+            }
+          />
+          <span className="text-sm text-foreground-weak">Select all</span>
+        </div>
+
+        <div className="w-full -space-y-px">
+          {category.actions.map((action) => {
+            const isSelected = selectedActivities.includes(action.id);
+            const isMandatoryAction =
+              isMandatoryCategory &&
+              isSelected &&
+              selectedCount <= MIN_REQUIRED_ACTIONS_PER_CATEGORY;
+
+            return (
+              <div
+                key={action.id}
+                className={cn(
+                  "flex items-center gap-4 bg-white border px-4 py-3 cursor-pointer hover:border-border-strong hover:bg-background",
+                  isSelected
+                    ? "bg-primary/10 text-foreground"
+                    : "border-border",
+                  isMandatoryAction && "cursor-not-allowed"
+                )}
+                onClick={() => {
+                  if (!isMandatoryAction) {
+                    handleSelectActivity(action.id, category.id);
+                  }
+                }}
+              >
+                <div className="size-4">
+                  {isSelected ? (
+                    <SquareCheckBig className="text-primary size-4" />
+                  ) : (
+                    <Square className="text-foreground/25 size-4" />
+                  )}
+                </div>
+                <span className="text-base">{action.name}</span>
+                {isMandatoryAction && (
+                  <span className="ml-auto text-xs text-primary italic">
+                    (Min. 3 Required)
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
   };
 
   return (
-    <div className="space-y-4">
-      <p className="text-base">
-        Select all important activities in your organization for team performance scoring.
-      </p>
-      <div className="flex items-start gap-12">
-        <div className="min-w-56 space-y-4">
-          <h4 className="heading-5">Categories</h4>
-          <OrganizationCategories
-            onSelect={handleSelectCategory}
-            selectedActivities={actionCategories ?? []}
-            selectedCategory={selectedCategory}
-          />
-        </div>
+    <div className="space-y-6">
+      {/* <p className="text-base">
+        Select all important activities in your organization for team
+        performance scoring.
+      </p> */}
 
-        <div className="w-full space-y-4">
-          <div className="flex items-center justify-between">
-            <h4 className="heading-5">Actions</h4>
-            <div className="flex items-center gap-2">
-              <span className="text-sm">Select all</span>
-              <Switch
-                data-slot="switch"
-                checked={areAllCurrentCategoryActionsSelected}
-                onCheckedChange={toggleSelectAllCurrentCategoryActions}
-              />
-            </div>
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Function actions */}
+        <div className="lg:w-1/2 space-y-4">
+          <div>
+            <h4 className="heading-3">Functions' actions</h4>
+            <p className="body-sm">
+              Select your function and the actions that you expect your team to
+              perform. You can mix actions from different functions.
+            </p>
           </div>
-          <div className="w-full -space-y-px">
-            {filteredActions.map((category) => (
-              <div key={category.id}>
-                {category.actions.map((action) => (
-                  <div
-                    key={action.id}
-                    className={cn(
-                      "flex items-center gap-4 bg-white border px-4 py-3 cursor-pointer hover:border-border-strong hover:bg-background",
-                      selectedActivities.includes(action.id)
-                        ? "bg-primary/10 text-foreground"
-                        : "border-border"
-                    )}
-                    onClick={() => handleSelectActivity(action.id)}
-                  >
-                    <div className="size-4">
-                      {selectedActivities.includes(action.id) ? (
-                        <SquareCheckBig className="text-primary size-4" />
-                      ) : (
-                        <Square className="text-foreground/25 size-4" />
+          <Accordion
+            type="multiple"
+            className="w-full bg-white shadow-sm rounded-md"
+          >
+            {coreCategories.map((category) => (
+              <AccordionItem
+                key={category.id}
+                value={category.id}
+                data-slot="accordion-item"
+              >
+                <AccordionTrigger
+                  className="px-4 lg:h-12 cursor-pointer decoration-current"
+                  data-slot="accordion-trigger"
+                >
+                  <div className="flex justify-between items-center w-full">
+                    <span
+                      className={cn(
+                        "text-base font-semibold",
+                        getSelectedCount(category.id) > 0
+                          ? "text-primary-dark"
+                          : "text-foreground",
+                        // Add this line for the open state
+                        "group-[&[data-state=open]]:text-foreground-strong"
                       )}
-                    </div>
-                    <span className="text-base">{action.name}</span>
+                    >
+                      {category.name}
+                    </span>
+                    {getSelectedCount(category.id) > 0 && (
+                      <Badge
+                        data-slot="badge"
+                        variant="default"
+                        className="mr-2"
+                      >
+                        {getSelectedCount(category.id)}
+                      </Badge>
+                    )}
                   </div>
-                ))}
-              </div>
+                </AccordionTrigger>
+                <AccordionContent
+                  data-slot="accordion-content"
+                  className="px-4"
+                >
+                  {renderCategoryActions(category)}
+                </AccordionContent>
+              </AccordionItem>
             ))}
+          </Accordion>
+        </div>
+        {/* Global actions */}
+        <div className="lg:w-1/2 space-y-4 order-first lg:order-none">
+          <div>
+            <h4 className="heading-3">Global actions</h4>
+            {/* {isMandatoryCategory && (
+          <div className="text-xs text-primary italic mb-2 px-4">
+            At least {MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions must be
+            selected in this category. Currently {selectedCount}/
+            {MIN_REQUIRED_ACTIONS_PER_CATEGORY} selected
           </div>
+        )} */}
+            <p className="body-sm">
+              Measure the performance of your team against what is valuable in
+              your organisation, beyond your function.{" "}
+              <span className="text-warning-darker">
+                At least 3 actions per category must be selected.
+              </span>
+            </p>
+          </div>
+          <Accordion
+            type="multiple"
+            className="w-full bg-white shadow-sm rounded-md"
+          >
+            {generalCategories.map((category) => (
+              <AccordionItem
+                key={category.id}
+                value={category.id}
+                data-slot="accordion-item"
+              >
+                <AccordionTrigger
+                  className="px-4 lg:h-12 cursor-pointer decoration-current"
+                  data-slot="accordion-trigger"
+                >
+                  <div className="flex justify-between items-center w-full">
+                    <span
+                      className={cn(
+                        "text-base font-semibold",
+                        getSelectedCount(category.id) > 0
+                          ? "text-primary-dark"
+                          : "text-foreground",
+                        // Add this line for the open state
+                        "group-[&[data-state=open]]:text-foreground-strong"
+                      )}
+                    >
+                      {category.name}
+                    </span>
+                    {getSelectedCount(category.id) > 0 && (
+                      <Badge
+                        data-slot="badge"
+                        variant="default"
+                        className="mr-2"
+                      >
+                        {getSelectedCount(category.id)}
+                      </Badge>
+                    )}
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent
+                  data-slot="accordion-content"
+                  className="px-4"
+                >
+                  {renderCategoryActions(category)}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       </div>
     </div>

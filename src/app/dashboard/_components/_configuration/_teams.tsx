@@ -1,12 +1,17 @@
-import React, { useEffect } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
-import { Input } from '@/components/ui/core/Input';
-import { Button } from '@/components/ui/core/Button';
-import { Label } from '@/components/ui/core/Label';
-import { Card } from '@/components/ui/core/Card';
-import { Checkbox } from '@/components/ui/core/Checkbox';
-import { useConfigStore } from '@/store/config-store';
-import { useActions } from '@/store/action-store';
+import React, { useEffect, useRef } from "react";
+import { Plus, Trash2, X } from "lucide-react";
+import { Input } from "@/components/ui/core/Input";
+import { Button } from "@/components/ui/core/Button";
+import { Label } from "@/components/ui/core/Label";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+} from "@/components/ui/core/Card";
+import { Checkbox } from "@/components/ui/core/Checkbox";
+import { useConfigStore } from "@/store/config-store";
+import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
 
 const TeamSetup = () => {
   const config = useConfigStore((state) => state.config);
@@ -14,20 +19,40 @@ const TeamSetup = () => {
   const selectedByCategory = config.activities.selectedByCategory || {};
   const updateTeams = useConfigStore((state) => state.updateTeams);
   const teams = config.teams;
-  
+
+  // Create ref for input focus
+  const teamNameRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
+
   // Get action categories data using React Query
-  const { data: actionCategories, isLoading: isLoadingCategories } = useActions();
-  
+  const { data: actionCategories, isLoading: isLoadingCategories } =
+    useActions();
+
   // Get all selected category IDs
-  const selectedCategoryIds = Object.keys(selectedByCategory);
+  const selectedCategoryIds = Object.entries(selectedByCategory)
+    .filter(([_, actions]) => actions.length > 0)
+    .map(([categoryId, _]) => categoryId);
+
+  // Initial focus on first team input
+  useEffect(() => {
+    // Focus the first team input when component loads
+    if (teams.length > 0 && teamNameRefs.current[teams[0].id]) {
+      setTimeout(() => {
+        teamNameRefs.current[teams[0].id]?.focus();
+      }, 100);
+    }
+  }, []);
 
   // Log whenever teams or categories change to debug
   useEffect(() => {
-    console.log('TeamSetup: state updated', {
+    console.log("TeamSetup: state updated", {
       teams,
       selectedCategoryIds,
-      teamsWithFunctions: teams.filter(t => t.functions && t.functions.length > 0).length,
-      teamsWithCategories: teams.filter(t => t.categories && t.categories.length > 0).length
+      teamsWithFunctions: teams.filter(
+        (t) => t.functions && t.functions.length > 0
+      ).length,
+      teamsWithCategories: teams.filter(
+        (t) => t.categories && t.categories.length > 0
+      ).length,
     });
   }, [teams, selectedCategoryIds]);
 
@@ -36,131 +61,156 @@ const TeamSetup = () => {
     if (isLoadingCategories || !actionCategories) {
       return; // Don't process until data is loaded
     }
-    
-    console.log('TeamSetup: checking team initialization', {
+
+    console.log("TeamSetup: checking team initialization", {
       teamsLength: teams.length,
-      selectedCategoryIds
+      selectedCategoryIds,
     });
-    
+
     // If no teams exist and we have categories, create a default team
     if (teams.length === 0 && selectedCategoryIds.length > 0) {
-      console.log('Creating default team with categories', {
-        categories: selectedCategoryIds
+      console.log("Creating default team with categories", {
+        categories: selectedCategoryIds,
       });
-      
-      updateTeams([{ 
-        id: 'temp-' + Date.now(), 
-        name: '', 
-        functions: [...selectedCategoryIds], // Copy selected categories to functions
-        categories: selectedCategoryIds
-      }]);
-    } 
+
+      updateTeams([
+        {
+          id: "temp-" + Date.now(),
+          name: "",
+          functions: [...selectedCategoryIds], // Copy selected categories to functions
+          categories: selectedCategoryIds,
+        },
+      ]);
+    }
     // If teams exist but they don't have functions or categories, update them
     else if (teams.length > 0) {
-      const needsUpdate = teams.some(team => 
-        !team.functions || 
-        team.functions.length === 0 ||
-        !team.categories ||
-        (selectedCategoryIds.length > 0 && team.categories.length === 0)
+      const needsUpdate = teams.some(
+        (team) =>
+          !team.functions ||
+          team.functions.length === 0 ||
+          !team.categories ||
+          (selectedCategoryIds.length > 0 && team.categories.length === 0)
       );
-      
+
       if (needsUpdate) {
-        console.log('Updating teams with missing functions or categories');
-        const updatedTeams = teams.map(team => {
+        console.log("Updating teams with missing functions or categories");
+        const updatedTeams = teams.map((team) => {
           // Start with current team
           let updatedTeam = { ...team };
-          
+
           // If no categories, add all selected categories
           if (!team.categories || team.categories.length === 0) {
             updatedTeam.categories = selectedCategoryIds;
           }
-          
+
           // Copy categories to functions
           if (!team.functions || team.functions.length === 0) {
             updatedTeam.functions = [...updatedTeam.categories];
           }
-          
+
           return updatedTeam;
         });
-        
+
         // Only update if there's an actual change
         if (JSON.stringify(updatedTeams) !== JSON.stringify(teams)) {
-          console.log('Updating teams with categories and functions', updatedTeams);
+          console.log(
+            "Updating teams with categories and functions",
+            updatedTeams
+          );
           updateTeams(updatedTeams);
         }
       }
     }
-  }, [teams.length, selectedCategoryIds.length, isLoadingCategories, actionCategories]);
+  }, [
+    teams.length,
+    selectedCategoryIds.length,
+    isLoadingCategories,
+    actionCategories,
+    updateTeams,
+    teams,
+    selectedCategoryIds,
+  ]);
 
   const handleTeamNameChange = (teamId: string, name: string) => {
-    console.log('Team name change:', { teamId, name });
-    const updatedTeams = teams.map(team => {
+    console.log("Team name change:", { teamId, name });
+    const updatedTeams = teams.map((team) => {
       if (team.id === teamId) {
         return { ...team, name };
       }
       return team;
     });
-    
+
     updateTeams(updatedTeams);
   };
 
   // Simplified category toggle that updates both categories and functions simultaneously
   const handleCategoryToggle = (teamId: string, categoryId: string) => {
-    updateTeams(teams.map(team => {
-      if (team.id === teamId) {
-        const categories = team.categories || [];
-        const isSelected = categories.includes(categoryId);
-        
-        let updatedCategories;
-        
-        if (isSelected) {
-          // Remove this category
-          updatedCategories = categories.filter(c => c !== categoryId);
-        } else {
-          // Add this category
-          updatedCategories = [...categories, categoryId];
+    updateTeams(
+      teams.map((team) => {
+        if (team.id === teamId) {
+          const categories = team.categories || [];
+          const isSelected = categories.includes(categoryId);
+
+          let updatedCategories;
+
+          if (isSelected) {
+            // Remove this category
+            updatedCategories = categories.filter((c) => c !== categoryId);
+          } else {
+            // Add this category
+            updatedCategories = [...categories, categoryId];
+          }
+
+          // Always synchronize functions with categories
+          const updatedFunctions = [...updatedCategories];
+
+          console.log("Updated state:", {
+            categories: updatedCategories,
+            functions: updatedFunctions,
+          });
+
+          return {
+            ...team,
+            categories: updatedCategories,
+            functions: updatedFunctions,
+          };
         }
-        
-        // Always synchronize functions with categories
-        const updatedFunctions = [...updatedCategories];
-        
-        console.log('Updated state:', {
-          categories: updatedCategories,
-          functions: updatedFunctions
-        });
-        
-        return { 
-          ...team, 
-          categories: updatedCategories,
-          functions: updatedFunctions
-        };
-      }
-      return team;
-    }));
+        return team;
+      })
+    );
   };
 
   const addTeam = () => {
     // Always include all categories (and copy to functions) when adding a team
-    updateTeams([...teams, { 
-      id: 'temp-' + Date.now(), 
-      name: '', 
-      functions: [...selectedCategoryIds], // Copy selected categories to functions
-      categories: selectedCategoryIds
-    }]);
+    const newTeamId = "temp-" + Date.now();
+    updateTeams([
+      ...teams,
+      {
+        id: newTeamId,
+        name: "",
+        functions: [...selectedCategoryIds], // Copy selected categories to functions
+        categories: selectedCategoryIds,
+      },
+    ]);
+
+    // Focus the new team's input field after adding
+    setTimeout(() => {
+      teamNameRefs.current[newTeamId]?.focus();
+    }, 100);
   };
 
   const removeTeam = (teamId: string) => {
     if (teams.length <= 1) {
       return; // Don't remove the last team
     }
-    updateTeams(teams.filter(team => team.id !== teamId));
+    updateTeams(teams.filter((team) => team.id !== teamId));
   };
 
   // Get category name by ID
   const getCategoryNameById = (categoryId: string) => {
-    if (!actionCategories) return 'Loading...';
-    
-    const category = actionCategories.find(cat => cat.id === categoryId);
+    if (!actionCategories) return "Loading...";
+
+    const category = actionCategories.find((cat) => cat.id === categoryId);
     return category ? category.name : categoryId;
   };
 
@@ -180,67 +230,98 @@ const TeamSetup = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {teams.map((team) => (
-        <Card data-slot="card" key={team.id} className="p-4">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between relative">
-              <div className="w-full space-y-1">
-                <Label data-slot="label" htmlFor={`team-name-${team.id}`}>
-                  Team name
-                </Label>
-                <Input
-                  data-slot="input"
-                  id={`team-name-${team.id}`}
-                  value={team.name || ''}
-                  onChange={(e) => handleTeamNameChange(team.id, e.target.value)}
-                  placeholder="Enter a fun or descriptive name"
-                  className="max-w-copy-sm"
-                />
-              </div>
-              {teams.length > 1 && (
-                <Button
-                  data-slot="button"
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute top-2 right-2 text-destructive hover:text-destructive hover:bg-destructive/10"
-                  onClick={() => removeTeam(team.id)}
-                >
-                  <Trash2 className="size-4" />
-                </Button>
-              )}
-            </div>
-
-            {/* Category selection section */}
-            {selectedCategoryIds.length > 0 && (
-              <div className="space-y-1.5 border-t pt-4 mt-4">
-                <Label data-slot="label">Action Categories</Label>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                  {selectedCategoryIds.map((categoryId) => {
-                    // The category checkbox should directly reflect if it's in the team's categories list
-                    const isChecked = (team.categories || []).includes(categoryId);
-                    
-                    return (
-                      <div key={categoryId} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`${team.id}-category-${categoryId}`}
-                          checked={isChecked}
-                          onCheckedChange={() => handleCategoryToggle(team.id, categoryId)}
-                        />
-                        <label
-                          htmlFor={`${team.id}-category-${categoryId}`}
-                          className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                        >
-                          {getCategoryNameById(categoryId)} ({getActionCountForCategory(categoryId)})
-                        </label>
-                      </div>
-                    );
-                  })}
+        <Card data-slot="card" key={team.id}>
+          <CardHeader data-slot="card-header" className="relative">
+            <CardTitle data-slot="card-title">
+              {team.name ? `Team ${team.name}` : "Team"}
+            </CardTitle>
+            {teams.length > 1 && (
+              <Button
+                data-slot="button"
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2"
+                onClick={() => removeTeam(team.id)}
+              >
+                <X />
+              </Button>
+            )}
+          </CardHeader>
+          <CardContent data-slot="card-content" className="pt-2">
+            <div className="space-y-4">
+              <div className="">
+                <div className="w-full space-y-1.5">
+                  <Label data-slot="label" htmlFor={`team-name-${team.id}`}>
+                    Team Name
+                  </Label>
+                  <Input
+                    data-slot="input"
+                    id={`team-name-${team.id}`}
+                    value={team.name || ""}
+                    onChange={(e) =>
+                      handleTeamNameChange(team.id, e.target.value)
+                    }
+                    placeholder="Enter a fun or descriptive name"
+                    className="max-w-copy-sm"
+                    ref={(el) => {
+                      teamNameRefs.current[team.id] = el;
+                    }}
+                  />
                 </div>
               </div>
-            )}
-          </div>
+
+              {/* Category selection section */}
+              {selectedCategoryIds.length > 0 && (
+                <div className="space-y-2.5 my-4">
+                  <h3 className="heading-4">
+                    Function{" "}
+                    <span className="text-sm font-normal text-foreground-weak">
+                      (# actions)
+                    </span>
+                  </h3>
+                  <div className="space-y-4">
+                    {selectedCategoryIds
+                      .filter((categoryId) => {
+                        // Filter out general responsibility categories
+                        const categoryName = getCategoryNameById(categoryId);
+                        return !MANDATORY_CATEGORIES.includes(categoryName);
+                      })
+                      .map((categoryId) => {
+                        const categoryName = getCategoryNameById(categoryId);
+                        const isChecked = (team.categories || []).includes(
+                          categoryId
+                        );
+
+                        return (
+                          <div
+                            key={categoryId}
+                            className="flex items-center gap-2"
+                          >
+                            <Checkbox
+                              id={`${team.id}-category-${categoryId}`}
+                              checked={isChecked}
+                              onCheckedChange={() =>
+                                handleCategoryToggle(team.id, categoryId)
+                              }
+                            />
+                            <Label
+                              data-slot="label"
+                              htmlFor={`${team.id}-category-${categoryId}`}
+                            >
+                              {categoryName} (
+                              {getActionCountForCategory(categoryId)})
+                            </Label>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
         </Card>
       ))}
 
@@ -249,28 +330,37 @@ const TeamSetup = () => {
         type="button"
         variant="secondary"
         onClick={addTeam}
-        className="w-full"
+        className="w-full h-full"
       >
         <Plus className="mr-2" />
         Add another team
       </Button>
-      
+
       {/* Debug info */}
-      {process.env.NODE_ENV !== 'production' && (
-        <div className="mt-8 p-4 border border-yellow-300 bg-yellow-50 rounded-md">
+      {process.env.NODE_ENV !== "production" && (
+        <div className="p-4 border border-yellow-300 bg-yellow-50 rounded-md">
           <h3 className="font-bold text-sm text-yellow-800 mb-2">Debug Info</h3>
           <div className="text-xs font-mono">
             <div>
               <span className="font-bold">Team Count:</span> {teams.length}
             </div>
             <div>
-              <span className="font-bold">Selected Categories:</span> {selectedCategoryIds.length}
+              <span className="font-bold">Selected Categories:</span>{" "}
+              {selectedCategoryIds.length}
             </div>
             <div>
-              <span className="font-bold">Teams with Categories:</span> {teams.filter(t => t.categories && t.categories.length > 0).length}
+              <span className="font-bold">Teams with Categories:</span>{" "}
+              {
+                teams.filter((t) => t.categories && t.categories.length > 0)
+                  .length
+              }
             </div>
             <div>
-              <span className="font-bold">Teams with Functions:</span> {teams.filter(t => t.functions && t.functions.length > 0).length}
+              <span className="font-bold">Teams with Functions:</span>{" "}
+              {
+                teams.filter((t) => t.functions && t.functions.length > 0)
+                  .length
+              }
             </div>
             <div className="mt-2">
               <span className="font-bold">Teams Data:</span>
@@ -283,6 +373,6 @@ const TeamSetup = () => {
       )}
     </div>
   );
-}
+};
 
 export default TeamSetup;

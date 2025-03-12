@@ -27,6 +27,61 @@
   }
 }
 
+@layer base {
+  :root {
+    --sidebar-background: hsl(0 0% 98%);
+    --sidebar-foreground: hsl(240 5.3% 26.1%);
+    --sidebar-primary: hsl(240 5.9% 10%);
+    --sidebar-primary-foreground: hsl(0 0% 98%);
+    --sidebar-accent: hsl(240 4.8% 95.9%);
+    --sidebar-accent-foreground: hsl(240 5.9% 10%);
+    --sidebar-border: hsl(220 13% 91%);
+    --sidebar-ring: hsl(217.2 91.2% 59.8%);
+
+    --sidebar-width: 16rem;
+    --sidebar-width-icon: 3rem;
+    --sidebar-width-mobile: 18rem;
+  }
+
+  /* .dark {
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  } */
+}
+
+/* Add this to your globals.css */
+@layer utilities {
+  .w-sidebar {
+    width: var(--sidebar-width);
+  }
+  .w-sidebar-icon {
+    width: var(--sidebar-width-icon);
+  }
+  .w-sidebar-mobile {
+    width: var(--sidebar-width-mobile);
+  }
+}
+
+@layer utilities {
+  .w-sidebar-icon {
+    width: var(--sidebar-width-icon);
+  }
+  .w-sidebar-icon-with-spacing {
+    width: calc(var(--sidebar-width-icon) + 1rem);
+  }
+  .w-sidebar-icon-with-spacing-plus {
+    width: calc(
+      var(--sidebar-width-icon) + 1rem + 2px
+    ); /* Includes padding + border */
+  }
+}
+
 /**************** TYPOGRAPHY */
 
 /* Display */
@@ -96,14 +151,13 @@
   @apply text-sm font-normal tracking-normal leading-snug;
 }
 
-
 /************************* LAYOUT + SPACING */
 
-/* .layout-page {
-  @apply w-full p-6;
-} */
+.layout-page {
+  @apply w-full p-4 sm:p-6;
+}
 .layout-page-main {
-  @apply p-6 space-y-4 py-4 w-full;
+  @apply space-y-4 py-4 w-full;
 }
 
 /* Layout Spacing */
@@ -171,6 +225,43 @@
 }
 .list-item-padding {
   @apply px-2 py-1;
+}
+
+/************************* PAGE HEADER */
+/* Base container styles */
+.page-header {
+  @apply pb-4 min-h-8;
+}
+
+/* Layout container */
+.page-header-container {
+  @apply flex items-center justify-between;
+}
+
+/* Left side with title and content */
+.page-header-content {
+  @apply flex gap-2;
+}
+
+/* Title container with optional icon */
+.page-header-title {
+  @apply flex items-center gap-2;
+}
+
+/* Caption text */
+.page-header-caption {
+  @apply max-w-copy-base;
+}
+
+/* Actions container */
+.page-header-actions {
+  @apply flex items-center gap-4;
+}
+
+/********/
+
+.ui-view-controls-bar {
+  @apply flex items-center justify-end gap-4;
 }
 
 /* Star rating color */

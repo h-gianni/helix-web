@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { Users, Plus } from "lucide-react";
 import { Button } from "@/components/ui/core/Button";
-import { Card, CardContent } from "@/components/ui/core/Card"; // Seems unused, but retained if needed
+import { Card, CardContent } from "@/components/ui/core/Card";
 import { Onboarding } from "./_configuration/_onboarding";
 import { useTeams } from "@/store/team-store";
 import { useSetupStore } from "@/store/setup-store";
@@ -23,15 +23,13 @@ function EmptyDashboardView({ onCreateTeam }: EmptyDashboardViewProps) {
   return (
     <div className="text-center space-y-4 p-2 lg:p-8">
       <div className="space-y-4">
-        {/* Replaced h-16 w-16 with size-16 */}
         <div className="flex items-center mx-auto justify-center size-16 rounded-full bg-primary/10 p-2">
-          {/* Replaced h-8 w-8 with size-8 */}
           <Users className="size-8 text-primary" />
         </div>
 
         {!showSuccessMessage ? (
           <div className="space-y-2">
-            <h1 className="display-1">Welcome to UpScore</h1>
+            <h1 className="display-1">Welcome to JustScore</h1>
             <p className="body-lg max-w-xl mx-auto">
               Get started by following these steps:
             </p>

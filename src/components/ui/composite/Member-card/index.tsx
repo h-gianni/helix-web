@@ -51,7 +51,7 @@ export interface MemberCardProps extends React.HTMLAttributes<HTMLDivElement> {
   category: PerformanceCategory;
   onDelete?: (member: Member) => void;
   onGenerateReview?: (member: Member) => void;
-  variant?: "horiz" | "vert";
+  variant?: "mobile" | "desktop";
   onNavigate?: (path: string) => void;
 }
 
@@ -63,7 +63,7 @@ function MemberCard({
   category,
   onDelete,
   onGenerateReview,
-  variant = "horiz",
+  variant = "mobile",
   onNavigate,
   ...props
 }: MemberCardProps) {
@@ -81,14 +81,13 @@ function MemberCard({
     }
   };
 
-  const isVertical = variant === "vert";
-
+  // Use responsive classes instead of JS-based media queries
   return (
     <Card
       data-slot="card"
       className={cn(
         "flex flex-col",
-        isVertical && "relative",
+        variant === "desktop" ? "relative" : "md:relative",
         className
       )}
       {...props}
@@ -97,76 +96,82 @@ function MemberCard({
         data-slot="card-header" 
         className={cn(
           "space-y-4",
-          isVertical && "flex flex-col items-center pt-6"
+          variant === "desktop" 
+            ? "flex flex-col items-center pt-6" 
+            : "md:flex md:flex-col md:items-center md:pt-6"
         )}
       >
-        {isVertical && (
-          <div className="absolute top-2 right-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  data-slot="button"
-                  variant="ghost"
-                  size="icon"
-                  className="size-8"
-                  aria-label="Member actions"
-                >
-                  <MoreVertical className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent data-slot="dropdown-content" align="end">
-                <DropdownMenuItem data-slot="dropdown-item" onClick={handleViewDetails}>
-                  <ChevronRight className="mr-1" />
-                  View Details
+        {/* Desktop dropdown positioning - always show for desktop variant, show on md+ for mobile variant */}
+        <div className={cn(
+          variant === "desktop" ? "absolute top-2 right-2" : "hidden md:block md:absolute md:top-2 md:right-2"
+        )}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                data-slot="button"
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                aria-label="Member actions"
+              >
+                <MoreVertical className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent data-slot="dropdown-content" align="end">
+              <DropdownMenuItem data-slot="dropdown-item" onClick={handleViewDetails}>
+                <ChevronRight className="mr-1" />
+                View Details
+              </DropdownMenuItem>
+              {onGenerateReview && (
+                <DropdownMenuItem data-slot="dropdown-item" onClick={() => onGenerateReview(member)}>
+                  <FileText className="mr-1" />
+                  Generate Performance Review
                 </DropdownMenuItem>
-                {onGenerateReview && (
-                  <DropdownMenuItem data-slot="dropdown-item" onClick={() => onGenerateReview(member)}>
-                    <FileText className="mr-1" />
-                    Generate Performance Review
-                  </DropdownMenuItem>
-                )}
-                {onDelete && (
-                  <DropdownMenuItem
-                    data-slot="dropdown-item"
-                    onClick={() => onDelete(member)}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="mr-1" />
-                    Delete
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
+              )}
+              {onDelete && (
+                <DropdownMenuItem
+                  data-slot="dropdown-item"
+                  onClick={() => onDelete(member)}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="mr-1" />
+                  Delete
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        
         <div className={cn(
           "flex",
-          isVertical 
+          variant === "desktop" 
             ? "flex-col items-center text-center" 
-            : "items-start justify-between"
+            : "items-start justify-between md:flex-col md:items-center md:text-center"
         )}>
           <div className={cn(
             "flex",
-            isVertical 
+            variant === "desktop" 
               ? "flex-col items-center gap-2" 
-              : "gap-4"
+              : "gap-4 md:flex-col md:items-center md:gap-2"
           )}>
             <Avatar 
               data-slot="avatar" 
               className={cn(
-                isVertical ? "size-14" : "size-8"
+                variant === "desktop" ? "size-14" : "size-8 md:size-14"
               )}
             >
               <AvatarFallback 
                 data-slot="avatar-fallback" 
                 className={cn(
-                  isVertical ? "text-base" : "text-sm"
+                  variant === "desktop" ? "text-base" : "text-sm md:text-base"
                 )}
               >
                 {member.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className={isVertical ? "text-center" : ""}>
+            <div className={cn(
+              variant === "desktop" ? "text-center" : "md:text-center"
+            )}>
               <h3 className="heading-5">
                 <button
                   onClick={handleViewDetails}
@@ -181,7 +186,8 @@ function MemberCard({
             </div>
           </div>
           
-          {!isVertical && (
+          {/* Mobile dropdown - hide on md+ breakpoint */}
+          <div className={variant === "desktop" ? "hidden" : "block md:hidden"}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -217,7 +223,7 @@ function MemberCard({
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
-          )}
+          </div>
         </div>
       </CardHeader>
       <CardContent
@@ -226,7 +232,9 @@ function MemberCard({
       >
         <div className={cn(
           "flex items-start justify-between gap-2 md:gap-4",
-          isVertical ? "flex-col items-center" : "flex-col md:flex-row"
+          variant === "desktop" 
+            ? "flex-col items-center" 
+            : "flex-col md:flex-col md:items-center"
         )}>
           <div className="flex items-center gap-2">
             {category.Icon && (

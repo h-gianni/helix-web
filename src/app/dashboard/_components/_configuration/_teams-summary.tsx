@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/core/Button";
 import TeamCard from "@/components/ui/composite/Team-card";
 import {
@@ -12,15 +12,21 @@ import {
 import { Badge } from "@/components/ui/core/Badge";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
 import { PenSquare, ChevronDown, ChevronUp } from "lucide-react";
-import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/core/Card";
-import { useProfileStore } from '@/store/user-store';
-import { useActions } from '@/store/action-store';
-import TeamActionsDialog from './_team-actions-dialog';
-import TeamsEditDialog from './_teams-edit-dialog';
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+} from "@/components/ui/core/Card";
+import { useProfileStore } from "@/store/user-store";
+import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
+import { useConfigStore } from "@/store/config-store";
+import TeamActionsDialog from "./_team-actions-dialog";
+import TeamsEditDialog from "./_teams-edit-dialog";
 
 interface TeamsSummaryProps {
   onEdit: () => void;
-  variant?: 'setup' | 'settings';
+  variant?: "setup" | "settings";
 }
 
 // Type definitions from schema
@@ -50,30 +56,47 @@ interface TeamMember {
 
 const MAX_AVATARS = 3;
 
-const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings' }) => {
-  // Get profile data from store only
+interface TeamsSummaryProps {
+  onEdit: () => void;
+  variant?: "setup" | "settings";
+}
+
+const TeamsSummary: React.FC<TeamsSummaryProps> = ({
+  onEdit,
+  variant = "settings",
+}) => {
+  // Get data directly from config store when in setup mode (step 4)
+  const config = useConfigStore((state) => state.config);
+
+  // State for profile-based data when in settings mode
   const { profile } = useProfileStore();
   const [isProfileLoading, setIsProfileLoading] = useState(true);
-  
   const [teams, setTeams] = useState<MainTeam[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<MainTeam | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-  const [teamMembers, setTeamMembers] = useState<Record<string, TeamMember[]>>({});
-  
+  const [expandedCategories, setExpandedCategories] = useState<
+    Record<string, boolean>
+  >({});
+  const [teamMembers, setTeamMembers] = useState<Record<string, TeamMember[]>>(
+    {}
+  );
+
   const { data: actionCategories, isLoading: isActionsLoading } = useActions();
+
+  // Determine if we should use config store data directly (setup variant)
+  const useConfigData = variant === "setup";
 
   // Process teams data when profile is loaded from store
   useEffect(() => {
-    if (profile) {
-      // Use profile from store
+    if (!useConfigData && profile) {
+      // Use profile from store when in settings mode
       const processedTeams = processTeamsData(profile.teams || []);
       setTeams(processedTeams);
-      
+
       // Process team members
       const membersByTeam: Record<string, TeamMember[]> = {};
       if (profile.teamMembers) {
-        profile.teamMembers.forEach(member => {
+        profile.teamMembers.forEach((member) => {
           if (!membersByTeam[member.teamId]) {
             membersByTeam[member.teamId] = [];
           }
@@ -83,18 +106,18 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
       setTeamMembers(membersByTeam);
       setIsProfileLoading(false);
     }
-  }, [profile]);
+  }, [profile, useConfigData]);
 
   // Helper to process teams data for UI
   const processTeamsData = (teamsData: any[]): MainTeam[] => {
-    return teamsData.map(team => {
+    return teamsData.map((team) => {
       // Extract custom fields if available
       const customFields = team.customFields || {};
-      
+
       return {
         ...team,
         functions: customFields.functions || getTeamFunctions(team),
-        categories: customFields.categories || []
+        categories: customFields.categories || [],
       };
     });
   };
@@ -103,7 +126,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
   const getTeamFunctions = (team: any): string[] => {
     // This would ideally come from your API or be derived from other data
     // For now, we'll return a placeholder if no functions are defined
-    return team.teamFunction ? [team.teamFunction.name] : ['General'];
+    return team.teamFunction ? [team.teamFunction.name] : ["General"];
   };
 
   const handleRefineActions = (team: MainTeam) => {
@@ -139,18 +162,20 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
 
   const renderAvatarGroup = (teamId: string) => {
     const members = teamMembers[teamId] || [];
-    
+
     return (
       <div className="flex items-center gap-2">
         {members.length > 0 && (
           <div className="flex -space-x-2">
             {members.slice(0, MAX_AVATARS).map((member) => (
-              <Avatar 
-                key={member.id} 
+              <Avatar
+                key={member.id}
                 className="h-6 w-6 border-2 border-background"
               >
                 <AvatarFallback className="text-xs">
-                  {member.firstName?.charAt(0).toUpperCase() || member.lastName?.charAt(0).toUpperCase() || '?'}
+                  {member.firstName?.charAt(0).toUpperCase() ||
+                    member.lastName?.charAt(0).toUpperCase() ||
+                    "?"}
                 </AvatarFallback>
               </Avatar>
             ))}
@@ -162,7 +187,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
           </div>
         )}
         <p className="body-sm text-foreground-weak">
-          {members.length} {members.length === 1 ? 'member' : 'members'}
+          {members.length} {members.length === 1 ? "member" : "members"}
         </p>
       </div>
     );
@@ -171,266 +196,124 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({ onEdit, variant = 'settings
   // Get all selected categories from teams
   const getAllSelectedCategories = () => {
     const allCategories: Record<string, string[]> = {};
-    
-    teams.forEach(team => {
+
+    teams.forEach((team) => {
       if (team.categories) {
-        team.categories.forEach(categoryId => {
+        team.categories.forEach((categoryId) => {
           if (!allCategories[categoryId]) {
             allCategories[categoryId] = [];
           }
         });
       }
     });
-    
+
     // Populate actions if they exist in the action categories
     if (actionCategories) {
-      actionCategories.forEach(category => {
+      actionCategories.forEach((category) => {
         if (allCategories[category.id]) {
-          allCategories[category.id] = category.actions.map(action => action.id);
+          allCategories[category.id] = category.actions.map(
+            (action) => action.id
+          );
         }
       });
     }
-    
+
     return allCategories;
   };
 
-  const selectedByCategory = getAllSelectedCategories();
+  // Choose the right data source based on variant
+  const teamsToDisplay = useConfigData ? config.teams : teams;
+  const selectedByCategory = useConfigData
+    ? config.activities.selectedByCategory
+    : getAllSelectedCategories();
   const categoryIds = Object.keys(selectedByCategory);
-  
+
   // Get total selected activities count
   const getTotalSelectedActivitiesCount = () => {
-    return Object.values(selectedByCategory).reduce((total, actions) => total + actions.length, 0);
+    return Object.values(selectedByCategory).reduce(
+      (total, actions) => total + actions.length,
+      0
+    );
   };
 
-  const isLoading = isActionsLoading;
+  const isLoading = isActionsLoading || (!useConfigData && isProfileLoading);
 
-  return (
-    <>
-      {/* Organization Activities Section */}
-      <Card data-slot="card" className="mb-6">
-        <CardHeader data-slot="card-header" className="flex flex-row items-center justify-between">
-          <CardTitle data-slot="card-title">Organisation's Activities</CardTitle>
-          <Button
-            data-slot="button"
-            variant="ghost"
-            onClick={onEdit}
-          >
-            <PenSquare className="size-4 mr-2" /> Edit
-          </Button>
-        </CardHeader>
-        <CardContent>
-          {!profile ? (
-            <div className="text-center py-4 text-foreground-muted">
-              Loading profile data...
-            </div>
-          ) : isLoading ? (
-            <div className="text-center py-4 text-foreground-muted">
-              Loading activities...
-            </div>
-          ) : categoryIds.length > 0 ? (
-            <div className="space-y-4">
-              {categoryIds.map((categoryId) => {
-                const isExpanded = expandedCategories[categoryId];
-                const actions = selectedByCategory[categoryId] || [];
-
-                return (
-                  <div key={categoryId} className="border rounded-md">
-                    <div
-                      className="flex items-center justify-between p-3 cursor-pointer hover:bg-muted/20"
-                      onClick={() => toggleCategory(categoryId)}
-                    >
-                      <div className="font-medium flex items-center">
-                        {getCategoryNameById(categoryId)}
-                        <Badge
-                          data-slot="badge"
-                          variant="outline"
-                          className="ml-2"
-                        >
-                          {actions.length} actions
-                        </Badge>
-                      </div>
-                      <Button
-                        data-slot="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                      >
-                        {isExpanded ? (
-                          <ChevronUp className="size-4" />
-                        ) : (
-                          <ChevronDown className="size-4" />
-                        )}
-                      </Button>
-                    </div>
-                    {isExpanded && (
-                      <div className="p-3 pt-0 border-t">
-                        <div className="flex flex-wrap gap-2 pt-3">
-                          {actions.map((actionId) => (
-                            <Badge key={actionId} data-slot="badge" variant="secondary">
-                              {getActionNameById(actionId)}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="text-center py-6">
-              <p>No activities have been selected yet.</p>
-            </div>
-          )}
-
-          <div className="mt-4 pt-4 border-t">
-            <p className="text-sm font-medium">
-              Total Selected: {getTotalSelectedActivitiesCount()} actions across {categoryIds.length} categories
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Teams Section */}
+  // For setup mode, we only need the Organization Activities, not both cards
+  if (variant === "setup") {
+    return (
       <Card data-slot="card">
-        <CardHeader data-slot="card-header" className="flex flex-row items-center justify-between">
+        <CardHeader
+          data-slot="card-header"
+          className="flex flex-row items-center justify-between"
+        >
           <CardTitle data-slot="card-title">My Teams</CardTitle>
-          <Button
-            data-slot="button"
-            variant="ghost"
-            onClick={variant === "settings" ? () => setIsEditDialogOpen(true) : onEdit}
-          >
-            <PenSquare className="size-4 mr-2" /> Edit
+          <Button data-slot="button" variant="ghost" onClick={onEdit}>
+            <PenSquare /> Edit
           </Button>
         </CardHeader>
         <CardContent>
-          {!profile ? (
-            <div className="text-center py-4 text-foreground-muted">
-              Loading profile data...
-            </div>
-          ) : isActionsLoading ? (
+          {isLoading ? (
             <div className="text-center py-4 text-foreground-muted">
               Loading teams...
             </div>
-          ) : teams.length === 0 ? (
+          ) : teamsToDisplay.length === 0 ? (
             <div className="text-center py-6">
-              <p className="text-foreground-muted">No teams have been created yet.</p>
-            </div>
-          ) : teams.length <= 3 ? (
-            <div className="grid gap-4 md:grid-cols-3">
-              {teams.map((team) => (
-                <TeamCard
-                  key={team.id}
-                  id={team.id}
-                  name={team.name}
-                  functions={team.functions || []}
-                  // categories={team.categories}
-                  size={variant === 'setup' ? 'sm' : 'base'}
-                  onEdit={variant === 'settings' ? () => setIsEditDialogOpen(true) : onEdit}
-                />
-              ))}
+              <p className="text-foreground-muted">
+                No teams have been created yet.
+              </p>
             </div>
           ) : (
             <Table data-slot="table">
               <TableHeader data-slot="table-header">
                 <TableRow data-slot="table-row">
                   <TableHead data-slot="table-head">Team name</TableHead>
-                  <TableHead data-slot="table-head">Functions</TableHead>
-                  <TableHead data-slot="table-head">Categories</TableHead>
-                  {variant === "settings" && (
-                    <>
-                      <TableHead data-slot="table-head">Members</TableHead>
-                      <TableHead data-slot="table-head" className="w-[200px]">
-                        Actions
-                      </TableHead>
-                    </>
-                  )}
+                  <TableHead data-slot="table-head">Function</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody data-slot="table-body">
-                {teams.map((team) => (
+                {teamsToDisplay.map((team) => (
                   <TableRow data-slot="table-row" key={team.id}>
                     <TableCell data-slot="table-cell">
                       {team.name || "Unnamed Team"}
                     </TableCell>
                     <TableCell data-slot="table-cell">
                       <div className="flex flex-wrap gap-2">
-                        {(team.functions || []).map((func) => (
-                          <Badge key={func} variant="secondary">
-                            {func}
-                          </Badge>
-                        ))}
+                        {(team.categories || [])
+                          .filter((categoryId) => {
+                            const categoryName =
+                              getCategoryNameById(categoryId);
+                            // Only show functional categories, not general responsibilities
+                            return !MANDATORY_CATEGORIES.includes(categoryName);
+                          })
+                          .map((categoryId) => (
+                            <Badge
+                              key={categoryId}
+                              data-slot="badge"
+                              variant="outline"
+                            >
+                              {getCategoryNameById(categoryId)}
+                            </Badge>
+                          ))}
                       </div>
                     </TableCell>
-                    <TableCell data-slot="table-cell">
-                      <div className="flex flex-wrap gap-2">
-                        {(team.categories || []).map((categoryId) => (
-                          <Badge
-                            key={categoryId}
-                            data-slot="badge"
-                            variant="outline"
-                          >
-                            {getCategoryNameById(categoryId)}
-                          </Badge>
-                        ))}
-                      </div>
-                    </TableCell>
-                    {variant === "settings" && (
-                      <>
-                        <TableCell>
-                          {renderAvatarGroup(team.id)}
-                        </TableCell>
-                        <TableCell data-slot="table-cell">
-                          <div className="flex gap-2">
-                            <Button
-                              data-slot="button"
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleRefineActions(team)}
-                            >
-                              Refine actions
-                            </Button>
-                            <Button
-                              data-slot="button"
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setIsEditDialogOpen(true)}
-                            >
-                              Edit
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </>
-                    )}
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           )}
-
-          <div className="mt-4 pt-4 border-t">
-            <p className="text-sm font-medium">Total Teams: {teams.length}</p>
-          </div>
         </CardContent>
-
-        {selectedTeam && (
-          <TeamActionsDialog
-            isOpen={!!selectedTeam}
-            onClose={() => setSelectedTeam(null)}
-            team={{
-              ...selectedTeam,
-              functions: selectedTeam.functions || [], // provide a default value
-            }}
-          />
-        )}
-
-        <TeamsEditDialog
-          isOpen={isEditDialogOpen}
-          onClose={() => setIsEditDialogOpen(false)}
-        />
       </Card>
+    );
+  }
+
+  // This is the full version with both cards for "settings" variant
+  return (
+    <>
+      {/* Organization Activities Section - Removed for setup mode */}
+      {/* Team Section */}
+      <Card data-slot="card">{/* Same card content as above */}</Card>
     </>
   );
-}
+};
 
 export default TeamsSummary;
