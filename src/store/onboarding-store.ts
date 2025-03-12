@@ -57,7 +57,7 @@ const onboardingApi = {
   ): Promise<CompleteOnboardingResponse> => {
     const { data } = await apiClient.post<
       ApiResponse<CompleteOnboardingResponse>
-    >("/onboarding/complete", input);
+    >("/onboarding", input);
     if (!data.success)
       throw new Error(data.error || "Failed to complete onboarding");
     return data.data!; // Add the non-null assertion operator

@@ -11,6 +11,7 @@ export const useSetupProgress = () => {
     const { setSteps } = useSetupStore();
   
     useEffect(() => {
+      console.log('teams-------------', teams)
       setSteps({
         addActivities: teams.length > 0, // Step 1 complete if teams exist
         createTeam: teams.length > 0,    // Step 2 complete if teams exist
@@ -20,6 +21,6 @@ export const useSetupProgress = () => {
   
     return {
       currentStep: teams.length === 0 ? 1 : performers.length === 0 ? 3 : 4,
-      showMainDashboard: performers.length > 0
+      showMainDashboard: teams.length > 0
     };
   };

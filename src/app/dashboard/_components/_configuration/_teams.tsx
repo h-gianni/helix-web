@@ -56,6 +56,15 @@ const TeamSetup = () => {
     .filter(([_, actions]) => (actions as any[]).length > 0)
     .map(([categoryId, _]) => categoryId);
 
+  // Helper function to extract category IDs from function names
+  const getFunctionCategoryIds = (functionNames: string[]) => {
+    if (!actionCategories) return [];
+    
+    return actionCategories
+      .filter(category => functionNames.includes(category.name))
+      .map(category => category.id);
+  };
+
   // Initialize teams data from profile or config
   useEffect(() => {
     if (profile?.teams && profile.teams.length > 0) {
@@ -64,17 +73,45 @@ const TeamSetup = () => {
         // Extract custom fields safely
         const customFields = (team as any).customFields || {};
         
+        // Get functions from customFields or create an empty array
+        let functions = customFields.functions || [];
+        
+        // If teamFunctionId exists and functions is empty, try to get function name from categories
+        if ((team as any).teamFunctionId && functions.length === 0 && actionCategories) {
+          const teamFunction = actionCategories.find(cat => cat.id === (team as any).teamFunctionId);
+          if (teamFunction) {
+            functions = [teamFunction.name];
+          }
+        }
+        
+        // Get category IDs from customFields or derive from functions
+        const categories = customFields.categories || getFunctionCategoryIds(functions);
+        
         return {
           id: team.id,
           name: team.name,
-          functions: customFields.functions || [(team as any).teamFunctionId || ""],
-          categories: customFields.categories || [],
+          functions: functions,
+          categories: categories,
+          teamFunctionId: (team as any).teamFunctionId
         } as ExtendedTeam;
       });
       
       setTeams(profileTeams);
     } else if (configTeams.length > 0) {
-      setTeams(configTeams);
+      // When opening from the TeamsSummary, ensure we properly map the data
+      const mappedTeams = configTeams.map(team => {
+        // Make sure we have both functions and categories
+        const functions = team.functions || [];
+        const categories = team.categories || getFunctionCategoryIds(functions);
+        
+        return {
+          ...team,
+          functions,
+          categories
+        };
+      });
+      
+      setTeams(mappedTeams);
     } else if (selectedCategoryIds.length > 0) {
       // If no teams exist and we have categories, create a default team
       const defaultTeam: ExtendedTeam = {
@@ -85,9 +122,7 @@ const TeamSetup = () => {
       };
       setTeams([defaultTeam]);
     }
-    // Don't include updateTeams in dependencies to avoid infinite loops
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, configTeams, selectedCategoryIds.length]);
+  }, [profile, configTeams, selectedCategoryIds.length, actionCategories]);
 
   // Separate effect to sync with the config store
   useEffect(() => {
@@ -96,7 +131,7 @@ const TeamSetup = () => {
       updateTeams(teams);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(teams), JSON.stringify(configTeams), updateTeams]);
+  }, [teams, updateTeams]);
 
   // Initial focus on first team input
   useEffect(() => {
@@ -178,8 +213,19 @@ const TeamSetup = () => {
             updatedCategories = [...categories, categoryId];
           }
 
-          // Always synchronize functions with categories
-          const updatedFunctions = [...updatedCategories];
+          // For functions, add or remove the category name instead of ID
+          const categoryName = getCategoryNameById(categoryId);
+          let updatedFunctions = [...(team.functions || [])];
+          
+          if (isSelected) {
+            // Remove this function
+            updatedFunctions = updatedFunctions.filter(fn => fn !== categoryName);
+          } else {
+            // Add this function
+            if (!updatedFunctions.includes(categoryName)) {
+              updatedFunctions.push(categoryName);
+            }
+          }
 
           console.log("Updated state:", {
             categories: updatedCategories,
@@ -200,11 +246,13 @@ const TeamSetup = () => {
   const addTeam = () => {
     // Always include all categories (and copy to functions) when adding a team
     const newTeamId = "temp-" + Date.now();
+    const categoryFunctions = selectedCategoryIds.map(id => getCategoryNameById(id));
+    
     const newTeam: ExtendedTeam = {
       id: newTeamId,
       name: "",
-      functions: [...selectedCategoryIds], // Copy selected categories to functions
-      categories: selectedCategoryIds,
+      functions: categoryFunctions, // Use category names for functions
+      categories: selectedCategoryIds, // Use category IDs for categories
     };
     
     // Update local state
@@ -307,6 +355,9 @@ const TeamSetup = () => {
                       .filter((categoryId) => {
                         // Filter out general responsibility categories
                         const categoryName = getCategoryNameById(categoryId);
+
+                        // console.log(categoryName, '-----------------categoryname')
+
                         return !MANDATORY_CATEGORIES.includes(categoryName);
                       })
                       .map((categoryId) => {
