@@ -248,7 +248,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
         >
           <CardTitle data-slot="card-title">My Teams</CardTitle>
           <Button data-slot="button" variant="ghost" onClick={onEdit}>
-            <PenSquare /> Edit
+            <PenSquare className="size-4 mr-2" /> Edit
           </Button>
         </CardHeader>
         <CardContent>
@@ -306,14 +306,84 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
     );
   }
 
-  // This is the full version with both cards for "settings" variant
-  return (
-    <>
-      {/* Organization Activities Section - Removed for setup mode */}
-      {/* Team Section */}
-      <Card data-slot="card">{/* Same card content as above */}</Card>
-    </>
-  );
+  if (variant === "settings") {
+    return (
+      <Card data-slot="card">
+        <CardHeader
+          data-slot="card-header"
+          className="flex flex-row items-center justify-between"
+        >
+          <CardTitle data-slot="card-title">My Teams</CardTitle>
+          <Button data-slot="button" variant="ghost" onClick={onEdit}>
+            <PenSquare className="size-4 mr-2" /> Edit
+          </Button>
+        </CardHeader>
+        <CardContent data-slot="card-content">
+          {isLoading ? (
+            <div className="text-center py-4 text-foreground-muted">
+              Loading teams...
+            </div>
+          ) : teamsToDisplay.length === 0 ? (
+            <div className="text-center py-6">
+              <p className="text-foreground-muted">
+                No teams have been created yet.
+              </p>
+            </div>
+          ) : (
+            <Table data-slot="table">
+              <TableHeader data-slot="table-header">
+                <TableRow data-slot="table-row">
+                  <TableHead data-slot="table-head">Team name</TableHead>
+                  <TableHead data-slot="table-head">Function</TableHead>
+                  <TableHead data-slot="table-head">Members</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody data-slot="table-body">
+                {teamsToDisplay.map((team) => (
+                  <TableRow data-slot="table-row" key={team.id}>
+                    <TableCell data-slot="table-cell">
+                      {team.name || "Unnamed Team"}
+                    </TableCell>
+                    <TableCell data-slot="table-cell">
+  <div className="flex flex-wrap gap-2">
+    {/* Use both categories and functions to show badges */}
+    {team.functions?.map((func, index) => (
+      <Badge
+        key={index}
+        data-slot="badge"
+        variant="outline"
+      >
+        {func}
+      </Badge>
+    ))}
+    {/* You might need to convert category IDs to names */}
+    {team.categories?.map((categoryId) => {
+      const categoryName = getCategoryNameById(categoryId);
+      // Only show if not already showing as a function
+      return !team.functions?.includes(categoryName) ? (
+        <Badge
+          key={categoryId}
+          data-slot="badge"
+          variant="outline"
+        >
+          {categoryName}
+        </Badge>
+      ) : null;
+    })}
+  </div>
+</TableCell>
+                    <TableCell data-slot="table-cell">
+                      {renderAvatarGroup(team.id)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+    );
+  }
 };
 
 export default TeamsSummary;

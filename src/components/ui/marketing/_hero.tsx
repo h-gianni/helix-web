@@ -9,7 +9,7 @@ import { ArrowRight, Film } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
 import Image from "next/image";
-import heroImage from "@/assets/marketing/hero.avif";
+import heroImage from "@/assets/marketing/hero.svg";
 
 export const Hero = () => {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -91,30 +91,30 @@ export const Hero = () => {
         </div>
       </div>
       <div className="relative w-full flex flex-col items-center mt-4 md:mt-0">
-        <p className="hidden md:block absolute top-0 z-20 bg-white rounded-b-lg marketing-body-xs text-center max-w-xs lg:max-w-xs mx-auto px-4 py-2">
-          UpScore is a mobile and desktop app that lets you score your team’s
+        <p className="hidden md:block absolute top-0 z-20 bg-white rounded-b-lg marketing-body-xs text-center text-foreground-weak max-w-xs lg:max-w-sm mx-auto px-4 py-2">
+          UpScore is a app that lets you score your team’s
           performance in real-time—in less than 20 seconds per entry. Set up
-          your organization in just 5 minutes, and let our AI transform your
+          your org in just 5 minutes, and let our AI transform your
           scores into clear, actionable dashboards and periodic performance
           reviews in your desired format. It’s effortless, data-driven
           leadership that delivers measurable ROI.
         </p>
 
         {/* SVG Pointer */}
-        <svg
+        {/* <svg
           className="hidden md:block absolute top-0 left-0 w-full h-[240px] z-10"
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
         >
           <polygon points="0,0 100,0 50,100" fill="white" />
-        </svg>
+        </svg> */}
 
         <Image
           src={heroImage}
           alt="Hero Image"
-          width={1080}
-          height={600}
-          className="relative z-0 mx-auto min-h-56 bg-muted"
+          // width={1080}
+          // height={600}
+          className="relative z-0 mx-auto min-h-56 bg-white"
         />
       </div>
     </section>

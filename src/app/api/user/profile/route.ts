@@ -57,7 +57,7 @@ export async function GET(req: Request) {
             team: true
           }
         },
-        orgname: true
+        orgName: true
       }
     });
 

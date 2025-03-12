@@ -16,6 +16,8 @@ import OrganizationSummary from "../_components/_configuration/_organization-sum
 import TeamsSummary from "../_components/_configuration/_teams-summary";
 import OrgActionsSummary from "../_components/_configuration/_actions-summary";
 import { useProfileStore, useProfileSync } from "@/store/user-store";
+import TeamsEditDialog from "../_components/_configuration/_teams-edit-dialog";
+import ActionsDialog from "../_components/_configuration/_actions-edit-dialog";
 
 interface UserProfile {
   id: string;
@@ -27,17 +29,11 @@ interface UserProfile {
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user, isLoaded: isClerkLoaded  } = useUser();
+  const { user, isLoaded: isClerkLoaded } = useUser();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  // const [isLoading, setIsLoading] = useState(true);
+  const [isTeamsDialogOpen, setIsTeamsDialogOpen] = useState(false);
+  const [isActionsDialogOpen, setIsActionsDialogOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // const [profile, setProfile] = useState<UserProfile>({
-  //   id: "",
-  //   email: "",
-  //   firstName: "",
-  //   lastName: "",
-  //   title: null,
-  // });
 
   // Use the profile sync hook to load and sync profile data with the store
   const { isLoading: isApiLoading, error: apiError } = useProfileSync();
@@ -79,8 +75,8 @@ export default function SettingsPage() {
     );
   }
 
-   // Construct profile data for the ProfileModal component
-   const profileData = {
+  // Construct profile data for the ProfileModal component
+  const profileData = {
     id: profile?.id || "",
     email: profile?.email || "",
     firstName: profile?.clerkProfile?.firstName || "",
@@ -88,109 +84,75 @@ export default function SettingsPage() {
     title: profile?.teamMembers?.[0]?.title || null,
   };
 
-  // useEffect(() => {
-  //   if (isLoaded && user) {
-  //     setProfile({
-  //       id: user.id,
-  //       email: user.emailAddresses[0]?.emailAddress || "",
-  //       firstName: user.firstName || "",
-  //       lastName: user.lastName || "",
-  //       title: (user.unsafeMetadata.title as string) || null,
-  //     });
-  //     setIsLoading(false);
-  //   }
-  // }, [isLoaded, user]);
-
-  // const handleProfileUpdate = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     setError(null);
-
-  //     if (user) {
-  //       await user.reload();
-  //       setProfile({
-  //         id: user.id,
-  //         email: user.emailAddresses[0]?.emailAddress || "",
-  //         firstName: user.firstName || "",
-  //         lastName: user.lastName || "",
-  //         title: (user.unsafeMetadata.title as string) || null,
-  //       });
-  //     }
-  //   } catch (err) {
-  //     setError(err instanceof Error ? err.message : "Failed to update profile");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="loader">
-  //       <Loader size="base" label="Loading..." />
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       <PageBreadcrumbs items={[{ label: "Settings" }]} />
       <PageHeader title="Settings" />
 
       <main className="layout-page-main">
-          {error && (
-            <Alert variant="destructive">
-              <AlertCircle />
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-           <ProfileCard
-          align="horizontal"
-          // imageUrl={profile?.clerkProfile?.imageUrl || "/api/placeholder/96/96"}
-          imageUrl={"/api/placeholder/96/96"}
-          fields={[
-            {
-              label: "Full Name",
-              value: `${profileData.firstName} ${profileData.lastName}`,
-              variant: "title",
-            },
-            {
-              label: "Email (account ID)",
-              value: profileData.email,
-              variant: "strong",
-            },
-            {
-              label: "Job Title",
-              value: profileData.title || (
-                <span className="ui-text-body-helper">Not set</span>
-              ),
-            },
-          ]}
-          onEdit={() => setIsEditModalOpen(true)}
-          editButtonPosition="topRight"
-          editButtonText="Edit"
-        />
-            
-          <OrganizationSummary
-            // onEdit={() =>
-            //   router.push("/dashboard/settings/business-activities")
-            // }
-          />
-          <TeamsSummary
-            onEdit={() => router.push("/dashboard/settings/teams")}
-          />
-          <OrgActionsSummary
-            // onEdit={() =>
-            //   router.push("/dashboard/settings/business-activities")
-            // }
-          />
+  {error && (
+    <Alert variant="destructive">
+      <AlertCircle />
+      <AlertDescription>{error}</AlertDescription>
+    </Alert>
+  )}
+  
+  <div className="space-y-6">
+    <ProfileCard
+      align="horizontal"
+      imageUrl={"/api/placeholder/96/96"}
+      fields={[
+        {
+          label: "Full Name",
+          value: `${profileData.firstName} ${profileData.lastName}`,
+          variant: "title",
+        },
+        {
+          label: "Email (account ID)",
+          value: profileData.email,
+          variant: "strong",
+        },
+        {
+          label: "Job Title",
+          value: profileData.title || (
+            <span className="ui-text-body-helper">Not set</span>
+          ),
+        },
+      ]}
+      onEdit={() => setIsEditModalOpen(true)}
+      editButtonPosition="topRight"
+      editButtonText="Edit"
+    />
+        
+    <TeamsSummary
+      onEdit={() => setIsTeamsDialogOpen(true)}
+      variant="settings"
+    />
+    
+    <OrgActionsSummary
+      onEdit={() => setIsActionsDialogOpen(true)}
+      variant="settings"
+    />
+  </div>
 
-        <ProfileModal
-          isOpen={isEditModalOpen}
-          onClose={() => setIsEditModalOpen(false)}
-          profile={profileData}
-          onUpdate={handleProfileUpdate}
-        />
-      </main>
+  {/* Modals and Dialogs */}
+  <ProfileModal
+    isOpen={isEditModalOpen}
+    onClose={() => setIsEditModalOpen(false)}
+    profile={profileData}
+    onUpdate={handleProfileUpdate}
+  />
+  
+  <TeamsEditDialog
+    isOpen={isTeamsDialogOpen}
+    onClose={() => setIsTeamsDialogOpen(false)}
+  />
+  
+  <ActionsDialog
+    isOpen={isActionsDialogOpen}
+    onClose={() => setIsActionsDialogOpen(false)}
+  />
+</main>
     </>
   );
 }

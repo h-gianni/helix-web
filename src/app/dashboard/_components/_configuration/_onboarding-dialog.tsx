@@ -51,8 +51,9 @@ function SetupDialog({ isOpen, onClose, onCompleteSetup }: SetupDialogProps) {
     selectedCategory,
     setSelectedCategory,
     isCompleting,
-    error,
     syncTeamCategories,
+    setIsCompleting,
+    setError, 
   } = useOnboardingStore();
 
   const completeOnboardingMutation = useCompleteOnboarding();
@@ -80,26 +81,29 @@ function SetupDialog({ isOpen, onClose, onCompleteSetup }: SetupDialogProps) {
   }, [config.activities.selectedByCategory, currentStepId, syncTeamCategories]);
 
   const handleNext = async () => {
+    console.log("handleNext called, step:", currentStepId);
+    
     if (!validateStep(currentStepId)) {
       return;
     }
-
-    // Sync categories before moving to the "team" step
-    if (currentStepId === "org" && steps[currentStep + 1]?.id === "actions") {
-      // Log the organization name as we move from org step to actions step
-      console.log("Moving from org step with name:", config.organization.name);
-    }
-
+  
     if (isLastStep) {
       try {
+        setIsCompleting(true);
+        console.log("Attempting mutation...");
         await completeOnboardingMutation.mutateAsync();
+        console.log("Mutation successful, closing dialog");
         onCompleteSetup();
+        onClose(); // Force dialog close
       } catch (err) {
         console.error("Onboarding completion failed:", err);
+        setError(err instanceof Error ? err.message : "Unknown error");
+      } finally {
+        setIsCompleting(false);
       }
       return;
     }
-
+  
     setCurrentStep(currentStep + 1);
   };
 

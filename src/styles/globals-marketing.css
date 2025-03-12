@@ -29,13 +29,13 @@
   }
 }
 
-@theme inline {
+/* @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-foreground-strong: var(--foreground-strong);
   --color-foreground-weak: var(--foreground-weak);
   --color-foreground-muted: var(--foreground-muted);
-}
+} */
 
 @layer components {
   .section-container {

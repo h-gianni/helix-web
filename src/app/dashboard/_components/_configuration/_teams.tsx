@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { Plus, Trash2, X } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Plus, X } from "lucide-react";
 import { Input } from "@/components/ui/core/Input";
 import { Button } from "@/components/ui/core/Button";
 import { Label } from "@/components/ui/core/Label";
@@ -12,25 +12,91 @@ import {
 import { Checkbox } from "@/components/ui/core/Checkbox";
 import { useConfigStore } from "@/store/config-store";
 import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
+import { useProfileStore } from "@/store/user-store";
+
+// Define the types for the teams we're working with
+interface ExtendedTeam {
+  id: string;
+  name: string;
+  functions: string[];
+  categories: string[];
+  teamFunctionId?: string;
+  customFields?: any;
+}
+
+// Define interfaces for profile team data structure
+interface ProfileTeam {
+  id: string;
+  name: string;
+  teamFunctionId?: string;
+  customFields?: any;
+}
 
 const TeamSetup = () => {
   const config = useConfigStore((state) => state.config);
   const selectedActivities = config.activities.selected;
   const selectedByCategory = config.activities.selectedByCategory || {};
   const updateTeams = useConfigStore((state) => state.updateTeams);
-  const teams = config.teams;
+  const configTeams = config.teams;
+  
+  // Get profile data
+  const { profile } = useProfileStore();
+  
+  // Use state to track the combined teams data
+  const [teams, setTeams] = useState<ExtendedTeam[]>([]);
 
   // Create ref for input focus
   const teamNameRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
 
   // Get action categories data using React Query
-  const { data: actionCategories, isLoading: isLoadingCategories } =
-    useActions();
+  const { data: actionCategories, isLoading: isLoadingCategories } = useActions();
 
   // Get all selected category IDs
   const selectedCategoryIds = Object.entries(selectedByCategory)
-    .filter(([_, actions]) => actions.length > 0)
+    .filter(([_, actions]) => (actions as any[]).length > 0)
     .map(([categoryId, _]) => categoryId);
+
+  // Initialize teams data from profile or config
+  useEffect(() => {
+    if (profile?.teams && profile.teams.length > 0) {
+      // Transform profile teams to match the expected format
+      const profileTeams = profile.teams.map(team => {
+        // Extract custom fields safely
+        const customFields = (team as any).customFields || {};
+        
+        return {
+          id: team.id,
+          name: team.name,
+          functions: customFields.functions || [(team as any).teamFunctionId || ""],
+          categories: customFields.categories || [],
+        } as ExtendedTeam;
+      });
+      
+      setTeams(profileTeams);
+    } else if (configTeams.length > 0) {
+      setTeams(configTeams);
+    } else if (selectedCategoryIds.length > 0) {
+      // If no teams exist and we have categories, create a default team
+      const defaultTeam: ExtendedTeam = {
+        id: "temp-" + Date.now(),
+        name: "",
+        functions: [...selectedCategoryIds],
+        categories: selectedCategoryIds,
+      };
+      setTeams([defaultTeam]);
+    }
+    // Don't include updateTeams in dependencies to avoid infinite loops
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile, configTeams, selectedCategoryIds.length]);
+
+  // Separate effect to sync with the config store
+  useEffect(() => {
+    // Only update the config store if teams are initialized and different
+    if (teams.length > 0 && JSON.stringify(teams) !== JSON.stringify(configTeams)) {
+      updateTeams(teams);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(teams), JSON.stringify(configTeams), updateTeams]);
 
   // Initial focus on first team input
   useEffect(() => {
@@ -40,7 +106,7 @@ const TeamSetup = () => {
         teamNameRefs.current[teams[0].id]?.focus();
       }, 100);
     }
-  }, []);
+  }, [teams.length]);
 
   // Log whenever teams or categories change to debug
   useEffect(() => {
@@ -56,103 +122,54 @@ const TeamSetup = () => {
     });
   }, [teams, selectedCategoryIds]);
 
-  // Initialize teams with default values
+  // Sync categories when moving to team step
   useEffect(() => {
-    if (isLoadingCategories || !actionCategories) {
-      return; // Don't process until data is loaded
-    }
-
-    console.log("TeamSetup: checking team initialization", {
-      teamsLength: teams.length,
-      selectedCategoryIds,
-    });
-
-    // If no teams exist and we have categories, create a default team
-    if (teams.length === 0 && selectedCategoryIds.length > 0) {
-      console.log("Creating default team with categories", {
-        categories: selectedCategoryIds,
-      });
-
-      updateTeams([
-        {
-          id: "temp-" + Date.now(),
-          name: "",
-          functions: [...selectedCategoryIds], // Copy selected categories to functions
-          categories: selectedCategoryIds,
-        },
-      ]);
-    }
-    // If teams exist but they don't have functions or categories, update them
-    else if (teams.length > 0) {
-      const needsUpdate = teams.some(
-        (team) =>
-          !team.functions ||
-          team.functions.length === 0 ||
-          !team.categories ||
-          (selectedCategoryIds.length > 0 && team.categories.length === 0)
-      );
-
-      if (needsUpdate) {
-        console.log("Updating teams with missing functions or categories");
-        const updatedTeams = teams.map((team) => {
-          // Start with current team
-          let updatedTeam = { ...team };
-
-          // If no categories, add all selected categories
-          if (!team.categories || team.categories.length === 0) {
-            updatedTeam.categories = selectedCategoryIds;
+    if (selectedCategoryIds.length > 0 && teams.length > 0) {
+      // Update teams with categories - use functional update to avoid stale state
+      setTeams(prevTeams => {
+        const updatedTeams = prevTeams.map((team) => {
+          // Keep existing categories if they exist
+          if (team.categories && team.categories.length > 0) {
+            return team;
           }
-
-          // Copy categories to functions
-          if (!team.functions || team.functions.length === 0) {
-            updatedTeam.functions = [...updatedTeam.categories];
-          }
-
-          return updatedTeam;
+          // Otherwise, add all selected categories
+          return {
+            ...team,
+            categories: selectedCategoryIds,
+          };
         });
 
-        // Only update if there's an actual change
-        if (JSON.stringify(updatedTeams) !== JSON.stringify(teams)) {
-          console.log(
-            "Updating teams with categories and functions",
-            updatedTeams
-          );
-          updateTeams(updatedTeams);
-        }
-      }
+        // Only return new teams array if there's a change
+        return JSON.stringify(updatedTeams) !== JSON.stringify(prevTeams)
+          ? updatedTeams
+          : prevTeams;
+      });
     }
-  }, [
-    teams.length,
-    selectedCategoryIds.length,
-    isLoadingCategories,
-    actionCategories,
-    updateTeams,
-    teams,
-    selectedCategoryIds,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCategoryIds, teams.length]);
 
+  // Handle team name change
   const handleTeamNameChange = (teamId: string, name: string) => {
     console.log("Team name change:", { teamId, name });
-    const updatedTeams = teams.map((team) => {
-      if (team.id === teamId) {
-        return { ...team, name };
-      }
-      return team;
-    });
-
-    updateTeams(updatedTeams);
+    setTeams(prevTeams => 
+      prevTeams.map((team) => {
+        if (team.id === teamId) {
+          return { ...team, name };
+        }
+        return team;
+      })
+    );
   };
 
   // Simplified category toggle that updates both categories and functions simultaneously
   const handleCategoryToggle = (teamId: string, categoryId: string) => {
-    updateTeams(
-      teams.map((team) => {
+    setTeams(prevTeams => 
+      prevTeams.map((team) => {
         if (team.id === teamId) {
-          const categories = team.categories || [];
+          const categories = [...(team.categories || [])];
           const isSelected = categories.includes(categoryId);
 
           let updatedCategories;
-
           if (isSelected) {
             // Remove this category
             updatedCategories = categories.filter((c) => c !== categoryId);
@@ -183,16 +200,19 @@ const TeamSetup = () => {
   const addTeam = () => {
     // Always include all categories (and copy to functions) when adding a team
     const newTeamId = "temp-" + Date.now();
-    updateTeams([
-      ...teams,
-      {
-        id: newTeamId,
-        name: "",
-        functions: [...selectedCategoryIds], // Copy selected categories to functions
-        categories: selectedCategoryIds,
-      },
-    ]);
-
+    const newTeam: ExtendedTeam = {
+      id: newTeamId,
+      name: "",
+      functions: [...selectedCategoryIds], // Copy selected categories to functions
+      categories: selectedCategoryIds,
+    };
+    
+    // Update local state
+    setTeams(prevTeams => [...prevTeams, newTeam]);
+    
+    // Important: Also update the config store directly for immediate sync
+    updateTeams([...teams, newTeam]);
+  
     // Focus the new team's input field after adding
     setTimeout(() => {
       teamNameRefs.current[newTeamId]?.focus();
@@ -203,7 +223,7 @@ const TeamSetup = () => {
     if (teams.length <= 1) {
       return; // Don't remove the last team
     }
-    updateTeams(teams.filter((team) => team.id !== teamId));
+    setTeams(prevTeams => prevTeams.filter((team) => team.id !== teamId));
   };
 
   // Get category name by ID

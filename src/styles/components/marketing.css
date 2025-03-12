@@ -4,7 +4,7 @@
 @import '../lib/reset.css';
 
 /* Tokens - Shared design tokens */
-@import '../tokens/colors.css';
+@import '../tokens/theme.css';
 @import '../tokens/typography.css';
 @import '../tokens/marketing-typography.css';
 @import '../tokens/spacing.css';

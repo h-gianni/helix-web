@@ -3,7 +3,7 @@
 @layer components {
   /* Marketing Display Text */
   .marketing-display {
-    @apply font-bold;
+    @apply font-bold text-foreground-strong;
     font-family: var(--font-marketing);
     font-size: var(--font-marketing-3xl);
     line-height: var(--leading-marketing-tight);
@@ -12,7 +12,7 @@
   
   /* Marketing Headings */
   .marketing-h1 {
-    @apply font-bold;
+    @apply font-bold text-foreground-strong;
     font-family: var(--font-marketing);
     font-size: var(--font-marketing-2xl);
     line-height: var(--leading-marketing-tight);
@@ -20,14 +20,14 @@
   }
   
   .marketing-h2 {
-    @apply font-bold;
+    @apply font-bold text-foreground-strong;
     font-family: var(--font-marketing);
     font-size: var(--font-marketing-xl);
     line-height: var(--leading-marketing-tight);
   }
   
   .marketing-h3 {
-    @apply font-bold;
+    @apply font-bold text-foreground-strong;
     font-family: var(--font-marketing);
     font-size: var(--font-marketing-lg);
     line-height: var(--leading-marketing-tight);

@@ -16,7 +16,6 @@ import {
 import { PenSquare } from "lucide-react";
 import { useConfigStore } from "@/store/config-store";
 import { useActions } from "@/store/action-store";
-import ActionsDialog from "./_actions-edit-dialog";
 
 interface OrgActionsSummaryProps {
   onEdit?: () => void;
@@ -27,7 +26,6 @@ function OrgActionsSummary({
   onEdit,
   variant = "settings",
 }: OrgActionsSummaryProps) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data: actionCategories, isLoading } = useActions();
 
   // Get the selected activities and categories from config store
@@ -76,10 +74,7 @@ function OrgActionsSummary({
           <Button
             data-slot="button"
             variant="ghost"
-            onClick={() => {
-              setIsDialogOpen(true);
-              onEdit?.();
-            }}
+            onClick={onEdit}
           >
             <PenSquare /> Edit
           </Button>
@@ -134,11 +129,6 @@ function OrgActionsSummary({
           )}
         </CardContent>
       </Card>
-
-      <ActionsDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-      />
     </>
   );
 }

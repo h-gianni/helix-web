@@ -1,5 +1,6 @@
 // lib/types/api.ts
-import { Priority, BusinessActivityStatus, TeamMemberStatus, ReviewStatus, Prisma, OrgActionStatus } from "@prisma/client";
+import { Priority, BusinessActivityStatus, TeamMemberStatus, ReviewStatus, Prisma } from "@prisma/client";
+type OrgActionStatus = BusinessActivityStatus;
 
 // Define a type for JSON fields
 export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
