@@ -23,7 +23,7 @@
   section {
     @apply w-full py-12 lg:py-32 px-4 lg:px-8;
   }
-  
+
   section:first-of-type {
     @apply w-full pt-0 lg:pt-32 bg-white;
   }
@@ -37,24 +37,41 @@
   --color-foreground-muted: var(--foreground-muted);
 } */
 
-@layer components {
-  .section-container {
-    @apply lg:container mx-auto space-y-8 lg:space-y-14;
-  }
-  
-  .section-header {
-    @apply max-w-xl space-y-6 px-4 lg:px-0;
-  }
-  
-  .hero {
-    @apply max-w-2xl space-y-6 lg:space-y-8 pb-8 lg:pb-20 px-4 lg:px-0;
-  }
-  
-  .section-header-centered {
-    @apply flex flex-col justify-center text-center mx-auto max-w-xl space-y-6 px-4 lg:px-0;
-  }
-  
-  .hero-centered {
-    @apply flex flex-col justify-center text-center mx-auto max-w-2xl space-y-6 lg:space-y-8 pb-8 lg:pb-20 px-4 lg:px-0;
-  }
+.section-container {
+  @apply lg:container mx-auto space-y-8 lg:space-y-14;
+}
+
+.section-header {
+  @apply max-w-xl space-y-6 px-4 lg:px-0;
+}
+
+.hero {
+  @apply max-w-2xl space-y-6 lg:space-y-8 pb-8 lg:pb-20 px-4 lg:px-0;
+}
+
+.section-header-centered {
+  @apply flex flex-col justify-center text-center mx-auto max-w-xl space-y-6 px-4 lg:px-0;
+}
+
+.hero-centered {
+  @apply flex flex-col justify-center text-center mx-auto max-w-2xl space-y-6 lg:space-y-8 pb-8 lg:pb-20 px-4 lg:px-0;
+}
+
+.btn {
+  @apply h-14 shadow-base;
+}
+.btn-primary {
+  @apply bg-[#00f4ff] text-[#003d3f] hover:bg-[#00f4ff]/90;
+}
+.btn-secondary {
+  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
+}
+.btn-outline {
+  @apply border border-input bg-background hover:bg-secondary hover:text-secondary-foreground;
+}
+.btn-ghost {
+  @apply hover:bg-secondary hover:text-secondary-foreground;
+}
+.btn-link {
+  @apply text-primary underline-offset-4 hover:underline;
 }

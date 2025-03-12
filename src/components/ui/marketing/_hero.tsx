@@ -79,11 +79,11 @@ export const Hero = () => {
             make you the most effective team leader in the organization.
           </p>
           <div className="flex flex-col md:flex-row gap-4 mx-auto">
-            <Button size="lg" variant="outline">
+            <Button size="lg" variant="outline" className="btn">
               Show me a short demo <Film />
             </Button>
             <SignUpButton>
-              <Button size="lg">
+              <Button size="lg" className="btn btn-primary">
                 I want to try it <ArrowRight />
               </Button>
             </SignUpButton>
