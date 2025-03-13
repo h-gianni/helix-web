@@ -38,6 +38,21 @@ export const GET = async (request: Request) => {
                 },
               }
             },
+            // Include team members for each team
+            teamMembers: {
+              where: {
+                deletedAt: null,
+              },
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    name: true,
+                    email: true
+                  }
+                }
+              }
+            }
           },
         },
         teamMembers: {
@@ -59,14 +74,27 @@ export const GET = async (request: Request) => {
                     },
                   }
                 },
+                // Include team members for the teams the user is a member of
+                teamMembers: {
+                  where: {
+                    deletedAt: null,
+                  },
+                  include: {
+                    user: {
+                      select: {
+                        id: true,
+                        name: true,
+                        email: true
+                      }
+                    }
+                  }
+                }
               },
             },
           },
         },
       },
     });
-
-   
 
     if (!user) {
       console.log("❌ User not found - Please complete registration");
@@ -77,23 +105,54 @@ export const GET = async (request: Request) => {
     }
 
     // Create a Map to store unique teams by ID
-    const teamsMap = new Map([
-      ...user.teams,
-      ...user.teamMembers.map((member: { team: any }) => member.team),
-    ].map((team) => [team.id, team]));
+    const userOwnedTeams = user.teams.map(team => ({ 
+      ...team, 
+      members: team.teamMembers || []
+    }));
+    
+    const userMemberTeams = user.teamMembers.map(member => ({ 
+      ...member.team, 
+      members: member.team.teamMembers || []
+    }));
+    
+    // Combine and deduplicate teams
+    const teamsMap = new Map();
+    [...userOwnedTeams, ...userMemberTeams].forEach(team => {
+      // If team already exists in map, don't override
+      if (!teamsMap.has(team.id)) {
+        teamsMap.set(team.id, team);
+      }
+    });
 
     // Convert Map back to array and transform to match TeamResponse type
-    const teams: TeamResponse[] = Array.from(teamsMap.values()).map(team => ({
-      id: team.id,
-      name: team.name,
-      description: team.description,
-      teamFunctionId: team.teamFunctionId,
-      ownerId: team.ownerId,
-      createdAt: team.createdAt,
-      updatedAt: team.updatedAt,
-      deletedAt: team.deletedAt,
-      customFields: team.customFields
-    }));
+    const teams: TeamResponse[] = Array.from(teamsMap.values()).map(team => {
+      // Transform members to match the expected format in TeamResponse
+      const members = (team.members || []).map(member => ({
+        id: member.id,
+        title: member.title,
+        name: member.user?.name || null,
+        email: member.user?.email || ''
+      }));
+
+      return {
+        id: team.id,
+        name: team.name,
+        description: team.description,
+        teamFunctionId: team.teamFunctionId,
+        ownerId: team.ownerId,
+        createdAt: team.createdAt,
+        updatedAt: team.updatedAt,
+        deletedAt: team.deletedAt,
+        customFields: team.customFields,
+        teamFunction: team.teamFunction ? {
+          id: team.teamFunction.id,
+          name: team.teamFunction.name
+        } : null,
+        members: members,
+        // You could calculate average performance here if needed
+        // averagePerformance: calculateAveragePerformance(team)
+      };
+    });
 
     console.log("✅ Successfully fetched teams:", teams.length);
 
@@ -109,7 +168,6 @@ export const GET = async (request: Request) => {
     );
   }
 };
-
 export const POST = async (request: Request) => {
   console.log("🎯 POST /api/teams - Started");
   
