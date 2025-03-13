@@ -31,10 +31,10 @@ import {
   MoreVertical,
   AlertCircle,
 } from "lucide-react";
-import { AddMemberModal } from "../../_components/_team/_add-member-modal";
-import { TeamPerformanceSummary } from "../../_components/_team/_team-performance-summary";
-import EmptyTeamView from "../../_components/_team/_team-empty-view";
-import { TeamEditModal } from "../../_components/_team/_team-edit-modal";
+import { AddMemberModal } from "@/app/dashboard/_components/_team/_add-member-modal";
+import { TeamPerformanceSummary } from "@/app/dashboard/_components/_team/_team-performance-summary";
+import EmptyTeamView from "@/app/dashboard/_components/_team/_team-empty-view";
+import { TeamEditModal } from "@/app/dashboard/_components/_team/_team-edit-modal";
 import {
   useTeamStore,
   useTeamDetails,

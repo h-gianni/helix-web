@@ -1,5 +1,5 @@
 // app/dashboard/teams/[teamId]/_teamPerformanceSummary.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TeamPerformanceView } from "@/app/dashboard/_components/_team-performance-view";
 import { ViewSwitcher } from "@/components/ui/composite/View-switcher";
@@ -32,39 +32,6 @@ export function TeamPerformanceSummary({
 }: TeamPerformanceSummaryProps) {
   const router = useRouter();
   const [memberToDelete, setMemberToDelete] = useState<MemberPerformance | null>(null);
-  const [effectiveViewType, setEffectiveViewType] = useState(viewType);
-
-  // Update view type based on screen size
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        // Force card view on mobile
-        setEffectiveViewType("grid");
-      } else {
-        // Use user's selected view on desktop
-        setEffectiveViewType(viewType);
-      }
-    };
-
-    // Initial check
-    handleResize();
-
-    // Add event listener
-    window.addEventListener('resize', handleResize);
-    
-    // Clean up
-    return () => window.removeEventListener('resize', handleResize);
-  }, [viewType]);
-
-  // Handle view change
-  const handleViewChange = (newViewType: "table" | "grid") => {
-    onViewChange(newViewType);
-    
-    // Only apply if not on mobile
-    if (window.innerWidth >= 768) {
-      setEffectiveViewType(newViewType);
-    }
-  };
 
   if (!members || members.length === 0) {
     return null;
@@ -96,7 +63,7 @@ export function TeamPerformanceSummary({
       <div className="ui-view-controls-bar">
         {/* Hide ViewSwitcher on mobile */}
         <div className="hidden md:block">
-          <ViewSwitcher viewType={viewType} onViewChange={handleViewChange} />
+          <ViewSwitcher viewType={viewType} onViewChange={onViewChange} />
         </div>
       </div>
 
@@ -106,8 +73,8 @@ export function TeamPerformanceSummary({
         showAvatar
         showActions
         mode="desktop"
-        viewType={effectiveViewType}
-        onViewChange={handleViewChange}
+        viewType={viewType}
+        onViewChange={onViewChange}
         onMemberDelete={setMemberToDelete}
       />
 

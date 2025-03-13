@@ -25,7 +25,7 @@ export function PerformersByCategory({
   teams,
   viewType,
 }: PerformersByCategoryProps) {
-  const { viewType: storeViewType } = usePerformersStore();
+  const { viewType: storeViewType, setViewType } = usePerformersStore();
   
   // Use passed viewType prop if provided, otherwise use from store
   const effectiveViewType = viewType || storeViewType;
@@ -47,6 +47,11 @@ export function PerformersByCategory({
       }
       return b.averageRating - a.averageRating;
     });
+
+  // Handle view type changes from the TeamPerformanceView
+  const handleViewChange = (newViewType: "table" | "grid") => {
+    setViewType(newViewType);
+  };
 
   const EmptyState = () => (
     <div className="flex flex-col items-center justify-center space-y-2">
@@ -107,6 +112,7 @@ export function PerformersByCategory({
           showAvatar={true}
           mode="desktop"
           viewType={effectiveViewType}
+          onViewChange={handleViewChange}
         />
       </CardContent>
     </Card>

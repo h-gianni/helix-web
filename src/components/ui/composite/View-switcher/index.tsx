@@ -22,7 +22,9 @@ export function ViewSwitcher({ viewType, onViewChange }: ViewSwitcherProps) {
         onValueChange={onViewChange}
       >
         <SelectTrigger data-slot="select-trigger">
-          <SelectValue data-slot="select-value" placeholder="Select view" />
+          <SelectValue data-slot="select-value" placeholder="Select view">
+            {viewType === 'table' ? 'Table View' : 'Card View'}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent data-slot="select-content" align="end">
           <SelectItem data-slot="select-item" value="table">Table View</SelectItem>
