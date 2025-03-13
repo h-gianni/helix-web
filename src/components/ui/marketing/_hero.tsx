@@ -76,7 +76,7 @@ export const Hero = () => {
           <p className="marketing-body-lg max-w-2xl text-center mx-auto">
             Refuse to leave success to chance. Quickly score and track team
             actions and behaviors in real time—unlocking data-driven insights to
-            make you the most effective team leader in the organization.
+            make you the most effective and efficient team leader in the organization.
           </p>
           <div className="flex flex-col md:flex-row gap-4 mx-auto">
             <Button size="lg" variant="outline" className="btn">
