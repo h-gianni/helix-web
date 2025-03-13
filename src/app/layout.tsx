@@ -4,7 +4,7 @@ import "../styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { TeamsProvider } from "@/lib/context/teams-context";
-import Providers from "./_components/Provider";
+import Providers from "./components/Provider";
 
 const robotoFlex = Roboto_Flex({
   subsets: ['latin'],

@@ -3,7 +3,7 @@ import { Popover, PopoverTrigger, PopoverContent } from './index';
 import { Button } from '@/components/ui/core/Button';
 import { Input } from '@/components/ui/core/Input';
 import { Label } from '@/components/ui/core/Label';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/core/Dropdown-menu';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/core/DropdownMenu';
 import {
   Settings,
   User,

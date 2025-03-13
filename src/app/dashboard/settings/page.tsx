@@ -3,21 +3,21 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
-import { PageHeader } from "@/components/ui/composite/Page-header";
-import { ProfileCard } from "@/components/ui/composite/Profile-card";
-import { ProfileModal } from "../_components/_profile/_profile-modal";
+import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
+import { PageHeader } from "@/components/ui/composite/PageHeader";
+import { ProfileCard } from "@/components/ui/composite/ProfileCard";
+import { ProfileModal } from "../components/profile/ProfileModal";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Loader } from "@/components/ui/core/Loader";
 
 import { Users, Target, AlertCircle } from "lucide-react";
 import { useConfigStore } from "@/store/config-store";
-import OrganizationSummary from "../_components/_configuration/_organization-summary";
-import TeamsSummary from "../_components/_configuration/_teams-summary";
-import OrgActionsSummary from "../_components/_configuration/_actions-summary";
+import OrganizationSummary from "../components/configuration/ConfigurationOrganizationSummary";
+import TeamsSummary from "../components/configuration/ConfigurationTeamsSummary";
+import OrgActionsSummary from "../components/configuration/ConfigurationActionsSummary";
 import { useProfileStore, useProfileSync } from "@/store/user-store";
-import TeamsEditDialog from "../_components/_configuration/_teams-edit-dialog";
-import ActionsDialog from "../_components/_configuration/_actions-edit-dialog";
+import TeamsEditDialog from "../components/configuration/ConfigurationTeamsEditDialog";
+import ActionsDialog from "../components/configuration/ConfigurationActionsEditDialog";
 
 interface UserProfile {
   id: string;

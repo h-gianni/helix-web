@@ -1,7 +1,7 @@
 import { User } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Card } from "@/components/ui/core/Card";
-import StarRating from "@/components/ui/core/Star-rating";
+import StarRating from "@/components/ui/core/StarRating";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/core/Avatar";
 
 const getInitials = (name: string) => {

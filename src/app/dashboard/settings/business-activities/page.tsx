@@ -2,11 +2,11 @@
 
 import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { PageHeader } from "@/components/ui/composite/Page-header";
-import { ActivitiesSection } from "../../_components/_business-activities/_actions-section";
+import { PageHeader } from "@/components/ui/composite/PageHeader";
+import { ActivitiesSection } from "../../components/_business-activities/ActionsSection";
 import { Button } from "@/components/ui/core/Button";
 import { Plus } from "lucide-react";
-import { ActivityModal } from "../../_components/_business-activities/_actions-modal";
+import { ActivityModal } from "../../components/_business-activities/ActionsModal";
 
 export default function BusinessActivitiesSettingsPage() {
   const router = useRouter();

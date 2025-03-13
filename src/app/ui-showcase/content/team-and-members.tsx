@@ -6,10 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/core/T
 import { Button } from "@/components/ui/core/Button";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
 import { Separator } from "@/components/ui/core/Separator";
-import { TeamCard } from "@/components/ui/composite/Team-card";
-import { MemberCard } from "@/components/ui/composite/Member-card";
-import { MembersTable } from "@/components/ui/composite/Members-table";
-import { ProfileCard } from "@/components/ui/composite/Profile-card";
+import { TeamCard } from "@/components/ui/composite/TeamCard";
+import { MemberCard } from "@/components/ui/composite/MemberCard";
+import { MembersTable } from "@/components/ui/composite/MembersTable";
+import { ProfileCard } from "@/components/ui/composite/ProfileCard";
 import { PlusCircle, ChartSpline, UserCircle } from "lucide-react";
 
 // Demo data

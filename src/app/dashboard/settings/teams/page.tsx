@@ -2,9 +2,9 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
+import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import { useTeams } from "@/lib/context/teams-context";
-import { PageHeader } from "@/components/ui/composite/Page-header";
+import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { AlertCircle } from "lucide-react";
 import {
@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/core/Select";
 import { Loader } from "@/components/ui/core/Loader";
-import TeamActivitiesConfig from "../../_components/_teams/_team-activities-config";
+import TeamActivitiesConfig from "../../components/teams/TeamsActivitiesConfig";
 import {
   useTeamSettingsStore,
   useTeamDetails,

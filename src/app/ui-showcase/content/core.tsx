@@ -45,7 +45,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/core/Dropdown-menu";
+} from "@/components/ui/core/DropdownMenu";
 import { Input } from "@/components/ui/core/Input";
 import { Label } from "@/components/ui/core/Label";
 import { Loader } from "@/components/ui/core/Loader";
@@ -64,7 +64,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/core/Popover";
 import { Progress } from "@/components/ui/core/Progress";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/core/Radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/core/RadioGroup";
 import {
   Select,
   SelectContent,
@@ -75,7 +75,7 @@ import {
 import { Separator } from "@/components/ui/core/Separator";
 import { Skeleton } from "@/components/ui/core/Skeleton";
 import { Slider } from "@/components/ui/core/Slider";
-import StarRating from "@/components/ui/core/Star-rating";
+import StarRating from "@/components/ui/core/StarRating";
 import { Switch } from "@/components/ui/core/Switch";
 import {
   Table,
@@ -97,7 +97,7 @@ import { Toggle } from "@/components/ui/core/Toggle";
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@/components/ui/core/Toggle-group";
+} from "@/components/ui/core/ToggleGroup";
 import {
   Tooltip,
   TooltipContent,

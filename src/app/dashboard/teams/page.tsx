@@ -2,8 +2,8 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
-import { PageHeader } from "@/components/ui/composite/Page-header";
+import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
+import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
 import { Loader } from "@/components/ui/core/Loader";
@@ -17,9 +17,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
 import Link from "next/link";
 import { Plus, AlertCircle, RotateCcw, Users } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import { TeamCard } from "@/components/ui/composite/Team-card";
-import TeamCreateModal from "../_components/_teams/_team-create-modal";
-import EmptyTeamsView from "../_components/_teams/_teams-empty-view";
+import { TeamCard } from "@/components/ui/composite/TeamCard";
+import TeamCreateModal from "../components/teams/TeamsCreateModal";
+import EmptyTeamsView from "../components/teams/TeamsEmptyView";
 import { useTeams, useCreateTeam, useTeamStore } from "@/store/team-store";
 import type { TeamResponse } from "@/lib/types/api";
 import { cn } from "@/lib/utils";
