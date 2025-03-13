@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
-import { PageHeader } from "@/components/ui/composite/Page-header";
+import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
+import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { Button } from "@/components/ui/core/Button";
 import { Loader } from "@/components/ui/core/Loader";
 import {
@@ -11,7 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/core/Dropdown-menu";
+} from "@/components/ui/core/DropdownMenu";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -21,7 +21,7 @@ import {
   AlertDialogTitle,
   AlertDialogAction,
   AlertDialogCancel,
-} from "@/components/ui/core/Alert-dialog";
+} from "@/components/ui/core/AlertDialog";
 import { Alert } from "@/components/ui/core/Alert";
 import {
   UserPlus,
@@ -31,10 +31,10 @@ import {
   MoreVertical,
   AlertCircle,
 } from "lucide-react";
-import { AddMemberModal } from "../../_components/_team/_add-member-modal";
-import { TeamPerformanceSummary } from "../../_components/_team/_team-performance-summary";
-import EmptyTeamView from "../../_components/_team/_team-empty-view";
-import { TeamEditModal } from "../../_components/_team/_team-edit-modal";
+import { AddMemberModal } from "@/app/dashboard/components/teams/team/TeamAddMemberModal";
+import { TeamPerformanceSummary } from "@/app/dashboard/components/teams/team/TeamPerformanceSummary";
+import EmptyTeamView from "@/app/dashboard/components/teams/team/TeamEmptyView";
+import { TeamEditModal } from "@/app/dashboard/components/teams/team/TeamEditModal";
 import {
   useTeamStore,
   useTeamDetails,

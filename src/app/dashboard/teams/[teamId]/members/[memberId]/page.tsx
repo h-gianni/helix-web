@@ -1,9 +1,9 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { PageBreadcrumbs } from "@/components/ui/composite/App-header";
-import { PageHeader } from "@/components/ui/composite/Page-header";
-import { ProfileCard } from "@/components/ui/composite/Profile-card";
+import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
+import { PageHeader } from "@/components/ui/composite/PageHeader";
+import { ProfileCard } from "@/components/ui/composite/ProfileCard";
 import { Button } from "@/components/ui/core/Button";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
@@ -18,16 +18,16 @@ import {
   Plus,
 } from "lucide-react";
 import Link from "next/link";
-import { EditMemberModal } from "../../../../_components/_member/_edit-member-modal";
-import PerformanceRatingModal from "@/app/dashboard/_components/_performance-scoring-modal";
-import RatingsSection from "../../../../_components/_member/_ratings-section";
+import { EditMemberModal } from "../../../../components/teams/team/member/MemberEditModal";
+import PerformanceRatingModal from "@/app/dashboard/components/PerformanceScoringModal";
+import RatingsSection from "../../../../components/teams/team/member/MemberRatingsSection";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/core/Tabs";
-import MemberDashboard from "../../../../_components/_member/_member-dashboard";
+import MemberDashboard from "../../../../components/teams/team/member/MemberDashboard";
 import { useMemberDetails, useMemberStore } from "@/store/member-store";
 
 export default function MemberDetailsPage() {

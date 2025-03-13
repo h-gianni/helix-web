@@ -11,7 +11,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from "@/components/ui/composite/Navigation-menu";
+} from "@/components/ui/composite/NavigationMenu";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { navConfig } from "@/app/(marketing)/config/navigation-config";

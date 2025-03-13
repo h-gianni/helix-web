@@ -1,5 +1,5 @@
 import React from "react";
-import ConditionalSidebar from "./_components/conditional-sidebar";
+import ConditionalSidebar from "./components/conditional-sidebar";
 import { SidebarProvider } from "@/components/ui/composite/Sidebar";
 
 export default function DashboardLayout({

@@ -57,7 +57,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/core/Dropdown-menu";
+} from "@/components/ui/core/DropdownMenu";
 import { Input } from "@/components/ui/core/Input";
 import { Label } from "@/components/ui/core/Label";
 import {

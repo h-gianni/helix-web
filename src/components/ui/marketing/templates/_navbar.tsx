@@ -9,7 +9,7 @@ NavigationMenuItem,
 NavigationMenuLink,
 NavigationMenuList,
 NavigationMenuTrigger,
-} from "@/components/ui/composite/Navigation-menu";
+} from "@/components/ui/composite/NavigationMenu";
 import { Menu, MoveRight, X } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
