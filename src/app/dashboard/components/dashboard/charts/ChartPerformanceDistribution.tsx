@@ -5,6 +5,7 @@ import {
   Card,
   CardHeader,
   CardTitle,
+  CardDescription,
   CardContent,
 } from "@/components/ui/core/Card";
 import {
@@ -15,51 +16,110 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import type { Member } from "@/store/member";
 
-interface PerformanceDistributionProps {
-  performers: Member[];
-}
+const distributionData = [
+  { name: "Star", value: 2, color: "#FF9500" }, // Apple orange
+  { name: "Strong", value: 3, color: "#007AFF" }, // Apple blue
+  { name: "Solid", value: 3, color: "#5856D6" }, // Apple purple
+  { name: "Lower", value: 1, color: "#AF52DE" }, // Apple pink/purple
+  { name: "Poor", value: 1, color: "#FF2D55" }, // Apple red
+  { name: "Not Scored", value: 1, color: "#8E8E93" }, // Apple gray
+];
 
-export function PerformanceDistribution({ performers }: PerformanceDistributionProps) {
-  // Create distribution data based on rating ranges
-  // This would integrate with your existing performanceCategories in a real implementation
-  const distributionData = [
-    { name: "Star (4.6-5.0)", value: performers.filter(p => p.ratingsCount > 0 && p.averageRating >= 4.6).length, color: "#10b981" },
-    { name: "Strong (4.0-4.5)", value: performers.filter(p => p.ratingsCount > 0 && p.averageRating >= 4.0 && p.averageRating < 4.6).length, color: "#34d399" },
-    { name: "Solid (3.0-3.9)", value: performers.filter(p => p.ratingsCount > 0 && p.averageRating >= 3.0 && p.averageRating < 4.0).length, color: "#3b82f6" },
-    { name: "Lower (2.1-2.9)", value: performers.filter(p => p.ratingsCount > 0 && p.averageRating >= 2.1 && p.averageRating < 3.0).length, color: "#f59e0b" },
-    { name: "Poor (1.0-2.0)", value: performers.filter(p => p.ratingsCount > 0 && p.averageRating >= 1.0 && p.averageRating < 2.1).length, color: "#ef4444" },
-    { name: "Not Scored", value: performers.filter(p => p.ratingsCount === 0).length, color: "#6b7280" },
-  ].filter(item => item.value > 0);
+// Custom renderer for the legend that uses circles instead of rectangles
+// const renderLegend = (props: any) => {
+//   const { payload } = props;
 
+//   return (
+//     <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 pt-4 text-sm text-foreground">
+//       {payload.map((entry: any, index: number) => (
+//         <li key={`item-${index}`} className="flex items-center">
+//           <div
+//             className="mr-2 h-3 w-3 rounded-full"
+//             style={{ backgroundColor: entry.color }}
+//           />
+//           <span className="text-sm text-foreground-muted">{entry.value}</span>
+//         </li>
+//       ))}
+//     </ul>
+//   );
+// };
+
+export function PerformanceDistribution() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Performance Distribution</CardTitle>
+    <Card className="bg-white/80 backdrop-blur-sm border border-slate-200 shadow-sm">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-xl font-semibold text-slate-800">
+          Performance Distribution
+        </CardTitle>
+        <CardDescription className="text-sm text-slate-500">
+          Distribution of team members across different performance categories.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-80">
+        <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
+              <defs>
+                {distributionData.map((entry, index) => (
+                  <linearGradient
+                    key={`gradient-${index}`}
+                    id={`colorGradient-${index}`}
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop offset="0%" stopColor={entry.color} stopOpacity={1} />
+                    <stop
+                      offset="100%"
+                      stopColor={entry.color}
+                      stopOpacity={0.7}
+                    />
+                  </linearGradient>
+                ))}
+              </defs>
               <Pie
                 data={distributionData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
+                outerRadius={90}
+                innerRadius={50}
+                paddingAngle={0}
                 dataKey="value"
                 label={({ name, percent }) => 
                   `${name}: ${(percent * 100).toFixed(0)}%`
                 }
+                className="text-sm font-medium"
+                cornerRadius={0}
               >
                 {distributionData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={`url(#colorGradient-${index})`}
+                    stroke={entry.color}
+                    strokeWidth={1}
+                  />
                 ))}
               </Pie>
-              <Legend />
-              <Tooltip formatter={(value) => [`${value} members`, ""]} />
+              <Tooltip
+                formatter={(value) => [`${value} members`, ""]}
+                contentStyle={{
+                  borderRadius: "8px",
+                  backgroundColor: "rgba(255, 255, 255, 0.95)",
+                  border: "1px solid #f1f1f1",
+                  boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+                  padding: "8px 12px",
+                }}
+                itemStyle={{ fontSize: "12px" }}
+                labelStyle={{ fontSize: "12px", fontWeight: "bold" }}
+              />
+              {/* <Legend
+                content={renderLegend}
+                verticalAlign="bottom"
+                height={36}
+              /> */}
             </PieChart>
           </ResponsiveContainer>
         </div>

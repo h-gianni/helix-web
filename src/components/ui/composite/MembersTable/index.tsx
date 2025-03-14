@@ -52,10 +52,7 @@ export interface PerformanceCategory {
   Icon: LucideIcon;
 }
 
-type MembersTableDOMProps = Omit<
-  React.HTMLAttributes<HTMLDivElement>,
-  "performanceCategories"
->;
+type MembersTableDOMProps = Omit<React.HTMLAttributes<HTMLDivElement>, "performanceCategories">;
 
 export interface MembersTableProps extends MembersTableDOMProps {
   members: Member[];
@@ -63,6 +60,7 @@ export interface MembersTableProps extends MembersTableDOMProps {
   teamId?: string;
   showAvatar?: boolean;
   showActions?: boolean;
+  showTableHead?: boolean;
   onDelete?: (member: Member) => void;
   onGenerateReview?: (member: Member) => void;
   onNavigate?: (path: string) => void;
@@ -80,6 +78,7 @@ function MembersTable({
   teamId,
   showAvatar = true,
   showActions = true,
+  showTableHead = true,
   onDelete,
   onGenerateReview,
   onNavigate,
@@ -99,18 +98,20 @@ function MembersTable({
   return (
     <div className={cn("w-full", className)} {...props}>
       <Table data-slot="table">
-        <TableHeader data-slot="table-header">
-          <TableRow data-slot="table-row">
-            {showAvatar && <TableHead data-slot="table-head" className="w-10 px-0" />}
-            <TableHead data-slot="table-head" className="pl-2">Name</TableHead>
-            {showTeamColumn && <TableHead data-slot="table-head">Team</TableHead>}
-            <TableHead data-slot="table-head">Job Title</TableHead>
-            <TableHead data-slot="table-head">Seniority</TableHead>
-            <TableHead data-slot="table-head">Performance</TableHead>
-            <TableHead data-slot="table-head" className="w-[200px]">Scores</TableHead>
-            {showActions && <TableHead data-slot="table-head" className="w-10" />}
-          </TableRow>
-        </TableHeader>
+        {showTableHead && (
+          <TableHeader data-slot="table-header">
+            <TableRow data-slot="table-row">
+              {showAvatar && <TableHead data-slot="table-head" className="w-10 px-0" />}
+              <TableHead data-slot="table-head" className="pl-2">Name</TableHead>
+              {showTeamColumn && <TableHead data-slot="table-head">Team</TableHead>}
+              <TableHead data-slot="table-head">Job Title</TableHead>
+              <TableHead data-slot="table-head">Seniority</TableHead>
+              <TableHead data-slot="table-head">Performance</TableHead>
+              <TableHead data-slot="table-head" className="w-[200px]">Scores</TableHead>
+              {showActions && <TableHead data-slot="table-head" className="w-10" />}
+            </TableRow>
+          </TableHeader>
+        )}
         <TableBody data-slot="table-body">
           {sortedMembers.map((member) => {
             const category = getPerformanceCategory(

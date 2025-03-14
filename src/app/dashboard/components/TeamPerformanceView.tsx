@@ -5,7 +5,11 @@ import { useRouter } from "next/navigation";
 import { MemberCard } from "@/components/ui/composite/MemberCard";
 import { MembersTable } from "@/components/ui/composite/MembersTable";
 import { Card, CardContent } from "@/components/ui/core/Card";
-import { usePerformersStore, useGenerateReview } from "@/store/performers-store";
+import {
+  usePerformersStore,
+  useGenerateReview,
+} from "@/store/performers-store";
+import { cn } from "@/lib/utils";
 
 interface Team {
   id: string;
@@ -28,6 +32,8 @@ interface TeamPerformanceViewProps {
   teamId?: string;
   showAvatar?: boolean;
   showActions?: boolean;
+  showTableHead?: boolean;
+  className?: string;
   onMemberDelete?: (member: MemberPerformance) => void;
   mode?: "desktop" | "mobile";
   viewType?: "table" | "grid";
@@ -40,6 +46,8 @@ export function TeamPerformanceView({
   teamId,
   showAvatar = true,
   showActions = true,
+  showTableHead = true,
+  className,
   onMemberDelete,
   mode = "mobile",
   viewType = "grid",
@@ -59,7 +67,7 @@ export function TeamPerformanceView({
 
   // We'll use a ref to track if we've applied user choices yet
   const hasInitialized = React.useRef(false);
-  
+
   // Store our actual view in state
   const [activeView, setActiveView] = useState(getDefaultViewByMemberCount());
 
@@ -74,12 +82,12 @@ export function TeamPerformanceView({
       // First time initialization - always use member count logic
       const defaultView = getDefaultViewByMemberCount();
       setActiveView(defaultView);
-      
+
       // If default view doesn't match store, update the store
       if (defaultView !== viewType && onViewChange) {
         onViewChange(defaultView);
       }
-      
+
       hasInitialized.current = true;
     }
   }, [viewType, members.length]);
@@ -94,19 +102,19 @@ export function TeamPerformanceView({
         // On desktop, use current viewType (user choice or default)
         setActiveView(viewType);
       }
-      
+
       // Update card variant based on screen size
       setCardVariant(window.innerWidth < 768 ? "mobile" : mode);
     };
-    
+
     // Initial check
     handleResize();
-    
+
     // Add event listener
-    window.addEventListener('resize', handleResize);
-    
+    window.addEventListener("resize", handleResize);
+
     // Clean up
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [mode, viewType]);
 
   const handleGenerateReview = (member: MemberPerformance) => {
@@ -120,7 +128,10 @@ export function TeamPerformanceView({
   if (members.length === 0) {
     return (
       <Card data-slot="card">
-        <CardContent data-slot="card-content" className="flex items-center justify-center py-8">
+        <CardContent
+          data-slot="card-content"
+          className="flex items-center justify-center py-8"
+        >
           <p>No team members found.</p>
         </CardContent>
       </Card>
@@ -128,7 +139,7 @@ export function TeamPerformanceView({
   }
 
   return (
-    <div className="space-y-4">
+    <div className={cn("space-y-4", className)}>
       {activeView === "table" ? (
         <MembersTable
           members={sortedMembers}
@@ -136,16 +147,21 @@ export function TeamPerformanceView({
           teamId={teamId}
           showAvatar={showAvatar}
           showActions={showActions}
+          showTableHead={showTableHead}
           onDelete={onMemberDelete}
           onGenerateReview={handleGenerateReview}
           onNavigate={handleNavigate}
           performanceCategories={performanceCategories}
           getPerformanceCategory={getPerformanceCategory}
+          className="shadow-sm"
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
           {sortedMembers.map((member) => {
-            const category = getPerformanceCategory(member.averageRating, member.ratingsCount);
+            const category = getPerformanceCategory(
+              member.averageRating,
+              member.ratingsCount
+            );
             return (
               <MemberCard
                 key={member.id}
