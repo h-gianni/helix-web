@@ -34,21 +34,21 @@
   }
   
   .marketing-h4 {
-    @apply font-bold;
+    @apply font-bold text-foreground-strong;
     font-family: var(--font-marketing);
     font-size: var(--font-marketing-base);
     line-height: var(--leading-marketing-snug);
   }
   
   .marketing-h5 {
-    @apply font-bold;
+    @apply font-bold text-foreground-strong;
     font-family: var(--font-marketing);
     font-size: var(--font-marketing-sm);
     line-height: var(--leading-marketing-tight);
   }
   
   .marketing-h6 {
-    @apply font-bold;
+    @apply font-bold text-foreground-strong;
     font-family: var(--font-marketing);
     font-size: var(--font-marketing-xs);
     line-height: var(--leading-marketing-normal);
