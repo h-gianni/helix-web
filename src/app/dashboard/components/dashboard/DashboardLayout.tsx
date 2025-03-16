@@ -12,10 +12,10 @@ import type { Member } from "@/store/member";
 import type { TeamResponse } from "@/lib/types/api";
 import { usePerformersStore } from "@/store/performers-store";
 import { usePerformanceRatingStore } from "@/store/performance-rating-store";
-import TeamOverviewTab from "@/app/dashboard/components/dashboard/views/TeamOverview";
-import IndividualPerformanceTab from "@/app/dashboard/components/dashboard/views/IndividualPerformance";
-import SkillAnalysisTab from "@/app/dashboard/components/dashboard/views/SkillAnalysis";
-import FeedbackEngagementTab from "@/app/dashboard/components/dashboard/views/FeedbackEngagement";
+import ViewTeamOverview from "@/app/dashboard/components/dashboard/views/ViewTeamOverview";
+import IndividualPerformanceTab from "@/app/dashboard/components/dashboard/views/ViewIndividualPerformance";
+import ViewSkillAnalysis from "@/app/dashboard/components/dashboard/views/ViewSkillAnalysis";
+import ViewFeedbackEngagement from "@/app/dashboard/components/dashboard/views/ViewFeedbackEngagement";
 
 const breadcrumbItems = [{ label: "Dashboard" }];
 
@@ -74,7 +74,7 @@ export default function DashboardLayout({ performers, teams, router }: Dashboard
           </div>
           
           <TabsContent value="team">
-            <TeamOverviewTab teams={teams} performers={performers} />
+            <ViewTeamOverview teams={teams} performers={performers} />
           </TabsContent>
           
           <TabsContent value="individual">
@@ -87,11 +87,11 @@ export default function DashboardLayout({ performers, teams, router }: Dashboard
           </TabsContent>
           
           <TabsContent value="skills">
-            <SkillAnalysisTab />
+            <ViewSkillAnalysis />
           </TabsContent>
           
           <TabsContent value="feedback">
-            <FeedbackEngagementTab />
+            <ViewFeedbackEngagement />
           </TabsContent>
         </Tabs>
       </main>

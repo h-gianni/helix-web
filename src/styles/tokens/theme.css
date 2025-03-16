@@ -69,6 +69,30 @@
   --info-darker: hsl(34 27% 35%);
   --info-darkest: hsl(34 27% 29%);
 
+  /* --chart-deep-ocean: hsl(200 95% 19%);
+  --chart-midnight-sky: hsl(217 44% 33%);
+  --chart-stormy-violet: hsl(261 16% 36%);
+  --chart-wild-berry: hsl(312 33% 47%);
+  --chart-rosewood: hsl(327 54% 56%);
+  --chart-sunset-blush: hsl(350 86% 67%);
+  --chart-autumn-leaf: hsl(19 100% 64%);
+  --chart-golden-sun: hsl(39 100% 53%); */
+
+  --chart-deep-ocean: hsl(200 100% 14%);
+  --chart-midnight-sky: hsl(217 49% 28%);
+  --chart-stormy-violet: hsl(261 21% 31%);
+  --chart-wild-berry: hsl(312 38% 42%);
+  --chart-rosewood: hsl(327 59% 51%);
+  --chart-sunset-blush: hsl(350 91% 62%);
+  --chart-autumn-leaf: hsl(19 100% 59%);
+  --chart-golden-sun: hsl(39 100% 48%);
+  
+  /* Chart utility variables */
+  --chart-grid: hsl(220 10% 90%);
+  --chart-axis: hsl(220 10% 85%);
+  --chart-label: hsl(220 10% 20%);
+  --chart-tick: hsl(220 10% 50%);
+
   /* Star */
   --star-rating: hsl(48 95% 58%);
 
@@ -79,7 +103,7 @@
 
   /* Shadows */
   --shadow-sm: 0px 6px 20px -4px hsl(206 23% 22% / 0.08);
-  --shadow-base: 0px 7px 30px -6px hsl(206 23% 22% / 0.20);
+  --shadow-base: 0px 7px 30px -6px hsl(206 23% 22% / 0.2);
   --shadow-md: 0px 8px 40px -8px hsl(206 23% 22% / 0.34);
   --shadow-lg: 0px 9px 50px -12px hsl(206 23% 22% / 0.48);
   --shadow-xl: 0px 10px 65px -16px hsl(206 23% 22% / 0.68);
@@ -258,4 +282,9 @@
   --shadow-md: none;
   --shadow-lg: none;
   --shadow-xl: none;
+
+  --chart-grid: hsl(220 10% 25%);
+  --chart-axis: hsl(220 10% 30%);
+  --chart-label: hsl(220 10% 90%);
+  --chart-tick: hsl(220 10% 70%);
 }

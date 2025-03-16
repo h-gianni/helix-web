@@ -2,6 +2,13 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+// Type definition for size prop
+type Size = "sm" | "base" | "lg"
+
+// Create context for sharing size
+const CardContext = React.createContext<{ size: Size }>({ size: "base" })
+
+// Card component
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -17,42 +24,70 @@ const Card = React.forwardRef<
 ))
 Card.displayName = "Card"
 
+// CardHeader with size prop
 const CardHeader = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+  React.HTMLAttributes<HTMLDivElement> & { size?: Size }
+>(({ className, size = "base", ...props }, ref) => (
   <div
     ref={ref}
     className={cn("flex flex-col space-y-1 p-6 pb-0", className)}
     {...props}
-  />
+  >
+    <CardContext.Provider value={{ size }}>
+      {props.children}
+    </CardContext.Provider>
+  </div>
 ))
 CardHeader.displayName = "CardHeader"
 
+// CardTitle picks up size from context
 const CardTitle = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("heading-3 leading-none", className)}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  const { size } = React.useContext(CardContext)
+  
+  const sizeClasses = {
+    sm: "heading-4",
+    base: "heading-3",
+    lg: "heading-2"
+  }[size]
+  
+  return (
+    <div
+      ref={ref}
+      className={cn(`${sizeClasses} leading-none`, className)}
+      {...props}
+    />
+  )
+})
 CardTitle.displayName = "CardTitle"
 
+// CardDescription picks up size from context
 const CardDescription = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("body-base", className)}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  const { size } = React.useContext(CardContext)
+  
+  const sizeClasses = {
+    sm: "body-sm",
+    base: "body-base",
+    lg: "body-lg"
+  }[size]
+  
+  return (
+    <div
+      ref={ref}
+      className={cn(sizeClasses, className)}
+      {...props}
+    />
+  )
+})
 CardDescription.displayName = "CardDescription"
 
+// CardContent
 const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -61,6 +96,7 @@ const CardContent = React.forwardRef<
 ))
 CardContent.displayName = "CardContent"
 
+// CardFooter
 const CardFooter = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
