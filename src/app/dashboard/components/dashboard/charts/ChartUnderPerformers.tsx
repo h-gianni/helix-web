@@ -10,57 +10,54 @@ import {
 } from "@/components/ui/core/Card";
 import { BaseBarChart } from "@/components/ui/charts/BaseBarChart";
 
-// Update the chartData to include both yearly and quarterly ratings
-// Add custom labels for the legend
 const chartData = [
   { 
-    name: "Alex Johnson", 
-    yearlyRating: 4.9, 
-    quarterlyRating: 4.7,
+    name: "Jordan Mitchell", 
+    yearlyRating: 2.2, 
+    quarterlyRating: 2.4,
     yearlyLabel: "Yearly", 
     quarterlyLabel: "Quarterly" 
   },
   { 
-    name: "Jamie Smith", 
-    yearlyRating: 4.7, 
-    quarterlyRating: 4.9,
+    name: "Riley Carter", 
+    yearlyRating: 2.5, 
+    quarterlyRating: 2.9,
     yearlyLabel: "Yearly", 
     quarterlyLabel: "Quarterly" 
   },
   { 
-    name: "Taylor Brown", 
-    yearlyRating: 4.6, 
-    quarterlyRating: 4.3,
+    name: "Avery Logan", 
+    yearlyRating: 2.6, 
+    quarterlyRating: 2.3,
     yearlyLabel: "Yearly", 
     quarterlyLabel: "Quarterly" 
   },
   { 
-    name: "Morgan Davis", 
-    yearlyRating: 4.5, 
-    quarterlyRating: 4.8,
+    name: "Peyton Reed", 
+    yearlyRating: 2.9, 
+    quarterlyRating: 2.8,
     yearlyLabel: "Yearly", 
     quarterlyLabel: "Quarterly" 
   },
   { 
-    name: "Casey Wilson", 
-    yearlyRating: 4.4, 
-    quarterlyRating: 4.6,
+    name: "Skylar Bennett", 
+    yearlyRating: 3.4, 
+    quarterlyRating: 3.6,
     yearlyLabel: "Yearly", 
     quarterlyLabel: "Quarterly" 
   },
 ];
 
-export function TopPerformersChart() {
-  
+export function UnderPerformersChart() {
   return (
     <Card>
       <CardHeader size="sm">
         <CardTitle>
-          Top 5 Performers
+        Bottom 5 Performers
         </CardTitle>
         <CardDescription>
-          The highest-rated team members across your organization, comparing yearly 
-          and quarterly performance metrics.
+          The lowest-rated team members across your organization, comparing yearly 
+          and half-year performance metrics.
         </CardDescription>
       </CardHeader>
       <CardContent>

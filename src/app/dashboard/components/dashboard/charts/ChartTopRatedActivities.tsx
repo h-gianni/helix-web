@@ -5,57 +5,46 @@ import {
   Card,
   CardHeader,
   CardTitle,
+  CardDescription,
   CardContent,
 } from "@/components/ui/core/Card";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { BaseBarChart } from "@/components/ui/charts/BaseBarChart";
 
-export function TopRatedActivities() {
-  // Sample data - in a real implementation, would come from API
+  // Sorted activity data by rating
   const activityData = [
     { name: "Code Reviews", rating: 4.7, count: 45 },
     { name: "Client Meetings", rating: 4.5, count: 32 },
     { name: "Problem Solving", rating: 4.4, count: 38 },
     { name: "Documentation", rating: 4.2, count: 25 },
     { name: "Knowledge Sharing", rating: 4.1, count: 40 },
-  ];
+  ].sort((a, b) => b.rating - a.rating);
+
+export function TopRatedActivities() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Top Rated Activities</CardTitle>
+      <CardHeader size="sm">
+        <CardTitle>
+          Top 5 Rated Activities
+        </CardTitle>
+        <CardDescription>
+          Shows which specific activities receive the highest ratings across
+          teams, highlighting areas where teams excel.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={activityData}
-              layout="vertical"
-              margin={{ top: 5, right: 30, left: 60, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" domain={[0, 5]} />
-              <YAxis 
-                dataKey="name" 
-                type="category" 
-                tick={{ fontSize: 12 }}
-              />
-              <Tooltip formatter={(value) => [`${value} / 5`, "Rating"]} />
-              <Bar 
-                dataKey="rating" 
-                fill="#10b981" 
-                radius={[0, 4, 4, 0]} 
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <BaseBarChart
+          data={activityData}
+          xKey="name"
+          yKeys={["rating"]}
+          layout="horizontal"
+          barSize={80}
+          height={260}
+          variant="categorical"
+          domain={[0, 5]}
+          showLegend={false}
+          margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+        />
       </CardContent>
     </Card>
   );

@@ -5,21 +5,13 @@ import {
   Card,
   CardHeader,
   CardTitle,
+  CardDescription,
   CardContent,
 } from "@/components/ui/core/Card";
-import {
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { BaseRadarChart } from "@/components/ui/charts/BaseRadarChart";
 
 export function FeedbackQualityMetrics() {
   // Sample data for feedback quality metrics
-  // In a real implementation, this would come from your API
   const qualityData = [
     { name: 'Specific', value: 65 },
     { name: 'Actionable', value: 59 },
@@ -30,27 +22,26 @@ export function FeedbackQualityMetrics() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Feedback Quality Metrics</CardTitle>
+      <CardHeader size="sm">
+        <CardTitle>
+          Feedback Quality Metrics
+        </CardTitle>
+        <CardDescription>
+          Radar chart analyzing the quality of feedback across dimensions, ensuring feedback effectiveness.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart outerRadius={90} data={qualityData}>
-              <PolarGrid />
-              <PolarAngleAxis dataKey="name" />
-              <PolarRadiusAxis domain={[0, 100]} />
-              <Radar
-                name="Quality Score"
-                dataKey="value"
-                stroke="#8884d8"
-                fill="#8884d8"
-                fillOpacity={0.6}
-              />
-              <Tooltip />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
+        <BaseRadarChart
+          data={qualityData}
+          dataKeys={["value"]}
+          labelKey="name"
+          height={280}
+          variant="categorical"
+          outerRadius={90}
+          domain={[0, 100]}
+          showLegend={false}
+          margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+        />
       </CardContent>
     </Card>
   );

@@ -5,64 +5,45 @@ import {
   Card,
   CardHeader,
   CardTitle,
+  CardDescription,
   CardContent,
 } from "@/components/ui/core/Card";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import type { Member } from "@/store/member";
+import { BasePieChart } from "@/components/ui/charts/BasePieChart";
 
-interface PerformanceDistributionProps {
-  performers: Member[];
-}
+const distributionData = [
+  { name: "Star", value: 2 },
+  { name: "Strong", value: 3 },
+  { name: "Solid", value: 3 },
+  { name: "Lower", value: 1 },
+  { name: "Poor", value: 1 },
+  { name: "Not Scored", value: 1 },
+];
 
-export function PerformanceDistribution({ performers }: PerformanceDistributionProps) {
-  // Create distribution data based on rating ranges
-  // This would integrate with your existing performanceCategories in a real implementation
-  const distributionData = [
-    { name: "Star (4.6-5.0)", value: performers.filter(p => p.ratingsCount > 0 && p.averageRating >= 4.6).length, color: "#10b981" },
-    { name: "Strong (4.0-4.5)", value: performers.filter(p => p.ratingsCount > 0 && p.averageRating >= 4.0 && p.averageRating < 4.6).length, color: "#34d399" },
-    { name: "Solid (3.0-3.9)", value: performers.filter(p => p.ratingsCount > 0 && p.averageRating >= 3.0 && p.averageRating < 4.0).length, color: "#3b82f6" },
-    { name: "Lower (2.1-2.9)", value: performers.filter(p => p.ratingsCount > 0 && p.averageRating >= 2.1 && p.averageRating < 3.0).length, color: "#f59e0b" },
-    { name: "Poor (1.0-2.0)", value: performers.filter(p => p.ratingsCount > 0 && p.averageRating >= 1.0 && p.averageRating < 2.1).length, color: "#ef4444" },
-    { name: "Not Scored", value: performers.filter(p => p.ratingsCount === 0).length, color: "#6b7280" },
-  ].filter(item => item.value > 0);
-
+export function PerformanceDistribution() {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Performance Distribution</CardTitle>
+      <CardHeader size="sm">
+        <CardTitle>
+          Performance Distribution
+        </CardTitle>
+        <CardDescription>
+          Distribution of team members across different performance categories.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={distributionData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-                label={({ name, percent }) => 
-                  `${name}: ${(percent * 100).toFixed(0)}%`
-                }
-              >
-                {distributionData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Legend />
-              <Tooltip formatter={(value) => [`${value} members`, ""]} />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+        <BasePieChart
+          data={distributionData}
+          dataKey="value"
+          nameKey="name"
+          innerRadius={50}
+          outerRadius={90}
+          paddingAngle={2}
+          labelType="name-percent"
+          height={260}
+          variant="categorical"
+          showLegend={false}
+          margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+        />
       </CardContent>
     </Card>
   );

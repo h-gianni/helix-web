@@ -5,71 +5,44 @@ import {
   Card,
   CardHeader,
   CardTitle,
+  CardDescription,
   CardContent,
 } from "@/components/ui/core/Card";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import type { Member } from "@/store/member";
-import type { TeamResponse } from "@/lib/types/api";
+import { BaseBarChart } from "@/components/ui/charts/BaseBarChart";
 
-interface TeamPerformanceChartProps {
-  teams: TeamResponse[];
-  performers: Member[];
-}
+// Sorted team performance data by rating
+const teamPerformanceData = [
+  { name: "Managers", rating: 4.3, members: 8 },
+  { name: "Product Design", rating: 2.9, members: 5 },
+  { name: "Design Technology", rating: 4.1, members: 6 },
+  { name: "Research", rating: 3.9, members: 5 },
+].sort((a, b) => b.rating - a.rating);
 
-export function TeamPerformanceChart({ teams, performers }: TeamPerformanceChartProps) {
-  // Calculate team performance for bar chart
-  const teamPerformance = teams.map(team => {
-    const teamMembers = performers.filter(p => p.teamId === team.id && p.ratingsCount > 0);
-    const avgRating = teamMembers.length > 0
-      ? teamMembers.reduce((sum, p) => sum + p.averageRating, 0) / teamMembers.length
-      : 0;
-    
-    return {
-      name: team.name,
-      rating: parseFloat(avgRating.toFixed(2)),
-      members: teamMembers.length
-    };
-  }).filter(t => t.rating > 0);
-
+export function TeamPerformanceChart() {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Team Performance Comparison</CardTitle>
+      <CardHeader size="sm">
+        <CardTitle>
+          Team Performance Comparison
+        </CardTitle>
+        <CardDescription>
+          Average performance rating across different teams, helping identify
+          which teams are excelling or struggling.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={teamPerformance}
-              margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis 
-                dataKey="name" 
-                tick={{ fontSize: 12 }}
-                angle={-45}
-                textAnchor="end"
-              />
-              <YAxis domain={[0, 5]} />
-              <Tooltip 
-                formatter={(value, name) => {
-                  return name === "rating" 
-                    ? [`${value} / 5`, "Avg Rating"] 
-                    : [value, "Members"];
-                }}
-              />
-              <Bar dataKey="rating" fill="#3b82f6" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <BaseBarChart
+          data={teamPerformanceData}
+          xKey="name"
+          yKeys={["rating"]}
+          layout="horizontal"
+          barSize={160}
+          height={220}
+          variant="categorical"
+          domain={[1, 5]}
+          showLegend={false}
+          margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+        />
       </CardContent>
     </Card>
   );

@@ -5,59 +5,43 @@ import {
   Card,
   CardHeader,
   CardTitle,
+  CardDescription,
   CardContent,
 } from "@/components/ui/core/Card";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import type { Member } from "@/store/member";
-import type { TeamResponse } from "@/lib/types/api";
+import { BaseBarChart } from "@/components/ui/charts/BaseBarChart";
 
-interface TeamCompositionChartProps {
-  teams: TeamResponse[];
-  performers: Member[];
-}
+// Sample data
+const compositionData = [
+  { name: "Managers", Senior: 5, Mid: 8, Junior: 4 },
+  { name: "Product Design", Senior: 2, Mid: 3, Junior: 1 },
+  { name: "Design Technology", Senior: 2, Mid: 4, Junior: 2 },
+  { name: "Research", Senior: 1, Mid: 3, Junior: 2 },
+];
 
-export function TeamCompositionChart({ teams, performers }: TeamCompositionChartProps) {
-  // Sample data - in a real implementation, you would generate this from your data
-  // This is a stacked bar chart showing team composition by seniority
-  const compositionData = [
-    { name: "Engineering", Senior: 5, Mid: 8, Junior: 4 },
-    { name: "Product", Senior: 2, Mid: 3, Junior: 1 },
-    { name: "Design", Senior: 2, Mid: 4, Junior: 2 },
-    { name: "Marketing", Senior: 1, Mid: 3, Junior: 2 },
-  ];
-
+export function TeamCompositionChart() {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Team Composition</CardTitle>
+      <CardHeader size="sm">
+        <CardTitle>
+          Team Composition
+        </CardTitle>
+        <CardDescription>
+          Composition of each team by seniority level, providing insights into
+          team structure.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={compositionData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="Senior" stackId="a" fill="#1e40af" />
-              <Bar dataKey="Mid" stackId="a" fill="#3b82f6" />
-              <Bar dataKey="Junior" stackId="a" fill="#93c5fd" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <BaseBarChart
+          data={compositionData}
+          xKey="name"
+          yKeys={["Senior", "Mid", "Junior"]}
+          stacked={true}
+          layout="horizontal"
+          barSize={160}
+          height={260}
+          variant="categorical"
+          margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+        />
       </CardContent>
     </Card>
   );

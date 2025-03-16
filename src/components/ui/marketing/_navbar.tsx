@@ -27,13 +27,13 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-secondary hover:text-foreground focus:bg-secondary focus:text-foreground",
             className
           )}
           {...props}
         >
           <div className="text-sm font-medium leading-none">{title}</div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+          <p className="line-clamp-2 text-sm leading-snug text-foreground-weak">
             {children}
           </p>
         </a>
@@ -98,13 +98,13 @@ const DesktopNavigation = () => {
 
 export const Navbar = () => {
   return (
-    <header className="w-full z-40 fixed top-0 left-0 bg-background hidden lg:block">
+    <header className="w-full z-40 fixed top-0 left-0 bg-white hidden lg:block">
       <div className="lg:container relative mx-auto min-h-20 flex gap-4 flex-row items-center justify-between">
         {/* LEFT: Logo */}
         <div className="flex items-center gap-4 lg:gap-6">
           <div className="flex items-center gap-2">
-            <span className="size-6 rounded-full bg-accent"></span>
-          <p className="marketing-h4">JustScore</p>
+            <span className="size-6 rounded-full bg-neutral-darkest"></span>
+          <p className="marketing-h4 text-foreground-strong">JustScore</p>
           </div>
 
           {/* DESKTOP NAVIGATION */}
@@ -119,12 +119,12 @@ export const Navbar = () => {
           <Button variant="ghost">Watch a demo</Button>
           <div className="border-r h-6 hidden md:inline"></div>
           <SignedOut>
-            <Button variant="outline" asChild>
+            <Button variant="secondary" asChild>
               <Link href="/sign-in">Sign in</Link>
             </Button>
           </SignedOut>
           <SignedIn>
-            <Button asChild>
+            <Button asChild variant="secondary">
               <Link href="/dashboard">Dashboard</Link>
             </Button>
           </SignedIn>

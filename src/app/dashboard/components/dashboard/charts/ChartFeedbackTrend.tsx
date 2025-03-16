@@ -5,22 +5,13 @@ import {
   Card,
   CardHeader,
   CardTitle,
+  CardDescription,
   CardContent,
 } from "@/components/ui/core/Card";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+import { BaseAreaChart } from "@/components/ui/charts/BaseAreaChart";
 
 export function FeedbackTrendChart() {
   // Sample data for feedback over time
-  // In a real implementation, this would come from your API
   const feedbackData = [
     { month: 'Jan', feedback: 65, ratings: 120 },
     { month: 'Feb', feedback: 59, ratings: 110 },
@@ -33,38 +24,26 @@ export function FeedbackTrendChart() {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Feedback Trends</CardTitle>
+      <CardHeader size="sm">
+        <CardTitle>
+          Feedback Trends
+        </CardTitle>
+        <CardDescription>
+          Area chart showing the volume of feedback and ratings over time, helping track engagement with the feedback process.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
-              data={feedbackData}
-              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Area 
-                type="monotone" 
-                dataKey="feedback" 
-                stackId="1"
-                stroke="#3b82f6" 
-                fill="#3b82f6" 
-              />
-              <Area 
-                type="monotone" 
-                dataKey="ratings" 
-                stackId="1"
-                stroke="#10b981" 
-                fill="#10b981" 
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
+        <BaseAreaChart
+          data={feedbackData}
+          xKey="month"
+          yKeys={["feedback", "ratings"]}
+          height={280}
+          variant="categorical"
+          domain={[0, 'auto']}
+          stacked={false}
+          curved={true}
+          margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+        />
       </CardContent>
     </Card>
   );

@@ -5,62 +5,43 @@ import {
   Card,
   CardHeader,
   CardTitle,
+  CardDescription,
   CardContent,
 } from "@/components/ui/core/Card";
-import {
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  Legend,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { BaseRadarChart } from "@/components/ui/charts/BaseRadarChart";
 
 export function SkillAreaChart() {
   // Sample data for radar chart
-  // In a real implementation, this would come from your API
   const skillData = [
-    { subject: 'Communication', A: 120, B: 110, fullMark: 150 },
-    { subject: 'Technical Skills', A: 98, B: 130, fullMark: 150 },
-    { subject: 'Leadership', A: 86, B: 130, fullMark: 150 },
-    { subject: 'Teamwork', A: 99, B: 100, fullMark: 150 },
-    { subject: 'Problem Solving', A: 85, B: 90, fullMark: 150 },
-    { subject: 'Creativity', A: 65, B: 85, fullMark: 150 },
+    { subject: 'Communication', Managers: 120, "Product Design": 110, "Design Technology": 90, "Research": 105 },
+    { subject: 'Technical Skills', Managers: 98, "Product Design": 130, "Design Technology": 140, "Research": 115 },
+    { subject: 'Leadership', Managers: 86, "Product Design": 130, "Design Technology": 95, "Research": 120 },
+    { subject: 'Teamwork', Managers: 99, "Product Design": 100, "Design Technology": 115, "Research": 130 },
+    { subject: 'Problem Solving', Managers: 85, "Product Design": 90, "Design Technology": 125, "Research": 135 },
+    { subject: 'Creativity', Managers: 65, "Product Design": 85, "Design Technology": 110, "Research": 95 },
   ];
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Performance by Skill Area</CardTitle>
+      <CardHeader size="sm">
+        <CardTitle>
+          Performance by Skill Area
+        </CardTitle>
+        <CardDescription>
+          Radar chart comparing performance across different skill dimensions, revealing strengths and weaknesses.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart outerRadius={90} data={skillData}>
-              <PolarGrid />
-              <PolarAngleAxis dataKey="subject" />
-              <PolarRadiusAxis angle={30} domain={[0, 150]} />
-              <Radar
-                name="Team A"
-                dataKey="A"
-                stroke="#8884d8"
-                fill="#8884d8"
-                fillOpacity={0.6}
-              />
-              <Radar
-                name="Team B"
-                dataKey="B"
-                stroke="#82ca9d"
-                fill="#82ca9d"
-                fillOpacity={0.6}
-              />
-              <Legend />
-              <Tooltip />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
+        <BaseRadarChart
+          data={skillData}
+          dataKeys={["Managers", "Product Design", "Design Technology", "Research"]}
+          labelKey="subject"
+          height={280}
+          variant="categorical"
+          outerRadius={90}
+          domain={[0, 150]}
+          margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+        />
       </CardContent>
     </Card>
   );
