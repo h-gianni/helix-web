@@ -127,12 +127,12 @@ export async function DELETE(
     }
 
     // Check if activity has any ratings
-    const activity = await prisma.businessActivity.findUnique({
+    const activity = await prisma.orgAction.findUnique({
       where: { id: params.activityId },
       include: {
         _count: {
           select: {
-            ratings: true,
+            scores: true,
           },
         },
       },
@@ -145,15 +145,15 @@ export async function DELETE(
       );
     }
 
-    if (activity._count.ratings > 0) {
+    if (activity._count.scores > 0) {
       // Soft delete if activity has ratings
-      await prisma.businessActivity.update({
+      await prisma.orgAction.update({
         where: { id: params.activityId },
         data: { deletedAt: new Date() },
       });
     } else {
       // Hard delete if no ratings exist
-      await prisma.businessActivity.delete({
+      await prisma.orgAction.delete({
         where: { id: params.activityId },
       });
     }

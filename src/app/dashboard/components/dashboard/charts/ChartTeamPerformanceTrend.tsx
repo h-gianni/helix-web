@@ -88,7 +88,7 @@ const timeSeriesData = [
           <div className="space-y-1">
             <CardTitle>Performance Trends</CardTitle>
             <CardDescription>
-              How each team's performance has evolved over time, highlighting improvement or decline patterns.
+              How each team&apos;s performance has evolved over time, highlighting improvement or decline patterns.
             </CardDescription>
           </div>
           <Select value={timeRange} onValueChange={setTimeRange}>

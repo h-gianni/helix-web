@@ -215,7 +215,7 @@ export async function POST(
     }
 
      // Handle profile photo upload if present
-     let profilePhotoUrl = null;
+    //  let profilePhotoUrl = null;
      if (profilePhoto) {
        // Implement your file upload logic here
        // profilePhotoUrl = await uploadFile(profilePhoto);

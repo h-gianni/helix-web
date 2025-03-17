@@ -120,12 +120,13 @@ export interface OrgActionResponse {
 
   priority: Priority;
   status: OrgActionStatus;
-  dueDate: Date | null;
+  dueDate: Date | null | string;
   teamId: string;
   createdBy: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
+  // createdAt: Date;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: Date | null | string;
   customFields?: JsonValue;
   activity: {  // Renamed from activity to match relation name in schema
     id: string;
@@ -178,7 +179,7 @@ export interface ActivityResponse {
   };
   priority: Priority;
   status: BusinessActivityStatus;
-  dueDate: Date | null;
+  dueDate: Date | null | string;
   teamId: string;
   createdBy: string;
   createdAt: Date;

@@ -44,7 +44,7 @@ const PricingExample = () => {
       <div className="text-center max-w-3xl mx-auto">
         <h2 className="display-1">Simple, Transparent Pricing</h2>
         <p className="body-lg text-muted-foreground mt-4">
-          Choose the plan that's right for you and start building amazing
+          Choose the plan that&apos;s right for you and start building amazing
           projects
         </p>
       </div>
@@ -215,7 +215,7 @@ const PricingExample = () => {
                 <AccordionTrigger>Can I change plans later?</AccordionTrigger>
                 <AccordionContent>
                   Yes, you can upgrade or downgrade your plan at any time. When
-                  upgrading, you'll be charged a prorated amount for the
+                  upgrading, you&apos;ll be charged a prorated amount for the
                   remainder of your billing cycle. When downgrading, your new
                   plan will take effect at the beginning of your next billing
                   cycle.
@@ -245,7 +245,7 @@ const PricingExample = () => {
                 </AccordionTrigger>
                 <AccordionContent>
                   You can cancel your subscription at any time from your account
-                  settings. When you cancel, you'll still have access to your
+                  settings. When you cancel, you&apos;ll still have access to your
                   plan until the end of your current billing cycle.
                 </AccordionContent>
               </AccordionItem>

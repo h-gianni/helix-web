@@ -310,7 +310,7 @@ function ActionsConfig({
         {/* Function actions */}
         <div className="lg:w-1/2 space-y-4">
           <div>
-            <h4 className="heading-3">Functions' actions</h4>
+            <h4 className="heading-3">Functions actions</h4>
             <p className="body-sm">
               Select your function and the actions that you expect your team to
               perform. You can mix actions from different functions.

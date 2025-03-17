@@ -217,7 +217,7 @@ function TeamActionsDialog({ isOpen, onClose, team }: TeamActionsDialogProps) {
         <DialogHeader data-slot="dialog-header" className="p-6 border-b">
           <DialogTitle data-slot="dialog-title">
             <div className="flex flex-col gap-2">
-              <h2 className="heading-2">{team.name}'s Actions</h2>
+              <h2 className="heading-2">{team.name}&apos;s Actions</h2>
               <div className="flex gap-2">
                 {team.functions.map((func) => (
                   <Badge data-slot="badge" key={func} variant="secondary">

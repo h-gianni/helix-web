@@ -49,12 +49,12 @@ export const OurStory = () => {
 
           {/* Quote Block */}
           <blockquote className="border-l-4 border-primary pl-4 italic text-lg">
-            "I began to wonder—was there a better way to assess our teams? A way to capture not just isolated moments but the complete, unfolding story of each 
-            team member’s contributions throughout the year."
+            &lsquo;I began to wonder—was there a better way to assess our teams? A way to capture not just isolated moments but the complete, unfolding story of each 
+            team member&apos;s contributions throughout the year.&rsquo;
           </blockquote>
 
           <p>
-            That’s when my co-founder, <strong>Jay</strong>, and I decided to take matters into our own hands. We envisioned <strong>UpScore</strong>—a tool designed 
+            That&apos;s when my co-founder, <strong>Jay</strong>, and I decided to take matters into our own hands. We envisioned <strong>UpScore</strong>—a tool designed 
             to gather data continuously, turning every action and result into a clear, unbiased picture. UpScore was born out of our collective frustration and our deep 
             commitment to leading with both heart and clarity.
           </p>
