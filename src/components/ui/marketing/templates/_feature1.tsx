@@ -15,7 +15,7 @@ export const Feature1 = () => (
                 Show me something new!
               </h2>
               <p className="text-lg leading-relaxed tracking-tight text-muted-foreground max-w-xl text-left">
-                Show design principles and customers' promise.
+                Show design principles and customers&apos; promise.
               </p>
             </div>
           </div>

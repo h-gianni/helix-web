@@ -940,7 +940,7 @@ const DashboardExample = () => {
           <DialogHeader>
             <DialogTitle>Edit Task</DialogTitle>
             <DialogDescription>
-              Make changes to the task. Click save when you're done.
+              Make changes to the task. Click save when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
           {selectedTask && (

@@ -108,7 +108,7 @@ const AuthenticationFormExample = () => {
             </Button>
           </div>
           <p className="text-center text-sm text-muted-foreground mt-4">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Button variant="link" className="h-auto p-0">
               Sign up
             </Button>

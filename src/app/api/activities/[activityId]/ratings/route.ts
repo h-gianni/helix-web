@@ -35,12 +35,12 @@ export async function GET(
 
     // Build the where clause
     const whereClause = {
-      activityId: params.activityId,
+      actionId: params.activityId,
       ...(memberId && { memberId }),
       ...(teamId && { member: { teamId } }),
     };
 
-    const ratings = await prisma.memberRating.findMany({
+    const ratings = await prisma.memberScore.findMany({
       where: whereClause,
       include: {
         teamMember: {
@@ -126,7 +126,7 @@ export async function POST(
     }
 
     // Check if activity exists
-    const activity = await prisma.businessActivity.findUnique({
+    const activity = await prisma.orgAction.findUnique({
       where: { id: params.activityId },
     });
 
@@ -138,11 +138,11 @@ export async function POST(
     }
 
     // Create rating
-    const rating = await prisma.memberRating.create({
+    const rating = await prisma.memberScore.create({
       data: {
         value,
         teamMemberId: memberId,
-        activityId: params.activityId,
+        actionId: params.activityId,
       },
       include: {
         teamMember: {

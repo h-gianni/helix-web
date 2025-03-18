@@ -9,6 +9,7 @@ import type {
   CreateBusinessActivityInput,
   CreateActivityInput,
   JsonValue,
+  OrgActionResponse,
 } from "@/lib/types/api";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -176,9 +177,9 @@ export async function POST(request: Request) {
       }
     }
 
-    const businessActivity = await prisma.businessActivity.create({
+    const businessActivity = await prisma.orgAction.create({
       data: {
-        activityId,
+        actionId: activityId,
         teamId,
         createdBy: userId,
         status,
@@ -187,6 +188,7 @@ export async function POST(request: Request) {
       },
       select: {
         id: true,
+        actionId: true,  // Added this to select actionId
         priority: true,
         status: true,
         dueDate: true,
@@ -196,7 +198,7 @@ export async function POST(request: Request) {
         updatedAt: true,
         deletedAt: true,
         customFields: true,
-        activity: {
+        action: {
           select: {
             id: true,
             name: true,
@@ -219,29 +221,43 @@ export async function POST(request: Request) {
         },
         _count: {
           select: {
-            ratings: true
+            scores: true
           }
         }
       },
     });
 
-    const businessActivityResponse: BusinessActivityResponse = {
+    const businessActivityResponse: OrgActionResponse = {
       id: businessActivity.id,
+      // Adding the missing required properties
+      name: businessActivity.action.name,
+      description: businessActivity.action.description,
+      actionId: businessActivity.actionId,  // Previously missing
+      category: {
+        id: businessActivity.action.category.id,
+        name: businessActivity.action.category.name,
+        description: businessActivity.action.category.description
+      },
+      // Continue with the rest of the properties
       priority: businessActivity.priority,
       status: businessActivity.status,
-      dueDate: businessActivity.dueDate,
+      dueDate: businessActivity.dueDate ? businessActivity.dueDate.toISOString() : null,
       teamId: businessActivity.teamId,
       createdBy: businessActivity.createdBy,
-      createdAt: businessActivity.createdAt,
-      updatedAt: businessActivity.updatedAt,
-      deletedAt: businessActivity.deletedAt,
+      createdAt: businessActivity.createdAt.toISOString(),
+      updatedAt: businessActivity.updatedAt.toISOString(),
+      deletedAt: businessActivity.deletedAt ? businessActivity.deletedAt.toISOString() : null,
       customFields: businessActivity.customFields as JsonValue | undefined,
-      activity: {
-        id: businessActivity.activity.id,
-        name: businessActivity.activity.name,
-        description: businessActivity.activity.description,
-        impactScale: businessActivity.activity.impactScale,
-        category: businessActivity.activity.category
+      action: {
+        id: businessActivity.action.id,
+        name: businessActivity.action.name,
+        description: businessActivity.action.description,
+        impactScale: businessActivity.action.impactScale,
+        category: {
+          id: businessActivity.action.category.id,
+          name: businessActivity.action.category.name,
+          description: businessActivity.action.category.description
+        }
       },
       team: businessActivity.team,
       _count: businessActivity._count

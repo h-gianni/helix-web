@@ -1,6 +1,6 @@
 // lib/types/api.ts
-import { Priority, BusinessActivityStatus, TeamMemberStatus, ReviewStatus, Prisma } from "@prisma/client";
-type OrgActionStatus = BusinessActivityStatus;
+import { Priority, BusinessActionStatus, TeamMemberStatus, ReviewStatus, Prisma } from "@prisma/client";
+type OrgActionStatus = BusinessActionStatus;
 
 // Define a type for JSON fields
 export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
@@ -120,14 +120,15 @@ export interface OrgActionResponse {
 
   priority: Priority;
   status: OrgActionStatus;
-  dueDate: Date | null;
+  dueDate: Date | null | string;
   teamId: string;
   createdBy: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
+  // createdAt: Date;
+  createdAt: Date | null | string;
+  updatedAt: Date | null | string;
+  deletedAt: Date | null | string;
   customFields?: JsonValue;
-  activity: {  // Renamed from activity to match relation name in schema
+  action: {  // Renamed from activity to match relation name in schema
     id: string;
     name: string;
     description: string | null;
@@ -177,8 +178,8 @@ export interface ActivityResponse {
     description: string | null;
   };
   priority: Priority;
-  status: BusinessActivityStatus;
-  dueDate: Date | null;
+  status: OrgActionStatus;
+  dueDate: Date | null | string;
   teamId: string;
   createdBy: string;
   createdAt: Date;
@@ -397,7 +398,7 @@ export type CreateActivityInput = {
   activityId: string;    // ID of the base activity to link
   teamId: string;        // Team ID
   priority?: Priority;   // Optional priority, defaults to MEDIUM
-  status?: BusinessActivityStatus; // Optional status, defaults to ACTIVE
+  status?: OrgActionStatus; // Optional status, defaults to ACTIVE
   dueDate?: Date;       // Optional due date
 };
 

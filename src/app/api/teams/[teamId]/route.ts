@@ -7,7 +7,7 @@ import type {
   JsonValue,
   TeamDetailsResponse,
   TeamResponse,
-  TransactionClient,
+  
 } from "@/lib/types/api";
 
 
@@ -220,28 +220,46 @@ export const GET = async (
     
       businessActivities: team.actions.map(businessActivity => ({
         id: businessActivity.id,
-        activityId: businessActivity.actionId,
+        // Changed from activityId to actionId to match OrgActionResponse
+        actionId: businessActivity.actionId,
+        // Add name, description from the action
+        name: businessActivity.action.name,
+        description: businessActivity.action.description,
+        // Add category object at the top level
+        category: {
+          id: businessActivity.action.category.id,
+          name: businessActivity.action.category.name,
+          description: businessActivity.action.category.description
+        },
         priority: businessActivity.priority,
-       
         status: businessActivity.status,
-        dueDate: businessActivity.dueDate,
+        // Convert dates to ISO strings if necessary based on your type definition
+        dueDate: businessActivity.dueDate ? businessActivity.dueDate.toISOString() : null,
         teamId: businessActivity.teamId,
         createdBy: businessActivity.createdBy,
-        createdAt: businessActivity.createdAt,
-        updatedAt: businessActivity.updatedAt,
-        deletedAt: businessActivity.deletedAt,
+        createdAt: businessActivity.createdAt.toISOString(),
+        updatedAt: businessActivity.updatedAt.toISOString(),
+        deletedAt: businessActivity.deletedAt ? businessActivity.deletedAt.toISOString() : null,
         customFields: businessActivity.customFields as JsonValue | undefined,
-        activity: {
+        // Renamed from activity to action to match OrgActionResponse
+        action: {
           id: businessActivity.action.id,
           name: businessActivity.action.name,
           description: businessActivity.action.description,
           impactScale: businessActivity.action.impactScale,
-          category: businessActivity.action.category,
-          categoryId: businessActivity.action.categoryId
+          category: {
+            id: businessActivity.action.category.id,
+            name: businessActivity.action.category.name,
+            description: businessActivity.action.category.description
+          }
         },
         team: {
           id: businessActivity.team.id,
           name: businessActivity.team.name
+        },
+        // Add _count if needed by OrgActionResponse
+        _count: {
+          scores: 0 // You might want to include actual count from the database
         }
       }))
     };
@@ -375,7 +393,7 @@ export const DELETE = async (
     const now = new Date();
 
     // Soft delete all related records in a transaction
-    await prisma.$transaction(async (tx: TransactionClient) => {
+    await prisma.$transaction(async (tx) => {
       // Get all team members first
       const teamMembers = await tx.teamMember.findMany({
         where: {
@@ -388,54 +406,56 @@ export const DELETE = async (
 
       const memberIds = teamMembers.map((member: { id: string }) => member.id);
 
-      // Soft delete all ratings
       if (memberIds.length > 0) {
-        await tx.memberRating.updateMany({
+        // Hard delete records for models without deletedAt field
+        // For MemberScore - hard delete
+        await tx.memberScore.deleteMany({
           where: {
             teamMemberId: {
               in: memberIds
             }
-          },
-          data: {
-            deletedAt: now,
-          },
+          }
         });
 
-        // Soft delete all structured feedback
-        await tx.structuredFeedback.updateMany({
+        // For StructuredFeedback - hard delete
+        await tx.structuredFeedback.deleteMany({
           where: {
             teamMemberId: {
               in: memberIds
             }
-          },
-          data: {
-            deletedAt: now,
-          },
+          }
         });
 
-        // Soft delete all comments
-        await tx.memberComment.updateMany({
+        // For MemberComment - hard delete
+        await tx.memberComment.deleteMany({
           where: {
             teamMemberId: {
               in: memberIds
             }
-          },
-          data: {
-            deletedAt: now,
-          },
+          }
         });
 
-        // Soft delete all performance reviews
-        await tx.performanceReview.updateMany({
-          where: {
-            teamMemberId: {
-              in: memberIds
-            }
-          },
-          data: {
-            deletedAt: now,
-          },
-        });
+        // For PerformanceReview - soft delete (this model has deletedAt)
+        // await tx.performanceReview.updateMany({
+        //   where: {
+        //     teamMemberId: {
+        //       in: memberIds
+        //     }
+        //   },
+        //   data: {
+        //     deletedAt: now,
+        //   },
+        // });
+
+           // Finally, soft delete the team
+      await tx.gTeam.update({
+        where: {
+          id: params.teamId,
+        },
+        data: {
+          deletedAt: now,
+        },
+      });
       }
 
       // Soft delete all members
@@ -448,8 +468,10 @@ export const DELETE = async (
         },
       });
 
+      
+
       // Soft delete activities for this team
-      await tx.businessActivity.updateMany({
+      await tx.orgAction.updateMany({
         where: {
           teamId: params.teamId,
         },

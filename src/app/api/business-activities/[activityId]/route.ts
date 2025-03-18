@@ -2,7 +2,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import type { ApiResponse, BusinessActivityResponse, JsonValue } from "@/lib/types/api";
+import type { ApiResponse, BusinessActivityResponse, JsonValue, OrgActionResponse } from "@/lib/types/api";
 
 async function checkTeamAccess(teamId: string, userId: string) {
   const user = await prisma.appUser.findUnique({
@@ -208,85 +208,100 @@ export async function PATCH(
     const { status, priority, dueDate } = body;
 
     // Update the OrgAction with the new data
-    const updatedOrgAction = await prisma.orgAction.update({
-      where: { id: params.activityId },
-      data: {
-        status: status,
-        priority: priority,
-        dueDate: dueDate,
-        // Note: We can't update name or description directly as they're part of the Action model
-      },
-      select: {
-        id: true,
-        actionId: true,
-        priority: true,
-        status: true,
-        dueDate: true,
-        teamId: true,
-        createdBy: true,
-        createdAt: true,
-        updatedAt: true,
-        deletedAt: true,
-        customFields: true,
-        action: {
-          select: {
-            id: true,
-            name: true,
-            description: true,
-            impactScale: true,
-            category: {
-              select: {
-                id: true,
-                name: true,
-                description: true
-              }
+  // Update the OrgAction with the new data
+  const updatedOrgAction = await prisma.orgAction.update({
+    where: { id: params.activityId },
+    data: {
+      status: status,
+      priority: priority,
+      dueDate: dueDate,
+      // Note: We can't update name or description directly as they're part of the Action model
+    },
+    select: {
+      id: true,
+      actionId: true,
+      priority: true,
+      status: true,
+      dueDate: true,
+      teamId: true,
+      createdBy: true,
+      createdAt: true,
+      updatedAt: true,
+      deletedAt: true,
+      customFields: true,
+      action: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          impactScale: true,
+          category: {
+            select: {
+              id: true,
+              name: true,
+              description: true
             }
           }
-        },
-        team: {
-          select: {
-            id: true,
-            name: true,
-          }
-        },
-        _count: {
-          select: {
-            scores: true,
-          },
+        }
+      },
+      team: {
+        select: {
+          id: true,
+          name: true,
+        }
+      },
+      _count: {
+        select: {
+          scores: true,
         },
       },
-    });
+    },
+  });
 
     // Transform to BusinessActivityResponse
-    const businessActivity: BusinessActivityResponse = {
-      id: updatedOrgAction.id,
-      activityId: updatedOrgAction.actionId,
-      priority: updatedOrgAction.priority,
-      status: updatedOrgAction.status,
-      dueDate: updatedOrgAction.dueDate,
-      teamId: updatedOrgAction.teamId,
-      createdBy: updatedOrgAction.createdBy,
-      createdAt: updatedOrgAction.createdAt,
-      updatedAt: updatedOrgAction.updatedAt,
-      deletedAt: updatedOrgAction.deletedAt,
-      customFields: updatedOrgAction.customFields as JsonValue | undefined,
-      activity: {
-        id: updatedOrgAction.action.id,
-        name: updatedOrgAction.action.name,
-        description: updatedOrgAction.action.description,
-        impactScale: updatedOrgAction.action.impactScale,
-        category: updatedOrgAction.action.category
-      },
-      team: updatedOrgAction.team,
-      _count: {
-        scores: updatedOrgAction._count.scores
+   // Transform to match OrgActionResponse interface
+   const businessActivity: OrgActionResponse = {
+    id: updatedOrgAction.id,
+    // Add these top-level properties from the related action
+    name: updatedOrgAction.action.name,
+    description: updatedOrgAction.action.description,
+    category: {
+      id: updatedOrgAction.action.category.id,
+      name: updatedOrgAction.action.category.name,
+      description: updatedOrgAction.action.category.description
+    },
+    // Continue with the rest of the properties
+    actionId: updatedOrgAction.actionId,
+    priority: updatedOrgAction.priority,
+    status: updatedOrgAction.status,
+    dueDate: updatedOrgAction.dueDate ? updatedOrgAction.dueDate.toISOString() : null,
+    teamId: updatedOrgAction.teamId,
+    createdBy: updatedOrgAction.createdBy,
+    createdAt: updatedOrgAction.createdAt.toISOString(),
+    updatedAt: updatedOrgAction.updatedAt.toISOString(),
+    deletedAt: updatedOrgAction.deletedAt ? updatedOrgAction.deletedAt.toISOString() : null,
+    customFields: updatedOrgAction.customFields as JsonValue | undefined,
+    action: {
+      id: updatedOrgAction.action.id,
+      name: updatedOrgAction.action.name,
+      description: updatedOrgAction.action.description,
+      impactScale: updatedOrgAction.action.impactScale,
+      category: {
+        id: updatedOrgAction.action.category.id,
+        name: updatedOrgAction.action.category.name,
+        description: updatedOrgAction.action.category.description
       }
-    };
+    },
+    team: updatedOrgAction.team,
+    _count: {
+      scores: updatedOrgAction._count.scores
+    }
+  };
 
-    return NextResponse.json<ApiResponse<BusinessActivityResponse>>({
-      success: true,
-      data: businessActivity,
-    });
+  return NextResponse.json<ApiResponse<OrgActionResponse>>({
+    success: true,
+    data: businessActivity,
+  });
   } catch (error) {
     console.error("Error updating business activity:", error);
     return NextResponse.json<ApiResponse<never>>(

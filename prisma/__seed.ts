@@ -31,7 +31,7 @@ async function main() {
 
   const createdCategories = await Promise.all(
     activityCategories.map(category =>
-      prisma.activityCategory.create({
+      prisma.actionCategory.create({
         data: category
       })
     )
@@ -74,7 +74,7 @@ async function main() {
 
   const createdActivities = await Promise.all(
     activities.map(activity =>
-      prisma.activity.create({
+      prisma.action.create({
         data: activity
       })
     )
@@ -233,11 +233,11 @@ async function main() {
   for (const team of createdTeams) {
     await Promise.all(
       createdActivities.map(activity =>
-        prisma.businessActivity.create({
+        prisma.orgAction.create({
           data: {
-            activityId: activity.id,
-            name: `${team.name} - ${activity.name}`,
-            description: activity.description,
+            actionId: activity.id,
+            // name: `${team.name} - ${activity.name}`,
+            // description: activity.description,
             priority: 'MEDIUM',
             status: 'ACTIVE',
             teamId: team.id,
