@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@/components/ui/core/Badge";
 
 // Features data array for clean separation of content
@@ -57,7 +59,7 @@ export const Features = () => (
     <div className="section-container">
       <div className="section-header-centered">
         <div>
-          <Badge>What you get</Badge>
+          <Badge variant="accent">What you get</Badge>
         </div>
         <h2 className="marketing-h1">Key Features and Benefits</h2>
         <p className="marketing-body-lg">

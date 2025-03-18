@@ -30,7 +30,7 @@ export const Craftsmanship = () => {
       <div className="section-container">
         <div className="section-header">
           <div>
-            <Badge>Our philosophy</Badge>
+            <Badge variant="accent">Our philosophy</Badge>
           </div>
             <h2 className="marketing-h1">
               Craftsmanship Meets Human-Centered Design

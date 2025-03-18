@@ -16,7 +16,7 @@
 
 @layer base {
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
@@ -60,8 +60,8 @@
 .btn {
   @apply h-14 shadow-base;
 }
-.btn-primary {
-  @apply bg-[#00f4ff] text-[#003d3f] hover:bg-[#00f4ff]/90;
+/* .btn-primary {
+  @apply bg-primary-darkest text-accent hover:bg-accent/80;
 }
 .btn-secondary {
   @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;
@@ -74,4 +74,4 @@
 }
 .btn-link {
   @apply text-primary underline-offset-4 hover:underline;
-}
+} */

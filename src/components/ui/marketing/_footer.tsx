@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 export const Footer = () => {
@@ -54,7 +56,7 @@ export const Footer = () => {
   ];
 
   return (
-    <div className="w-full py-20 lg:py-40 bg-foreground text-background">
+    <div className="w-full py-20 lg:py-40 bg-neutral-darkest text-background">
       <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-10 items-center">
           <div className="flex gap-8 flex-col items-start">

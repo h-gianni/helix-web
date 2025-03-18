@@ -1,3 +1,5 @@
+"use client";
+
 import { MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/core/Button";
 
@@ -36,7 +38,7 @@ export const Blog = () => (
           <h4 className="marketing-h1">Latest Articles</h4>
         </div>
         <div className="hidden lg:block">
-          <Button className="gap-2">
+          <Button variant="accent">
             View all articles <MoveRight />
           </Button>
         </div>

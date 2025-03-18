@@ -9,7 +9,8 @@ import { ArrowRight, Film } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
 import Image from "next/image";
-import heroImage from "@/assets/marketing/hero.svg";
+import LogoImage from "@/assets/shared/logo.svg";
+import HeroImage from "@/assets/marketing/hero.svg";
 
 export const Hero = () => {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -33,14 +34,14 @@ export const Hero = () => {
     <section className="bg-white pb-0 px-0">
       <div className="section-container">
         <div className="hero-centered">
-          <div className="lg:hidden flex flex-col space-y-2 pt-6 pb-2">
-            <div className="size-10 rounded-full bg-accent mx-auto"></div>
-            <div className="marketing-h2 text-primary">JustScore</div>
+          <div className="lg:hidden flex flex-col pt-6 pb-2">
+            <div className="mx-auto">
+              <Image src={LogoImage} alt="JustScore" className="size-16" />
+            </div>
+            <div className="marketing-h2">JustScore</div>
           </div>
           <div>
-            <Badge variant="secondary">
-              Powered by AI, for humans
-            </Badge>
+            <Badge variant="accent-light">Powered by AI, for humans</Badge>
             {/* <Button variant="secondary" size="sm" className="gap-4">
               Read our launch article <ArrowRight className="w-4 h-4" />
             </Button> */}
@@ -76,14 +77,15 @@ export const Hero = () => {
           <p className="marketing-body-lg max-w-2xl text-center mx-auto">
             Refuse to leave success to chance. Quickly score and track team
             actions and behaviors in real time—unlocking data-driven insights to
-            make you the most effective and efficient team leader in the organization.
+            make you the most effective and efficient team leader in the
+            organization.
           </p>
           <div className="flex flex-col md:flex-row gap-4 mx-auto">
-            <Button size="lg" variant="outline" className="btn">
+            <Button size="xl" variant="outline">
               Show me a short demo <Film />
             </Button>
             <SignUpButton>
-              <Button size="lg" className="btn btn-primary">
+              <Button size="xl" variant="accent" className="shadow-lg">
                 I want to try it <ArrowRight />
               </Button>
             </SignUpButton>
@@ -92,12 +94,11 @@ export const Hero = () => {
       </div>
       <div className="relative w-full flex flex-col items-center mt-4 md:mt-0">
         <p className="hidden md:block absolute top-0 z-20 bg-white rounded-b-lg marketing-body-xs text-center text-foreground-weak max-w-xs lg:max-w-sm mx-auto px-4 py-2">
-          UpScore is a app that lets you score your team’s
-          performance in real-time—in less than 20 seconds per entry. Set up
-          your org in just 5 minutes, and let our AI transform your
-          scores into clear, actionable dashboards and periodic performance
-          reviews in your desired format. It’s effortless, data-driven
-          leadership that delivers measurable ROI.
+          UpScore is a app that lets you score your team’s performance in
+          real-time—in less than 20 seconds per entry. Set up your org in just 5
+          minutes, and let our AI transform your scores into clear, actionable
+          dashboards and periodic performance reviews in your desired format.
+          It’s effortless, data-driven leadership that delivers measurable ROI.
         </p>
 
         {/* SVG Pointer */}
@@ -110,7 +111,7 @@ export const Hero = () => {
         </svg> */}
 
         <Image
-          src={heroImage}
+          src={HeroImage}
           alt="Hero Image"
           // width={1080}
           // height={600}

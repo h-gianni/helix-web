@@ -1,13 +1,15 @@
+"use client";
+
 import { MoveRight, PhoneCall } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
 
 export const CTA1 = () => (
-  <section className="bg-muted">
+  <section className="shadow-lg">
     <div className="section-container rounded-md">
       <div className="section-header-centered">
         <div>
-          <Badge>Get started</Badge>
+          <Badge variant="accent">Get started</Badge>
         </div>
         <h3 className="marketing-h1">Ready to see it all in action?</h3>
         <p className="marketing-body-lg">
@@ -16,10 +18,10 @@ export const CTA1 = () => (
           easily upgrade to our Professional plan at any time.
         </p>
         <div className="flex flex-col md:flex-row gap-4 mx-auto">
-          <Button variant="outline" size="lg">
+          <Button variant="outline" size="xl">
             I want to see a demo <PhoneCall />
           </Button>
-          <Button size="lg">
+          <Button variant="accent" size="xl">
             I want to play with it <MoveRight />
           </Button>
         </div>

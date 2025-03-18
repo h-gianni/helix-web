@@ -1,3 +1,5 @@
+"use client";
+
 import { Check, PhoneCall } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import {
@@ -57,7 +59,7 @@ export const FAQ = () => (
     <div className="section-container">
       <div className="section-header-centered">
         <div>
-          <Badge variant="default">FAQ</Badge>
+          <Badge variant="accent">FAQ</Badge>
           </div>
             <h4 className="marketing-h1">
               Frequently Asked Questions

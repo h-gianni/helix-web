@@ -1,3 +1,5 @@
+"use client";
+
 import { Check, Minus, MoveRight, Calculator, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
@@ -115,11 +117,11 @@ const features = [
 ];
 
 export const Pricing = () => (
-  <section id="pricing">
+  <section id="pricing" className="bg-white">
     <div className="section-container">
       <div className="section-header-centered">
         <div>
-          <Badge>Pricing</Badge>
+          <Badge variant="accent">Pricing</Badge>
         </div>
         <h2 className="marketing-h1">Prices that make sense!</h2>
         <p className="marketing-body-lg">
@@ -130,7 +132,7 @@ export const Pricing = () => (
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
         {/* Starter Plan */}
-        <Card className="p-4 lg:p-8 shadow flex flex-col justify-between">
+        <Card className="p-4 lg:p-8 flex flex-col justify-between">
         <div className="space-y-4">
           <div className="relative bg-muted/50 rounded-md h-32">
             <Badge variant="secondary" className="absolute top-0">For the new and curious ones</Badge>
@@ -142,29 +144,29 @@ export const Pricing = () => (
             </p>
           </div>
           <div className="space-y-4">
-            <div className="flex gap-2 items-baseline">
+            <div className="flex gap-0 items-baseline">
               <span className="marketing-h2 mt-2">$0</span>
-              <span className="marketing-body">for ever</span>
+              <span className="marketing-body">n us, forever!</span>
             </div>
-            <Button size="lg" variant="outline" className="w-full">
+            <Button size="xl" variant="outline" className="w-full">
               Start now <MoveRight />
             </Button>
             <div className="flex justify-center gap-2 marketing-body-xs font-semibold">
               No payment info required
             </div>
-            <ul className="marketing-body-xs space-y-1.5 border-t pt-4">
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>Up to 2 Team Members</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>2 AI generated "Performance Reviews" per member/year</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>Basic Scoring & Dashboard</span></li>
+            <ul className="marketing-body-xs space-y-1.5 border-t border-border pt-4">
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Up to 2 Team Members</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>2 AI generated "Performance Reviews" per member/year</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Basic Scoring & Dashboard</span></li>
             </ul>
           </div>
         </Card>
 
         {/* Professional Plan */}
-        <Card className="p-8 shadow-lg flex flex-col justify-between border-accent border-2">
+        <Card className="p-4 lg:p-8 shadow-lg flex flex-col justify-between">
         <div className="space-y-4">
           <div className="relative bg-muted/50 rounded-md h-32">
-            <Badge className="absolute top-0 bg-accent text-primary">Leaders' unfair advantage</Badge>
+            <Badge variant="accent-light">Leaders' unfair advantage</Badge>
           </div>
             <h3 className="marketing-h3">Professional</h3>
             <p className="marketing-body-sm">
@@ -177,23 +179,23 @@ export const Pricing = () => (
               <span className="marketing-h2 mt-2">$7.90</span>
               <span className="marketing-body">per seat/month</span>
             </div>
-            <Button size="lg" className="w-full">
+            <Button size="xl" variant="accent" className="w-full">
               Try it <MoveRight />
             </Button>
             <div className="flex justify-center gap-2 marketing-body-xs font-semibold">
               <Lock className="size-4" /> Secure transaction
             </div>
-            <ul className="marketing-body-xs space-y-1.5 border-t pt-4">
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>Unlimited Team Members & Hierarchy</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>2 AI generated "Performance Reviews" per member/quarter (8 in a year)</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>Full AI-Powered Insights & Real-Time Scoring</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>Team Member Dashboard Access</span></li>
+            <ul className="marketing-body-xs space-y-1.5 border-t border-border pt-4">
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Unlimited Team Members & Hierarchy</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>2 AI generated "Performance Reviews" per member/quarter (8 in a year)</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Full AI-Powered Insights & Real-Time Scoring</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Team Member Dashboard Access</span></li>
             </ul>
           </div>
         </Card>
 
         {/* Enterprise Plan */}
-        <Card className="p-8 shadow flex flex-col justify-between">
+        <Card className="p-4 lg:p-8 flex flex-col justify-between">
           <div className="space-y-4">
           <div className="relative bg-muted/50 rounded-md h-32">
             <Badge variant="secondary" className="absolute top-0">Impactful org results</Badge>
@@ -209,18 +211,18 @@ export const Pricing = () => (
               <span className="marketing-h5 pt-2">Custom</span>
               <span className="marketing-body">per seat/month</span>
             </div>
-            <Button size="lg" variant="outline" className="w-full">
+            <Button size="xl" variant="outline" className="w-full">
               Generate a quote <Calculator />
             </Button>
             <div className="flex justify-center gap-2 marketing-body-xs font-semibold">
               <Lock className="size-4" /> Secure transaction
             </div>
-            <ul className="marketing-body-xs space-y-1.5 border-t pt-4">
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>All Professional Features, Plus:</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>HR Super-User management</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>Custom Integrations (SSO, API)</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>Advanced Analytics & Standard Integrations</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-primary mt-0.5 flex-none" /><span>Enhanced Security & Custom Branding</span></li>
+            <ul className="marketing-body-xs space-y-1.5 border-t border-border pt-4">
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>All Professional Features, Plus:</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>HR Super-User management</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Custom Integrations (SSO, API)</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Advanced Analytics & Standard Integrations</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Enhanced Security & Custom Branding</span></li>
             </ul>
           </div>
         </Card>
@@ -241,7 +243,7 @@ export const Pricing = () => (
           </thead>
           <tbody>
             {features.map((feature, index) => (
-              <tr key={index} className="border-t bg-white">
+              <tr key={index} className="border-t border-border bg-white">
                 <td className="bg-background p-3 marketing-body-sm font-semibold text-foreground">
                   {feature.name}
                 </td>
@@ -266,7 +268,7 @@ export const Pricing = () => (
 // Helper function to render icons or text based on feature availability
 const renderFeatureIcon = (value: string) => {
   if (value === "Yes")
-    return <Check className="w-4 h-4 text-primary mx-auto" />;
+    return <Check className="w-4 h-4 text-accent mx-auto" />;
   if (value === "No")
     return <Minus className="w-4 h-4 text-muted-foreground mx-auto" />;
   return <span>{value}</span>;

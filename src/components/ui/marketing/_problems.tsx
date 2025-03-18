@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Badge } from "@/components/ui/core/Badge";
 import { Card } from "@/components/ui/core/Card";
@@ -80,7 +82,7 @@ export const Problems = () => (
     <div className="section-container relative z-10">
       <div className="section-header">
         <div>
-          <Badge>Every problem has a solution</Badge>
+          <Badge variant="accent">Every problem has a solution</Badge>
         </div>
         <h2 className="marketing-h1">
           Managing a team today can feel like a juggling act.
