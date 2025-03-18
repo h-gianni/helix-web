@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/core/Button";
 import {
   NavigationMenu,
@@ -102,10 +103,7 @@ export const Navbar = () => {
       <div className="lg:container relative mx-auto min-h-20 flex gap-4 flex-row items-center justify-between">
         {/* LEFT: Logo */}
         <div className="flex items-center gap-4 lg:gap-6">
-          <div className="flex items-center gap-2">
-            <span className="size-6 rounded-full bg-neutral-darkest"></span>
-          <p className="marketing-h4 text-foreground-strong">JustScore</p>
-          </div>
+          <BrandLogo />
 
           {/* DESKTOP NAVIGATION */}
           <div className="flex items-center gap-2">

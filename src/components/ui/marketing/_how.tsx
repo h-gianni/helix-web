@@ -1,3 +1,5 @@
+"use client";
+
 import { Badge } from "@/components/ui/core/Badge";
 import { Circle } from "lucide-react";
 
@@ -26,7 +28,7 @@ export const How = () => (
     <div className="section-container lg:w-3/5 px-4 lg:p-16 lg:py-20">
       <div className="section-header">
         <div>
-          <Badge>Easy peasy</Badge>
+          <Badge variant="accent">Easy peasy</Badge>
         </div>
         <h2 className="marketing-h1">
           Your Secret Weapon for Building an A-Team
@@ -55,7 +57,7 @@ export const How = () => (
             {/* Step Content */}
             <div className="space-y-4 max-w-lg -mt-1">
               <div>
-                <Badge variant="secondary" className="bg-accent text-primary">Step {index + 1}</Badge>
+                <Badge variant="accent-light">Step {index + 1}</Badge>
               </div>
               <div className="space-y-1.5">
               <h3 className="marketing-h4">{step.title}</h3>

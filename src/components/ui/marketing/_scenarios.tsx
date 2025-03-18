@@ -1,3 +1,5 @@
+"use client";
+
 import { User } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Card } from "@/components/ui/core/Card";
@@ -70,7 +72,7 @@ export const Scenarios = () => (
   <section>
     <div className="section-container">
       <div className="section-header">
-        <Badge>Where to get value</Badge>
+        <Badge variant="accent">Where to get value</Badge>
         <div className="space-y-4">
           <h2 className="marketing-h1">
             Usage Scenarios: Transforming Performance Reviews
@@ -104,25 +106,25 @@ export const Scenarios = () => (
             // SCENARIO CARDS
             <Card
               key={index}
-              className={`bg-white border-0 rounded-md p-4 pb-6 lg:pb-0 lg:p-6 lg:aspect-auto flex justify-between flex-col ${
+              className={`bg-white border-0 rounded-md space-y-4 p-4 pb-6 lg:pb-0 lg:p-6 lg:aspect-auto flex justify-between flex-col ${
                 scenario.span === 2 ? "lg:col-span-2" : ""
               }`}
             >
               {/* <User className="w-8 h-8 stroke-1" /> */}
               <div>
-                <Badge variant="secondary" className="bg-accent text-primary">Scenario {index + 1}</Badge>
+                <Badge variant="accent-light">Scenario {index + 1}</Badge>
               </div>
 
-              <div className="flex flex-col gap-4 lg:gap-6 flex-1">
+              <div className="flex flex-col gap-4 flex-1">
                 <h3 className="marketing-h4">{scenario.title}</h3>
                 <div className="grid grid-cols-1 gap-4">
                   <div className="space-y-1">
-                    <h4 className="marketing-h6 text-foreground">Pain</h4>
+                    <h4 className="marketing-h6">Pain</h4>
                     <p className="marketing-body-sm"> {scenario.pain} </p>
                   </div>
                   <div className="space-y-1">
-                    <h4 className="marketing-h6 text-foreground">
-                      With UpScore
+                    <h4 className="marketing-h6">
+                      With JustScore
                     </h4>
                     <p className="marketing-body-sm"> {scenario.solution} </p>
                   </div>

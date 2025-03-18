@@ -1,3 +1,5 @@
+"use client";
+
 import { User } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Card } from "@/components/ui/core/Card";
@@ -91,7 +93,7 @@ export const Testimonials = () => (
   <section>
     <div className="section-container">
       <div className="section-header">
-        <Badge>Our fuel</Badge>
+        <Badge variant="accent">Our fuel</Badge>
         <h2 className="marketing-h1">Testimonials</h2>
         <p className="marketing-body-lg">
           See how our platform has transformed performance management for teams
@@ -103,7 +105,7 @@ export const Testimonials = () => (
         {testimonials.map((testimonial, index) => (
           <Card
             key={index}
-            className={`bg-white border-0 rounded-md p-6 lg:aspect-auto flex justify-between flex-col ${
+            className={`bg-white border-0 rounded-md space-y-4 p-6 lg:aspect-auto flex justify-between flex-col ${
               index === 0 ? "lg:col-span-2 lg:row-span-2" : ""
             }`}
           >
@@ -120,7 +122,7 @@ export const Testimonials = () => (
             </div>
 
             <div className="flex flex-col gap-1 flex-1 max-w-md">
-              <h3 className="marketing-body font-semibold leading-tight">
+              <h3 className="marketing-body font-semibold text-foreground-strong leading-tight">
                 {testimonial.quote}
               </h3>
               <p className="marketing-body-sm">{testimonial.outcome}</p>

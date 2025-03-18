@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BrandLogo } from "@/components/BrandLogo";
 import { LucideIcon, Home, Users, Settings } from "lucide-react";
 import {
   Sidebar,
@@ -89,10 +90,7 @@ function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center gap-3 px-4 py-4">
-          <div className="size-8 flex items-center justify-center rounded-full bg-neutral-darkest text-white">
-            <span className="text-lg font-bold">U</span>
-          </div>
-          <span className="text-lg text-foreground-strong font-semibold">JustScore</span>
+          <BrandLogo />
         </div>
       </SidebarHeader>
 

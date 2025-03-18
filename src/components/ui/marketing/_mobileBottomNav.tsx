@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/core/Button";
-import { Smartphone, Play, User, BookOpen, Menu, X } from "lucide-react";
+import { Smartphone, Play, User, BookOpen, Menu, X, Gauge } from "lucide-react";
 import { useState } from "react";
 import { navConfig } from "@/app/(marketing)/config/navigation-config";
 
@@ -26,7 +27,7 @@ const MobileNavItem = ({
       className="flex flex-col gap-1 p-4 hover:bg-accent rounded-md"
     >
       <span className="font-medium">{title}</span>
-      <span className="text-sm text-muted-foreground">{description}</span>
+      <span className="text-sm text-foreground-weak">{description}</span>
     </Link>
   );
 };
@@ -66,13 +67,10 @@ export const MobileBottomNav = () => {
       {isMenuOpen && (
         <div className="fixed inset-0 bg-background z-40 flex flex-col lg:hidden">
           {/* Fixed top header */}
-          <div className="sticky top-0 bg-background z-10 border-b">
+          <div className="sticky top-0 bg-background z-10 border-b border-border">
             <div className="container px-4 py-4">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="size-6 rounded-full bg-primary"></span>
-                  <p className="marketing-h4 leading-[0]">JustScore</p>
-                </div>
+                <BrandLogo />
                 <Button
                   variant="ghost"
                   size="icon"
@@ -121,7 +119,7 @@ export const MobileBottomNav = () => {
           {/* Fixed bottom actions */}
           <div className="fixed bottom-16 left-0 right-0 bg-background border-t py-4 px-4">
             <div className="container flex flex-col gap-2">
-              <Button className="w-full" asChild>
+              <Button variant="accent" className="w-full" asChild>
                 <Link href="/get-app" onClick={closeMenu}>
                   Get the Mobile App
                 </Link>
@@ -137,14 +135,14 @@ export const MobileBottomNav = () => {
       )}
 
       {/* Bottom Navigation Bar - Always visible */}
-      <div className="fixed bottom-0 left-0 z-50 w-full bg-background border-t lg:hidden">
+      <div className="fixed bottom-0 left-0 z-50 w-full bg-neutral-darkest border-t lg:hidden shadow-lg">
         <div className="grid grid-cols-5 h-16">
           <button
             onClick={() => setMenuOpen(!isMenuOpen)}
             className={`flex flex-col items-center justify-center ${
               isMenuOpen
-                ? "text-primary"
-                : "text-muted-foreground hover:text-primary"
+                ? "text-primary-light"
+                : "text-neutral-light hover:text-primary"
             }`}
           >
             {isMenuOpen ? (
@@ -162,7 +160,7 @@ export const MobileBottomNav = () => {
 
           <Link
             href="/demo"
-            className="flex flex-col items-center justify-center text-muted-foreground hover:text-primary"
+            className="flex flex-col items-center justify-center text-neutral-base hover:text-primary"
           >
             <Play className="size-5" />
             <span className="text-xs mt-1">Demo</span>
@@ -170,16 +168,16 @@ export const MobileBottomNav = () => {
 
           <Link
             href="/get-app"
-            className="flex flex-col items-center justify-center text-muted-foreground hover:text-primary"
+            className="flex flex-col items-center justify-center text-neutral-base hover:text-primary"
           >
             <Smartphone className="size-5" />
-            <span className="text-xs mt-1">Download App</span>
+            <span className="text-xs mt-1">Get the App</span>
           </Link>
 
           <SignedOut>
             <Link
               href="/sign-in"
-              className="flex flex-col items-center justify-center text-muted-foreground hover:text-primary"
+              className="flex flex-col items-center justify-center text-neutral-base hover:text-primary"
             >
               <User className="size-5" />
               <span className="text-xs mt-1">Sign In</span>
@@ -189,7 +187,7 @@ export const MobileBottomNav = () => {
           <SignedIn>
             <Link
               href="/dashboard"
-              className="flex flex-col items-center justify-center text-muted-foreground hover:text-primary"
+              className="flex flex-col items-center justify-center text-neutral-base hover:text-primary"
             >
               <BookOpen className="size-5" />
               <span className="text-xs mt-1">Docs</span>
@@ -213,13 +211,9 @@ export const MobileBottomNav = () => {
           <SignedIn>
             <Link
               href="/dashboard"
-              className="flex flex-col items-center justify-center text-primary font-medium"
+              className="flex flex-col items-center justify-center text-primary-light font-medium"
             >
-              <div className="flex items-center justify-center w-6 h-6 bg-primary rounded-full">
-                <span className="text-primary-foreground text-xs font-bold">
-                  +
-                </span>
-              </div>
+              <Gauge className="size-5" />
               <span className="text-xs mt-1">Dashboard</span>
             </Link>
           </SignedIn>

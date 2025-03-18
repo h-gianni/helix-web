@@ -1,21 +1,23 @@
+"use client";
+
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
 import Image from "next/image";
 
 export const OurStory = () => {
   return (
-    <section>
+    <section className="max-w-2xl mx-auto">
       <div className="section-container max-w-2xl">
         {/* Header Section */}
         <div className="section-header">
-          <div><Badge>Our Story</Badge></div>
+          <div><Badge variant="accent">Our Story</Badge></div>
           <h2 className="marketing-h1">
             From Frustration to Clarity: <br />The Birth of UpScore
           </h2>
         </div>
 
         {/* Narrative Section */}
-        <div className="space-y-10 text-lg text-muted-foreground leading-relaxed px-4 lg:px-0">
+        <div className="space-y-10 body-base leading-relaxed px-4 lg:px-0">
           <p>
             It was another late afternoon during our annual performance review, a room filled with leaders from Product, Engineering, and Design. 
             I remember one particular meeting where the conversation spiraled into confusion. One colleague insisted that a team member’s impressive 

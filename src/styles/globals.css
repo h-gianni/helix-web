@@ -22,7 +22,7 @@
     @apply border-neutral-light;
   }
   body {
-    @apply bg-background text-foreground text-base leading-normal antialiased;
+    @apply bg-white text-foreground text-base leading-normal antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
