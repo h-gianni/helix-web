@@ -278,6 +278,7 @@ export async function PATCH(
 }
 
 // DELETE endpoint to remove a member and their associated records
+
 export async function DELETE(
   req: Request,
   { params }: { params: { teamId: string; memberId: string } }
@@ -355,9 +356,10 @@ export async function DELETE(
     }
 
     // Delete all related records in a transaction
-    await prisma.$transaction(async (tx: TransactionClient) => {
+    await prisma.$transaction(async (tx) => {
       await tx.structuredFeedback.deleteMany({ where: { teamMemberId: params.memberId } });
-      await tx.memberRating.deleteMany({ where: { teamMemberId: params.memberId } });
+      await tx.memberScore.deleteMany({ where: { teamMemberId: params.memberId } });
+      await tx.memberComment.deleteMany({ where: { teamMemberId: params.memberId } });
       await tx.performanceReview.deleteMany({ where: { teamMemberId: params.memberId } });
       await tx.teamMember.delete({ where: { id: params.memberId } });
     });

@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { 
   ApiResponse, 
-  BusinessActivityResponse as  ActivityResponse,
+  BusinessActivityResponse,
   OrgActionResponse,
   UpdateBusinessActivityInput as UpdateActivityInput 
 } from "@/lib/types/api";
@@ -33,7 +33,19 @@ export async function GET(
             scores: true,
           },
         },
+        action:{
+          include: {
+            category: true
+          }
+        },
+        team: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
       },
+
     });
 
     if (!activity) {
@@ -45,12 +57,43 @@ export async function GET(
 
     return NextResponse.json<ApiResponse<OrgActionResponse>>({
       success: true,
-      data: { ...activity,
+      data: {
+        id: activity.id,
+        name: activity.action.name, // This comes from the relation
+        description: activity.action.description,
+        actionId: activity.actionId,
+        category: {
+          id: activity.action.category.id,
+          name: activity.action.category.name,
+          description: activity.action.category.description,
+        },
+        priority: activity.priority,
+        status: activity.status,
+        dueDate: activity.dueDate?.toISOString() ?? null,
+        teamId: activity.teamId,
+        createdBy: activity.createdBy,
         createdAt: activity.createdAt.toISOString(),
         updatedAt: activity.updatedAt.toISOString(),
         deletedAt: activity.deletedAt?.toISOString() ?? null,
-        dueDate: activity.dueDate?.toISOString() ?? null,
-        customFields: typeof activity.customFields === 'string' ? JSON.parse(activity.customFields) : activity.customFields,
+        customFields: typeof activity.customFields === 'string' 
+          ? JSON.parse(activity.customFields) 
+          : activity.customFields,
+        action: {
+          id: activity.action.id,
+          name: activity.action.name,
+          description: activity.action.description,
+          impactScale: activity.action.impactScale,
+          category: {
+            id: activity.action.category.id,
+            name: activity.action.category.name,
+            description: activity.action.category.description,
+          }
+        },
+        team: {
+          id: activity.team.id,
+          name: activity.team.name,
+        },
+        _count: activity._count
       }
     });
   } catch (error) {
@@ -62,56 +105,56 @@ export async function GET(
   }
 }
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: { activityId: string } }
-) {
-  try {
-    const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Unauthorized" },
-        { status: 401 }
-      );
-    }
+// export async function PATCH(
+//   request: Request,
+//   { params }: { params: { activityId: string } }
+// ) {
+//   try {
+//     const { userId } = await auth();
+//     if (!userId) {
+//       return NextResponse.json<ApiResponse<never>>(
+//         { success: false, error: "Unauthorized" },
+//         { status: 401 }
+//       );
+//     }
 
-    const body = await request.json() as UpdateActivityInput;
-    const { name, description } = body;
+//     const body = await request.json() as UpdateActivityInput;
+//     const { name, description } = body;
 
-    if (!name?.trim()) {
-      return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Name is required" },
-        { status: 400 }
-      );
-    }
+//     if (!name?.trim()) {
+//       return NextResponse.json<ApiResponse<never>>(
+//         { success: false, error: "Name is required" },
+//         { status: 400 }
+//       );
+//     }
 
-    const activity = await prisma.orgAction.update({
-      where: { id: params.activityId },
-      data: {
-        // name: name.trim(),
-        // description: description?.trim() || null,
-      },
-      include: {
-        _count: {
-          select: {
-            scores: true,
-          },
-        },
-      },
-    });
+//     const activity = await prisma.orgAction.update({
+//       where: { id: params.activityId },
+//       data: {
+//         name: name.trim(),
+//         description: description?.trim() || null,
+//       },
+//       include: {
+//         _count: {
+//           select: {
+//             scores: true,
+//           },
+//         },
+//       },
+//     });
 
-    return NextResponse.json<ApiResponse<ActivityResponse>>({
-      success: true,
-      data: activity as ActivityResponse,
-    });
-  } catch (error) {
-    console.error("Error updating activity:", error);
-    return NextResponse.json<ApiResponse<never>>(
-      { success: false, error: "Internal server error" },
-      { status: 500 }
-    );
-  }
-}
+//     return NextResponse.json<ApiResponse<BusinessActivityResponse>>({
+//       success: true,
+//       data: activity
+//     });
+//   } catch (error) {
+//     console.error("Error updating activity:", error);
+//     return NextResponse.json<ApiResponse<never>>(
+//       { success: false, error: "Internal server error" },
+//       { status: 500 }
+//     );
+//   }
+// }
 
 export async function DELETE(
   request: Request,

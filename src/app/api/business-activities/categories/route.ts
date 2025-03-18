@@ -21,20 +21,20 @@ export async function GET(request: Request) {
     }
 
     // Using the correct model name based on your Prisma schema
-    const categories = await prisma.activityCategory.findMany({
+    const categories = await prisma.actionCategory.findMany({
       select: {
         id: true,
         name: true,
         description: true,
         createdAt: true,
         updatedAt: true,
-        activities: {
+        actions: {
           select: {
             id: true,
             name: true,
             description: true,
             impactScale: true,
-            businessActivities: {
+            orgActions: {
               select: {
                 id: true,
                 status: true,
@@ -45,7 +45,7 @@ export async function GET(request: Request) {
         },
         _count: {
           select: {
-            activities: true,
+            actions: true,
           },
         },
       },
@@ -61,14 +61,14 @@ export async function GET(request: Request) {
       createdAt: category.createdAt.toISOString(),
       updatedAt: category.updatedAt.toISOString(),
       _count: {
-        activities: category._count.activities,
+        activities: category._count.actions,
       },
-      activities: category.activities.map(activity => ({
-        id: activity.id,
-        name: activity.name,
-        description: activity.description,
-        impactScale: activity.impactScale,
-        businessActivities: activity.businessActivities
+      activities: category.actions.map(action => ({
+        id: action.id,
+        name: action.name,
+        description: action.description,
+        impactScale: action.impactScale,
+        businessActivities: action.orgActions
       }))
     }));
 
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
     }
 
     // Check for duplicate category names
-    const existingCategory = await prisma.activityCategory.findFirst({
+    const existingCategory = await prisma.actionCategory.findFirst({
       where: {
         name: name.trim(),
       },
@@ -120,7 +120,7 @@ export async function POST(request: Request) {
     }
 
     // Create new category
-    const category = await prisma.activityCategory.create({
+    const category = await prisma.actionCategory.create({
       data: {
         name: name.trim(),
         description: description?.trim() || null,
@@ -133,7 +133,7 @@ export async function POST(request: Request) {
         updatedAt: true,
         _count: {
           select: {
-            activities: true,
+            actions: true,
           },
         },
       },
@@ -146,7 +146,7 @@ export async function POST(request: Request) {
       createdAt: category.createdAt.toISOString(),
       updatedAt: category.updatedAt.toISOString(),
       _count: {
-        activities: category._count.activities,
+        activities: category._count.actions,
       },
       activities: []
     };
