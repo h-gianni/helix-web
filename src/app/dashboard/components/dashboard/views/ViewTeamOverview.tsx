@@ -25,6 +25,7 @@ export default function ViewTeamOverview({
 }: ViewTeamOverviewProps) {
   // Calculate previous period stats
   const previousStats = {
+    totalScores: performers.reduce((sum, p) => sum + p.ratingsCount, 0),
     teamsCount: teams.length - 1,
     membersCount: performers.length - 3,
     averageRating:
@@ -37,6 +38,7 @@ export default function ViewTeamOverview({
         : 0,
     notRatedCount: performers.filter((p) => p.ratingsCount === 0).length + 2,
   };
+
 
   return (
     <div className="space-y-4">

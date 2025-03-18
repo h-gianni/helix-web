@@ -9,7 +9,7 @@ import {
   AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
-  type AlertDialogContentProps
+
 } from './index';
 import { Button } from '@/components/ui/core/Button';
 
@@ -23,15 +23,8 @@ const meta = {
   parameters: { layout: 'centered' },
   tags: ['autodocs'],
   argTypes: {
-    variant: {
-      control: 'select',
-      options: VARIANTS,
-      defaultValue: 'neutral' as DialogVariant,
-    },
-    withIcon: {
-      control: 'boolean',
-      defaultValue: true,
-    },
+   
+    
   },
 } satisfies Meta<typeof AlertDialogContent>;
 
@@ -42,7 +35,7 @@ export const Default: Story = {
   render: (args) => (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant={args.variant as DialogVariant}>Open Dialog</Button>
+        <Button >Open Dialog</Button>
       </AlertDialogTrigger>
       <AlertDialogContent {...args}>
         <AlertDialogHeader>
@@ -53,15 +46,12 @@ export const Default: Story = {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant={args.variant as DialogVariant}>Continue</AlertDialogAction>
+          <AlertDialogAction >Continue</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   ),
-  args: {
-    withIcon: true,
-    variant: 'neutral' as DialogVariant,
-  },
+  
 };
 
 const DIALOG_CONFIGS = [
@@ -97,16 +87,16 @@ export const VariantExamples: Story = {
       {DIALOG_CONFIGS.map(({ variant, title, description, action }) => (
         <AlertDialog key={variant}>
           <AlertDialogTrigger asChild>
-            <Button variant={variant}>Open {variant} Dialog</Button>
+            <Button >Open {variant} Dialog</Button>
           </AlertDialogTrigger>
-          <AlertDialogContent variant={variant}>
+          <AlertDialogContent >
             <AlertDialogHeader>
               <AlertDialogTitle>{title}</AlertDialogTitle>
               <AlertDialogDescription>{description}</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction variant={variant}>{action}</AlertDialogAction>
+              <AlertDialogAction >{action}</AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

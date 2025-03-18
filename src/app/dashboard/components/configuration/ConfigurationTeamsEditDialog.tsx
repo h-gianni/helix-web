@@ -37,7 +37,7 @@ function TeamsEditDialog({ isOpen, onClose }: TeamsEditDialogProps) {
       // Save each team's functions to the database  
       for (const team of teams.filter(t => !t.id.startsWith("temp-"))) {
         // Map category IDs to actual action IDs
-        let actionIds = [];
+        let actionIds: string[] = [];
         
         // Collect action IDs from selected categories
         team.categories.forEach(categoryId => {

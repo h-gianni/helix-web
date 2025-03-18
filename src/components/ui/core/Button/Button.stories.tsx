@@ -1,156 +1,229 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from './index';
-import { Mail, ArrowRight, Plus, Search, Settings } from 'lucide-react';
+import { 
+  ArrowRight, 
+  Download, 
+  Search, 
+  Mail, 
+  Plus, 
+  Trash, 
+  Settings, 
+  ExternalLink 
+} from 'lucide-react';
 
 const meta = {
-  title: 'Core/Button',
+  title: 'Components/Button',
   component: Button,
-  parameters: { layout: 'centered' },
-  tags: ['autodocs'],
-  args: {
-    children: 'Button',
-    variant: 'neutral',
-    size: 'base',
-    shape: 'beveled',
+  parameters: {
+    layout: 'centered',
   },
+  tags: ['autodocs'],
   argTypes: {
     variant: {
       control: 'select',
-      options: ['primary', 'neutral', 'warning', 'danger'],
-      description: 'Base variant of the button',
-    },
-    volume: {
-      control: 'select',
-      options: ['loud', 'moderate', 'soft'],
-      description: 'Visual emphasis of the button',
+      options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'],
+      description: 'The visual style of the button',
     },
     size: {
       control: 'select',
-      options: ['sm', 'base', 'lg'],
-      description: 'Size of the button',
+      options: ['default', 'sm', 'lg', 'icon'],
+      description: 'The size of the button',
     },
-    shape: {
-      control: 'select',
-      options: ['beveled', 'rounded'],
-      description: 'Shape of the button corners',
-    },
-    iconOnly: { 
+    asChild: {
       control: 'boolean',
-      description: 'Whether the button shows only an icon'
+      description: 'Whether to render as a child element using Radix UI Slot',
     },
-    disabled: { control: 'boolean' },
-    isLoading: { control: 'boolean' },
-    leadingIcon: {
+    disabled: {
       control: 'boolean',
-      mapping: { true: <Mail />, false: null }
+      description: 'Whether the button is disabled',
     },
-    trailingIcon: {
-      control: 'boolean',
-      mapping: { true: <ArrowRight />, false: null }
-    }
+    children: {
+      control: 'text',
+      description: 'The content of the button',
+    },
+    className: {
+      control: 'text',
+      description: 'Additional CSS class names',
+    },
+    onClick: {
+      action: 'clicked',
+    },
   },
 } satisfies Meta<typeof Button>;
 
 export default meta;
 type Story = StoryObj<typeof Button>;
 
-export const Variants: Story = {
-  render: (args) => {
-    if (args.iconOnly) {
-      return (
-        <Button {...args} leadingIcon={<Plus />} aria-label="Add item" />
-      );
-    }
-    return <Button {...args} />;
-  }
+// Basic example with configurator
+export const Default: Story = {
+  args: {
+    variant: 'default',
+    size: 'default',
+    children: 'Button',
+    disabled: false,
+  },
 };
 
-export const AllVariants: Story = {
+// All variants
+export const Variants: Story = {
   render: () => (
-    <div className="flex flex-col gap-lg">
-      {(['neutral', 'primary', 'warning', 'danger'] as const).map(variant => (
-        <div key={variant} className="space-y-base">
-          <h3 className="ui-text-body" data-variant="small">{variant}</h3>
-          <div className="grid grid-cols-3 gap-base">
-            <Button variant={variant} volume="loud">Loud</Button>
-            <Button variant={variant} volume="moderate">Moderate</Button>
-            <Button variant={variant} volume="soft">Soft</Button>
-          </div>
-          <div className="flex gap-base">
-            {[Plus, Search, Settings].map((Icon, idx) => (
-              <Button
-                key={idx}
-                variant={variant}
-                iconOnly
-                leadingIcon={<Icon />}
-                aria-label={`${Icon.name} action`}
-              />
-            ))}
+    <div className="flex flex-wrap items-center gap-4 p-4">
+      <Button variant="default">Default</Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+    </div>
+  ),
+};
+
+// All sizes
+export const Sizes: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-4 p-4">
+      <Button size="sm">Small</Button>
+      <Button size="default">Default</Button>
+      <Button size="lg">Large</Button>
+      <Button size="icon"><Plus /></Button>
+    </div>
+  ),
+};
+
+// Icon examples
+export const WithIcons: Story = {
+  render: () => (
+    <div className="flex flex-col gap-6 p-4">
+      <div className="flex flex-wrap items-center gap-4">
+        <h3 className="w-full text-lg font-medium mb-2">Leading Icons</h3>
+        <Button><Search />Search</Button>
+        <Button variant="outline"><Mail />Email</Button>
+        <Button variant="secondary"><Download />Download</Button>
+        <Button variant="destructive"><Trash />Delete</Button>
+      </div>
+      
+      <div className="flex flex-wrap items-center gap-4">
+        <h3 className="w-full text-lg font-medium mb-2">Trailing Icons</h3>
+        <Button>Next <ArrowRight /></Button>
+        <Button variant="outline">View <ExternalLink /></Button>
+        <Button variant="secondary">Settings <Settings /></Button>
+      </div>
+      
+      <div className="flex flex-wrap items-center gap-4">
+        <h3 className="w-full text-lg font-medium mb-2">Icon Only Buttons</h3>
+        <Button size="icon"><Plus /></Button>
+        <Button size="icon" variant="outline"><Search /></Button>
+        <Button size="icon" variant="secondary"><Settings /></Button>
+        <Button size="icon" variant="destructive"><Trash /></Button>
+        <Button size="icon" variant="ghost"><Mail /></Button>
+      </div>
+    </div>
+  ),
+};
+
+// Disabled state
+export const DisabledState: Story = {
+  render: () => (
+    <div className="flex flex-wrap items-center gap-4 p-4">
+      <Button disabled>Default</Button>
+      <Button disabled variant="destructive">Destructive</Button>
+      <Button disabled variant="outline">Outline</Button>
+      <Button disabled variant="secondary">Secondary</Button>
+      <Button disabled variant="ghost">Ghost</Button>
+      <Button disabled variant="link">Link</Button>
+    </div>
+  ),
+};
+
+// Size variants combined with button variants
+export const SizeVariantCombinations: Story = {
+  render: () => (
+    <div className="flex flex-col gap-8 p-4">
+      {(['default', 'destructive', 'outline', 'secondary', 'ghost', 'link'] as const).map(variant => (
+        <div key={variant} className="flex flex-col gap-4">
+          <h3 className="text-lg font-medium capitalize">{variant} Variant</h3>
+          <div className="flex flex-wrap items-center gap-4">
+            <Button variant={variant} size="sm">Small</Button>
+            <Button variant={variant} size="default">Default</Button>
+            <Button variant={variant} size="lg">Large</Button>
+            {variant !== 'link' && (
+              <Button variant={variant} size="icon"><Plus /></Button>
+            )}
           </div>
         </div>
       ))}
     </div>
-  )
+  ),
 };
 
-export const Sizes: Story = {
+// Loading state example
+export const LoadingState: Story = {
   render: () => (
-    <div className="flex items-center gap-base">
-      <Button size="sm">Small</Button>
-      <Button size="base">Base</Button>
-      <Button size="lg">Large</Button>
-    </div>
-  )
-};
-
-export const IconSizes: Story = {
-  render: () => (
-    <div className="flex items-center gap-base">
-      <Button size="sm" iconOnly leadingIcon={<Plus />} aria-label="Add small" />
-      <Button size="base" iconOnly leadingIcon={<Plus />} aria-label="Add base" />
-      <Button size="lg" iconOnly leadingIcon={<Plus />} aria-label="Add large" />
-    </div>
-  )
-};
-
-export const Shapes: Story = {
-  render: () => (
-    <div className="flex gap-base">
-      <Button shape="beveled">Beveled Button</Button>
-      <Button shape="rounded">Rounded Button</Button>
-    </div>
-  )
-};
-
-export const States: Story = {
-  render: () => (
-    <div className="flex gap-base">
-      <Button>Default</Button>
-      <Button disabled>Disabled</Button>
-      <Button isLoading>Loading</Button>
-    </div>
-  )
-};
-
-export const Icons: Story = {
-  render: () => (
-    <div className="flex gap-base">
-      <Button leadingIcon={<Mail />}>
-        With Leading Icon
+    <div className="flex flex-wrap items-center gap-4 p-4">
+      <Button className="relative">
+        <span className="absolute inset-0 flex items-center justify-center">
+          <svg className="animate-spin h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </span>
+        <span className="invisible">Loading</span>
       </Button>
-      <Button trailingIcon={<ArrowRight />}>
-        With Trailing Icon
-      </Button>
-      <div className="flex gap-xs">
-        {[Plus, Search, Settings].map((Icon, idx) => (
-          <Button 
-            key={idx}
-            iconOnly 
-            leadingIcon={<Icon />}
-            aria-label={`${Icon.name} action`} 
-          />
-        ))}
+      <Button>Loading...</Button>
+    </div>
+  ),
+};
+
+// Full width buttons
+export const FullWidth: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 w-full max-w-md p-4">
+      <Button className="w-full">Full Width Button</Button>
+      <Button className="w-full" variant="destructive">Full Width Destructive</Button>
+      <Button className="w-full" variant="outline">Full Width Outline</Button>
+    </div>
+  ),
+};
+
+// Usage examples
+export const UsageSamples: Story = {
+  render: () => (
+    <div className="flex flex-col gap-8 p-4 max-w-2xl">
+      {/* Form submission */}
+      <div className="space-y-4 border p-4 rounded-md">
+        <h3 className="text-lg font-medium">Form Actions</h3>
+        <div className="flex flex-wrap items-center gap-4">
+          <Button variant="default">Submit</Button>
+          <Button variant="outline">Cancel</Button>
+        </div>
+      </div>
+      
+      {/* Modal actions */}
+      <div className="space-y-4 border p-4 rounded-md">
+        <h3 className="text-lg font-medium">Modal Actions</h3>
+        <div className="flex flex-wrap items-center gap-4">
+          <Button variant="secondary">Close</Button>
+          <Button variant="default">Save Changes</Button>
+        </div>
+      </div>
+      
+      {/* Dangerous actions */}
+      <div className="space-y-4 border p-4 rounded-md">
+        <h3 className="text-lg font-medium">Dangerous Actions</h3>
+        <div className="flex flex-wrap items-center gap-4">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="destructive">Delete Account</Button>
+        </div>
+      </div>
+      
+      {/* Call to action */}
+      <div className="space-y-4 border p-4 rounded-md">
+        <h3 className="text-lg font-medium">Call to Action</h3>
+        <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4">
+          <Button variant="default" size="lg">Get Started <ArrowRight /></Button>
+          <Button variant="ghost">Learn More</Button>
+        </div>
       </div>
     </div>
-  )
+  ),
 };

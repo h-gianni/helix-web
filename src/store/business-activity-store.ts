@@ -25,7 +25,7 @@ const activitiesApi = {
     if (!data.success) throw new Error(data.error || 'Failed to fetch activities')
     
     
-    return data.data
+      return data.data || [] // Add a default value of an empty array
   },
 
 

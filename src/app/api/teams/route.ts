@@ -4,6 +4,18 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { ApiResponse, TeamResponse } from "@/lib/types/api";
 
+interface TeamMemberWithUser {
+  id: string;
+  title: string | null;
+  isAdmin: boolean;
+  user?: {
+    id: string;
+    name: string | null;
+    email: string;
+  } | null;
+  // Add other fields that might be accessed
+}
+
 export const GET = async (request: Request) => {
   console.log("🎯 GET /api/teams - Started");
   try {
@@ -127,7 +139,7 @@ export const GET = async (request: Request) => {
     // Convert Map back to array and transform to match TeamResponse type
     const teams: TeamResponse[] = Array.from(teamsMap.values()).map(team => {
       // Transform members to match the expected format in TeamResponse
-      const members = (team.members || []).map(member => ({
+      const members = (team.members || []).map((member: TeamMemberWithUser) => ({
         id: member.id,
         title: member.title,
         name: member.user?.name || null,
@@ -247,7 +259,9 @@ export const POST = async (request: Request) => {
       teamFunctionId: team.teamFunctionId,
       ownerId: team.ownerId,
       createdAt: team.createdAt,
-      updatedAt: team.updatedAt
+      updatedAt: team.updatedAt,
+      deletedAt: team.deletedAt,
+      members: [],
     };
 
     console.log("✅ Team created successfully:", teamResponse);

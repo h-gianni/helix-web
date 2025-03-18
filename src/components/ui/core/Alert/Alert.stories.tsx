@@ -1,33 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import {
-  Alert,
-  AlertIconContainer,
-  AlertContent,
-  AlertTitle,
-  AlertDescription,
-} from './index';
-import {
-  AlertCircle,
-  Bell,
-  TriangleAlert,
-  XOctagon,
-  HelpCircle,
-  CheckCircle,
-  CircleCheckBig,
-} from 'lucide-react';
-
-const iconMap = {
-  AlertCircle,
-  Bell,
-  TriangleAlert,
-  OctagonX: XOctagon,
-  CircleHelp: HelpCircle,
-  CircleCheck: CheckCircle,
-  CircleCheckBig: CircleCheckBig,
-} as const;
+import { Alert, AlertTitle, AlertDescription } from './index';
+import { AlertCircle, Terminal, Info, XCircle, CheckCircle } from 'lucide-react';
 
 const meta = {
-  title: 'Core/Alert',
+  title: 'Components/Alert',
   component: Alert,
   parameters: {
     layout: 'centered',
@@ -36,36 +12,12 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['default', 'primary', 'danger', 'warning', 'success'],
-      defaultValue: 'default',
+      options: ['default', 'destructive'],
       description: 'The visual style of the alert',
     },
-    size: {
-      control: 'select',
-      options: ['sm', 'base'],
-      defaultValue: 'base',
-      description: 'The size of the alert',
-    },
-    fullWidth: {
-      control: 'boolean',
-      defaultValue: false,
-      description: 'Whether the alert should take full width of its container',
-    },
-    icon: {
-      options: Object.keys(iconMap),
-      control: { type: 'select' },
-      defaultValue: 'AlertCircle',
-      description: 'The icon to display in the alert',
-    },
-    withTitle: {
-      control: 'boolean',
-      defaultValue: true,
-      description: 'Whether to show the title',
-    },
-    withDescription: {
-      control: 'boolean',
-      defaultValue: true,
-      description: 'Whether to show the description',
+    className: {
+      control: 'text',
+      description: 'Additional CSS class names',
     },
   },
 } satisfies Meta<typeof Alert>;
@@ -73,115 +25,151 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof Alert>;
 
-export const Configurator: Story = {
-  render: ({ variant = 'default', size = 'base', fullWidth = false, icon = 'AlertCircle', withTitle = true, withDescription = true }) => {
-    const IconComponent = iconMap[icon as keyof typeof iconMap];
-    
-    return (
-      <div className="w-[800px] p-4 rounded">
-        <Alert 
-          variant={variant} 
-          size={size}
-          fullWidth={fullWidth}
-        >
-          <AlertIconContainer>
-            <IconComponent />
-          </AlertIconContainer>
-          <AlertContent>
-            <div>
-              {withTitle && (
-                <AlertTitle>
-                  {variant.charAt(0).toUpperCase() + variant.slice(1)} Alert
-                </AlertTitle>
-              )}
-              {withDescription && (
-                <AlertDescription>
-                  {fullWidth ? 'This alert takes full width of its container.' : 'This alert width fits its content.'}
-                  {' '}{size === 'sm' ? 'Small size.' : 'Base size.'} Using {icon} icon.
-                </AlertDescription>
-              )}
-            </div>
-          </AlertContent>
-        </Alert>
-      </div>
-    );
-  }
+// Basic example
+export const Default: Story = {
+  args: {
+    variant: 'default',
+  },
+  render: (args) => (
+    <Alert {...args}>
+      <AlertCircle className="h-4 w-4" />
+      <AlertTitle>Default Alert</AlertTitle>
+      <AlertDescription>
+        This is a default alert — check it out!
+      </AlertDescription>
+    </Alert>
+  ),
 };
 
-export const WidthExamples: Story = {
-  render: () => (
-    <div className="flex flex-col gap-4 w-[800px] p-4 rounded">
-      <Alert fullWidth={true}>
-        <AlertIconContainer>
-          <AlertCircle />
-        </AlertIconContainer>
-        <AlertContent>
-          <div>
-            <AlertTitle>Full Width Alert</AlertTitle>
-            <AlertDescription>
-              This alert takes up the full width of its container.
-            </AlertDescription>
-          </div>
-        </AlertContent>
-      </Alert>
+// Destructive variant
+export const Destructive: Story = {
+  args: {
+    variant: 'destructive',
+  },
+  render: (args) => (
+    <Alert {...args}>
+      <XCircle className="h-4 w-4" />
+      <AlertTitle>Destructive Alert</AlertTitle>
+      <AlertDescription>
+        This is a destructive alert — handle with care!
+      </AlertDescription>
+    </Alert>
+  ),
+};
 
-      <Alert fullWidth={false}>
-        <AlertIconContainer>
-          <AlertCircle />
-        </AlertIconContainer>
-        <AlertContent>
-          <div>
-            <AlertTitle>Fit Content Width Alert</AlertTitle>
-            <AlertDescription>
-              This alert width fits its content.
-            </AlertDescription>
-          </div>
-        </AlertContent>
+// With different icons
+export const WithDifferentIcons: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 max-w-md">
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertTitle>Information</AlertTitle>
+        <AlertDescription>
+          This alert uses the Info icon.
+        </AlertDescription>
+      </Alert>
+      
+      <Alert>
+        <Terminal className="h-4 w-4" />
+        <AlertTitle>System Update</AlertTitle>
+        <AlertDescription>
+          This alert uses the Terminal icon.
+        </AlertDescription>
+      </Alert>
+      
+      <Alert variant="destructive">
+        <XCircle className="h-4 w-4" />
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>
+          This alert uses the XCircle icon with destructive variant.
+        </AlertDescription>
+      </Alert>
+      
+      <Alert>
+        <CheckCircle className="h-4 w-4" />
+        <AlertTitle>Success</AlertTitle>
+        <AlertDescription>
+          This alert uses the CheckCircle icon.
+        </AlertDescription>
       </Alert>
     </div>
   ),
 };
 
-export const VariantExamples: Story = {
+// Without title
+export const WithoutTitle: Story = {
   render: () => (
-    <div className="flex flex-col gap-4 w-[800px]">
-      {(['default', 'primary', 'danger', 'warning', 'success'] as const).map((variant) => (
-        <Alert key={variant} variant={variant} fullWidth={true}>
-          <AlertIconContainer>
-            <AlertCircle />
-          </AlertIconContainer>
-          <AlertContent>
-            <div>
-              <AlertTitle>{variant.charAt(0).toUpperCase() + variant.slice(1)} Alert</AlertTitle>
-              <AlertDescription>
-                This is a {variant} alert example.
-              </AlertDescription>
-            </div>
-          </AlertContent>
-        </Alert>
-      ))}
-    </div>
+    <Alert>
+      <Info className="h-4 w-4" />
+      <AlertDescription>
+        This is an alert without a title.
+      </AlertDescription>
+    </Alert>
   ),
 };
 
-export const SizeExamples: Story = {
+// Without description
+export const WithoutDescription: Story = {
   render: () => (
-    <div className="flex flex-col gap-4 w-[800px]">
-      {(['base', 'sm'] as const).map((size) => (
-        <Alert key={size} size={size} fullWidth={false}>
-          <AlertIconContainer>
-            <AlertCircle />
-          </AlertIconContainer>
-          <AlertContent>
-            <div>
-              <AlertTitle>{size.toUpperCase()} Size Alert</AlertTitle>
-              <AlertDescription>
-                This is a {size} size alert example with fit content width.
-              </AlertDescription>
-            </div>
-          </AlertContent>
-        </Alert>
-      ))}
+    <Alert>
+      <AlertCircle className="h-4 w-4" />
+      <AlertTitle>Alert Title Only</AlertTitle>
+    </Alert>
+  ),
+};
+
+// Without icon
+export const WithoutIcon: Story = {
+  render: () => (
+    <Alert className="pl-4"> {/* Remove the default left padding for icon */}
+      <AlertTitle>Alert without icon</AlertTitle>
+      <AlertDescription>
+        This is an alert without an icon. Notice we added pl-4 to adjust the padding.
+      </AlertDescription>
+    </Alert>
+  ),
+};
+
+// Custom styles example
+export const CustomStyles: Story = {
+  render: () => (
+    <Alert className="border-blue-500 bg-blue-50 text-blue-900 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300">
+      <Info className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+      <AlertTitle>Custom Styled Alert</AlertTitle>
+      <AlertDescription>
+        This alert uses custom color styles via className.
+      </AlertDescription>
+    </Alert>
+  ),
+};
+
+// Multiple alerts
+export const MultipleAlerts: Story = {
+  render: () => (
+    <div className="flex flex-col gap-4 max-w-md">
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertTitle>Update Available</AlertTitle>
+        <AlertDescription>
+          A new software update is available for download.
+        </AlertDescription>
+      </Alert>
+      
+      <Alert variant="destructive">
+        <XCircle className="h-4 w-4" />
+        <AlertTitle>Connection Error</AlertTitle>
+        <AlertDescription>
+          Unable to connect to the server. Please check your internet connection.
+        </AlertDescription>
+      </Alert>
+      
+      <Alert>
+        <CheckCircle className="h-4 w-4" />
+        <AlertTitle>Success</AlertTitle>
+        <AlertDescription>
+          Your changes have been saved successfully.
+        </AlertDescription>
+      </Alert>
     </div>
   ),
 };

@@ -40,7 +40,7 @@ export const Default: Story = {
     type: "single",
     collapsible: true,
     defaultValue: "item-1",
-    size: "base",
+    // size: "base",
   },
   argTypes: {
     type: {
@@ -56,11 +56,11 @@ export const Default: Story = {
       control: "text",
       description: "The default open item.",
     },
-    size: {
-      control: "select",
-      options: ["sm", "base", "lg"],
-      description: "Adjusts the size of the accordion trigger.",
-    },
+    // size: {
+    //   control: "select",
+    //   options: ["sm", "base", "lg"],
+    //   description: "Adjusts the size of the accordion trigger.",
+    // },
   },
 };
 

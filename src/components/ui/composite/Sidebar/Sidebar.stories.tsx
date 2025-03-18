@@ -98,7 +98,7 @@ const UserNav = () => {
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          volume="soft"
+        
           className="w-full justify-start p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
         >
           <div className="flex items-center justify-between gap-4 w-full">
@@ -124,28 +124,28 @@ const UserNav = () => {
       <PopoverContent className="w-56 p-1" align="start" side="right">
         <div className="space-y-0.5">
           <Button
-            volume="soft"
+          
             className="w-full justify-start gap-2 text-sm"
           >
             <Star className="h-4 w-4" />
             Upgrade to Pro
           </Button>
           <Button
-            volume="soft"
+           
             className="w-full justify-start gap-2 text-sm"
           >
             <Settings className="h-4 w-4" />
             Account
           </Button>
           <Button
-            volume="soft"
+           
             className="w-full justify-start gap-2 text-sm"
           >
             <CreditCard className="h-4 w-4" />
             Billing
           </Button>
           <Button
-            volume="soft"
+          
             className="w-full justify-start gap-2 text-sm"
           >
             <Bell className="h-4 w-4" />
@@ -163,7 +163,7 @@ const UserNav = () => {
           </div>
 
           <Button
-            volume="soft"
+            
             className="w-full justify-start gap-2 text-sm text-destructive hover:text-destructive hover:bg-destructive/10"
           >
             <LogOut className="h-4 w-4" />

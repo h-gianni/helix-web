@@ -255,7 +255,7 @@ const TeamAndMembersTab = () => {
                       member={member}
                       teams={teams}
                       category={category}
-                      variant="vert"
+                      variant="desktop"
                       onNavigate={(path) => console.log(`Navigate to: ${path}`)}
                     />
                   );

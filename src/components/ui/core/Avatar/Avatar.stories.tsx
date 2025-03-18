@@ -1,6 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Avatar, AvatarImage, AvatarFallback } from './index';
 
+
+interface AvatarProps extends React.ComponentProps<typeof Avatar> {
+  size: 'sm' | 'md' | 'lg' | 'xl';
+}
+
 const meta = {
   title: 'Core/Avatar',
   component: Avatar,
@@ -15,10 +20,10 @@ const meta = {
       defaultValue: 'md',
     },
   },
-} satisfies Meta<typeof Avatar>;
+} satisfies Meta<AvatarProps>;
 
 export default meta;
-type Story = StoryObj<typeof Avatar>;
+type Story = StoryObj<typeof meta>;
 
 // Basic example with image
 export const WithImage: Story = {
@@ -42,9 +47,7 @@ export const WithFallback: Story = {
 
 // Different sizes
 export const Small: Story = {
-  args: {
-    size: 'sm',
-  },
+ 
   render: (args) => (
     <Avatar {...args}>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
@@ -54,9 +57,7 @@ export const Small: Story = {
 };
 
 export const Medium: Story = {
-  args: {
-    size: 'md',
-  },
+ 
   render: (args) => (
     <Avatar {...args}>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
@@ -66,9 +67,7 @@ export const Medium: Story = {
 };
 
 export const Large: Story = {
-  args: {
-    size: 'lg',
-  },
+ 
   render: (args) => (
     <Avatar {...args}>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
@@ -78,9 +77,7 @@ export const Large: Story = {
 };
 
 export const ExtraLarge: Story = {
-  args: {
-    size: 'xl',
-  },
+ 
   render: (args) => (
     <Avatar {...args}>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />

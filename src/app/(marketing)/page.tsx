@@ -8,8 +8,7 @@ import { Features } from "../../components/ui/marketing/_features";
 import { Scenarios } from "../../components/ui/marketing/_scenarios";
 import { Testimonials } from "../../components/ui/marketing/_testimonials";
 import { Craftsmanship } from "../../components/ui/marketing/_craftsmanship";
-import { Case1 } from "../../components/ui/marketing/_case1";
-import { Case2 } from "../../components/ui/marketing/_case2";
+
 import { Pricing } from "../../components/ui/marketing/_pricing";
 import { CTA1 } from "../../components/ui/marketing/_cta1";
 import { CTA2 } from "../../components/ui/marketing/_cta2";
@@ -23,12 +22,12 @@ export default function HomePage() {
     <>
       <Hero />
       {/* <Case2 /> */}
-      <Problems />
+      {/* <Problems />
       <How />
       <Features />
-      <Scenarios />
+      <Scenarios /> */}
       {/* <Case1 /> */}
-      <Testimonials />
+      {/* <Testimonials />
       <Pricing />
       <CTA1 />
       <Craftsmanship />
@@ -36,7 +35,7 @@ export default function HomePage() {
       <Blog />
       <FAQ />
       <CTA2 />
-      <Footer />
+      <Footer /> */}
     </>
   );
 }
