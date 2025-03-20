@@ -251,7 +251,7 @@ const Sidebar = React.forwardRef<
             // Adjust the padding for floating and inset variants.
             variant === "floating" || variant === "inset"
               ? "p-2 group-data-[collapsible=icon]:w-sidebar-icon-with-spacing-plus"
-              : "group-data-[collapsible=icon]:w-sidebar-icon group-data-[side=left]:border-r group-data-[side=right]:border-l",
+              : "group-data-[collapsible=icon]:w-sidebar-icon group-data-[side=left]:border-r-0 group-data-[side=right]:border-l",
             className
           )}
           {...props}

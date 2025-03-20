@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { EditMemberModal } from "../../../../components/teams/team/member/MemberEditModal";
-import PerformanceRatingModal from "@/app/dashboard/components/PerformanceScoringModal";
+import PerformanceRatingModal from "@/app/dashboard/components/scoring/ScoringModal";
 import RatingsSection from "../../../../components/teams/team/member/MemberRatingsSection";
 import {
   Tabs,

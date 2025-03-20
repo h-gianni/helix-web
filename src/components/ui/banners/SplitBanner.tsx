@@ -4,15 +4,15 @@ import { Button } from "@/components/ui/core/Button";
 
 const SplitBanner = ({
   badgeText = "Featured",
-  title = "Collaborate seamlessly with your team",
-  description = "Our platform makes it easy to share files, manage tasks, and communicate in real-time - all in one place.",
+  title = "Work together, transparently",
+  description = "You can now customize and share your team member performance reports with ease and in real-time.",
   bulletPoints = [
-    "Real-time collaboration",
-    "Unlimited file sharing",
-    "Advanced task management",
+    "Show them what they need to know",
+    "Keep them updated on their performance",
+    "Build a professional rapport of trust",
   ],
-  primaryCta = "Try Free for 14 Days",
-  secondaryCta = "View Demo",
+  primaryCta = "Upgrade to Pro",
+  secondaryCta = "Watch Demo",
   onPrimaryClick = () => {},
   onSecondaryClick = () => {},
   imagePath = "/api/placeholder/600/400",
@@ -20,16 +20,16 @@ const SplitBanner = ({
   imagePosition = "right", // Options: 'right' or 'left'
 }) => {
   const Content = () => (
-    <div className="flex flex-col justify-center space-y-3 p-6 md:p-8">
+    <div className="flex flex-col justify-center space-y-4 p-6 md:p-8">
       <Badge variant="accent-light" className="w-fit">
         {badgeText}
       </Badge>
-<div className="space-y-2">
-      <h2 className="display-1">{title}</h2>
+      <div className="space-y-2">
+        <h2 className="display-1">{title}</h2>
 
-      <p className="text-[var(--neutral-darker)] text-sm md:text-base">
-        {description}
-      </p>
+        <p className="text-[var(--neutral-darker)] text-sm md:text-base">
+          {description}
+        </p>
       </div>
 
       {bulletPoints.length > 0 && (
@@ -55,7 +55,7 @@ const SplitBanner = ({
         </ul>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-3 pt-2">
+      <div className="flex flex-col sm:flex-row gap-3 pt-4">
         <Button variant="accent" onClick={onPrimaryClick}>
           {primaryCta}
         </Button>

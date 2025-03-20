@@ -83,19 +83,18 @@ const CountdownBanner = ({
         
         <div className="flex flex-col sm:flex-row gap-3">
           <Button 
-            size="lg"
-            onClick={onPrimaryClick}
-            className="bg-white text-[var(--primary-dark)] hover:bg-white/90"
-          >
-            {primaryCta}
-          </Button>
-          <Button 
             variant="outline" 
             size="lg"
             onClick={onSecondaryClick}
-            className="border-white text-white hover:bg-white/10"
           >
             {secondaryCta}
+          </Button>
+          <Button 
+          variant="accent"
+            size="lg"
+            onClick={onPrimaryClick}
+          >
+            {primaryCta}
           </Button>
         </div>
       </div>

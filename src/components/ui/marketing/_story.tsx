@@ -50,7 +50,7 @@ export const OurStory = () => {
           </p>
 
           {/* Quote Block */}
-          <blockquote className="border-l-4 border-primary pl-4 italic text-lg">
+          <blockquote className="border-l-4 border-accent pl-4 italic text-lg">
             &lsquo;I began to wonder—was there a better way to assess our teams? A way to capture not just isolated moments but the complete, unfolding story of each 
             team member&apos;s contributions throughout the year.&rsquo;
           </blockquote>
