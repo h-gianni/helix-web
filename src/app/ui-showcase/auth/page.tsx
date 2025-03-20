@@ -3,6 +3,8 @@
 import React, { useState, ChangeEvent } from "react";
 
 // Core UI Components
+import Image from "next/image";
+import LogoImage from "@/assets/shared/logo.svg";
 import { Button } from "@/components/ui/core/Button";
 import {
   Card,
@@ -162,7 +164,9 @@ const AuthenticationForm = () => {
     <div className="space-y-6">
       {/* <div className="heading-3 text-center">Sign in to JustScore</div> */}
       <h2 className="heading-3 text-center">
-        {activeTab === "signin" ? "Sign in to JustScore" : "Create a JustScore account"}
+        {activeTab === "signin"
+          ? "Sign in to JustScore"
+          : "Create a JustScore account"}
       </h2>
 
       <Button
@@ -222,6 +226,11 @@ const AuthenticationForm = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-lg">
+      <div className="flex flex-col pt-6 pb-6">
+        <div className="mx-auto">
+          <Image src={LogoImage} alt="JustScore" className="size-16" />
+        </div>
+      </div>
       <div className="mb-6">
         <Tabs
           defaultValue="signin"

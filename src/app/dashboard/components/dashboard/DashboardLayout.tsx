@@ -74,6 +74,7 @@ export default function DashboardLayout({
             <Button
               data-slot="button"
               variant="secondary"
+              size="lg"
               onClick={() => router.push("/dashboard/feedback")}
               className="gap-2"
             >
@@ -82,6 +83,7 @@ export default function DashboardLayout({
             <Button
               data-slot="button"
               variant="default"
+              size="lg"
               onClick={() => openRatingModal(true)}
               className="gap-2"
             >
