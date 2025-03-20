@@ -22,20 +22,23 @@ export default function HomePage() {
     <>
       <Hero />
       {/* <Case2 /> */}
-      {/* <Problems />
-      <How />
+       <Problems />
+       <How />
+     
       <Features />
+       {/*
       <Scenarios /> */}
       {/* <Case1 /> */}
-      {/* <Testimonials />
+      <Testimonials />
       <Pricing />
       <CTA1 />
       <Craftsmanship />
-      <OurStory />
-      <Blog />
+     {/* <OurStory />
+      <Blog />*/}
+      
       <FAQ />
       <CTA2 />
-      <Footer /> */}
+      <Footer /> 
     </>
   );
 }
