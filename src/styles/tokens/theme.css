@@ -177,7 +177,7 @@
   --color-info-darkest: var(--info-darkest);
 
   /* Light theme semantic variables (default) */
-  --color-background: var(--neutral-lightest);
+  --color-background: var(--white);
   --color-foreground: var(--neutral-darker);
   --color-foreground-strong: var(--neutral-darkest);
   --color-foreground-weak: var(--neutral-dark);
