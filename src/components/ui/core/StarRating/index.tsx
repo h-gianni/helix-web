@@ -23,7 +23,7 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
     {
       value,
       onChange,
-      size = "base",
+      size = "",
       disabled = false,
       ratingsCount,
       showValue = true,
