@@ -116,9 +116,9 @@ function PerformanceRatingModal({
     <Dialog data-slot="dialog" open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent data-slot="dialog-content">
         <DialogHeader data-slot="dialog-header">
-          <DialogTitle data-slot="dialog-title">Add Performance Rating</DialogTitle>
+          <DialogTitle data-slot="dialog-title">Score Performance</DialogTitle>
           <DialogDescription data-slot="dialog-description">
-            Rate team member performance with feedback.
+            Score a team member performance with feedback.
           </DialogDescription>
         </DialogHeader>
 

@@ -14,13 +14,15 @@ const ImageBackgroundBanner = ({
 }) => {
   return (
     <div className="w-full rounded-[var(--radius-lg)] overflow-hidden shadow-[var(--shadow-md)] relative">
-      {/* Background image with overlay */}
-      <div className="absolute inset-0 bg-white">
+      {/* Background image container */}
+      <div className="absolute inset-0">
         <img
           src={imagePath}
           alt="Banner background"
           className="w-full h-full object-cover"
         />
+        {/* White gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white to-transparent"></div>
       </div>
 
       {/* Content */}

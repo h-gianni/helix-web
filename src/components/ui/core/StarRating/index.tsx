@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 export interface StarRatingProps {
   value: number;
   onChange?: (value: number) => void;
-  size?: "sm" | "base" | "lg";
+  size?: "sm" | "base" | "lg" | "xl";
   disabled?: boolean;
   ratingsCount?: number;
   showValue?: boolean;
@@ -55,13 +55,35 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
       return { isFullStar, isHalfStar, starNumber };
     };
 
+    // Get star size based on the size prop
+    const getStarSize = () => {
+      switch (size) {
+        case "sm": return 16;
+        case "lg": return 24;
+        case "xl": return 32;
+        default: return 20; // base size
+      }
+    };
+
+    // Get padding based on the size prop
+    const getStarPadding = () => {
+      switch (size) {
+        case "sm": return "p-0.5";
+        case "xl": return "p-2";
+        case "lg": return "p-1";
+        default: return "p-0.5"; // base padding
+      }
+    };
+
     return (
       <div
         ref={ref}
         className={cn(
-          "flex items-center gap-2",
+          "flex items-center",
+          size === "xl" ? "gap-4" : "gap-2",
           size === "sm" && "text-base",
           size === "lg" && "text-lg",
+          size === "xl" && "text-xl",
           className
         )}
       >
@@ -85,9 +107,12 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
                 value={starNumber.toString()}
                 disabled={disabled}
                 className={cn(
-                  "inline-flex items-center justify-center p-0.5 star-color-off",
-                  "hover:star-color-on focus-visible:outline-none",
+                  "inline-flex items-center justify-center",
+                  getStarPadding(),
+                  "star-color-off rounded-md",
+                  "hover:star-color-on focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   "disabled:pointer-events-none",
+                  size === "xl" && !disabled && "cursor-pointer transition-transform hover:scale-110",
                   {
                     "cursor-pointer": !disabled,
                   }
@@ -100,7 +125,7 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
                     <Star
                       className={cn("")}
                       strokeWidth={1.5}
-                      size={size === "sm" ? 16 : size === "lg" ? 24 : 20}
+                      size={getStarSize()}
                     />
                     <StarHalf
                       className={cn(
@@ -108,7 +133,7 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
                         "transition-colors duration-200"
                       )}
                       strokeWidth={1.5}
-                      size={size === "sm" ? 16 : size === "lg" ? 24 : 20}
+                      size={getStarSize()}
                     />
                   </div>
                 ) : (
@@ -118,7 +143,7 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
                       "transition-colors duration-200"
                     )}
                     strokeWidth={1.5}
-                    size={size === "sm" ? 16 : size === "lg" ? 24 : 20}
+                    size={getStarSize()}
                   />
                 )}
               </ToggleGroup.Item>
@@ -128,11 +153,16 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
 
         {(showValue || showRatingsCount) && (
           <div className="flex items-baseline gap-1">
-            {showValue && value > 0 && (
-              <span className="heading-5">{value.toFixed(1)}</span>
+            {showValue && (
+              <span className={cn(
+                size === "xl" ? "display-2" : "heading-5",
+                value === 0 && "text-foreground-muted"
+              )}>
+                {value.toFixed(1)}
+              </span>
             )}
             {showRatingsCount && ratingsCount !== undefined && ratingsCount > 0 && (
-              <span className="text-sm leading-none text-foreground-weak">({ratingsCount})</span>
+              <span className={cn("text-sm leading-none text-foreground-weak", size === "xl" && "text-base")}>({ratingsCount})</span>
             )}
           </div>
         )}
