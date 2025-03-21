@@ -99,9 +99,9 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
     <header className="flex items-center justify-between gap-8 pb-4">
       {showMainDashboard ? (
         <div className="flex items-center gap-1 -ml-1.5">
-          <SidebarTrigger />
+          <SidebarTrigger className="hidden lg:flex" />
           <Breadcrumb
-            className="border-l border-input px-4"
+            className="lg:border-l border-input px-2 lg:px-4"
             data-slot="breadcrumb"
           >
             <BreadcrumbList data-slot="breadcrumb-list">
@@ -138,7 +138,7 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
       ) : (
         <div></div> // Empty div to maintain the flex layout
       )}
-      <div className="flex items-center gap-4">
+      <div className="hidden lg:flex items-center gap-4">
         {<UserButton />}
         <Button variant="ghost" size="icon" aria-label="Notifications">
           <Bell />
