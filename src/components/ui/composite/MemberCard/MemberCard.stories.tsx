@@ -33,7 +33,7 @@ const meta: Meta<typeof MemberCard> = {
       className: 'text-success-500',
       Icon: TrendingUp
     },
-    variant: 'default'
+    variant: 'desktop'
   },
   argTypes: {
     variant: {
@@ -78,7 +78,7 @@ export const Default: Story = {
 // Compact variant
 export const Compact: Story = {
   args: {
-    variant: 'compact'
+    variant: 'mobile'
   },
   render: (args) => (
     <div className="w-[350px]">

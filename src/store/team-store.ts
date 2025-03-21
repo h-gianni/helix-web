@@ -34,19 +34,23 @@ const teamApi = {
   getTeamDetails: async (teamId: string): Promise<TeamDetailsResponse> => {
     const { data } = await apiClient.get<ApiResponse<TeamDetailsResponse>>(`/teams/${teamId}`);
     if (!data.success) throw new Error(data.error || 'Failed to fetch team details');
+    if (!data.data) throw new Error('No team details found');
     return data.data;
   },
 
   getTeamPerformance: async (teamId: string): Promise<{ members: MemberPerformance[] }> => {
     const { data } = await apiClient.get<ApiResponse<{ members: MemberPerformance[] }>>(`/teams/${teamId}/performance`);
     if (!data.success) throw new Error(data.error || 'Failed to fetch team performance');
-    return data.data;
+    if (!data.data) throw new Error('No team details found');
+  return data.data;
   },
 
   createTeam: async (input: CreateTeamInput): Promise<TeamResponse> => {
     const { data } = await apiClient.post<ApiResponse<TeamResponse>>('/teams', input);
     if (!data.success) throw new Error(data.error || 'Failed to create team');
-    return data.data;
+    if (!data.data) throw new Error('No team details found');
+  return data.data;
+   
   },
 
   updateTeam: async ({ teamId, ...updateData }: { teamId: string; name: string; description?: string | null }) => {

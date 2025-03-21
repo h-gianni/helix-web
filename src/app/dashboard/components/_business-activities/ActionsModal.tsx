@@ -80,8 +80,8 @@ export function ActivityModal({
   useEffect(() => {
     if (activity) {
       setFormData({
-        name: activity.activity.name,
-        description: activity.activity.description || "",
+        name: activity.action.name,
+        description: activity.action.description || "",
         activityType: "from-scratch",
       });
     } else {

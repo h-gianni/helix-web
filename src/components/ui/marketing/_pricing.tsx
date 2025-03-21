@@ -156,7 +156,7 @@ export const Pricing = () => (
             </div>
             <ul className="marketing-body-xs space-y-1.5 border-t border-border pt-4">
               <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Up to 2 Team Members</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>2 AI generated "Performance Reviews" per member/year</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>2 AI generated Performance Reviews per member/year</span></li>
               <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Basic Scoring & Dashboard</span></li>
             </ul>
           </div>
@@ -166,7 +166,7 @@ export const Pricing = () => (
         <Card className="p-4 lg:p-8 shadow-lg flex flex-col justify-between">
         <div className="space-y-4">
           <div className="relative bg-muted/50 rounded-md h-32">
-            <Badge variant="accent-light">Leaders' unfair advantage</Badge>
+            <Badge variant="accent-light">Leaders unfair advantage</Badge>
           </div>
             <h3 className="marketing-h3">Professional</h3>
             <p className="marketing-body-sm">
@@ -187,7 +187,7 @@ export const Pricing = () => (
             </div>
             <ul className="marketing-body-xs space-y-1.5 border-t border-border pt-4">
               <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Unlimited Team Members & Hierarchy</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>2 AI generated "Performance Reviews" per member/quarter (8 in a year)</span></li>
+              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>2 AI generated Performance Reviews per member/quarter (8 in a year)</span></li>
               <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Full AI-Powered Insights & Real-Time Scoring</span></li>
               <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Team Member Dashboard Access</span></li>
             </ul>

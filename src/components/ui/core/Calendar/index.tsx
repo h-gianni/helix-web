@@ -60,12 +60,10 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: ({ className, ...props }) => (
-          <ChevronLeft className={cn("h-4 w-4", className)} {...props} />
-        ),
-        IconRight: ({ className, ...props }) => (
-          <ChevronRight className={cn("h-4 w-4", className)} {...props} />
-        ),
+        // Use the correct component property names for your version
+        // For react-day-picker v8+
+        // IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" {...props} />,
+        // IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" {...props} />,
       }}
       {...props}
     />

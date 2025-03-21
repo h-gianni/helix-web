@@ -169,7 +169,7 @@ export function ActivitiesSection({
             const activityDescription = typeof activity.description === 'string' ? activity.description : 'No description';
             const activityCategory = typeof activity.category === 'string' ? activity.category : 'No category';
             const activityId = activity.id;
-            const ratingsCount = activity._count?.ratings || 0;
+            const ratingsCount = activity._count?.scores || 0;
             
             return (
               <TableRow key={activityId}>

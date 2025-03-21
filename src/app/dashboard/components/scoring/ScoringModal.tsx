@@ -226,7 +226,7 @@ export default function PerformanceScoringModal({
         <ModalFooter className="flex flex-col">
           {currentStep === 4 && (
             <div className="px-4 pt-6 w-full text-center border-t">
-              <div className="heading-4 mb-2">What's your score?</div>
+              <div className="heading-4 mb-2">What&apos;s your score?</div>
               <div className="flex justify-center">
                 <StarRating
                   value={rating}

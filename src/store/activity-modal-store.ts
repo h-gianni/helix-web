@@ -166,7 +166,7 @@ const initialFormData: ActivityFormData = {
           return selectedCategories.length > 0
         case 'from-scratch':
           if (activity) {
-            return name !== activity.activity.name || description !== (activity.activity.description || '')
+            return name !== activity.action.name || description !== (activity.action.description || '')
           }
           return name.trim() !== ''
         default:
