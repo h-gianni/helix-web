@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { Button } from "@/components/ui/core/Button";
@@ -47,6 +47,8 @@ export default function DashboardLayout({
   const { viewType, setViewType } = usePerformersStore();
   const { setIsOpen: openRatingModal } = usePerformanceRatingStore();
   const [currentTab, setCurrentTab] = useState("team");
+  const [isTabsSticky, setIsTabsSticky] = useState(false);
+  const tabsRef = useRef<HTMLDivElement>(null);
 
   const handlePrimaryBanner = () => {
     console.log("You clicked on banner Primary CTA");
@@ -63,35 +65,48 @@ export default function DashboardLayout({
   const promoEndDate = new Date();
   promoEndDate.setDate(promoEndDate.getDate() + 14);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (tabsRef.current) {
+        const tabsPosition = tabsRef.current.getBoundingClientRect().top;
+        setIsTabsSticky(tabsPosition <= 0);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <PageBreadcrumbs items={breadcrumbItems} />
-
-      <PageHeader
-        title="Dashboard"
-        actions={
-          <>
-            <Button
-              data-slot="button"
-              variant="secondary"
-              size="lg"
-              onClick={() => router.push("/dashboard/feedback")}
-              className="gap-2"
-            >
-              <MessageSquare className="hidden md:block" /> Add a Feedback
-            </Button>
-            <Button
-              data-slot="button"
-              variant="default"
-              size="lg"
-              onClick={() => openRatingModal(true)}
-              className="gap-2"
-            >
-              <Star /> Score a Performance
-            </Button>
-          </>
-        }
-      />
+      <div className="hidden lg:block">
+        <PageHeader
+          title="Dashboard"
+          actions={
+            <>
+              <Button
+                data-slot="button"
+                variant="secondary"
+                onClick={() => router.push("/dashboard/feedback")}
+                className="gap-2"
+              >
+                <MessageSquare className="hidden md:block" /> Add a Feedback
+              </Button>
+              <Button
+                data-slot="button"
+                variant="default"
+                onClick={() => openRatingModal(true)}
+                className="gap-2"
+              >
+                <Star /> Score a Performance
+              </Button>
+            </>
+          }
+        />
+      </div>
 
       <main className="layout-page-main">
         <div className="pb-4">
@@ -150,13 +165,17 @@ export default function DashboardLayout({
           </AlertDescription>
         </Alert> */}
 
-        <Tabs
+<Tabs
           defaultValue="team"
           size="lg"
           className="w-full"
           onValueChange={(value) => setCurrentTab(value)}
         >
-          <div className="flex justify-between items-center mb-4">
+          <div 
+            ref={tabsRef}
+            className={`flex justify-between items-center mb-4 transition-all z-10 bg-transparent
+              ${isTabsSticky ? 'sticky top-0 shadow-md lg:shadow-none w-screen lg:w-auto lg:py-4 -mx-4 -my-0 lg:m-0' : ''}`}
+          >
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="team">Team Overview</TabsTrigger>
               <TabsTrigger value="standings">Team Standings</TabsTrigger>

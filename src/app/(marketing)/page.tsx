@@ -1,41 +1,44 @@
 import { Button } from "@/components/ui/core/Button";
 import { SignUpButton } from "@clerk/nextjs";
 import { ArrowRightIcon } from "lucide-react";
-import { Hero } from "../../components/ui/marketing/_hero";
-import { Problems } from "../../components/ui/marketing/_problems";
-import { How } from "../../components/ui/marketing/_how";
-import { Features } from "../../components/ui/marketing/_features";
-import { Scenarios } from "../../components/ui/marketing/_scenarios";
-import { Testimonials } from "../../components/ui/marketing/_testimonials";
-import { Craftsmanship } from "../../components/ui/marketing/_craftsmanship";
+import { Hero } from "./components/Hero";
+import { Problems } from "./components/Problems";
+import { How } from "./components/How";
+import { Features } from "./components/Features";
+import { Scenarios } from "./components/Scenarios";
+import { Testimonials } from "./components/Testimonials";
+import { Craftsmanship } from "./components/Craftsmanship";
 
-import { Pricing } from "../../components/ui/marketing/_pricing";
-import { CTA1 } from "../../components/ui/marketing/_cta1";
-import { CTA2 } from "../../components/ui/marketing/_cta2";
-import { Blog } from "../../components/ui/marketing/_blog";
-import { FAQ } from "../../components/ui/marketing/_faq";
-import { OurStory } from "../../components/ui/marketing/_story";
-import { Footer } from "../../components/ui/marketing/_footer";
+import { Pricing } from "./components/Pricing";
+import { CTA1 } from "./components/Cta1";
+import { CTA2 } from "./components/Cta2";
+import { Blog } from "./components/Blog";
+import { FAQ } from "./components/Faq";
+import { OurStory } from "./components/Story";
+import { Footer } from "./components/Footer";
 
 export default function HomePage() {
   return (
     <>
       <Hero />
       {/* <Case2 /> */}
-      {/* <Problems />
-      <How />
+       <Problems />
+       <How />
+     
       <Features />
+       {/*
       <Scenarios /> */}
       {/* <Case1 /> */}
-      {/* <Testimonials />
+      <Testimonials />
       <Pricing />
       <CTA1 />
       <Craftsmanship />
-      <OurStory />
-      <Blog />
+     {/* <OurStory />
+      <Blog />*/}
+      
       <FAQ />
       <CTA2 />
-      <Footer /> */}
+      <Footer /> 
     </>
   );
 }

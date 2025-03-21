@@ -1,7 +1,7 @@
 /* src/styles/tokens/marketing-typography.css */
 :root {
   /* Marketing-specific font family */
-  --font-marketing: "Inter", "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-marketing: "DM Sans", system-ui, -apple-system, sans-serif;
   
   /* Marketing-specific font sizes - potentially larger or with different scale */
   --font-marketing-2xs: 11px;

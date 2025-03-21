@@ -244,7 +244,7 @@
 
 /* Left side with title and content */
 .page-header-content {
-  @apply flex gap-2;
+  @apply hidden lg:flex gap-2;
 }
 
 /* Title container with optional icon */
@@ -260,6 +260,9 @@
 /* Actions container */
 .page-header-actions {
   @apply flex items-center gap-2 md:gap-4;
+}
+.page-header-actions button {
+  @apply w-full lg:w-auto;
 }
 
 /********/
