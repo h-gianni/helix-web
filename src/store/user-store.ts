@@ -28,6 +28,8 @@ interface ProfileData {
     lastName: string | null;
     imageUrl: string | null;
     primaryEmail: string;
+    title: string | null;
+    
   };
   createdAt: string;
   updatedAt: string;
