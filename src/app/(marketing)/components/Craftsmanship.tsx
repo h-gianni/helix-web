@@ -78,7 +78,7 @@ export const Craftsmanship = () => {
                 </button>
               </div>
               <Image
-                src="/feature8.png"
+                src="/#"
                 alt="feature8"
                 width={1920}
                 height={1080}
@@ -89,8 +89,8 @@ export const Craftsmanship = () => {
                 }}
               />
               <Image
-                src="/darkmode-feature8.png"
-                alt="darkmode-feature8.png"
+                src="/#"
+                alt="#"
                 width={1920}
                 height={1080}
                 priority
