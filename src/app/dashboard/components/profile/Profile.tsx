@@ -1,64 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import { ProfileCard } from "@/components/ui/composite/ProfileCard";
 import { ProfileModal } from "./ProfileModal";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Loader } from "@/components/ui/core/Loader";
 import { AlertCircle } from "lucide-react";
-
-interface UserProfile {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  title: string | null;
-}
+import { useProfile, useProfileStore, useUpdateProfile } from "@/store/user-store";
 
 function ProfileSection() {
-  const { user, isLoaded } = useUser();
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [profile, setProfile] = useState<UserProfile>({
-    id: "",
-    email: "",
-    firstName: "",
-    lastName: "",
-    title: null,
-  });
+  // Get Clerk user data
+  const { user, isLoaded: isClerkLoaded } = useUser();
+  
+  // Use the store for UI state
+  const { isEditModalOpen, setEditModalOpen } = useProfileStore();
+  
+  // Use React Query hook for API data
+  const { data: profileData, isLoading: isApiLoading, error: apiError } = useProfile();
+  
+  // Get mutation for updates
+  const updateProfile = useUpdateProfile();
 
-  useEffect(() => {
-    if (isLoaded && user) {
-      setProfile({
-        id: user.id,
-        email: user.emailAddresses[0]?.emailAddress || "",
-        firstName: user.firstName || "",
-        lastName: user.lastName || "",
-        title: (user.unsafeMetadata.title as string) || null,
-      });
-      setIsLoading(false);
-    }
-  }, [isLoaded, user]);
+  // Combine loading states
+  const isLoading = isApiLoading || !isClerkLoaded;
+  
+  // Format error message
+  const error = apiError instanceof Error ? apiError.message : 
+    apiError ? "Failed to load profile data" : null;
 
-  const handleProfileUpdate = async () => {
+  const handleProfileUpdate = async (formData: { firstName: string; lastName: string; title: string | null }) => {
     try {
-      setIsLoading(true);
-      setError(null);
-
+      // Use the mutation to update profile
+      await updateProfile.mutateAsync({
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        title: formData.title,
+      });
+      
+      // Reload clerk user data to get latest changes
       if (user) {
         await user.reload();
-        setProfile({
-          id: user.id,
-          email: user.emailAddresses[0]?.emailAddress || "",
-          firstName: user.firstName || "",
-          lastName: user.lastName || "",
-          title: (user.unsafeMetadata.title as string) || null,
-        });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update profile");
-    } finally {
-      setIsLoading(false);
+      console.error("Error updating profile:", err);
     }
   };
 
@@ -70,11 +53,17 @@ function ProfileSection() {
     );
   }
 
+  // Prepare profile data for the modal
+  const profileFormData = {
+    firstName: profileData?.clerkProfile?.firstName || "",
+    lastName: profileData?.clerkProfile?.lastName || "",
+    title: profileData?.clerkProfile?.title || null,
+  };
+
   return (
     <div className="space-y-6">
       {error && (
         <Alert data-slot="alert" variant="destructive">
-          {/* If you had an h/w class here, you'd replace it with size-# */}
           <AlertCircle className="size-4" />
           <AlertDescription data-slot="alert-description">
             {error}
@@ -85,26 +74,26 @@ function ProfileSection() {
       <div>
         <ProfileCard
           align="horizontal"
-          imageUrl="/api/placeholder/96/96"
+          imageUrl={profileData?.clerkProfile?.imageUrl || "/api/placeholder/96/96"}
           fields={[
             {
               label: "Full Name",
-              value: `${profile.firstName} ${profile.lastName}`,
+              value: `${profileData?.clerkProfile?.firstName || ''} ${profileData?.clerkProfile?.lastName || ''}`.trim() || "Not set",
               variant: "title",
             },
             {
               label: "Email (account ID)",
-              value: profile.email,
+              value: profileData?.email || '',
               variant: "strong",
             },
             {
               label: "Job Title",
-              value: profile.title || (
+              value: profileData?.clerkProfile?.title || (
                 <span className="ui-text-body-helper">Not set</span>
               ),
             },
           ]}
-          onEdit={() => setIsEditModalOpen(true)}
+          onEdit={() => setEditModalOpen(true)}
           editButtonPosition="topRight"
           editButtonText="Edit"
         />
@@ -112,8 +101,8 @@ function ProfileSection() {
 
       <ProfileModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        profile={profile}
+        onClose={() => setEditModalOpen(false)}
+        profile={profileFormData}
         onUpdate={handleProfileUpdate}
       />
     </div>
