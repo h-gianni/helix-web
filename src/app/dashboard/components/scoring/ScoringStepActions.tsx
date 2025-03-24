@@ -1,6 +1,7 @@
+// src/app/dashboard/components/scoring/ScoringStepActions.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/core/Label";
 import {
   RadioGroupCards,
@@ -8,68 +9,19 @@ import {
   RadioGroupCard,
 } from "@/components/ui/core/RadioGroupCards";
 import { useTeamActivities } from "@/store/performance-rating-store";
+import { useFavoritesStore, useFavorites } from '@/store/favorites-store';
 import { Loader, Heart, Building2, PencilRuler, Activity } from "lucide-react";
 
-// Dummy data structured by groups and categories
-const DUMMY_ACTIVITIES = {
-  favorite: {
-    "Saved Favorites": [
-      { id: "fav1", name: "Code Review" },
-      { id: "fav2", name: "Project Planning" },
-      { id: "fav3", name: "Mentoring" },
-      { id: "fav4", name: "Daily Standup" },
-      { id: "fav5", name: "Documentation" },
-      { id: "fav6", name: "Feature Development" },
-      { id: "fav7", name: "Knowledge Sharing" },
-      { id: "fav8", name: "Quality Assurance" },
-    ],
-  },
-  global: {
-    "Organisation values and culture": [
-      { id: "gvc1", name: "Demonstrates company values" },
-      { id: "gvc2", name: "Promotes inclusive environment" },
-      { id: "gvc3", name: "Upholds ethical standards" },
-    ],
-    Teamwork: [
-      { id: "gtw1", name: "Collaborative problem solving" },
-      { id: "gtw2", name: "Active participation in meetings" },
-      { id: "gtw3", name: "Shares knowledge with team" },
-      { id: "gtw4", name: "Provides constructive feedback" },
-    ],
-    Leadership: [
-      { id: "gld1", name: "Takes initiative on projects" },
-      { id: "gld2", name: "Mentors junior team members" },
-      { id: "gld3", name: "Leads by example" },
-      { id: "gld4", name: "Effective decision making" },
-    ],
-  },
-  functions: {
-    Engineering: [
-      { id: "fen1", name: "Code quality" },
-      { id: "fen2", name: "Technical documentation" },
-      { id: "fen3", name: "Bug fixing" },
-      { id: "fen4", name: "System architecture" },
-    ],
-    "Product Management": [
-      { id: "fpm1", name: "Requirements gathering" },
-      { id: "fpm2", name: "Roadmap planning" },
-      { id: "fpm3", name: "User story creation" },
-      { id: "fpm4", name: "Stakeholder management" },
-    ],
-    "Product Design": [
-      { id: "fpd1", name: "User research" },
-      { id: "fpd2", name: "Wireframing" },
-      { id: "fpd3", name: "UI design" },
-      { id: "fpd4", name: "Usability testing" },
-    ],
-    Research: [
-      { id: "fre1", name: "Data analysis" },
-      { id: "fre2", name: "Literature review" },
-      { id: "fre3", name: "Competitive analysis" },
-      { id: "fre4", name: "Research methodology" },
-    ],
-  },
-};
+// Add type for activities
+interface Activity {
+  id: string;
+  name: string;
+  description?: string | null;
+  category?: {
+    id: string;
+    name: string;
+  } | string;
+}
 
 interface ScoringStepActionsProps {
   teamId: string;
@@ -85,6 +37,71 @@ export default function ScoringStepActions({
   const { data: activities = [], isLoading: activitiesLoading } =
     useTeamActivities(teamId);
   const [activeGroup, setActiveGroup] = useState<string>("favorite");
+  
+  // Load favorites
+  const { isLoading: isFavoritesLoading } = useFavorites();
+  const favorites = useFavoritesStore((state) => state.favorites);
+
+  // State to store organized activities
+  const [organizedActivities, setOrganizedActivities] = useState<Record<string, Record<string, Activity[]>>>({
+    favorite: { "Saved Favorites": [] },
+    global: {},
+    functions: {}
+  });
+
+  // Effect to organize activities when they are loaded
+  useEffect(() => {
+console.log("Organizing activities...", favorites);
+    
+    if (activitiesLoading || isFavoritesLoading) return;
+    
+    // Map to track activities that have been added to favorites
+    const addedToFavorites = new Set<string>();
+    
+    // Create an organized structure of activities
+    const organized: Record<string, Record<string, Activity[]>> = {
+      favorite: { "Saved Favorites": [] },
+      global: {},
+      functions: {}
+    };
+    
+    // Process favorites first
+    Object.entries(favorites).forEach(([categoryId, activityIds]) => {
+      // Find matching activities
+      activityIds.forEach(activityId => {
+        const activity = activities.find(act => act.id === activityId);
+        if (activity) {
+          organized.favorite["Saved Favorites"].push(activity);
+          addedToFavorites.add(activityId);
+        }
+      });
+    });
+    
+    // Then organize the rest of the activities
+    activities.forEach(activity => {
+      if (addedToFavorites.has(activity.id)) return; // Skip if already in favorites
+      
+      const categoryName = typeof activity.category === 'object' 
+        ? activity.category?.name 
+        : typeof activity.category === 'string' ? activity.category : 'Other';
+      
+      // Determine if it's a global or function-specific action
+      // This is a simplified approach; you might want to implement more sophisticated categorization
+      const isGlobal = categoryName.includes('Values') || 
+                     categoryName.includes('Culture') || 
+                     categoryName.includes('Teamwork');
+      
+      const groupKey = isGlobal ? 'global' : 'functions';
+      
+      if (!organized[groupKey][categoryName]) {
+        organized[groupKey][categoryName] = [];
+      }
+      
+      organized[groupKey][categoryName].push(activity);
+    });
+    
+    setOrganizedActivities(organized);
+  }, [activities, favorites, activitiesLoading, isFavoritesLoading]);
 
   // Handle activity selection with scroll position preservation
   const handleActivitySelect = (activityId: string) => {
@@ -103,33 +120,29 @@ export default function ScoringStepActions({
     },
   ];
 
-  // Use real data if available, otherwise fallback to dummy data
-  const displayActivitiesCategories =
-    activities.length > 0
-      ? // Logic for real data would go here
-        DUMMY_ACTIVITIES[activeGroup as keyof typeof DUMMY_ACTIVITIES]
-      : DUMMY_ACTIVITIES[activeGroup as keyof typeof DUMMY_ACTIVITIES];
-
-  if (activitiesLoading) {
+  // Display loading state
+  if (activitiesLoading || isFavoritesLoading) {
     return (
       <div className="flex justify-center items-center py-12">
         <Loader className="size-6 animate-spin text-primary" />
       </div>
-    );
-  }
+    
+  );
+}
+  
+
+  const currentGroupActivities = organizedActivities[activeGroup];
+  const hasFavorites = organizedActivities.favorite["Saved Favorites"].length > 0;
 
   return (
     <div className="space-y-6">
       {/* Group Selection */}
       <div className="space-y-2">
-        {/* <Label className="text-sm font-medium text-foreground">
-          Actions Group
-        </Label> */}
         <RadioGroupCards
           value={activeGroup}
           onValueChange={setActiveGroup}
           orientation="horizontal"
-                className="shadow-sm"
+          className="shadow-sm"
         >
           <RadioGroupCardsContainer
             className="grid grid-cols-3 overflow-hidden rounded-lg"
@@ -148,22 +161,35 @@ export default function ScoringStepActions({
                 <div className="flex items-center justify-center gap-2">
                   {group.icon}
                   <span className="hidden sm:inline">{group.name}</span>
+                  {group.id === "favorite" && hasFavorites && (
+                    <span className="inline-flex items-center justify-center size-5 bg-accent/20 text-accent rounded-full text-xs font-medium">
+                      {organizedActivities.favorite["Saved Favorites"].length}
+                    </span>
+                  )}
                 </div>
-              </RadioGroupCard>
-            ))}
+              </RadioGroupCard>))}
           </RadioGroupCardsContainer>
         </RadioGroupCards>
       </div>
 
       {/* Categories and Activities Selection */}
       <div className="space-y-6">
-        {Object.entries(displayActivitiesCategories).length === 0 ? (
+        {Object.entries(currentGroupActivities).length === 0 ? (
           <div className="p-6 text-center border rounded-lg bg-muted">
             <Activity className="size-8 mx-auto mb-2 text-foreground" />
-            <p className="text-foreground">No activities available</p>
+            {activeGroup === "favorite" ? (
+              <div>
+                <p className="text-foreground font-medium">No favorites saved yet</p>
+                <p className="text-sm text-foreground-muted mt-1">
+                  You can mark actions as favorites in the Settings/Org actions section
+                </p>
+              </div>
+            ) : (
+              <p className="text-foreground">No activities available</p>
+            )}
           </div>
         ) : (
-          Object.entries(displayActivitiesCategories).map(
+          Object.entries(currentGroupActivities).map(
             ([category, categoryActivities]) => (
               <div key={category} className="space-y-2.5">
                 <Label className="!text-foreground-weak">{category}</Label>
@@ -173,7 +199,7 @@ export default function ScoringStepActions({
                 >
                   {activeGroup === "favorite" ? (
                     <RadioGroupCardsContainer className="flex flex-col">
-                      {categoryActivities.map((activity: any) => (
+                      {categoryActivities.map((activity) => (
                         <RadioGroupCard
                           key={activity.id}
                           id={`activity-${activity.id}`}
@@ -189,7 +215,7 @@ export default function ScoringStepActions({
                       className="flex flex-col shadow-sm overflow-hidden rounded-lg"
                       layout="compact"
                     >
-                      {categoryActivities.map((activity: any, index) => (
+                      {categoryActivities.map((activity) => (
                         <RadioGroupCard
                           key={activity.id}
                           id={`activity-${activity.id}`}
@@ -209,5 +235,4 @@ export default function ScoringStepActions({
         )}
       </div>
     </div>
-  );
-}
+  )}

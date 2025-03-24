@@ -1,10 +1,10 @@
-// _actions.tsx
-
+// src/app/dashboard/components/configuration/ConfigurationActions.tsx
 import React, { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/core/Switch";
-import { Square, SquareCheckBig } from "lucide-react";
+import { Square, SquareCheckBig, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/core/Badge";
+import { Button } from "@/components/ui/core/Button";
 import {
   Accordion,
   AccordionContent,
@@ -12,6 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/core/Accordion";
 import { useConfigStore } from "@/store/config-store";
+import { useFavoritesStore, useToggleFavorite, useFavorites } from '@/store/favorites-store';
 import {
   useActionModalStore,
   useActions,
@@ -20,6 +21,7 @@ import {
   MANDATORY_CATEGORIES,
 } from "@/store/action-store";
 import { Action, ActionCategory } from "@/lib/types/api/action";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/core/Tooltip";
 
 interface ActionsConfigProps {
   selectedCategory: string;
@@ -44,6 +46,11 @@ function ActionsConfig({
   const updateActivitiesByCategory = useConfigStore(
     (state) => state.updateActivitiesByCategory
   );
+
+  // Load favorites
+  const { isLoading: isFavoritesLoading } = useFavorites();
+  const toggleFavorite = useToggleFavorite();
+  const isFavorite = useFavoritesStore((state) => state.isFavorite);
 
   const { data: actionCategories, isLoading } = useActions();
   const [generalCategories, setGeneralCategories] = useState<ActionCategory[]>(
@@ -164,6 +171,23 @@ function ActionsConfig({
     }
   };
 
+  // Handle favorites toggle
+  const handleToggleFavorite = async (actionId: string, categoryId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent action selection
+    
+    const currentStatus = isFavorite(actionId, categoryId);
+    
+    try {
+      await toggleFavorite.mutateAsync({
+        actionId,
+        categoryId,
+        isFavorite: !currentStatus,
+      });
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+    }
+  };
+
   // Get selected count for a category
   const getSelectedCount = (categoryId: string): number => {
     return selectedByCategory && selectedByCategory[categoryId]
@@ -222,7 +246,7 @@ function ActionsConfig({
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isFavoritesLoading) {
     return <div>Loading actions...</div>;
   }
 
@@ -261,6 +285,7 @@ function ActionsConfig({
               isMandatoryCategory &&
               isSelected &&
               selectedCount <= MIN_REQUIRED_ACTIONS_PER_CATEGORY;
+            const actionIsFavorite = isFavorite(action.id, category.id);
 
             return (
               <div
@@ -285,9 +310,35 @@ function ActionsConfig({
                     <Square className="text-foreground/25 size-4" />
                   )}
                 </div>
-                <span className="text-base">{action.name}</span>
+                <span className="text-base flex-1">{action.name}</span>
+                
+                {/* Favorite button */}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => handleToggleFavorite(action.id, category.id, e)}
+                        className={cn(
+                          "p-1 h-7 w-7",
+                          actionIsFavorite ? "text-accent hover:text-accent/80" : "text-foreground/25 hover:text-foreground/50"
+                        )}
+                      >
+                        <Heart className={cn(
+                          "size-4",
+                          actionIsFavorite && "fill-current"
+                        )} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {actionIsFavorite ? "Remove from favorites" : "Add to favorites"}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                
                 {isMandatoryAction && (
-                  <span className="ml-auto text-xs text-primary italic">
+                  <span className="text-xs text-primary italic">
                     (Min. 3 Required)
                   </span>
                 )}
