@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
 import { PageHeader } from "@/components/ui/composite/PageHeader";
 import { Button } from "@/components/ui/core/Button";
@@ -16,7 +16,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/core/Alert";
-import PerformanceRatingModal from "@/app/dashboard/components/PerformanceScoringModal";
+import PerformanceRatingModal from "@/app/dashboard/components/scoring/ScoringModal";
 import EmptyDashboardView from "@/app/dashboard/components/EmptyDashboardView";
 import type { Member } from "@/store/member";
 import type { TeamResponse } from "@/lib/types/api";
@@ -28,6 +28,8 @@ import ViewSkillAnalysis from "@/app/dashboard/components/dashboard/views/ViewSk
 import ViewFeedbackEngagement from "@/app/dashboard/components/dashboard/views/ViewFeedbackEngagement";
 import ImageBackgroundBanner from "@/components/ui/banners/ImageBackgroundBanner";
 import SplitBanner from "@/components/ui/banners/SplitBanner";
+import CountdownBanner from "@/components/ui/banners/CountdownBanner";
+import AnnouncementBanner from "@/components/ui/banners/AnnouncementBanner";
 
 const breadcrumbItems = [{ label: "Dashboard" }];
 
@@ -45,50 +47,70 @@ export default function DashboardLayout({
   const { viewType, setViewType } = usePerformersStore();
   const { setIsOpen: openRatingModal } = usePerformanceRatingStore();
   const [currentTab, setCurrentTab] = useState("team");
+  const [isTabsSticky, setIsTabsSticky] = useState(false);
+  const tabsRef = useRef<HTMLDivElement>(null);
 
   const handlePrimaryBanner = () => {
-    console.log('Get started clicked');
+    console.log("You clicked on banner Primary CTA");
     // Navigate to sign up or onboarding
     // router.push('/signup');
   };
 
   const handleSecondaryBanner = () => {
-    console.log('Learn more clicked');
+    console.log("You clicked on banner Secondary CTA");
     // Navigate to documentation
     // router.push('/docs/analytics');
   };
 
+  const promoEndDate = new Date();
+  promoEndDate.setDate(promoEndDate.getDate() + 14);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (tabsRef.current) {
+        const tabsPosition = tabsRef.current.getBoundingClientRect().top;
+        setIsTabsSticky(tabsPosition <= 0);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <>
       <PageBreadcrumbs items={breadcrumbItems} />
-
-      <PageHeader
-        title="Dashboard"
-        actions={
-          <>
-            <Button
-              data-slot="button"
-              variant="secondary"
-              onClick={() => router.push("/dashboard/feedback")}
-              className="gap-2"
-            >
-              <MessageSquare className="size-4" /> Add Feedback
-            </Button>
-            <Button
-              data-slot="button"
-              variant="default"
-              onClick={() => openRatingModal(true)}
-              className="gap-2"
-            >
-              <Star className="size-4" /> Rate Performance
-            </Button>
-          </>
-        }
-      />
+      <div className="hidden lg:block">
+        <PageHeader
+          title="Dashboard"
+          actions={
+            <>
+              <Button
+                data-slot="button"
+                variant="secondary"
+                onClick={() => router.push("/dashboard/feedback")}
+                className="gap-2"
+              >
+                <MessageSquare className="hidden md:block" /> Add a Feedback
+              </Button>
+              <Button
+                data-slot="button"
+                variant="default"
+                onClick={() => openRatingModal(true)}
+                className="gap-2"
+              >
+                <Star /> Score a Performance
+              </Button>
+            </>
+          }
+        />
+      </div>
 
       <main className="layout-page-main">
         <div className="pb-4">
-          {/* <ImageBackgroundBanner
+          <ImageBackgroundBanner
             badgeText="Special Offer"
             title="25% Off Annual Plans"
             description="For a limited time only. Lock in this special rate for the entire year."
@@ -97,20 +119,41 @@ export default function DashboardLayout({
             onPrimaryClick={handlePrimaryBanner}
             onSecondaryClick={handleSecondaryBanner}
             imagePath="/hero.svg"
-          /> */}
-          <SplitBanner
+          />
+          {/* <SplitBanner
             badgeText="Team Collaboration"
-            title="Work together, seamlessly"
-            description="Our collaboration tools help your team stay in sync, no matter where they are working from."
-            // bulletPoints={collaborationFeatures}
-            primaryCta="Start Free Trial"
+            title="Work together, transparently"
+            description="You can now customize and share your team member performance reports with ease and in real-time."
+            bulletPoints={collaborationFeatures}
+            primaryCta="Upgrade to Pro"
             secondaryCta="Watch Demo"
             onPrimaryClick={handlePrimaryBanner}
             onSecondaryClick={handleSecondaryBanner}
             imagePath="/hero.svg"
             imageAlt="People collaborating on a document"
             imagePosition="right"
-          />
+          /> */}
+          {/* <CountdownBanner
+            badgeText="Black Friday Deal"
+            title="50% Off Premium Plan"
+            description="Our biggest discount of the year is here. Upgrade now and save big on all premium features."
+            endDate={promoEndDate}
+            primaryCta="Claim This Offer"
+            secondaryCta="See What's Included"
+            onPrimaryClick={handleClaimOffer}
+            onSecondaryClick={handleLearnMore}
+            bgColor="bg-gradient-to-r from-[var(--accent-dark)] to-[var(--primary-darker)]"
+          /> */}
+          {/* <AnnouncementBanner
+            badgeText="New feature"
+            title="Slack Integration"
+            description="Now you can score your team performance via Slack"
+            primaryCta="See it in action"
+            secondaryCta="See it in action"
+            onPrimaryClick={handlePrimaryBanner}
+            onSecondaryClick={handleSecondaryBanner}
+            color="primary"
+          /> */}
         </div>
 
         {/* <Alert variant="warning">
@@ -122,18 +165,20 @@ export default function DashboardLayout({
           </AlertDescription>
         </Alert> */}
 
-        <Tabs
+<Tabs
           defaultValue="team"
           size="lg"
           className="w-full"
           onValueChange={(value) => setCurrentTab(value)}
         >
-          <div className="flex justify-between items-center mb-4">
+          <div 
+            ref={tabsRef}
+            className={`flex justify-between items-center mb-4 transition-all z-10 bg-transparent
+              ${isTabsSticky ? 'sticky top-0 shadow-md lg:shadow-none w-screen lg:w-auto lg:py-4 -mx-4 -my-0 lg:m-0' : ''}`}
+          >
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="team">Team Overview</TabsTrigger>
-              <TabsTrigger value="standings">
-                Team Standings
-              </TabsTrigger>
+              <TabsTrigger value="standings">Team Standings</TabsTrigger>
               <TabsTrigger value="skills">Skill Analysis</TabsTrigger>
               <TabsTrigger value="feedback">Feedback & Engagement</TabsTrigger>
             </TabsList>

@@ -220,7 +220,6 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
                   data-slot="button"
                   variant="ghost"
                   size="icon"
-                  className="size-8"
                 >
                   <MoreVertical className="size-4" />
                 </Button>

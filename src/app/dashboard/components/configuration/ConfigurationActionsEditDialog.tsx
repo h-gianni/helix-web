@@ -29,6 +29,8 @@ function ActionsDialog({
   // Determine organization name to display
   const orgName = configOrgName || 
     (profile?.orgName && profile.orgName.length > 0 ? profile.orgName[0]?.name : "Organization");
+
+    
   
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>

@@ -240,7 +240,7 @@ function MemberDashboard({ teamId, memberId }: MemberDashboardProps) {
       </div>
 
       {/* Top Activities & Feedback */}
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 gap-2 md:grid-cols-3">
         {/* Top Activities */}
         <Card data-slot="card">
           <CardHeader data-slot="card-header">

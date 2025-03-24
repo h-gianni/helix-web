@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { EditMemberModal } from "../../../../components/teams/team/member/MemberEditModal";
-import PerformanceRatingModal from "@/app/dashboard/components/PerformanceScoringModal";
+import PerformanceRatingModal from "@/app/dashboard/components/scoring/ScoringModal";
 import RatingsSection from "../../../../components/teams/team/member/MemberRatingsSection";
 import {
   Tabs,
@@ -106,13 +106,6 @@ export default function MemberDetailsPage() {
         icon={member.isAdmin && <Crown className="text-warning size-4" />}
         actions={
           <>
-            <Button
-              data-slot="button"
-              variant="secondary"
-              onClick={() => setRatingModalOpen(true)}
-            >
-              <Plus className="size-4" /> Add Rating
-            </Button>
             <Button data-slot="button" variant="default">
               <ChartNoAxesCombined className="size-4" /> Generate Performance Review
             </Button>
@@ -121,8 +114,8 @@ export default function MemberDetailsPage() {
       />
 
       <main className="layout-page-main">
-        <div className="flex flex-row-reverse gap-2">
-          <div className="w-80">
+        <div className="lg:flex flex-row-reverse gap-2 space-y-4 lg:space-y-0">
+          <div className="lg:w-80">
             <ProfileCard
               align="vertical"
               fields={[
@@ -169,7 +162,7 @@ export default function MemberDetailsPage() {
                 {/* <TabsTrigger value="goals">Goals</TabsTrigger> */}
               </TabsList>
 
-              <TabsContent value="dashboard">
+              <TabsContent value="dashboard" className="mt-4">
                 <MemberDashboard teamId={params.teamId} memberId={params.memberId} />
               </TabsContent>
 

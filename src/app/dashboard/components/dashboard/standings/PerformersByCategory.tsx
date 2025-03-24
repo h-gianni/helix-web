@@ -50,16 +50,16 @@ export function PerformersByCategory({
   return (
     <div className="space-y-6">
       <div
-        className={`border-t border-border pt-4 ${isEmpty ? "opacity-50" : ""}`}
+        className={`border-t-0 pt-4 ${isEmpty ? "opacity-50" : ""}`}
       >
-        <div className="flex flex-col md:flex-row items-center gap-2 mb-4">
+        <div className="flex flex-col md:flex-row items-start gap-2 mb-4">
           {category.label && (
             <category.Icon
               className={`size-4 text-foreground-weak ${category.className}`}
             />
           )}
-          <div className="flex flex-col sm:flex-row items-baseline sm:gap-3">
-            <span className="whitespace-nowrap font-semibold">
+          <div className="flex flex-col items-baseline gap-0 -mt-0.5">
+            <span className="whitespace-nowrap heading-4">
               {isEmpty ? `No ${category.label}` : category.label}
             </span>
             {category.description && (

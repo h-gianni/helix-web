@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { Navbar } from "../../components/ui/marketing/_navbar";
+import { Navbar } from "./components/Navbar";
 import '@/styles/globals-marketing.css';
-import { MobileBottomNav } from "../../components/ui/marketing/_mobileBottomNav";
+import { MobileBottomNav } from "./components/MobileBottomNav";
 
 export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
