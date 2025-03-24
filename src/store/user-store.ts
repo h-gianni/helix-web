@@ -31,8 +31,10 @@ interface ProfileData {
     title: string | null;
     
   };
+  orgName?: { name: string }[]; // or whatever the actual type of orgName is
   createdAt: string;
   updatedAt: string;
+  teams?: any[];
 }
 
 interface TeamsData {
