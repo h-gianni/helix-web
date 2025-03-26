@@ -29,6 +29,9 @@ import {
 } from "@/components/ui/core/Tabs";
 import MemberDashboard from "../../../../components/teams/team/member/MemberDashboard";
 import { useMemberDetails, useMemberStore } from "@/store/member-store";
+import MemberReviewsList from "../../../../components/teams/team/member/MemberReviewsList";
+import { GenerateReviewModal } from "@/app/dashboard/components/teams/team/member/GenerateReviewModal";
+import { useState } from "react";
 
 export default function MemberDetailsPage() {
   const params = useParams() as { teamId: string; memberId: string };
@@ -42,6 +45,8 @@ export default function MemberDetailsPage() {
     setEditModalOpen,
     setRatingModalOpen,
   } = useMemberStore();
+
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
   const { data: member, isLoading, error } = useMemberDetails({
     teamId: params.teamId,
@@ -61,6 +66,10 @@ export default function MemberDetailsPage() {
           : member?.user?.email || "Member Details",
     },
   ];
+
+  const handleGenerateReview = () => {
+    setIsReviewModalOpen(true);
+  };
 
   if (isLoading) {
     return (
@@ -93,6 +102,15 @@ export default function MemberDetailsPage() {
 
   return (
     <>
+    {isReviewModalOpen && (
+      <GenerateReviewModal
+        teamId={params.teamId}
+        memberId={params.memberId}
+        isOpen={isReviewModalOpen}
+        memberName={member.firstName + " " + member.lastName}
+        onClose={() => setIsReviewModalOpen(false)}
+      />
+    )}
       <PageBreadcrumbs items={breadcrumbItems} />
       <PageHeader
         title={
@@ -106,7 +124,7 @@ export default function MemberDetailsPage() {
         icon={member.isAdmin && <Crown className="text-warning size-4" />}
         actions={
           <>
-            <Button data-slot="button" variant="default">
+            <Button data-slot="button" variant="default" onClick={handleGenerateReview}>
               <ChartNoAxesCombined className="size-4" /> Generate Performance Review
             </Button>
           </>
@@ -160,6 +178,7 @@ export default function MemberDetailsPage() {
                 <TabsTrigger value="ratings">Ratings</TabsTrigger>
                 <TabsTrigger value="feedbacks">Feedback</TabsTrigger>
                 {/* <TabsTrigger value="goals">Goals</TabsTrigger> */}
+                <TabsTrigger value="reviews">Performance Reviews</TabsTrigger>
               </TabsList>
 
               <TabsContent value="dashboard" className="mt-4">
@@ -178,9 +197,13 @@ export default function MemberDetailsPage() {
                 <div className="missing-content">No feedback yet.</div>
               </TabsContent>
 
-              {/* <TabsContent value="goals">
-                ...
-              </TabsContent> */}
+              <TabsContent value="reviews">
+                <MemberReviewsList
+                  teamId={params.teamId}
+                  memberId={params.memberId}
+                  onGenerateReview={handleGenerateReview}
+                />
+              </TabsContent>
             </Tabs>
           </div>
         </div>

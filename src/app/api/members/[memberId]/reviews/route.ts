@@ -18,15 +18,18 @@ export async function GET(
       );
     }
 
+
+
     // Get URL parameters for filtering
     const url = new URL(request.url);
+   
     const year = url.searchParams.get("year");
     const quarter = url.searchParams.get("quarter");
     const status = url.searchParams.get("status") as ReviewStatus | null;
 
     // Build where clause
     const whereClause = {
-      memberId: params.memberId,
+      teamMemberId: params.memberId,
       ...(year && { year: parseInt(year) }),
       ...(quarter && { quarter: parseInt(quarter) }),
       ...(status && { status }),
@@ -70,9 +73,11 @@ export async function POST(
     }
 
     const body = await request.json();
-    const { quarter, year, content } = body;
+    console.log("📦 Request body:------------", body);
 
-    if (!quarter || !year || !content) {
+    const { quarter, year, teamId, content } = body;
+
+    if (!quarter || !year || !teamId) {
       return NextResponse.json<ApiResponse<never>>(
         { success: false, error: "Quarter, year, and content are required" },
         { status: 400 }
