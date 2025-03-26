@@ -176,33 +176,40 @@ export async function POST(
       year
     };
 
+    console.log('memberData---------------------------', memberData);
+
     // Generate performance review using OpenAI
+    // Generate performance review using DeepSeek API
     const systemPrompt = `You are an expert HR performance reviewer. 
     Your task is to write a comprehensive, fair, and constructive quarterly performance review for a team member 
     based on objective data and feedback. The review should be professional, balanced, and actionable.
     
     Include these sections:
     1. Executive Summary - Brief overview of overall performance
-    2. Key Strengths - Areas where the team member excels
+    2. Key Strengths - Areas where the team member excels, based on available ratings and data
     3. Development Areas - Areas for improvement with actionable steps
     4. Goals for Next Quarter - 3-5 specific, measurable goals
     5. Overall Rating - A summary assessment
     
-    Keep the tone positive, even when discussing development areas. Focus on growth and improvement.`;
+    Keep the tone positive, even when discussing development areas. Focus on growth and improvement.
+    
+    If limited feedback or data is available, use what you have to make reasonable assessments and provide constructive guidance.
+    Generate appropriate goals and recommendations based on the performance patterns in the ratings.`;
 
     const prompt = `Generate a quarterly performance review (Q${quarter} ${year}) for ${memberData.name}, a ${memberData.jobTitle} on the ${memberData.team} team.
     
     Performance Data:
     - Overall Rating: ${memberData.averageScore.toFixed(2)}/5 (from ${memberData.totalRatings} ratings)
-    - Top Performing Areas: ${topStrengths.map(s => `${s.category} (${s.average.toFixed(2)})`).join(', ')}
-    - Areas for Development: ${areasForImprovement.map(s => `${s.category} (${s.average.toFixed(2)})`).join(', ')}
+    ${topStrengths.length > 0 ? `- Top Performing Areas: ${topStrengths.map(s => `${s.category} (${s.average.toFixed(2)})`).join(', ')}` : '- No specific top-performing areas identified yet'}
+    ${areasForImprovement.length > 0 ? `- Areas for Development: ${areasForImprovement.map(s => `${s.category} (${s.average.toFixed(2)})`).join(', ')}` : '- No specific development areas identified yet'}
     
-    Feedback Highlights:
-    - Strengths: ${memberData.feedbackStrengths.slice(0, 5).join('; ')}
-    - Improvement Areas: ${memberData.feedbackImprovements.slice(0, 5).join('; ')}
-    - Suggested Goals: ${memberData.feedbackGoals.slice(0, 5).join('; ')}
+    ${(allStrengths.length > 0 || allImprovements.length > 0 || allGoals.length > 0) ? `Feedback Highlights:
+    ${allStrengths.length > 0 ? `- Strengths: ${memberData.feedbackStrengths.slice(0, 5).join('; ')}` : '- Strengths: No documented strengths yet'}
+    ${allImprovements.length > 0 ? `- Improvement Areas: ${memberData.feedbackImprovements.slice(0, 5).join('; ')}` : '- Improvement Areas: No documented improvement areas yet'}
+    ${allGoals.length > 0 ? `- Suggested Goals: ${memberData.feedbackGoals.slice(0, 5).join('; ')}` : '- Suggested Goals: No documented goals yet'}` : ''}
     
-    Format the review professionally with clear sections. Provide specific examples where possible and actionable recommendations.`;
+    Format the review professionally with clear sections. Provide specific examples where possible and actionable recommendations. Use the provided ratings data to make informed assessments, and if feedback is missing, generate reasonable suggestions based on the performance scores.`;
+
 
     const completion = await openai.chat.completions.create({
         model: "deepseek/deepseek-r1-zero:free",
