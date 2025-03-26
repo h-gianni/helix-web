@@ -12,7 +12,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/core/Accordion";
 import { useConfigStore } from "@/store/config-store";
-import { useFavoritesStore, useToggleFavorite, useFavorites } from '@/store/favorites-store';
+import {
+  useFavoritesStore,
+  useToggleFavorite,
+  useFavorites,
+} from "@/store/favorites-store";
 import {
   useActionModalStore,
   useActions,
@@ -21,7 +25,12 @@ import {
   MANDATORY_CATEGORIES,
 } from "@/store/action-store";
 import { Action, ActionCategory } from "@/lib/types/api/action";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/core/Tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/core/Tooltip";
 
 interface ActionsConfigProps {
   selectedCategory: string;
@@ -172,11 +181,15 @@ function ActionsConfig({
   };
 
   // Handle favorites toggle
-  const handleToggleFavorite = async (actionId: string, categoryId: string, e: React.MouseEvent) => {
+  const handleToggleFavorite = async (
+    actionId: string,
+    categoryId: string,
+    e: React.MouseEvent
+  ) => {
     e.stopPropagation(); // Prevent action selection
-    
+
     const currentStatus = isFavorite(actionId, categoryId);
-    
+
     try {
       await toggleFavorite.mutateAsync({
         actionId,
@@ -277,10 +290,11 @@ function ActionsConfig({
           />
           <span className="text-sm text-foreground-weak">Select all</span>
         </div>
-
         <div className="w-full -space-y-px">
           {category.actions.map((action) => {
-            const isSelected = selectedActivities.includes(action.id);
+            const isSelected = selectedByCategory[category.id]?.includes(
+              action.id
+            );
             const isMandatoryAction =
               isMandatoryCategory &&
               isSelected &&
@@ -311,7 +325,7 @@ function ActionsConfig({
                   )}
                 </div>
                 <span className="text-base flex-1">{action.name}</span>
-                
+
                 {/* Favorite button */}
                 <TooltipProvider>
                   <Tooltip>
@@ -319,24 +333,32 @@ function ActionsConfig({
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={(e) => handleToggleFavorite(action.id, category.id, e)}
+                        onClick={(e) =>
+                          handleToggleFavorite(action.id, category.id, e)
+                        }
                         className={cn(
                           "p-1 h-7 w-7",
-                          actionIsFavorite ? "text-accent hover:text-accent/80" : "text-foreground/25 hover:text-foreground/50"
+                          actionIsFavorite
+                            ? "text-accent hover:text-accent/80"
+                            : "text-foreground/25 hover:text-foreground/50"
                         )}
                       >
-                        <Heart className={cn(
-                          "size-4",
-                          actionIsFavorite && "fill-current"
-                        )} />
+                        <Heart
+                          className={cn(
+                            "size-4",
+                            actionIsFavorite && "fill-current"
+                          )}
+                        />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      {actionIsFavorite ? "Remove from favorites" : "Add to favorites"}
+                      {actionIsFavorite
+                        ? "Remove from favorites"
+                        : "Add to favorites"}
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                
+
                 {isMandatoryAction && (
                   <span className="text-xs text-primary italic">
                     (Min. 3 Required)
@@ -409,6 +431,7 @@ function ActionsConfig({
                   data-slot="accordion-content"
                   className="px-4"
                 >
+                  {/* {JSON.stringify(category)} */}
                   {renderCategoryActions(category)}
                 </AccordionContent>
               </AccordionItem>

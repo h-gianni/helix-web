@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/core/Card";
 import { PenSquare, Heart } from "lucide-react";
 import { useConfigStore } from "@/store/config-store";
-import { useFavoritesStore, useFavorites } from '@/store/favorites-store';
+import { useFavoritesStore, useFavorites } from "@/store/favorites-store";
 import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
 import { useProfileStore } from "@/store/user-store";
 
@@ -30,9 +30,10 @@ function OrgActionsSummary({
   variant = "settings",
 }: OrgActionsSummaryProps) {
   const { data: actionCategories, isLoading } = useActions();
-  
+
   // Load favorites
-  const { data:fetchedFavorites, isLoading: isFavoritesLoading } = useFavorites();
+  const { data: fetchedFavorites, isLoading: isFavoritesLoading } =
+    useFavorites();
   const favorites = useFavoritesStore((state) => state.favorites);
 
   // Get the selected activities and categories from config store
@@ -67,18 +68,15 @@ function OrgActionsSummary({
 
   // Get category name for display
   const getCategoryNameById = (categoryId: string) => {
-   
-
     if (!actionCategories) return "Loading...";
     const category = actionCategories.find((cat) => cat.id === categoryId);
-    
+
     return category ? category.name : "Unknown Category";
   };
 
   // Get favorites count for a category
   const getFavoritesCount = (categoryId: string): number => {
-    
-console.log(favorites, "favorites")
+    console.log(favorites, "favorites");
     return favorites[categoryId]?.length || 0;
   };
 
@@ -99,11 +97,7 @@ console.log(favorites, "favorites")
               ? `${organizationName}'s actions`
               : "Organisation's actions"}
           </CardTitle>
-          <Button
-            data-slot="button"
-            variant="ghost"
-            onClick={onEdit}
-          >
+          <Button data-slot="button" variant="ghost" onClick={onEdit}>
             <PenSquare /> Edit
           </Button>
         </CardHeader>
@@ -125,7 +119,7 @@ console.log(favorites, "favorites")
                 .map(([categoryId, activities]) => {
                   const categoryName = getCategoryNameById(categoryId);
                   const favoritesCount = getFavoritesCount(categoryId);
-                  
+
                   return (
                     <AccordionItem
                       key={categoryId}
@@ -138,12 +132,14 @@ console.log(favorites, "favorites")
                         className="py-2"
                       >
                         <div className="flex justify-between items-center gap-2 w-full pr-4">
-                          <span className="font-medium">
-                            {categoryName}
-                          </span>
+                          <span className="font-medium">{categoryName}</span>
                           <div className="flex items-center gap-2">
                             {favoritesCount > 0 && (
-                              <Badge data-slot="badge" variant="accent" className="flex items-center gap-1">
+                              <Badge
+                                data-slot="badge"
+                                variant="accent"
+                                className="flex items-center gap-1"
+                              >
                                 <Heart className="size-3 fill-current" />
                                 {favoritesCount}
                               </Badge>
@@ -158,11 +154,17 @@ console.log(favorites, "favorites")
                         <ul className="space-y-2 pb-2">
                           {activities.map((actionId) => {
                             const actionName = getActionNameById(actionId);
-                            
-                            const isFavorite = isActionFavorite(actionId, categoryId);
-                            
+
+                            const isFavorite = isActionFavorite(
+                              actionId,
+                              categoryId
+                            );
+
                             return (
-                              <li key={actionId} className="text-sm flex items-center gap-2">
+                              <li
+                                key={actionId}
+                                className="text-sm flex items-center gap-2"
+                              >
                                 {actionName}
                                 {isFavorite && (
                                   <Heart className="size-3 text-accent fill-current" />
