@@ -68,6 +68,7 @@ export default function MemberDetailsPage() {
   ];
 
   const handleGenerateReview = () => {
+    console.log("handleGenerateReview");
     setIsReviewModalOpen(true);
   };
 
@@ -102,15 +103,9 @@ export default function MemberDetailsPage() {
 
   return (
     <>
-    {isReviewModalOpen && (
-      <GenerateReviewModal
-        teamId={params.teamId}
-        memberId={params.memberId}
-        isOpen={isReviewModalOpen}
-        memberName={member.firstName + " " + member.lastName}
-        onClose={() => setIsReviewModalOpen(false)}
-      />
-    )}
+  
+     
+   
       <PageBreadcrumbs items={breadcrumbItems} />
       <PageHeader
         title={
@@ -124,9 +119,16 @@ export default function MemberDetailsPage() {
         icon={member.isAdmin && <Crown className="text-warning size-4" />}
         actions={
           <>
-            <Button data-slot="button" variant="default" onClick={handleGenerateReview}>
+            {/* <Button data-slot="button" variant="default" onClick={handleGenerateReview}>
               <ChartNoAxesCombined className="size-4" /> Generate Performance Review
-            </Button>
+            </Button> */}
+             <GenerateReviewModal
+        teamId={params.teamId}
+        memberId={params.memberId}
+        isOpen={isReviewModalOpen}
+        memberName={member.firstName + " " + member.lastName}
+        onClose={() => setIsReviewModalOpen(false)}
+      />
           </>
         }
       />
