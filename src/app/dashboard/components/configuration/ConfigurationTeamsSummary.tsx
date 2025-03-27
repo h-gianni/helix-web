@@ -40,20 +40,19 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
 }) => {
   // Use React Query for data fetching
   const { data: teamsData, isLoading } = useUserTeams();
-  
+
   // Get config store data for setup mode
   const configStore = useConfigStore();
   const configTeams = configStore.config.teams;
-  
+
   // Determine which data source to use based on variant
   const useConfigData = variant === "setup";
-  
   // Get the right teams data based on mode
-  const teams = useConfigData 
-    ? configTeams 
-    : teamsData 
-      ? [...(teamsData.owned || []), ...(teamsData.member || [])]
-      : [];
+  const teams = useConfigData
+    ? configTeams
+    : teamsData
+    ? [...(teamsData.owned || []), ...(teamsData.member || [])]
+    : [];
 
   // Render avatar group for team members
   const renderAvatarGroup = (memberCount: number) => {
@@ -65,7 +64,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
             <Avatar className="h-6 w-6 border-2 border-background">
               <AvatarFallback className="text-xs">M</AvatarFallback>
             </Avatar>
-            
+
             {memberCount > MAX_AVATARS && (
               <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-background bg-muted text-xs">
                 +{memberCount - 1}
@@ -128,20 +127,21 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
             </TableHeader>
             <TableBody data-slot="table-body">
               {teams.map((team) => {
+                console.log(team);
                 // Handle different team object structures between modes
                 const teamId = team.id;
                 const teamName = team.name;
-                const teamFunction = useConfigData 
-                ? "functions" in team
-                  ? team.functions?.join(", ") || "No function"
-                  : "No function"
-                : (team as MemberTeam).teamFunction?.name || "No function";
+                const teamFunction = useConfigData
+                  ? "functions" in team
+                    ? team.functions?.join(", ") || "No function"
+                    : "No function"
+                  : (team as MemberTeam).teamFunction?.name || "No function";
                 const memberCount = useConfigData
                   ? 0 // No member info in config mode
                   : "memberCount" in team
-                    ? team.memberCount
-                    : 0;
-                
+                  ? team.memberCount
+                  : 0;
+
                 return (
                   <TableRow data-slot="table-row" key={teamId}>
                     <TableCell data-slot="table-cell">
@@ -149,10 +149,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
                     </TableCell>
                     <TableCell data-slot="table-cell">
                       <div className="flex flex-wrap gap-2">
-                        <Badge
-                          data-slot="badge"
-                          variant="outline"
-                        >
+                        <Badge data-slot="badge" variant="outline">
                           {teamFunction}
                         </Badge>
                       </div>
