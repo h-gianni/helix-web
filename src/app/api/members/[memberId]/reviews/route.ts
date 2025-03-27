@@ -7,17 +7,6 @@ import type { ApiResponse, PerformanceReviewResponse } from "@/lib/types/api";
 import { OpenAI } from "openai";
 import { ReviewStatus } from "@prisma/client";
 
-interface GenerateReviewRequest {
-  period: {
-    quarter: number;
-    year: number;
-    teamId?: string;
-  };
-  options?: {
-    forceGenerate?: boolean; // Override data sufficiency checks
-  };
-}
-
 // Initialize OpenAI client
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
@@ -173,11 +162,8 @@ export async function POST(
       );
     }
 
-  // Parse request
-  const body = await request.json() as GenerateReviewRequest;
-  const {teamId, quarter, year } = body.period;
-  const options = body.options || {};
-  const memberId = params.memberId;
+    // Get the team ID from request body
+    const { teamId, quarter, year } = await request.json();
     
     if (!teamId || !quarter || !year) {
       return NextResponse.json(
@@ -217,9 +203,6 @@ export async function POST(
         { status: 404 }
       );
     }
-
-   
-     
 
     // Get ratings for this member
     const scores = await prisma.memberScore.findMany({
