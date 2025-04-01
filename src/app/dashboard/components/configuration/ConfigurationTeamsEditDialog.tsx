@@ -21,11 +21,11 @@ interface TeamsEditDialogProps {
 function TeamsEditDialog({ isOpen, onClose }: TeamsEditDialogProps) {
   // const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
-  
+
   // Get store access to ensure data is persisted
-  const teams = useConfigStore(state => state.config.teams);
-  const activities = useConfigStore(state => state.config.activities);
-  
+  const teams = useConfigStore((state) => state.config.teams);
+  const activities = useConfigStore((state) => state.config.activities);
+
   // Get the mutation for updating team activities
   const updateTeamActivitiesMutation = useUpdateTeamActivities();
 
@@ -33,44 +33,44 @@ function TeamsEditDialog({ isOpen, onClose }: TeamsEditDialogProps) {
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      
-      // Save each team's functions to the database  
-      for (const team of teams.filter(t => !t.id.startsWith("temp-"))) {
+
+      // Save each team's functions to the database
+      for (const team of teams.filter((t) => !t.id.startsWith("temp-"))) {
         // Map category IDs to actual action IDs
         let actionIds: string[] = [];
-        
+        console.log(team.categories);
         // Collect action IDs from selected categories
-        team.categories.forEach(categoryId => {
-          const actionsForCategory = activities.selectedByCategory[categoryId] || [];
+        team.categories.forEach((categoryId) => {
+          const actionsForCategory =
+            activities.selectedByCategory[categoryId] || [];
           actionIds = [...actionIds, ...actionsForCategory];
         });
-        
+
         // Remove duplicates
         actionIds = [...new Set(actionIds)];
-        
+
         // Call the API to update team activities
         await updateTeamActivitiesMutation.mutateAsync({
           teamId: team.id,
-          activityIds: actionIds // Send the action IDs to the API
+          activityIds: actionIds, // Send the action IDs to the API
         });
       }
-      
+
       // toast({
       //   title: "Success",
       //   description: "Team functions saved successfully!",
       // });
-      
+
       onClose();
-      
     } catch (error) {
       console.error("Error saving team functions:", error);
-      
+
       // toast({
       //   title: "Error",
       //   description: "Failed to save team functions. Please try again.",
       //   variant: "destructive",
       // });
-      
+
       setIsSaving(false);
     }
   };
@@ -114,7 +114,7 @@ function TeamsEditDialog({ isOpen, onClose }: TeamsEditDialogProps) {
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleSave}
               disabled={isSaving}
               className="flex items-center gap-2"
