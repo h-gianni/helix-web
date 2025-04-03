@@ -27,7 +27,41 @@ const openai = new OpenAI({
     // "HTTP-Referer": "<YOUR_SITE_URL>", // Optional. Site URL for rankings on openrouter.ai.
     // "X-Title": "<YOUR_SITE_NAME>", // Optional. Site title for rankings on openrouter.ai.
   },
+  timeout: 60000, // Increase timeout to 60 seconds
 });
+
+// Alternative direct API call using axios
+async function generateReviewWithAxios(systemPrompt: string, userPrompt: string) {
+  try {
+    const response = await axios.post(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        model: "deepseek/deepseek-r1-zero:free",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt }
+        ],
+        temperature: 0.7,
+        max_tokens: 4000,
+      },
+      {
+        headers: {
+          "Authorization": `Bearer ${process.env.DEEP_SEEK_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        timeout: 60000 // 60 second timeout
+      }
+    );
+    
+    return response.data.choices[0].message.content;
+  } catch (error) {
+    console.error("Error in axios request to OpenRouter:", error);
+    throw error;
+  }
+}
+
+// Minimum required scores for generating a meaningful review
+const MIN_REQUIRED_SCORES = 4;
 
 export async function GET(
   request: Request,
@@ -41,8 +75,6 @@ export async function GET(
         { status: 401 }
       );
     }
-
-
 
     // Get URL parameters for filtering
     const url = new URL(request.url);
@@ -82,83 +114,6 @@ export async function GET(
     );
   }
 }
-
-// export async function POST(
-//   request: Request,
-//   { params }: { params: { memberId: string } }
-// ) {
-//   try {
-//     const { userId } = await auth();
-//     if (!userId) {
-//       return NextResponse.json<ApiResponse<never>>(
-//         { success: false, error: "Unauthorized" },
-//         { status: 401 }
-//       );
-//     }
-
-//     const body = await request.json();
-//     console.log("📦 Request body:------------", body);
-
-//     const { quarter, year, teamId, content } = body;
-
-//     if (!quarter || !year || !teamId) {
-//       return NextResponse.json<ApiResponse<never>>(
-//         { success: false, error: "Quarter, year, and content are required" },
-//         { status: 400 }
-//       );
-//     }
-
-//     if (quarter < 1 || quarter > 4) {
-//       return NextResponse.json<ApiResponse<never>>(
-//         { success: false, error: "Quarter must be between 1 and 4" },
-//         { status: 400 }
-//       );
-//     }
-
-//     // Check for existing review
-//     const existingReview = await prisma.performanceReview.findFirst({
-//       where: {
-//         teamMemberId: params.memberId,
-//         quarter,
-//         year,
-//       },
-//     });
-
-//     if (existingReview) {
-//       return NextResponse.json<ApiResponse<never>>(
-//         { success: false, error: "Review already exists for this quarter" },
-//         { status: 400 }
-//       );
-//     }
-
-//     // Create review
-//     const review = await prisma.performanceReview.create({
-//       data: {
-//         teamMemberId: params.memberId,
-//         quarter,
-//         year,
-//         content,
-//         status: 'DRAFT',
-//       },
-//       include: {
-//         teamMember: true,
-//       },
-//     });
-
-//     return NextResponse.json<ApiResponse<PerformanceReviewResponse>>(
-//       { success: true, data: review as PerformanceReviewResponse },
-//       { status: 201 }
-//     );
-//   } catch (error) {
-//     console.error("Error creating review:", error);
-//     return NextResponse.json<ApiResponse<never>>(
-//       { success: false, error: "Internal server error" },
-//       { status: 500 }
-//     );
-//   }
-// }
-
-
 
 export async function POST(
   request: Request,
@@ -232,6 +187,93 @@ export async function POST(
       },
     });
 
+    // CHECK FOR INSUFFICIENT DATA: If scores are less than the minimum required
+    if (scores.length < MIN_REQUIRED_SCORES) {
+      // Create or update a review with insufficient data message
+      const insufficientDataMessage = `
+# Insufficient Performance Data
+
+We currently have only ${scores.length} performance rating${scores.length === 1 ? '' : 's'} for ${teamMember.user.name || teamMember.user.email}, which is not enough to generate a comprehensive performance review.
+
+## What's needed
+To generate a meaningful performance review, we recommend having at least ${MIN_REQUIRED_SCORES} performance ratings across different activity categories. This helps provide a more balanced and accurate assessment of the team member's performance.
+
+## Next steps
+1. Rate the team member's performance across more activities
+2. Collect feedback from peers and managers
+3. Document specific achievements and contributions
+4. Try generating the review again after adding more data
+
+Once more performance data is available, we'll be able to generate a detailed and helpful performance review.
+`;
+
+      // Check if a review for this period already exists
+      const existingReview = await prisma.performanceReview.findFirst({
+        where: {
+          teamMemberId: params.memberId,
+          quarter: Number(quarter),
+          year: Number(year),
+        },
+      });
+
+      let review;
+
+      if (existingReview) {
+        // Update existing review with insufficient data message
+        review = await prisma.performanceReview.update({
+          where: { id: existingReview.id },
+          data: {
+            content: insufficientDataMessage,
+            status: ReviewStatus.DRAFT,
+            version: existingReview.version + 1,
+          },
+        });
+      } else {
+        // Create new review with insufficient data message
+        review = await prisma.performanceReview.create({
+          data: {
+            teamMemberId: params.memberId,
+            quarter: Number(quarter),
+            year: Number(year),
+            content: insufficientDataMessage,
+            status: ReviewStatus.DRAFT,
+          },
+        });
+      }
+
+      // Add an audit log entry
+      await prisma.auditLog.create({
+        data: {
+          action: existingReview ? "UPDATE" : "CREATE",
+          entityType: "PERFORMANCE_REVIEW",
+          entityId: review.id,
+          performedBy: userId,
+          changes: JSON.stringify({
+            teamMemberId: params.memberId,
+            quarter,
+            year,
+            isAiGenerated: true,
+            insufficientData: true,
+            scoresCount: scores.length,
+          }),
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          id: review.id,
+          content: insufficientDataMessage,
+          quarter,
+          year,
+          status: review.status,
+          insufficientData: true,
+          scoresCount: scores.length,
+        },
+      });
+    }
+
+    // If we have sufficient data, proceed with the review generation
     // Get feedback for this member
     const feedback = await prisma.structuredFeedback.findMany({
       where: {
