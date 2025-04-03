@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+// src/app/dashboard/components/configuration/ConfigurationActionsSummary.tsx
+import React, { useState, useEffect, use } from "react";
 import { Button } from "@/components/ui/core/Button";
 import { Badge } from "@/components/ui/core/Badge";
 import {
@@ -13,9 +14,11 @@ import {
   CardContent,
   CardTitle,
 } from "@/components/ui/core/Card";
-import { PenSquare } from "lucide-react";
+import { PenSquare, Heart } from "lucide-react";
 import { useConfigStore } from "@/store/config-store";
-import { useActions } from "@/store/action-store";
+import { useFavoritesStore, useFavorites } from "@/store/favorites-store";
+import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
+import { useProfileStore } from "@/store/user-store";
 
 interface OrgActionsSummaryProps {
   onEdit?: () => void;
@@ -28,6 +31,11 @@ function OrgActionsSummary({
 }: OrgActionsSummaryProps) {
   const { data: actionCategories, isLoading } = useActions();
 
+  // Load favorites
+  const { data: fetchedFavorites, isLoading: isFavoritesLoading } =
+    useFavorites();
+  const favorites = useFavoritesStore((state) => state.favorites);
+
   // Get the selected activities and categories from config store
   const selectedActivities = useConfigStore(
     (state) => state.config.activities.selected
@@ -38,6 +46,12 @@ function OrgActionsSummary({
   const organizationName = useConfigStore(
     (state) => state.config.organization.name
   );
+
+  useEffect(() => {
+    if (fetchedFavorites) {
+      useFavoritesStore.setState({ favorites: fetchedFavorites });
+    }
+  }, [fetchedFavorites]);
 
   // Get action names for display
   const getActionNameById = (actionId: string) => {
@@ -56,7 +70,19 @@ function OrgActionsSummary({
   const getCategoryNameById = (categoryId: string) => {
     if (!actionCategories) return "Loading...";
     const category = actionCategories.find((cat) => cat.id === categoryId);
+
     return category ? category.name : "Unknown Category";
+  };
+
+  // Get favorites count for a category
+  const getFavoritesCount = (categoryId: string): number => {
+    console.log(favorites, "favorites");
+    return favorites[categoryId]?.length || 0;
+  };
+
+  // Check if an action is a favorite
+  const isActionFavorite = (actionId: string, categoryId: string): boolean => {
+    return favorites[categoryId]?.includes(actionId) || false;
   };
 
   return (
@@ -71,16 +97,12 @@ function OrgActionsSummary({
               ? `${organizationName}'s actions`
               : "Organisation's actions"}
           </CardTitle>
-          <Button
-            data-slot="button"
-            variant="ghost"
-            onClick={onEdit}
-          >
+          <Button data-slot="button" variant="ghost" onClick={onEdit}>
             <PenSquare /> Edit
           </Button>
         </CardHeader>
         <CardContent data-slot="card-content">
-          {isLoading ? (
+          {isLoading || isFavoritesLoading ? (
             <div className="text-center py-4 text-foreground-muted">
               Loading activities...
             </div>
@@ -94,37 +116,67 @@ function OrgActionsSummary({
             <Accordion type="multiple" className="space-y-1">
               {Object.entries(selectedByCategory || {})
                 .filter(([_, activities]) => activities.length > 0)
-                .map(([categoryId, activities]) => (
-                  <AccordionItem
-                    key={categoryId}
-                    value={categoryId}
-                    data-slot="accordion-item"
-                    className="border-b px-0"
-                  >
-                    <AccordionTrigger
-                      data-slot="accordion-trigger"
-                      className="py-2"
+                .map(([categoryId, activities]) => {
+                  const categoryName = getCategoryNameById(categoryId);
+                  const favoritesCount = getFavoritesCount(categoryId);
+
+                  return (
+                    <AccordionItem
+                      key={categoryId}
+                      value={categoryId}
+                      data-slot="accordion-item"
+                      className="border-b px-0"
                     >
-                      <div className="flex justify-between items-center gap-2 w-full pr-4">
-                        <span className="font-medium">
-                          {getCategoryNameById(categoryId)}
-                        </span>
-                        <Badge data-slot="badge" variant="secondary">
-                          {activities.length}
-                        </Badge>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent data-slot="accordion-content">
-                      <ul className="space-y-2 pb-2">
-                        {activities.map((actionId) => (
-                          <li key={actionId} className="text-sm">
-                            {getActionNameById(actionId)}
-                          </li>
-                        ))}
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
+                      <AccordionTrigger
+                        data-slot="accordion-trigger"
+                        className="py-2"
+                      >
+                        <div className="flex justify-between items-center gap-2 w-full pr-4">
+                          <span className="font-medium">{categoryName}</span>
+                          <div className="flex items-center gap-2">
+                            {favoritesCount > 0 && (
+                              <Badge
+                                data-slot="badge"
+                                variant="accent"
+                                className="flex items-center gap-1"
+                              >
+                                <Heart className="size-3 fill-current" />
+                                {favoritesCount}
+                              </Badge>
+                            )}
+                            <Badge data-slot="badge" variant="secondary">
+                              {activities.length}
+                            </Badge>
+                          </div>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent data-slot="accordion-content">
+                        <ul className="space-y-2 pb-2">
+                          {activities.map((actionId) => {
+                            const actionName = getActionNameById(actionId);
+
+                            const isFavorite = isActionFavorite(
+                              actionId,
+                              categoryId
+                            );
+
+                            return (
+                              <li
+                                key={actionId}
+                                className="text-sm flex items-center gap-2"
+                              >
+                                {actionName}
+                                {isFavorite && (
+                                  <Heart className="size-3 text-accent fill-current" />
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  );
+                })}
             </Accordion>
           )}
         </CardContent>

@@ -7,12 +7,6 @@
 
 /* Import marketing components after your component definitions */
 @import "./components/marketing/typography.css";
-@import "./components/marketing/hero.css";
-@import "./components/marketing/feature.css";
-@import "./components/marketing/testimonial.css";
-@import "./components/marketing/cta.css";
-@import "./components/marketing/navbar.css";
-@import "./components/marketing/footer.css";
 
 @layer base {
   body {

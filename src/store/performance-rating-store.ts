@@ -53,6 +53,7 @@ export const performanceRatingApi = {
     const { data } = await apiClient.get<{ success: boolean; data: BusinessActivityResponse[] }>(
       `/teams/${teamId}/activities`
     );
+  
     if (!data.success) throw new Error('Failed to fetch activities');
     return data.data;
   },

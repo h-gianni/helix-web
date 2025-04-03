@@ -1,75 +1,36 @@
+// src/app/dashboard/components/scoring/ScoringStepActions.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/core/Label";
+import { Badge } from "@/components/ui/core/Badge";
 import {
   RadioGroupCards,
   RadioGroupCardsContainer,
   RadioGroupCard,
 } from "@/components/ui/core/RadioGroupCards";
 import { useTeamActivities } from "@/store/performance-rating-store";
+import { useFavoritesStore, useFavorites, useToggleFavorite } from '@/store/favorites-store';
 import { Loader, Heart, Building2, PencilRuler, Activity } from "lucide-react";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/core/Tooltip";
+import { Button } from "@/components/ui/core/Button";
+import { cn } from "@/lib/utils";
 
-// Dummy data structured by groups and categories
-const DUMMY_ACTIVITIES = {
-  favorite: {
-    "Saved Favorites": [
-      { id: "fav1", name: "Code Review" },
-      { id: "fav2", name: "Project Planning" },
-      { id: "fav3", name: "Mentoring" },
-      { id: "fav4", name: "Daily Standup" },
-      { id: "fav5", name: "Documentation" },
-      { id: "fav6", name: "Feature Development" },
-      { id: "fav7", name: "Knowledge Sharing" },
-      { id: "fav8", name: "Quality Assurance" },
-    ],
-  },
-  global: {
-    "Organisation values and culture": [
-      { id: "gvc1", name: "Demonstrates company values" },
-      { id: "gvc2", name: "Promotes inclusive environment" },
-      { id: "gvc3", name: "Upholds ethical standards" },
-    ],
-    Teamwork: [
-      { id: "gtw1", name: "Collaborative problem solving" },
-      { id: "gtw2", name: "Active participation in meetings" },
-      { id: "gtw3", name: "Shares knowledge with team" },
-      { id: "gtw4", name: "Provides constructive feedback" },
-    ],
-    Leadership: [
-      { id: "gld1", name: "Takes initiative on projects" },
-      { id: "gld2", name: "Mentors junior team members" },
-      { id: "gld3", name: "Leads by example" },
-      { id: "gld4", name: "Effective decision making" },
-    ],
-  },
-  functions: {
-    Engineering: [
-      { id: "fen1", name: "Code quality" },
-      { id: "fen2", name: "Technical documentation" },
-      { id: "fen3", name: "Bug fixing" },
-      { id: "fen4", name: "System architecture" },
-    ],
-    "Product Management": [
-      { id: "fpm1", name: "Requirements gathering" },
-      { id: "fpm2", name: "Roadmap planning" },
-      { id: "fpm3", name: "User story creation" },
-      { id: "fpm4", name: "Stakeholder management" },
-    ],
-    "Product Design": [
-      { id: "fpd1", name: "User research" },
-      { id: "fpd2", name: "Wireframing" },
-      { id: "fpd3", name: "UI design" },
-      { id: "fpd4", name: "Usability testing" },
-    ],
-    Research: [
-      { id: "fre1", name: "Data analysis" },
-      { id: "fre2", name: "Literature review" },
-      { id: "fre3", name: "Competitive analysis" },
-      { id: "fre4", name: "Research methodology" },
-    ],
-  },
-};
+// Add type for activities
+interface Activity {
+  id: string;
+  name: string;
+  description?: string | null;
+  category?: {
+    id: string;
+    name: string;
+  } | string;
+}
 
 interface ScoringStepActionsProps {
   teamId: string;
@@ -85,11 +46,165 @@ export default function ScoringStepActions({
   const { data: activities = [], isLoading: activitiesLoading } =
     useTeamActivities(teamId);
   const [activeGroup, setActiveGroup] = useState<string>("favorite");
+  
+  // Load favorites
+  const { isLoading: isFavoritesLoading } = useFavorites();
+  const favorites = useFavoritesStore((state) => state.favorites);
+  const toggleFavorite = useToggleFavorite();
+  const isFavorite = useFavoritesStore((state) => state.isFavorite);
+
+  // State to store organized activities
+  const [organizedActivities, setOrganizedActivities] = useState<Record<string, Record<string, Activity[]>>>({
+    favorite: { "Saved Favorites": [] },
+    global: {},
+    functions: {}
+  });
+
+  // Helper function to extract base actionId from composed ID
+  const extractBaseActionId = (composedId: string): string => {
+    // If the ID follows the org-actionId-teamId-timestamp pattern
+    if (typeof composedId === 'string' && composedId.startsWith('org-')) {
+      const parts = composedId.split('-');
+      if (parts.length >= 3) {
+        // Return the second part which should be the actionId
+        return parts[1];
+      }
+    }
+    // If not a composed ID or doesn't follow expected pattern, return as is
+    return composedId;
+  };
+
+  // Modified isFavorite check that's aware of ID formats
+  const isActivityFavorite = (activityId: string, categoryId: string): boolean => {
+    const baseActivityId = extractBaseActionId(activityId);
+    return (favorites[categoryId] || []).some(favId => 
+      favId === activityId || favId === baseActivityId || extractBaseActionId(favId) === baseActivityId
+    );
+  };
+
+  // Debug function to log favorite state
+  const logFavoritesState = () => {
+    console.log("Current favorites state:", favorites);
+    console.log("Activities count:", activities.length);
+    console.log("Favorites count:", Object.values(favorites).flat().length);
+    console.log("Saved favorites in UI:", organizedActivities.favorite["Saved Favorites"].length);
+    
+    // Log individual category counts
+    Object.entries(favorites).forEach(([categoryId, activityIds]) => {
+      console.log(`Category ${categoryId}: ${activityIds.length} favorites`);
+    });
+  };
+
+  // Effect to organize activities when they are loaded
+  useEffect(() => {
+    console.log("Organizing activities...", { activities, favorites });
+      
+    if (activitiesLoading || isFavoritesLoading) return;
+      
+    // Map to track activities that have been added to favorites
+    const addedToFavorites = new Set<string>();
+      
+    // Create an organized structure of activities
+    const organized: Record<string, Record<string, Activity[]>> = {
+      favorite: { "Saved Favorites": [] },
+      global: {},
+      functions: {}
+    };
+      
+    // Process favorites first by iterating over all categories in favorites
+    Object.entries(favorites).forEach(([categoryId, activityIds]) => {
+      // For each favorited activity ID in this category
+      activityIds.forEach(favoriteId => {
+        // Find the matching activity in all activities
+        // We need to check if any activity's ID or the extracted baseId matches our favoriteId
+        const activity = activities.find(act => {
+          const baseActivityId = extractBaseActionId(act.id);
+          const baseFavoriteId = extractBaseActionId(favoriteId);
+          return act.id === favoriteId || 
+                 baseActivityId === favoriteId || 
+                 baseActivityId === baseFavoriteId ||
+                 act.id === baseFavoriteId;
+        });
+        
+        if (activity) {
+          // Add to Saved Favorites section
+          organized.favorite["Saved Favorites"].push(activity);
+          // Mark as added to favorites to avoid duplication
+          addedToFavorites.add(activity.id);
+        }
+      });
+    });
+      
+    // Then organize the rest of the activities
+    activities.forEach(activity => {
+      // Skip if already in favorites
+      if (addedToFavorites.has(activity.id)) return;
+        
+      // Get category name, handling different structure possibilities
+      const categoryName = typeof activity.category === 'object' 
+        ? activity.category?.name 
+        : typeof activity.category === 'string' ? activity.category : 'Other';
+        
+      // Determine if it's a global or function-specific action
+      const isGlobal = categoryName.includes('Values') || 
+                     categoryName.includes('Culture') || 
+                     categoryName.includes('Teamwork');
+        
+      const groupKey = isGlobal ? 'global' : 'functions';
+        
+      // Initialize the category array if it doesn't exist
+      if (!organized[groupKey][categoryName]) {
+        organized[groupKey][categoryName] = [];
+      }
+        
+      // Add activity to its category
+      organized[groupKey][categoryName].push(activity);
+    });
+      
+    setOrganizedActivities(organized);
+    
+    // Log the favorites status for debugging
+    console.log("Organized activities:", organized);
+    console.log("Saved favorites count:", organized.favorite["Saved Favorites"].length);
+  }, [activities, favorites, activitiesLoading, isFavoritesLoading]);
+
+  // Use this in a useEffect to track changes
+  useEffect(() => {
+    if (!activitiesLoading && !isFavoritesLoading) {
+      logFavoritesState();
+    }
+  }, [favorites, activities, activitiesLoading, isFavoritesLoading]);
 
   // Handle activity selection with scroll position preservation
   const handleActivitySelect = (activityId: string) => {
     // Set the selected activity ID
     setSelectedActivityId(activityId);
+  };
+
+  // Handle toggle favorite that's aware of ID formats
+  const handleToggleFavorite = async (
+    activityId: string, 
+    categoryId: string, 
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation(); // Prevent selection
+  
+    // Extract the base ID for consistency
+    const baseActivityId = extractBaseActionId(activityId);
+    
+    // Check if it's currently a favorite using our ID-aware check
+    const currentStatus = isActivityFavorite(activityId, categoryId);
+    
+    try {
+      // Use the base ID for toggling favorite status
+      await toggleFavorite.mutateAsync({
+        actionId: baseActivityId,
+        categoryId,
+        isFavorite: !currentStatus,
+      });
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+    }
   };
 
   // Categories with their icons
@@ -103,14 +218,8 @@ export default function ScoringStepActions({
     },
   ];
 
-  // Use real data if available, otherwise fallback to dummy data
-  const displayActivitiesCategories =
-    activities.length > 0
-      ? // Logic for real data would go here
-        DUMMY_ACTIVITIES[activeGroup as keyof typeof DUMMY_ACTIVITIES]
-      : DUMMY_ACTIVITIES[activeGroup as keyof typeof DUMMY_ACTIVITIES];
-
-  if (activitiesLoading) {
+  // Display loading state
+  if (activitiesLoading || isFavoritesLoading) {
     return (
       <div className="flex justify-center items-center py-12">
         <Loader className="size-6 animate-spin text-primary" />
@@ -118,18 +227,65 @@ export default function ScoringStepActions({
     );
   }
 
+  const currentGroupActivities = organizedActivities[activeGroup];
+  const hasFavorites = organizedActivities.favorite["Saved Favorites"].length > 0;
+
+  // Render favorites section
+  const renderFavoriteSection = () => {
+    const favoriteActivities = organizedActivities.favorite["Saved Favorites"];
+    
+    if (favoriteActivities.length === 0) {
+      return (
+        <div className="p-6 text-center border rounded-lg bg-muted">
+          <Heart className="size-8 mx-auto mb-2 text-foreground-muted" />
+          <p className="text-foreground font-medium">No favorites saved yet</p>
+          <p className="text-sm text-foreground-muted mt-1">
+            You can mark actions as favorites in the other tabs or in the Settings/Org actions section
+          </p>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="space-y-2.5">
+        <Label className="!text-foreground-weak">Saved Favorites</Label>
+        <RadioGroupCards
+          value={selectedActivityId ?? ""}
+          onValueChange={handleActivitySelect}
+        >
+          <RadioGroupCardsContainer className="flex flex-col">
+            {favoriteActivities.map((activity) => (
+              <RadioGroupCard
+                key={activity.id}
+                id={`activity-${activity.id}`}
+                value={activity.id}
+                title={activity.name}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <span>{activity.name}</span>
+                  {typeof activity.category === 'object' && (
+                    <Badge variant="outline" className="ml-2">
+                      {activity.category.name}
+                    </Badge>
+                  )}
+                </div>
+              </RadioGroupCard>
+            ))}
+          </RadioGroupCardsContainer>
+        </RadioGroupCards>
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Group Selection */}
       <div className="space-y-2">
-        {/* <Label className="text-sm font-medium text-foreground">
-          Actions Group
-        </Label> */}
         <RadioGroupCards
           value={activeGroup}
           onValueChange={setActiveGroup}
           orientation="horizontal"
-                className="shadow-sm"
+          className="shadow-sm"
         >
           <RadioGroupCardsContainer
             className="grid grid-cols-3 overflow-hidden rounded-lg"
@@ -148,6 +304,11 @@ export default function ScoringStepActions({
                 <div className="flex items-center justify-center gap-2">
                   {group.icon}
                   <span className="hidden sm:inline">{group.name}</span>
+                  {group.id === "favorite" && hasFavorites && (
+                    <span className="inline-flex items-center justify-center size-5 bg-accent/20 text-accent rounded-full text-xs font-medium">
+                      {organizedActivities.favorite["Saved Favorites"].length}
+                    </span>
+                  )}
                 </div>
               </RadioGroupCard>
             ))}
@@ -157,53 +318,86 @@ export default function ScoringStepActions({
 
       {/* Categories and Activities Selection */}
       <div className="space-y-6">
-        {Object.entries(displayActivitiesCategories).length === 0 ? (
-          <div className="p-6 text-center border rounded-lg bg-muted">
-            <Activity className="size-8 mx-auto mb-2 text-foreground" />
-            <p className="text-foreground">No activities available</p>
-          </div>
+        {activeGroup === "favorite" ? (
+          renderFavoriteSection()
         ) : (
-          Object.entries(displayActivitiesCategories).map(
-            ([category, categoryActivities]) => (
-              <div key={category} className="space-y-2.5">
-                <Label className="!text-foreground-weak">{category}</Label>
-                <RadioGroupCards
-                  value={selectedActivityId ?? ""}
-                  onValueChange={handleActivitySelect}
-                >
-                  {activeGroup === "favorite" ? (
-                    <RadioGroupCardsContainer className="flex flex-col">
-                      {categoryActivities.map((activity: any) => (
-                        <RadioGroupCard
-                          key={activity.id}
-                          id={`activity-${activity.id}`}
-                          value={activity.id}
-                          title={activity.name}
-                        >
-                          {activity.name}
-                        </RadioGroupCard>
-                      ))}
-                    </RadioGroupCardsContainer>
-                  ) : (
+          Object.entries(currentGroupActivities).length === 0 ? (
+            <div className="p-6 text-center border rounded-lg bg-muted">
+              <Activity className="size-8 mx-auto mb-2 text-foreground" />
+              <p className="text-foreground">No activities available</p>
+            </div>
+          ) : (
+            Object.entries(currentGroupActivities).map(
+              ([category, categoryActivities]) => (
+                <div key={category} className="space-y-2.5">
+                  <Label className="!text-foreground-weak">{category}</Label>
+                  <RadioGroupCards
+                    value={selectedActivityId ?? ""}
+                    onValueChange={handleActivitySelect}
+                  >
                     <RadioGroupCardsContainer
                       className="flex flex-col shadow-sm overflow-hidden rounded-lg"
                       layout="compact"
                     >
-                      {categoryActivities.map((activity: any, index) => (
-                        <RadioGroupCard
-                          key={activity.id}
-                          id={`activity-${activity.id}`}
-                          value={activity.id}
-                          title={activity.name}
-                          layout="compact"
-                        >
-                          {activity.name}
-                        </RadioGroupCard>
-                      ))}
+                      {categoryActivities.map((activity) => {
+                        const categoryId = typeof activity.category === 'object' 
+                          ? activity.category?.id 
+                          : '';
+                        const actionIsFavorite = categoryId 
+                          ? isActivityFavorite(activity.id, categoryId)
+                          : false;
+                          
+                        return (
+                          <RadioGroupCard
+                            key={activity.id}
+                            id={`activity-${activity.id}`}
+                            value={activity.id}
+                            title={activity.name}
+                            layout="compact"
+                          >
+                            <div className="flex items-center justify-between w-full">
+                              <span>{activity.name}</span>
+                              {categoryId && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={(e) =>
+                                          handleToggleFavorite(activity.id, categoryId, e)
+                                        }
+                                        className={cn(
+                                          "p-1 h-7 w-7",
+                                          actionIsFavorite
+                                            ? "text-accent hover:text-accent/80"
+                                            : "text-foreground/25 hover:text-foreground/50"
+                                        )}
+                                      >
+                                        <Heart
+                                          className={cn(
+                                            "size-4",
+                                            actionIsFavorite && "fill-current"
+                                          )}
+                                        />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      {actionIsFavorite
+                                        ? "Remove from favorites"
+                                        : "Add to favorites"}
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
+                            </div>
+                          </RadioGroupCard>
+                        );
+                      })}
                     </RadioGroupCardsContainer>
-                  )}
-                </RadioGroupCards>
-              </div>
+                  </RadioGroupCards>
+                </div>
+              )
             )
           )
         )}

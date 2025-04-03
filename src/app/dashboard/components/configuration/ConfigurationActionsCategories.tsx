@@ -1,7 +1,12 @@
+// src/app/dashboard/components/configuration/ConfigurationActionsCategories.tsx
 import React, { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/core/Badge";
+import { Button } from "@/components/ui/core/Button";
+import { Heart } from "lucide-react";
 import { ActionCategory } from "@/lib/types/api/action";
 import { useConfigStore } from "@/store/config-store";
+import { useFavoritesStore, useToggleFavorite, useFavorites } from '@/store/favorites-store';
+import { cn } from "@/lib/utils";
 
 interface OrganizationCategoriesProps {
   onSelect: (category: string) => void;
@@ -21,6 +26,11 @@ export function OrganizationCategories({
 
   // Get access to the config store which tracks selected actions
   const config = useConfigStore((state) => state.config);
+
+  // Load favorites
+  const { isLoading: isFavoritesLoading } = useFavorites();
+  const toggleFavorite = useToggleFavorite();
+  const isFavorite = useFavoritesStore((state) => state.isFavorite);
 
   // Define the general responsibilities categories by name
   const generalCategoryNames = [
@@ -42,6 +52,12 @@ export function OrganizationCategories({
     return 0;
   };
 
+  // Function to count favorites in a category
+  const getFavoritesCount = (categoryId: string): number => {
+    const favorites = useFavoritesStore.getState().favorites;
+    return favorites[categoryId]?.length || 0;
+  };
+
   useEffect(() => {
     if (selectedActivities && selectedActivities.length > 0) {
       // Group categories by name with exact matching
@@ -61,16 +77,34 @@ export function OrganizationCategories({
     onSelect(categoryId);
   };
 
+  const handleToggleFavorite = async (actionId: string, categoryId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    const currentStatus = isFavorite(actionId, categoryId);
+    
+    try {
+      await toggleFavorite.mutateAsync({
+        actionId,
+        categoryId,
+        isFavorite: !currentStatus,
+      });
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+    }
+  };
+
   const CategoryItem = ({
     category,
     isSelected,
     onSelect,
     selectedCount,
+    favoritesCount,
   }: {
     category: ActionCategory;
     isSelected: boolean;
     onSelect: (categoryId: string) => void;
     selectedCount: number;
+    favoritesCount: number;
   }) => {
     return (
       <li
@@ -80,11 +114,19 @@ export function OrganizationCategories({
         onClick={() => onSelect(category.id)}
       >
         <span>{category.name}</span>
-        {selectedCount > 0 && (
-          <Badge data-slot="badge" variant="default">
-            {selectedCount}
-          </Badge>
-        )}
+        <div className="flex items-center gap-2">
+          {favoritesCount > 0 && (
+            <Badge data-slot="badge" variant="accent" className="flex items-center gap-1">
+              <Heart className="size-3 fill-current" />
+              {favoritesCount}
+            </Badge>
+          )}
+          {selectedCount > 0 && (
+            <Badge data-slot="badge" variant="default">
+              {selectedCount}
+            </Badge>
+          )}
+        </div>
       </li>
     );
   };
@@ -94,15 +136,21 @@ export function OrganizationCategories({
       <div>
         <h3 className="text-sm font-semibold mb-2">General Responsibilities</h3>
         <ul className="space-y-0">
-          {generalCategories.map((category) => (
-            <CategoryItem
-              key={category.id}
-              category={category}
-              isSelected={selectedCategory === category.id}
-              onSelect={handleCategorySelect}
-              selectedCount={getSelectedCount(category.id)}
-            />
-          ))}
+          {generalCategories.map((category) => {
+            const selectedCount = getSelectedCount(category.id);
+            const favoritesCount = getFavoritesCount(category.id);
+            
+            return (
+              <CategoryItem
+                key={category.id}
+                category={category}
+                isSelected={selectedCategory === category.id}
+                onSelect={handleCategorySelect}
+                selectedCount={selectedCount}
+                favoritesCount={favoritesCount}
+              />
+            );
+          })}
         </ul>
       </div>
 
@@ -111,15 +159,21 @@ export function OrganizationCategories({
           Functional Responsibilities
         </h3>
         <ul className="space-y-0">
-          {coreCategories.map((category) => (
-            <CategoryItem
-              key={category.id}
-              category={category}
-              isSelected={selectedCategory === category.id}
-              onSelect={handleCategorySelect}
-              selectedCount={getSelectedCount(category.id)}
-            />
-          ))}
+          {coreCategories.map((category) => {
+            const selectedCount = getSelectedCount(category.id);
+            const favoritesCount = getFavoritesCount(category.id);
+            
+            return (
+              <CategoryItem
+                key={category.id}
+                category={category}
+                isSelected={selectedCategory === category.id}
+                onSelect={handleCategorySelect}
+                selectedCount={selectedCount}
+                favoritesCount={favoritesCount}
+              />
+            );
+          })}
         </ul>
       </div>
     </div>

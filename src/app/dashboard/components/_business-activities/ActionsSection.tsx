@@ -1,3 +1,4 @@
+// src/app/dashboard/components/_business-activities/ActionsSection.tsx
 "use client";
 
 import React, { useEffect } from "react";
@@ -12,7 +13,7 @@ import {
 } from "@/components/ui/core/Table";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Loader } from "@/components/ui/core/Loader";
-import { Target, Edit, Trash2, AlertCircle } from "lucide-react";
+import { Target, Edit, Trash2, AlertCircle, Heart } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -34,7 +35,10 @@ import {
 } from "@/components/ui/core/Pagination";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { useActivities, useDeleteActivity, useActivitiesStore } from '@/store/business-activity-store';
+import { useFavoritesStore, useToggleFavorite, useFavorites } from '@/store/favorites-store';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/core/Tooltip";
 import type { BusinessActivityResponse } from "@/lib/types/api";
+import { cn } from "@/lib/utils";
 
 interface ActivitiesSectionProps {
   shouldRefresh: boolean;
@@ -65,6 +69,11 @@ export function ActivitiesSection({
     setDeleteDialogOpen,
   } = useActivitiesStore();
 
+  // Load favorites
+  const { isLoading: isFavoritesLoading } = useFavorites();
+  const toggleFavorite = useToggleFavorite();
+  const isFavorite = useFavoritesStore((state) => state.isFavorite);
+
   useEffect(() => {
     if (shouldRefresh) {
       refetch().then(() => {
@@ -85,16 +94,42 @@ export function ActivitiesSection({
     }
   };
 
+  const handleToggleFavorite = async (activity: BusinessActivityResponse, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent row selection
+    
+    if (!activity.category) {
+      console.error("Activity category not found:", activity);
+      return;
+    }
+    
+    const categoryId = typeof activity.category === 'string' 
+      ? activity.category 
+      : activity.category.id;
+    
+    const actionId = activity.id;
+    const currentStatus = isFavorite(actionId, categoryId);
+    
+    try {
+      await toggleFavorite.mutateAsync({
+        actionId,
+        categoryId,
+        isFavorite: !currentStatus,
+      });
+    } catch (err) {
+      console.error("Failed to toggle favorite:", err);
+    }
+  };
+
   useEffect(() => {
     if (activities) {
       console.log("Activities data:", activities);
     }
   }, [activities]);
 
-  if (isLoading) {
+  if (isLoading || isFavoritesLoading) {
     return (
       <div className="loader">
-        <Loader size="base" label="Loading..." />
+        <Loader size="base" label="Loading..." data-slot="loader" />
       </div>
     );
   }
@@ -104,7 +139,6 @@ export function ActivitiesSection({
       <Card data-slot="card">
         <CardContent data-slot="card-content">
           <div className="space-y-base text-center">
-            {/* Replaced h-12 w-12 with size-12 */}
             <Target className="mx-auto size-12 text-muted-foreground" />
             <div className="space-y-2">
               <h3 className="text-lg font-medium">No business activities yet</h3>
@@ -122,7 +156,6 @@ export function ActivitiesSection({
     <div className="space-y-2">
       {error && (
         <Alert data-slot="alert" variant="destructive">
-          {/* Replaced h-4 w-4 with size-4 */}
           <AlertCircle className="size-4" />
           <AlertDescription data-slot="alert-description" className="flex items-center gap-2">
             {error instanceof Error ? error.message : "An error occurred"}
@@ -167,9 +200,17 @@ export function ActivitiesSection({
             // Make sure each field we're using is a primitive string or number
             const activityName = typeof activity.name === 'string' ? activity.name : JSON.stringify(activity.name);
             const activityDescription = typeof activity.description === 'string' ? activity.description : 'No description';
-            const activityCategory = typeof activity.category === 'string' ? activity.category : 'No category';
+            const activityCategory = typeof activity.category === 'object' 
+              ? activity.category?.name || 'No category'
+              : typeof activity.category === 'string' ? activity.category : 'No category';
+            const categoryId = typeof activity.category === 'object' 
+              ? activity.category?.id 
+              : typeof activity.category === 'string' ? activity.category : '';
             const activityId = activity.id;
             const ratingsCount = activity._count?.scores || 0;
+            
+            // Check if activity is a favorite
+            const activityIsFavorite = categoryId ? isFavorite(activityId, categoryId) : false;
             
             return (
               <TableRow key={activityId}>
@@ -201,6 +242,29 @@ export function ActivitiesSection({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => handleToggleFavorite(activity, e)}
+                            className={cn(
+                              activityIsFavorite ? "text-accent hover:text-accent/80" : "text-foreground/25 hover:text-foreground/50"
+                            )}
+                          >
+                            <Heart className={cn(
+                              "size-4",
+                              activityIsFavorite && "fill-current"
+                            )} />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {activityIsFavorite ? "Remove from favorites" : "Add to favorites"}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    
                     <Button
                       variant="ghost"
                       size="sm"

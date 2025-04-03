@@ -18,48 +18,35 @@ export async function GET(req: Request) {
       );
     }
 
-    // First, find the app user by clerkId
-    const appUser = await prisma.appUser.findUnique({
-      where: { clerkId: userId },
-      include: {
-        // Include relations based on your schema
-        teamMembers: {
-          where: { deletedAt: null },
-          include: {
-            team: true,
-            jobGrade: true,
-            scores: true,
-            feedback: true,
-            comments: true,
-            reviews: true,
-          }
-        },
-        teams: {
-          where: { deletedAt: null },
-          include: {
-            teamFunction: true,
-            teamMembers: {
-              where: { deletedAt: null }
-            },
-            actions: {
-              where: { deletedAt: null }
-            }
-          }
-        },
-        createdActions: {
-          where: { deletedAt: null },
-          include: {
-            action: {
-              include: {
-                category: true
-              }
-            },
-            team: true
-          }
-        },
-        orgName: true
+ // Get only essential user data
+
+ const appUser = await prisma.appUser.findUnique({
+  where: {clerkId: userId},
+  select: {
+    id: true,
+    email: true,
+    name: true,
+    subscriptionTier: true,
+    subscriptionStart: true,
+    subscriptionEnd: true,
+    createdAt: true,
+    updatedAt: true,
+    customFields: true,
+    orgName: {
+      select: {
+        id: true,
+        name: true
       }
-    });
+    },
+    _count: {
+      select: {
+        teams: true,
+        teamMembers: true,
+        createdActions: true
+      }
+    }
+  }
+ })
 
     if (!appUser) {
       return NextResponse.json(
@@ -71,15 +58,30 @@ export async function GET(req: Request) {
     // Get Clerk user profile data
     const clerkUserData = await clerkClient.users.getUser(userId);
 
-    // Combine data from Prisma and Clerk
+    // Construct a clean profile response
     const profileData = {
-      ...appUser,
+      id: appUser.id,
+      email: appUser.email,
+      name: appUser.name,
+      subscription: {
+        tier: appUser.subscriptionTier,
+        startDate: appUser.subscriptionStart,
+        endDate: appUser.subscriptionEnd,
+      },
+      organization: appUser.orgName?.[0] || null,
+      stats: {
+        teamsOwned: appUser._count.teams,
+        teamsMember: appUser._count.teamMembers,
+        activitiesCreated: appUser._count.createdActions
+      },
       clerkProfile: {
         firstName: clerkUserData.firstName,
         lastName: clerkUserData.lastName,
         imageUrl: clerkUserData.imageUrl,
-        emailAddresses: clerkUserData.emailAddresses
-      }
+        primaryEmail: clerkUserData.emailAddresses[0]?.emailAddress
+      },
+      createdAt: appUser.createdAt,
+      updatedAt: appUser.updatedAt
     };
 
      return NextResponse.json({

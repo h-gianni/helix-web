@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +13,7 @@ import { Input } from "@/components/ui/core/Input";
 import { Label } from "@/components/ui/core/Label";
 import { Alert } from "@/components/ui/core/Alert";
 import { AlertCircle } from "lucide-react";
+import { useUpdateProfile } from "@/store/user-store";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -23,23 +23,25 @@ interface ProfileModalProps {
     lastName: string;
     title: string | null;
   };
-  onUpdate: () => Promise<void>;
+  onUpdate: (data: { firstName: string; lastName: string; title: string | null }) => Promise<void>;
 }
 
-function ProfileModal({
+export function ProfileModal({
   isOpen,
   onClose,
   profile,
   onUpdate,
 }: ProfileModalProps) {
-  const { user } = useUser();
   const [formData, setFormData] = useState({
     firstName: profile.firstName,
     lastName: profile.lastName,
     title: profile.title || "",
   });
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // Use the mutation hook from our updated store
+  const updateProfile = useUpdateProfile();
+  const isSubmitting = updateProfile.isPending;
 
   useEffect(() => {
     setFormData({
@@ -57,40 +59,17 @@ function ProfileModal({
 
   const handleSubmit = async () => {
     try {
-      setIsSubmitting(true);
       setError(null);
 
-      if (user) {
-        // Clerk user data
-        await user.update({
-          unsafeMetadata: {
-            ...user.unsafeMetadata,
-            title: formData.title.trim() || null,
-          },
-        });
-
-        // Our own backend
-        const response = await fetch("/api/user/profile", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            firstName: formData.firstName.trim(),
-            lastName: formData.lastName.trim(),
-          }),
-        });
-
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.error || "Failed to update profile");
-        }
-
-        await onUpdate();
-        onClose();
-      }
+      await onUpdate({
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        title: formData.title.trim() || null,
+      });
+      
+      onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -111,6 +90,17 @@ function ProfileModal({
             <Alert data-slot="alert" variant="destructive">
               <AlertCircle className="size-4" />
               <p className="text-sm">{error}</p>
+            </Alert>
+          )}
+          
+          {updateProfile.error && (
+            <Alert data-slot="alert" variant="destructive">
+              <AlertCircle className="size-4" />
+              <p className="text-sm">
+                {updateProfile.error instanceof Error 
+                  ? updateProfile.error.message 
+                  : "Failed to update profile"}
+              </p>
             </Alert>
           )}
 
@@ -177,5 +167,3 @@ function ProfileModal({
     </Dialog>
   );
 }
-
-export { ProfileModal };
