@@ -31,24 +31,24 @@ export const GET = async (request: Request) => {
 
     console.log("👤 Finding user with clerkId:", userId);
     const user = await prisma.appUser.findUnique({
-      where: { 
+      where: {
         clerkId: userId,
-        deletedAt: null 
+        deletedAt: null,
       },
       include: {
         teams: {
           where: {
-            deletedAt: null
+            deletedAt: null,
           },
           include: {
             teamFunction: {
               include: {
                 jobTitles: {
                   where: {
-                    deletedAt: null
-                  }
+                    deletedAt: null,
+                  },
                 },
-              }
+              },
             },
             // Include team members for each team
             teamMembers: {
@@ -60,19 +60,19 @@ export const GET = async (request: Request) => {
                   select: {
                     id: true,
                     name: true,
-                    email: true
-                  }
-                }
-              }
-            }
+                    email: true,
+                  },
+                },
+              },
+            },
           },
         },
         teamMembers: {
           where: {
             deletedAt: null,
             team: {
-              deletedAt: null
-            }
+              deletedAt: null,
+            },
           },
           include: {
             team: {
@@ -81,10 +81,10 @@ export const GET = async (request: Request) => {
                   include: {
                     jobTitles: {
                       where: {
-                        deletedAt: null
-                      }
+                        deletedAt: null,
+                      },
                     },
-                  }
+                  },
                 },
                 // Include team members for the teams the user is a member of
                 teamMembers: {
@@ -96,11 +96,11 @@ export const GET = async (request: Request) => {
                       select: {
                         id: true,
                         name: true,
-                        email: true
-                      }
-                    }
-                  }
-                }
+                        email: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -115,21 +115,21 @@ export const GET = async (request: Request) => {
         { status: 404 }
       );
     }
-
+    console.error(user.teams);
     // Create a Map to store unique teams by ID
-    const userOwnedTeams = user.teams.map(team => ({ 
-      ...team, 
-      members: team.teamMembers || []
+    const userOwnedTeams = user.teams.map((team) => ({
+      ...team,
+      members: team.teamMembers || [],
     }));
-    
-    const userMemberTeams = user.teamMembers.map(member => ({ 
-      ...member.team, 
-      members: member.team.teamMembers || []
+
+    const userMemberTeams = user.teamMembers.map((member) => ({
+      ...member.team,
+      members: member.team.teamMembers || [],
     }));
-    
+
     // Combine and deduplicate teams
     const teamsMap = new Map();
-    [...userOwnedTeams, ...userMemberTeams].forEach(team => {
+    [...userOwnedTeams, ...userMemberTeams].forEach((team) => {
       // If team already exists in map, don't override
       if (!teamsMap.has(team.id)) {
         teamsMap.set(team.id, team);
@@ -137,14 +137,16 @@ export const GET = async (request: Request) => {
     });
 
     // Convert Map back to array and transform to match TeamResponse type
-    const teams: TeamResponse[] = Array.from(teamsMap.values()).map(team => {
+    const teams: TeamResponse[] = Array.from(teamsMap.values()).map((team) => {
       // Transform members to match the expected format in TeamResponse
-      const members = (team.members || []).map((member: TeamMemberWithUser) => ({
-        id: member.id,
-        title: member.title,
-        name: member.user?.name || null,
-        email: member.user?.email || ''
-      }));
+      const members = (team.members || []).map(
+        (member: TeamMemberWithUser) => ({
+          id: member.id,
+          title: member.title,
+          name: member.user?.name || null,
+          email: member.user?.email || "",
+        })
+      );
 
       return {
         id: team.id,
@@ -156,10 +158,12 @@ export const GET = async (request: Request) => {
         updatedAt: team.updatedAt,
         deletedAt: team.deletedAt,
         customFields: team.customFields,
-        teamFunction: team.teamFunction ? {
-          id: team.teamFunction.id,
-          name: team.teamFunction.name
-        } : null,
+        teamFunction: team.teamFunction
+          ? {
+              id: team.teamFunction.id,
+              name: team.teamFunction.name,
+            }
+          : null,
         members: members,
         // You could calculate average performance here if needed
         // averagePerformance: calculateAveragePerformance(team)
@@ -182,8 +186,8 @@ export const GET = async (request: Request) => {
 };
 export const POST = async (request: Request) => {
   console.log("🎯 POST /api/teams - Started");
-  
-  const authHeader = request.headers.get('authorization');
+
+  const authHeader = request.headers.get("authorization");
   console.log("📝 Auth header:", authHeader?.substring(0, 20) + "...");
 
   try {
@@ -213,9 +217,9 @@ export const POST = async (request: Request) => {
 
     console.log("👤 Finding user with clerkId:", userId);
     const user = await prisma.appUser.findUnique({
-      where: { 
+      where: {
         clerkId: userId,
-        deletedAt: null 
+        deletedAt: null,
       },
     });
 
@@ -229,9 +233,9 @@ export const POST = async (request: Request) => {
 
     // Verify team function exists
     const teamFunction = await prisma.teamFunction.findUnique({
-      where: { 
+      where: {
         id: teamFunctionId,
-        deletedAt: null
+        deletedAt: null,
       },
     });
 
@@ -249,7 +253,7 @@ export const POST = async (request: Request) => {
         description: description?.trim(),
         teamFunctionId: teamFunctionId,
         ownerId: user.id,
-      }
+      },
     });
 
     const teamResponse: TeamResponse = {

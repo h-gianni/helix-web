@@ -51,14 +51,13 @@ const TeamSetup = () => {
     useActions();
 
   // Get all selected category IDs
+
   const selectedCategoryIds = Object.entries(selectedByCategory)
     .filter(([_, actions]) => (actions as any[]).length > 0)
     .map(([categoryId, _]) => categoryId);
-
   // Helper function to extract category IDs from function names
   const getFunctionCategoryIds = (functionNames: string[]) => {
     if (!actionCategories) return [];
-
     return actionCategories
       .filter((category) => functionNames.includes(category.name))
       .map((category) => category.id);
@@ -99,7 +98,6 @@ const TeamSetup = () => {
     if (isInitialized || isLoadingCategories) return;
 
     let initialTeams: ExtendedTeam[] = [];
-    console.log(teamsData, configTeams, profile);
     if (teamsData && teamsData.owned.length > 0) {
       // Transform profile teams to match the expected format
       initialTeams = teamsData.owned.map((team) => {
@@ -115,6 +113,7 @@ const TeamSetup = () => {
           functions.length === 0 &&
           actionCategories
         ) {
+          // team obj does not have actionCategories
           const teamFunction = actionCategories.find(
             (cat) => cat.id === (team as any).teamFunctionId
           );
@@ -126,7 +125,7 @@ const TeamSetup = () => {
         // Get category IDs from customFields or derive from functions
         const categories =
           customFields.categories || getFunctionCategoryIds(functions);
-
+        console.log(team.name, functions, actionCategories);
         return {
           id: team.id,
           name: team.name,
@@ -352,7 +351,7 @@ const TeamSetup = () => {
                   <h3 className="heading-4">
                     Function
                     <span className="text-sm font-normal text-foreground-weak">
-                      (# actions) {JSON.stringify(team)}
+                      (# actions)
                     </span>
                   </h3>
                   <div className="space-y-4">
@@ -373,6 +372,7 @@ const TeamSetup = () => {
                             key={`${team.id}-${categoryId}`}
                             className="flex items-center gap-2 group"
                           >
+                            {categoryId}
                             <Checkbox
                               id={`${team.id}-category-${categoryId}`}
                               checked={isChecked}
