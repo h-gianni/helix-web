@@ -151,6 +151,9 @@ export const usePerformersStore = create<PerformersStore>((set) => ({
   setViewType: (type) => set({ viewType: type }),
 
   getPerformanceCategory: (rating, ratingsCount) => {
+
+    console.log("rating", rating, "ratingsCount", ratingsCount)
+
     if (ratingsCount === 0) {
       return {
         label: "No trend available",

@@ -237,6 +237,7 @@ function MemberCard({
             : "flex-col md:flex-col md:items-center"
         )}>
           <div className="flex items-center gap-2">
+       
             {category.Icon && (
               <category.Icon className={cn("size-4", category.className)} />
             )}

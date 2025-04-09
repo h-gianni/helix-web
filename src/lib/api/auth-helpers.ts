@@ -1,5 +1,28 @@
 // src/lib/api/auth-helpers.ts
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import { ApiResponse } from "../types/api";
+
+/**
+ * Check if a user is athendicated
+ * Access is granted if user is authendicated
+ */
+
+export async function requireAuth(): Promise<string | NextResponse> {
+  const { userId } = await auth();
+
+  console.log(userId)
+  
+  if (!userId) {
+    return NextResponse.json<ApiResponse<never>>(
+      { success: false, error: "Unauthorized" },
+      { status: 401 }
+    );
+  }
+  
+  return userId;
+}
 
 /**
  * Check if a user has access to a specific team
@@ -113,4 +136,17 @@ export async function checkMemberAccess(memberId: string, clerkUserId: string): 
     console.error("Error checking member access:", error);
     return false;
   }
+}
+
+export async function getAuthenticatedUser(){
+  const {userId} = await auth();
+
+  if(!userId) {
+    return NextResponse.json<ApiResponse<never>>(
+      {success: false, error: "Unauthorized"},
+      {status: 401}
+    )
+  }
+
+  return userId;
 }
