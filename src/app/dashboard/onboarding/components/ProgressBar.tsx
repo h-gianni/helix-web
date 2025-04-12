@@ -46,7 +46,7 @@ export default function ProgressBar() {
   return (
     <header className="bg-background sticky top-0 left-0 z-10">
       {/* Progress bar */}
-      <Progress value={progressPercentage} className="!h-2 !rounded-none" />
+      <Progress value={progressPercentage} className="!h-0.5 !rounded-none" />
     </header>
   );
 }

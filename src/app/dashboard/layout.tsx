@@ -1,9 +1,10 @@
-// app/dashboard/layout.tsx
 "use client";
 
-import React from 'react';
+import React from "react";
+import ConditionalSidebar from "./components/conditional-sidebar";
+import { SidebarProvider } from "@/components/ui/composite/Sidebar";
+import { MobileBottomNav } from "./components/MobileNav";
 import { useSetupStateSync } from '@/hooks/useSetupStateSync';
-import { SidebarProvider } from '@/components/ui/composite/Sidebar';
 
 export default function DashboardLayout({
   children,
@@ -15,7 +16,11 @@ export default function DashboardLayout({
   
   return (
     <SidebarProvider>
-      {children}
+      <ConditionalSidebar />
+      <main className="layout-page">{children}</main>
+      <div className="h-16 lg:hidden">
+        <MobileBottomNav />
+      </div>
     </SidebarProvider>
   );
 }

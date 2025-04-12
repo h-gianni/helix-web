@@ -1,7 +1,7 @@
 // app/dashboard/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Button } from "@/components/ui/core/Button";
 import { Loader } from "@/components/ui/core/Loader";
@@ -17,7 +17,8 @@ import { useRouter } from "next/navigation";
 export default function DashboardPage() {
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const { completeStep } = useSetupStore();
+  const { completeStep, steps } = useSetupStore();
+  const [shouldShowDashboard, setShouldShowDashboard] = useState(true);
 
   const { 
     data: teams = [], 
@@ -38,6 +39,20 @@ export default function DashboardPage() {
   const isLoading = isTeamsLoading || isPerformersLoading;
   const error = teamsError || isPerformersError;
 
+  // Check if the user has completed setup to determine what to display
+  useEffect(() => {
+    // If the setup state and teams are loaded, we can make a decision
+    if (!isLoading && !error) {
+      // Assume the user should see the dashboard if:
+      // 1. They have at least one team, OR
+      // 2. They have completed any of the setup steps
+      const hasAnySetupProgress = Object.values(steps).some(step => step);
+      const hasTeams = teams.length > 0;
+      
+      setShouldShowDashboard(hasTeams || hasAnySetupProgress);
+    }
+  }, [teams, steps, isLoading, error]);
+
   const handleCreateTeam = async (name: string, teamFunctionId: string) => {
     try {
       const newTeam = await createTeam({ name, teamFunctionId });
@@ -50,12 +65,16 @@ export default function DashboardPage() {
   };
 
   if (isLoading) {
-    return <div className="loader"><Loader size="base" label="Loading..." /></div>;
+    return (
+      <div className="flex h-full items-center justify-center">
+        <Loader size="base" label="Loading..." />
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="ui-loader-error">
+      <div className="flex h-full flex-col items-center justify-center gap-4 p-4">
         <Alert data-slot="alert" variant="destructive">
           <AlertCircle className="size-4" />
           <AlertDescription data-slot="alert-description">
@@ -70,22 +89,36 @@ export default function DashboardPage() {
             refetchPerformers();
           }}
         >
-          <RotateCcw className="size-4" /> Retry
+          <RotateCcw className="size-4 mr-2" /> Retry
         </Button>
       </div>
     );
   }
 
-  return teams.length > 0 ? (
-    <DashboardLayout performers={performers} teams={teams} router={router} />
-  ) : (
-    <>
-      <EmptyDashboardView onCreateTeam={() => setIsCreateModalOpen(true)} />
-      <TeamCreateModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onCreateTeam={handleCreateTeam}
-      />
-    </>
-  );
+  // If user has teams, show the dashboard layout
+  if (teams.length > 0) {
+    return <DashboardLayout performers={performers} teams={teams} router={router} />;
+  }
+
+  // If user should see dashboard based on other criteria (e.g., setup progress),
+  // show the empty dashboard view - they can navigate to onboarding from there if needed
+  if (shouldShowDashboard) {
+    return (
+      <>
+        <EmptyDashboardView onCreateTeam={() => setIsCreateModalOpen(true)} />
+        <TeamCreateModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onCreateTeam={handleCreateTeam}
+        />
+      </>
+    );
+  }
+
+  // Otherwise, redirect to onboarding - this should rarely happen since middleware should handle this
+  useEffect(() => {
+    router.push('/dashboard/onboarding/intro');
+  }, [router]);
+
+  return null; // Will redirect
 }

@@ -11,8 +11,6 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
-  console.log("Middleware is running!");
-  
   // First check if it's a public route
   if (isPublicRoute(request)) {
     return NextResponse.next();
@@ -21,10 +19,9 @@ export default clerkMiddleware(async (auth, request) => {
   // Protect all non-public routes
   const authObject = await auth.protect();
   
-  // Now handle onboarding flow redirects for authenticated users
   const pathname = request.nextUrl.pathname;
   
-  // Skip onboarding checks for non-dashboard routes or static assets
+  // Skip middleware handling for non-dashboard routes or static assets
   if (
     !pathname.startsWith('/dashboard') || 
     pathname.includes('.') || 
@@ -35,10 +32,20 @@ export default clerkMiddleware(async (auth, request) => {
 
   // Get the setup state from cookies
   const setupState = request.cookies.get('setup-state')?.value;
-  let setupData = {};
+  let setupData = {
+    organizationName: '',
+    hasActivities: false,
+    hasTeams: false
+  };
   
   try {
-    setupData = setupState ? JSON.parse(setupState) : {};
+    if (setupState) {
+      const parsedData = JSON.parse(setupState);
+      setupData = {
+        ...setupData,
+        ...parsedData
+      };
+    }
   } catch (e) {
     console.error('Failed to parse setup state', e);
   }
@@ -47,28 +54,39 @@ export default clerkMiddleware(async (auth, request) => {
     organizationName,
     hasActivities,
     hasTeams
-  } = setupData as {
-    organizationName?: string,
-    hasActivities?: boolean,
-    hasTeams?: boolean
-  };
+  } = setupData;
 
-  // If trying to access dashboard directly but setup is not complete,
-  // redirect to onboarding intro page to show progress
+  // Check if user has completed onboarding
+  const hasCompletedOnboarding = Boolean(organizationName && hasActivities && hasTeams);
+
+  // ROUTING LOGIC:
+  
+  // Handle direct access to dashboard root
   if (pathname === '/dashboard' || pathname === '/dashboard/') {
-    const setupComplete = organizationName && hasActivities && hasTeams;
-    
-    if (!setupComplete) {
+    // If user hasn't completed onboarding, redirect to onboarding intro
+    if (!hasCompletedOnboarding) {
       return NextResponse.redirect(new URL('/dashboard/onboarding/intro', request.url));
     }
+    // Otherwise, allow access to dashboard
+    return NextResponse.next();
   }
   
-  // Special case to handle direct access to onboarding root
+  // Handle direct access to onboarding root or intro page after onboarding is complete
+  if (
+    (pathname === '/dashboard/onboarding' || pathname === '/dashboard/onboarding/intro') && 
+    hasCompletedOnboarding
+  ) {
+    // If onboarding is complete, redirect to main dashboard
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+  
+  // For all other onboarding paths, handle the special case of onboarding root
   if (pathname === '/dashboard/onboarding') {
-    // Always redirect to intro for onboarding overview
+    // Always redirect root onboarding path to intro
     return NextResponse.redirect(new URL('/dashboard/onboarding/intro', request.url));
   }
 
+  // Allow all other routes
   return NextResponse.next();
 });
 
