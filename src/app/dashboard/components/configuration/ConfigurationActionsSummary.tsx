@@ -14,7 +14,7 @@ import {
   CardContent,
   CardTitle,
 } from "@/components/ui/core/Card";
-import { PenSquare, Heart } from "lucide-react";
+import { PenSquare, Heart, Pen, PencilRuler } from "lucide-react";
 import { useConfigStore } from "@/store/config-store";
 import { useFavoritesStore, useFavorites } from "@/store/favorites-store";
 import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
@@ -90,15 +90,18 @@ function OrgActionsSummary({
       <Card data-slot="card">
         <CardHeader
           data-slot="card-header"
-          className="flex flex-row items-center justify-between"
+          className="flex flex-row items-start justify-between"
         >
           <CardTitle data-slot="card-title">
-            {organizationName
-              ? `${organizationName}'s actions`
-              : "Organisation's actions"}
+            <div className="flex-shrink-0 mb-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-neutral-lightest">
+                <PencilRuler className="size-5 text-primary" />
+              </div>
+            </div>
+            Team's actions
           </CardTitle>
           <Button data-slot="button" variant="ghost" onClick={onEdit}>
-            <PenSquare /> Edit
+            <Pen />
           </Button>
         </CardHeader>
         <CardContent data-slot="card-content">
@@ -137,14 +140,13 @@ function OrgActionsSummary({
                             {favoritesCount > 0 && (
                               <Badge
                                 data-slot="badge"
-                                variant="accent"
-                                className="flex items-center gap-1"
+                                className="flex items-center gap-1 bg-primary-lightest text-primary"
                               >
-                                <Heart className="size-3 fill-current" />
+                                <Heart className="size-3 fill-primary" />
                                 {favoritesCount}
                               </Badge>
                             )}
-                            <Badge data-slot="badge" variant="secondary">
+                            <Badge data-slot="badge" variant="info-light">
                               {activities.length}
                             </Badge>
                           </div>

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import LogoImage from "@/assets/shared/logo-circle.svg";
+import LogoImage from "@/assets/shared/logo.svg";
 
 export function BrandLogo() {
   return (
@@ -7,7 +7,7 @@ export function BrandLogo() {
       <Image
         src={LogoImage}
         alt="JustScore"
-        className="size-8"
+        className="size-6"
       />
       <span>JustScore</span>
     </span>

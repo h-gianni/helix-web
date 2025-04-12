@@ -4,29 +4,30 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium leading-4 whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex items-center rounded border px-2 py-1 text-xs leading-4 whitespace-nowrap transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary text-primary-foreground",
+          "border-transparent bg-primary-lightest text-primary-darker",
+        primary: "border-transparent bg-primary text-primary-foreground font-medium",
         "primary-light":
           "border-transparent bg-primary-lightest text-primary-darker",
-        secondary:
-          "border-transparent bg-secondary text-secondary-foreground",
+        secondary: "border-transparent bg-neutral-lighter text-secondary-foreground",
         "secondary-light":
           "border-transparent bg-secondary-lightest text-secondary-darker",
+
+        info: "border-transparent bg-info text-info-foreground",
+        "info-light": "border-transparent bg-info-lightest text-info-darker",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground",
         "destructive-light":
           "border-transparent bg-destructive-lightest text-destructive-darker",
-        outline: "text-foreground border",
-        accent:
-          "border-transparent bg-accent text-accent-foreground",
+        outline: "text-foreground border border-neutral-light",
+        accent: "border-transparent bg-accent text-accent-foreground",
         "accent-light":
           "border-transparent bg-accent-lightest text-accent-dark",
-        success:
-          "border-transparent bg-success text-success-foreground",
+        success: "border-transparent bg-success text-success-foreground",
         "success-light":
           "border-transparent bg-success-lightest text-success-darker",
         warning:

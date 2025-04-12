@@ -1,7 +1,7 @@
+// app/dashboard/page.tsx
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Button } from "@/components/ui/core/Button";
 import { Loader } from "@/components/ui/core/Loader";
@@ -11,14 +11,13 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import EmptyDashboardView from "./components/EmptyDashboardView";
 import { useTeams, useCreateTeam } from "@/store/team-store";
 import { useSetupStore } from '@/store/setup-store';
-import { useSetupProgress } from '@/hooks/useSetupProgress';
 import { usePerformers } from "@/store/performers-store";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const { completeStep } = useSetupStore();
-  const { showMainDashboard } = useSetupProgress();
 
   const { 
     data: teams = [], 
@@ -77,7 +76,7 @@ export default function DashboardPage() {
     );
   }
 
-  return showMainDashboard ? (
+  return teams.length > 0 ? (
     <DashboardLayout performers={performers} teams={teams} router={router} />
   ) : (
     <>

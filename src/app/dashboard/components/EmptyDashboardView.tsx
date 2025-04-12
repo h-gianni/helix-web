@@ -1,3 +1,4 @@
+// app/dashboard/components/EmptyDashboardView.tsx
 "use client";
 
 import React from "react";
@@ -5,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { Users, Plus } from "lucide-react";
 import { Button } from "@/components/ui/core/Button";
 import { Card, CardContent } from "@/components/ui/core/Card";
-import { Onboarding } from "./configuration/Onboarding";
+import { Badge } from "@/components/ui/core/Badge";
+import Image from "next/image";
+import LogoImage from "@/assets/shared/logo.svg";
 import { useTeams } from "@/store/team-store";
 import { useSetupStore } from "@/store/setup-store";
 
@@ -20,19 +23,29 @@ function EmptyDashboardView({ onCreateTeam }: EmptyDashboardViewProps) {
   const showSuccessMessage = steps.configureTeamActivities;
   const firstTeam = teams[0];
 
+  // Handler for starting onboarding
+  const handleStartOnboarding = () => {
+    router.push("/dashboard/onboarding/intro");
+  };
+
   return (
     <div className="text-center space-y-4 p-2 lg:p-8">
-      <div className="space-y-4">
-        <div className="flex items-center mx-auto justify-center size-16 rounded-full bg-primary/10 p-2">
-          <Users className="size-8 text-primary" />
+      <div className="space-y-0">
+        <div className="flex items-center mx-auto justify-center size-20 rounded-full p-4">
+            <div className="mx-auto">
+              <Image src={LogoImage} alt="JustScore" className="size-16" />
+            </div>
         </div>
 
         {!showSuccessMessage ? (
-          <div className="space-y-2">
-            <h1 className="display-1">Welcome to JustScore</h1>
+          <div className="space-y-6">
+            <h1 className="display-1">JustScore</h1>
+            <div className="space-y-2">
             <p className="body-lg max-w-xl mx-auto">
-              Get started by following these steps:
+              Get started by configuring the app in four easy steps:
             </p>
+            <Badge data-slot="badge" variant="secondary">Est. 1-3 min</Badge>
+            </div>
           </div>
         ) : (
           <div className="space-y-2">
@@ -62,7 +75,28 @@ function EmptyDashboardView({ onCreateTeam }: EmptyDashboardViewProps) {
       </div>
 
       <div className="max-w-[1200px] mx-auto py-4 space-y-4">
-        <Onboarding onCreateTeam={() => onCreateTeam()} />
+        {/* Replace the Onboarding component with a button that redirects */}
+        <Card data-slot="card" className="max-w-6xl mx-auto">
+          <CardContent data-slot="card-content" className="p-8">
+            <div className="space-y-6 text-center">
+              <h2 className="heading-2">Ready to get started?</h2>
+              <p className="body-lg max-w-xl mx-auto">
+                Configure your organization, set up actions, and create teams to start measuring performance.
+              </p>
+              
+              <div className="pt-4">
+                <Button 
+                  data-slot="button"
+                  size="xl" 
+                  variant="primary"
+                  onClick={handleStartOnboarding}
+                >
+                  Start Configuration
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

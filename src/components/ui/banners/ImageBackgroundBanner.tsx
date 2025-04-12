@@ -10,7 +10,7 @@ const ImageBackgroundBanner = ({
   secondaryCta = "View Plans",
   onPrimaryClick = () => {},
   onSecondaryClick = () => {},
-  imagePath = "", 
+  imagePath = "",
 }) => {
   return (
     <div className="w-full rounded-[var(--radius-lg)] overflow-hidden shadow-[var(--shadow-md)] relative">
@@ -28,17 +28,15 @@ const ImageBackgroundBanner = ({
       {/* Content */}
       <div className="relative z-10 p-6 md:p-8 lg:p-10">
         <div className="max-w-3xl space-y-4">
-          <Badge variant="accent-light">{badgeText}</Badge>
+          <Badge variant="primary-light">{badgeText}</Badge>
           <div className="space-y-1 pb-4">
-            <h2 className="display-1">
-              {title}
-            </h2>
+            <h2 className="display-1">{title}</h2>
             <p className="text-foreground text-base md:text-lg max-w-xl">
               {description}
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button variant="accent" size="lg" onClick={onPrimaryClick}>
+            <Button variant="primary" size="lg" onClick={onPrimaryClick}>
               {primaryCta}
             </Button>
             <Button variant="outline" size="lg" onClick={onSecondaryClick}>
