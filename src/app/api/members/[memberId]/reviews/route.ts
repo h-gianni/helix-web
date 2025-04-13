@@ -7,6 +7,7 @@ import { z } from "zod";
 import { OpenAI } from "openai";
 import { ReviewStatus } from "@prisma/client";
 import { generateReview, CategoryRatings } from "@/lib/ai/review-generator";
+import axios from "axios";
 
 // Input schema for the request
 const reviewRequestSchema = z.object({
@@ -31,34 +32,34 @@ const openai = new OpenAI({
 });
 
 // Alternative direct API call using axios
-async function generateReviewWithAxios(systemPrompt: string, userPrompt: string) {
-  try {
-    const response = await axios.post(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        model: "deepseek/deepseek-r1-zero:free",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 4000,
-      },
-      {
-        headers: {
-          "Authorization": `Bearer ${process.env.DEEP_SEEK_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        timeout: 60000 // 60 second timeout
-      }
-    );
+// async function generateReviewWithAxios(systemPrompt: string, userPrompt: string) {
+//   try {
+//     const response = await axios.post(
+//       "https://openrouter.ai/api/v1/chat/completions",
+//       {
+//         model: "deepseek/deepseek-r1-zero:free",
+//         messages: [
+//           { role: "system", content: systemPrompt },
+//           { role: "user", content: userPrompt }
+//         ],
+//         temperature: 0.7,
+//         max_tokens: 4000,
+//       },
+//       {
+//         headers: {
+//           "Authorization": `Bearer ${process.env.DEEP_SEEK_API_KEY}`,
+//           "Content-Type": "application/json"
+//         },
+//         timeout: 60000 // 60 second timeout
+//       }
+//     );
     
-    return response.data.choices[0].message.content;
-  } catch (error) {
-    console.error("Error in axios request to OpenRouter:", error);
-    throw error;
-  }
-}
+//     return response.data.choices[0].message.content;
+//   } catch (error) {
+//     console.error("Error in axios request to OpenRouter:", error);
+//     throw error;
+//   }
+// }
 
 // Minimum required scores for generating a meaningful review
 const MIN_REQUIRED_SCORES = 4;
@@ -134,6 +135,9 @@ export async function POST(
 
     const body = await request.json();
     const validatedData = reviewRequestSchema.parse(body);
+      // Create a performance review in the database
+   const quarterNumber = validatedData.quarterNumber || getCurrentQuarter();
+   const year = validatedData.year || new Date().getFullYear();
     
     // if (!teamId || !quarter || !year) {
     //   return NextResponse.json(
@@ -211,7 +215,7 @@ Once more performance data is available, we'll be able to generate a detailed an
       const existingReview = await prisma.performanceReview.findFirst({
         where: {
           teamMemberId: params.memberId,
-          quarter: Number(quarter),
+          quarter: quarterNumber,
           year: Number(year),
         },
       });
@@ -233,7 +237,7 @@ Once more performance data is available, we'll be able to generate a detailed an
         review = await prisma.performanceReview.create({
           data: {
             teamMemberId: params.memberId,
-            quarter: Number(quarter),
+            quarter:quarterNumber,
             year: Number(year),
             content: insufficientDataMessage,
             status: ReviewStatus.DRAFT,
@@ -250,7 +254,7 @@ Once more performance data is available, we'll be able to generate a detailed an
           performedBy: userId,
           changes: JSON.stringify({
             teamMemberId: params.memberId,
-            quarter,
+            quarterNumber,
             year,
             isAiGenerated: true,
             insufficientData: true,
@@ -264,7 +268,7 @@ Once more performance data is available, we'll be able to generate a detailed an
         data: {
           id: review.id,
           content: insufficientDataMessage,
-          quarter,
+          quarterNumber,
           year,
           status: review.status,
           insufficientData: true,
@@ -337,9 +341,7 @@ Once more performance data is available, we'll be able to generate a detailed an
     }
   });
 
-   // Create a performance review in the database
-   const quarterNumber = validatedData.quarterNumber || getCurrentQuarter();
-   const year = validatedData.year || new Date().getFullYear();
+ 
 
    // Check if review already exists
    const existingReview = await prisma.performanceReview.findFirst({

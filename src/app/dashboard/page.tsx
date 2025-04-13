@@ -53,6 +53,10 @@ export default function DashboardPage() {
     }
   }, [teams, steps, isLoading, error]);
 
+  useEffect(() => {
+    router.push('/dashboard/onboarding/intro');
+  }, [router]);
+
   const handleCreateTeam = async (name: string, teamFunctionId: string) => {
     try {
       const newTeam = await createTeam({ name, teamFunctionId });
@@ -116,9 +120,7 @@ export default function DashboardPage() {
   }
 
   // Otherwise, redirect to onboarding - this should rarely happen since middleware should handle this
-  useEffect(() => {
-    router.push('/dashboard/onboarding/intro');
-  }, [router]);
+
 
   return null; // Will redirect
 }

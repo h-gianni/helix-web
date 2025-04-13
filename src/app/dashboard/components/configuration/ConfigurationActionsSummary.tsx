@@ -98,7 +98,7 @@ function OrgActionsSummary({
                 <PencilRuler className="size-5 text-primary" />
               </div>
             </div>
-            Team's actions
+            Team&apos;s actions
           </CardTitle>
           <Button data-slot="button" variant="ghost" onClick={onEdit}>
             <Pen />

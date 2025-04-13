@@ -247,7 +247,7 @@ export function GenerateReviewModal({ teamId, memberId, memberName }: GenerateRe
                generateReview.error.message.includes('Insufficient data') && (
                 <div className="mt-4 space-y-4">
                   <p className="text-sm">
-                    We don't have enough data to generate a comprehensive review. 
+                    We don&apos;t have enough data to generate a comprehensive review. 
                     Additional performance ratings are needed to provide a fair assessment.
                   </p>
                   

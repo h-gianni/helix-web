@@ -40,7 +40,7 @@ export default function OrganisationPage() {
         title="Let's set up your organisation"
         description={
           <>
-            First, let's get to know your organisation. This information will help
+            First, let&apos;s get to know your organisation. This information will help
             us customize your experience and make it relevant to your needs.
           </>
         }
