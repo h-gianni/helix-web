@@ -125,9 +125,9 @@ export default function MemberDetailsPage() {
              <GenerateReviewModal
         teamId={params.teamId}
         memberId={params.memberId}
-        isOpen={isReviewModalOpen}
+        // isOpen={isReviewModalOpen}
         memberName={member.firstName + " " + member.lastName}
-        onClose={() => setIsReviewModalOpen(false)}
+        // onClose={() => setIsReviewModalOpen(false)}
       />
           </>
         }

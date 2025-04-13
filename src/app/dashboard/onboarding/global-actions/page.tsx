@@ -36,7 +36,7 @@ export default function GlobalActionsPage() {
         title="Select Global Actions"
         description={
           <>
-            Choose the foundational actions that reflect your organization's
+            Choose the foundational actions that reflect your organization&apos;s
             core values and culture.
             <br />
             These actions will be evaluated across all teams.

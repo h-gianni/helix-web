@@ -89,7 +89,7 @@ export default function OnboardingIntroPage() {
             <h1 className="display-1 mb-4">JustScore</h1>
           </div>
           <p className="body-lg text-foreground-weak max-w-xl mx-auto py-4">
-            Let's get your organisation set up so you can start tracking and
+            Let&apos;s get your organisation set up so you can start tracking and
             improving team performance. <br />
             This quick and easy onboarding will guide you through the
             configuration.

@@ -80,7 +80,7 @@ export default function ActionsSelector({
 
   // Handle action selection
   const handleSelectActivity = useCallback(
-    (activityId: string, categoryId: string) => {
+    async (activityId: string, categoryId: string) => {
       // Check if this action is in a mandatory category
       const isMandatoryCategory = mandatoryCategories.includes(
         categories?.find((cat) => cat.id === categoryId)?.name || ""
@@ -105,8 +105,24 @@ export default function ActionsSelector({
         }
       }
 
+      const isCurrentlySelected = selectedActivities.includes(activityId);
+      
+      // If we're deselecting and it's favorited, remove from favorites too
+      if (isCurrentlySelected && isFavorite(activityId, categoryId)) {
+        try {
+          // Unfavorite the action when it's deselected
+          await toggleFavorite.mutateAsync({
+            actionId: activityId,
+            categoryId,
+            isFavorite: false,
+          });
+        } catch (err) {
+          console.error("Failed to remove favorite status:", err);
+        }
+      }
+
       // Proceed with selection/deselection
-      const newActivities = selectedActivities.includes(activityId)
+      const newActivities = isCurrentlySelected
         ? selectedActivities.filter((a) => a !== activityId)
         : [...selectedActivities, activityId];
       updateActivities(newActivities);
@@ -117,10 +133,8 @@ export default function ActionsSelector({
             ? [...selectedByCategory[categoryId]]
             : [];
 
-        const isActivitySelected = selectedActivities.includes(activityId);
-
         let updatedCategoryActivities;
-        if (isActivitySelected) {
+        if (isCurrentlySelected) {
           updatedCategoryActivities = currentCategoryActivities.filter(
             (id) => id !== activityId
           );
@@ -142,6 +156,8 @@ export default function ActionsSelector({
       minRequiredActionsPerCategory,
       updateActivities,
       updateActivitiesByCategory,
+      isFavorite,
+      toggleFavorite,
     ]
   );
 
@@ -190,7 +206,7 @@ export default function ActionsSelector({
 
   // Toggle select all actions in a category
   const toggleSelectAllCategoryActions = useCallback(
-    (category: ActionCategory, checked: boolean) => {
+    async (category: ActionCategory, checked: boolean) => {
       if (!category || !category.actions || category.actions.length === 0) {
         return;
       }
@@ -206,6 +222,29 @@ export default function ActionsSelector({
       } else {
         // Check if this is a mandatory category
         const isMandatory = mandatoryCategories.includes(category.name);
+
+        // For each deselected action, also remove it from favorites
+        for (const actionId of categoryActionIds) {
+          // Skip if it's a mandatory action we need to keep
+          if (isMandatory && 
+              minRequiredActionsPerCategory > 0 && 
+              categoryActionIds.indexOf(actionId) < minRequiredActionsPerCategory) {
+            continue;
+          }
+          
+          // If favorited, unfavorite it
+          if (isFavorite(actionId, category.id)) {
+            try {
+              await toggleFavorite.mutateAsync({
+                actionId,
+                categoryId: category.id,
+                isFavorite: false,
+              });
+            } catch (err) {
+              console.error(`Failed to remove favorite status for action ${actionId}:`, err);
+            }
+          }
+        }
 
         if (isMandatory && minRequiredActionsPerCategory > 0) {
           // For mandatory categories, keep the minimum required
@@ -238,6 +277,8 @@ export default function ActionsSelector({
       updateActivitiesByCategory,
       mandatoryCategories,
       minRequiredActionsPerCategory,
+      isFavorite,
+      toggleFavorite,
     ]
   );
 
@@ -413,13 +454,14 @@ export default function ActionsSelector({
                         </div>
                         <span className="text-base flex-1">{action.name}</span>
 
-                        {/* Favorite button */}
+                        {/* Favorite button - Only enabled when action is selected */}
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
                                 variant="ghost"
                                 size="sm"
+                                disabled={!isSelected}
                                 onClick={(e) =>
                                   handleToggleFavorite(
                                     action.id,
@@ -431,21 +473,24 @@ export default function ActionsSelector({
                                   "p-1 size-7",
                                   actionIsFavorite
                                     ? "text-primary hover:text-primary/80"
-                                    : "text-foreground/25 hover:text-foreground/50"
+                                    : "text-foreground/25 hover:text-foreground/50",
+                                  !isSelected && "opacity-30 cursor-not-allowed"
                                 )}
                               >
                                 <Heart
                                   className={cn(
                                     "size-4",
-                                    actionIsFavorite && "fill-current"
+                                    actionIsFavorite && isSelected && "fill-current"
                                   )}
                                 />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              {actionIsFavorite
-                                ? "Remove from favorites"
-                                : "Add to favorites"}
+                              {!isSelected 
+                                ? "Select action first to favorite it"
+                                : actionIsFavorite
+                                  ? "Remove from favorites"
+                                  : "Add to favorites"}
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>

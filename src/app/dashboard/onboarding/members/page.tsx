@@ -70,7 +70,7 @@ export default function MembersPage() {
         title="Add Members"
         description={
           <>
-            Add the members who will be part of your teams. You'll be able to
+            Add the members who will be part of your teams. You&apos;ll be able to
             assign them to specific teams in the next step.
           </>
         }
