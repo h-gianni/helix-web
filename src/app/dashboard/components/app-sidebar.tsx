@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BrandLogo } from "@/components/BrandLogo";
+import { BrandLogo } from "@/components/logo/BrandLogo";
 import { LucideIcon, Home, Users, Settings } from "lucide-react";
 import {
   Sidebar,

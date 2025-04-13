@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import { BrandLogo } from "@/components/BrandLogo";
+import { BrandLogo } from "@/components/logo/BrandLogo";
 import { Button } from "@/components/ui/core/Button";
 import { Smartphone, Play, User, BookOpen, Menu, X, Gauge } from "lucide-react";
 import { useState } from "react";

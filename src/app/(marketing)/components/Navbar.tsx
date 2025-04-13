@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
-import { BrandLogo } from "@/components/BrandLogo";
+import { BrandLogo } from "@/components/logo/BrandLogo";
 import { Button } from "@/components/ui/core/Button";
 import {
   NavigationMenu,

@@ -1,4 +1,4 @@
-import { BrandLogo } from "@/components/BrandLogo";
+import { BrandLogo } from "@/components/logo/BrandLogo";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import Link from "next/link";
  

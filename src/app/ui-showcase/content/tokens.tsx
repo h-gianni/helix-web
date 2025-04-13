@@ -8,12 +8,40 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/core/Card";
+import { BrandLogo } from "@/components/logo/BrandLogo";
+import Image from "next/image";
+import LogoImage from "@/assets/shared/logo.svg";
 import { Separator } from "@/components/ui/core/Separator";
 import { cn } from "@/lib/utils";
 
 const TokensShowcase = () => {
   return (
     <div className="space-y-8 mt-8">
+      <div className="grid grid-cols-3 gap-8 pt-12 pb-16">
+        {/* Logo 1 */}
+        <div className="flex flex-row items-center justify-center gap-4">
+          <BrandLogo variant="hero" />
+        </div>
+        {/* Logo 2 */}
+        <div className="flex flex-col gap-8 items-center justify-center">
+          <div className="flex flex-row items-center justify-center gap-4">
+            <BrandLogo />
+          </div>
+        </div>
+        {/* Logo 3 */}
+        <div className="flex flex-row items-center justify-center gap-8">
+          <div className="flex justify-center">
+            <BrandLogo variant="icon" className="size-4" />
+          </div>
+          <div className="flex justify-center">
+          <BrandLogo variant="icon" className="size-6" />
+          </div>
+          <div className="flex justify-center">
+          <BrandLogo variant="icon" className="size-8" />
+          </div>
+        </div>
+      </div>
+
       <div>
         <h2 className="heading-1">Design Tokens</h2>
         <p className="body-lg">
@@ -749,36 +777,31 @@ const TokensShowcase = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-2">
               <div className="text-sm font-medium">Shadow SM</div>
-              <div
-                className="h-24 w-full rounded-md bg-card shadow-sm"></div>
+              <div className="h-24 w-full rounded-md bg-card shadow-sm"></div>
               <code className="text-xs">--shadow-sm</code>
             </div>
 
             <div className="space-y-2">
               <div className="text-sm font-medium">Shadow Base</div>
-              <div
-                className="h-24 w-full rounded-md bg-card shadow-base"></div>
+              <div className="h-24 w-full rounded-md bg-card shadow-base"></div>
               <code className="text-xs">--shadow-base</code>
             </div>
 
             <div className="space-y-2">
               <div className="text-sm font-medium">Shadow MD</div>
-              <div
-                className="h-24 w-full rounded-md bg-card shadow-md"></div>
+              <div className="h-24 w-full rounded-md bg-card shadow-md"></div>
               <code className="text-xs">--shadow-md</code>
             </div>
 
             <div className="space-y-2">
               <div className="text-sm font-medium">Shadow LG</div>
-              <div
-                className="h-24 w-full rounded-md bg-card shadow-lg"></div>
+              <div className="h-24 w-full rounded-md bg-card shadow-lg"></div>
               <code className="text-xs">--shadow-lg</code>
             </div>
 
             <div className="space-y-2">
               <div className="text-sm font-medium">Shadow XL</div>
-              <div
-                className="h-24 w-full rounded-md bg-card shadow-xl"></div>
+              <div className="h-24 w-full rounded-md bg-card shadow-xl"></div>
               <code className="text-xs">--shadow-xl</code>
             </div>
           </div>
