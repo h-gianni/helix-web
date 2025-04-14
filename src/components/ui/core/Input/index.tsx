@@ -8,8 +8,10 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 
 const sizeVariants = {
   sm: "h-8 text-sm px-2",
-  base: "h-9 text-base px-3",
-  lg: "h-10 text-base px-4",
+  base: "h-10 text-base px-4",
+  lg: "h-12 text-base px-4",
+
+  // Remote XL
   xl: "h-12 text-base px-4",
 }
 

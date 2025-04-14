@@ -27,8 +27,9 @@ import {
 } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/core/Badge";
 
-// Types remain unchanged
+// Types remain unchanged except for PerformanceCategory
 export interface Team {
   id: string;
   name: string;
@@ -48,7 +49,13 @@ export interface PerformanceCategory {
   label: string;
   minRating: number;
   maxRating: number;
-  className: string;
+  className?: string; // Keep for backward compatibility
+  badgeVariant?: "default" | "strong" | "primary" | "primary-light" | "info" | "info-light" | 
+                 "destructive" | "destructive-light" | "outline" | "accent" | "accent-light" | 
+                 "success" | "success-light" | "warning" | "warning-light" | "secondary" | "secondary-light";
+  starVariant?: "default" | "strong" | "primary" | "primary-light" | "info" | "info-light" | 
+                "destructive" | "destructive-light" | "outline" | "accent" | "accent-light" | 
+                "success" | "success-light" | "warning" | "warning-light" | "secondary" | "secondary-light";
   Icon: LucideIcon;
 }
 
@@ -137,7 +144,7 @@ function MembersTable({
                     </Avatar>
                   </TableCell>
                 )}
-                <TableCell data-slot="table-cell" className={cn("w-[40%] pl-2", !showTeamColumn && "w-[55%]")}>
+                <TableCell data-slot="table-cell" className={cn("w-[40%] pl-2 align-middle", !showTeamColumn && "w-[55%]")}>
                   <button
                     onClick={() => onNavigate?.(detailsPath)}
                     className="text-sm font-semibold text-foreground-strong hover:underline"
@@ -146,39 +153,45 @@ function MembersTable({
                   </button>
                 </TableCell>
                 {showTeamColumn && (
-                  <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap">
+                  <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
                     {teamName}
                   </TableCell>
                 )}
-                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap">
+                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
                   {member.title || "No title"}
                 </TableCell>
-                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap">
+                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
                   Seniority grade
                 </TableCell>
-                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap">
+                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
                   <div className="flex items-center gap-2">
-                    {category.Icon && (
-                      <category.Icon
-                        className={cn("size-4", category.className)}
-                      />
-                    )}
-                    <span className={category.className}>
-                      {category.label}
-                    </span>
+                    <Badge 
+                      variant={category.badgeVariant || "default"} 
+                      className="flex items-center gap-2"
+                    >
+                      {category.Icon && (
+                        <category.Icon className="size-3" />
+                      )}
+                      <span>
+                        {category.label}
+                      </span>
+                    </Badge>
                   </div>
                 </TableCell>
-                <TableCell data-slot="table-cell" className="w-[200px] whitespace-nowrap">
+                <TableCell data-slot="table-cell" className="w-[200px] whitespace-nowrap align-middle">
                   <StarRating
                     value={member.averageRating}
                     disabled
                     size="sm"
                     ratingsCount={member.ratingsCount}
                     className="w-[180px]"
+                    variant={category.starVariant || (category.badgeVariant?.includes('-light') 
+                      ? category.badgeVariant.split('-')[0] as any 
+                      : category.badgeVariant) || "default"}
                   />
                 </TableCell>
                 {showActions && (
-                  <TableCell data-slot="table-cell" className="w-0 pr-2">
+                  <TableCell data-slot="table-cell" className="w-0 pr-2 align-middle">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button

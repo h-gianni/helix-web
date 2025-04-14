@@ -85,7 +85,7 @@ export function TeamCard({
         <CardContent data-slot="card-content" className="space-y-4">
           <div className="flex flex-wrap gap-2">
             {functions.map((func) => (
-              <Badge key={func} data-slot="badge" variant="secondary">
+              <Badge key={func} data-slot="badge" variant="info-light">
                 {func}
               </Badge>
             ))}
@@ -101,7 +101,7 @@ export function TeamCard({
         <CardContent data-slot="card-content" className="space-y-4">
             <div className="flex flex-wrap gap-2">
               {functions.map((func) => (
-                <Badge key={func} data-slot="badge" variant="secondary">
+                <Badge key={func} data-slot="badge" variant="info-light">
                   {func}
                 </Badge>
               ))}
@@ -151,7 +151,7 @@ export function TeamCard({
             </div>
             <div className="absolute top-0 right-0 flex flex-wrap gap-2">
               {functions.map((func) => (
-                <Badge key={func} data-slot="badge" variant="secondary">
+                <Badge key={func} data-slot="badge" variant="info-light">
                   {func}
                 </Badge>
               ))}

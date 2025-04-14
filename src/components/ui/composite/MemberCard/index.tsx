@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
+import { Badge } from "../../core/Badge";
 
 export interface Team {
   id: string;
@@ -40,7 +41,10 @@ export interface PerformanceCategory {
   label: string;
   minRating: number;
   maxRating: number;
-  className: string;
+  className?: string; // Keep for backward compatibility
+  badgeVariant?: "default" | "strong" | "primary" | "primary-light" | "info" | "info-light" | 
+           "destructive" | "destructive-light" | "outline" | "accent" | "accent-light" | 
+           "success" | "success-light" | "warning" | "warning-light" | "secondary" | "secondary-light";
   Icon: LucideIcon;
 }
 
@@ -172,7 +176,7 @@ function MemberCard({
             <div className={cn(
               variant === "desktop" ? "text-center" : "md:text-center"
             )}>
-              <h3 className="heading-5">
+              <h3 className="heading-3">
                 <button
                   onClick={handleViewDetails}
                   className="hover:underline"
@@ -236,15 +240,17 @@ function MemberCard({
             ? "flex-col items-center" 
             : "flex-col md:flex-col md:items-center"
         )}>
-          <div className="flex items-center gap-2">
-       
+          <Badge 
+            variant={category.badgeVariant || "default"} 
+            className="flex items-center gap-2"
+          >
             {category.Icon && (
-              <category.Icon className={cn("size-4", category.className)} />
+              <category.Icon className="size-3" />
             )}
-            <span className={cn("text-sm font-medium", category.className)}>
+            <span>
               {category.label}
             </span>
-          </div>
+          </Badge>
           <StarRating
             value={member.averageRating}
             disabled

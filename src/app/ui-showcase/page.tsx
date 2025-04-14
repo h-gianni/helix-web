@@ -38,12 +38,12 @@ const AdvancedGallery = () => {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="container mx-auto py-10 px-4 md:px-6 space-y-12">
+    <div className="container mx-auto py-10 px-4 md:px-6 space-y-8">
       <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="display-1">UI Components</h1>
+          <h1 className="display-1">JustScore UI Library</h1>
           <p className="body-lg">
-            Tokens and UI examples using shadcn/ui
+            Tokens and UI examples
           </p>
         </div>
         <div className="flex gap-2">
@@ -107,7 +107,7 @@ const AdvancedGallery = () => {
         </div>
       </header>
 
-      <Tabs defaultValue="tokens">
+      <Tabs size="lg" defaultValue="tokens">
         <TabsList>
           <TabsTrigger value="tokens">Tokens</TabsTrigger>
           <TabsTrigger value="core">Core Components</TabsTrigger>

@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { CalendarIcon, ChevronDown, Check, X } from "lucide-react";
+import {
+  CalendarIcon,
+  ChevronDown,
+  Check,
+  X,
+  Plus,
+  AlertCircle,
+  Info,
+  Bell,
+  Megaphone,
+  TriangleAlert,
+} from "lucide-react";
 
 // Core UI Components
 import {
@@ -94,10 +105,7 @@ import {
 } from "@/components/ui/core/Tabs";
 import { Textarea } from "@/components/ui/core/Textarea";
 import { Toggle } from "@/components/ui/core/Toggle";
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/components/ui/core/ToggleGroup";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/core/ToggleGroup";
 import {
   Tooltip,
   TooltipContent,
@@ -147,16 +155,40 @@ const CoreComponents = () => {
             Displays important messages to users.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3">
           <Alert>
-            <AlertTitle>Information</AlertTitle>
+            <Info className="size-4 mt-px" />
+            <AlertTitle>Update</AlertTitle>
             <AlertDescription>
-              This is a standard informational alert.
+              This is a standard informational alert. This is a standard
+              informational alert. This is a standard informational alert
+            </AlertDescription>
+          </Alert>
+          <Alert>
+            <Info className="size-4 mt-px" />
+            <AlertDescription>
+              This is a standard informational alert. This is a standard
+              informational alert. This is a standard informational alert
             </AlertDescription>
           </Alert>
 
+          <Alert variant="primary">
+            <Bell className="size-4 mt-px" />
+            <AlertDescription>This is a primary alert.</AlertDescription>
+          </Alert>
+
+          <Alert variant="info">
+            <Info className="size-4 mt-px" />
+            <AlertDescription>This is a info alert.</AlertDescription>
+          </Alert>
+
+          <Alert variant="warning">
+            <TriangleAlert className="size-4 mt-px" />
+            <AlertDescription>This is a warning alert.</AlertDescription>
+          </Alert>
+
           <Alert variant="destructive">
-            <AlertTitle>Error</AlertTitle>
+            <AlertCircle className="size-4 mt-px" />
             <AlertDescription>
               This is a destructive error alert.
             </AlertDescription>
@@ -172,17 +204,21 @@ const CoreComponents = () => {
             An image element representing a user.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex items-center justify-center space-x-4">
-          <Avatar>
+        <CardContent className="flex flex-col items-center justify-center gap-4">
+          <Avatar className="size-8">
             <AvatarImage src="/api/placeholder/64/64" alt="User avatar" />
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
 
-          <Avatar>
+          <Avatar className="size-12">
             <AvatarFallback>AB</AvatarFallback>
           </Avatar>
 
-          <Avatar className="h-12 w-12">
+          <Avatar className="size-16">
+            <AvatarFallback>SM</AvatarFallback>
+          </Avatar>
+
+          <Avatar className="size-20">
             <AvatarFallback>SM</AvatarFallback>
           </Avatar>
         </CardContent>
@@ -196,12 +232,25 @@ const CoreComponents = () => {
             Small status descriptors for UI elements.
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-wrap gap-2">
-          <Badge>Default</Badge>
-          <Badge variant="accent">Secondary</Badge>
-          <Badge variant="secondary">Secondary</Badge>
-          <Badge variant="destructive">Destructive</Badge>
-          <Badge variant="outline">Outline</Badge>
+        <CardContent className="space-y-8">
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="strong">Strong</Badge>
+            <Badge variant="primary">Primary</Badge>
+            <Badge variant="info">Info</Badge>
+            <Badge variant="destructive">Destructive</Badge>
+            <Badge variant="accent">Accent</Badge>
+            <Badge variant="success">Success</Badge>
+            <Badge variant="warning">Warning</Badge>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Default</Badge>
+            <Badge variant="primary-light">Primary light</Badge>
+            <Badge variant="info-light">Info light</Badge>
+            <Badge variant="destructive-light">Destructive light</Badge>
+            <Badge variant="accent-light">Accent light</Badge>
+            <Badge variant="success-light">Success light</Badge>
+            <Badge variant="warning-light">Warning light</Badge>
+          </div>
         </CardContent>
       </Card>
 
@@ -214,21 +263,24 @@ const CoreComponents = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             <Button>Default</Button>
-            <Button variant="secondary">Secondary</Button>
+            <Button variant="primary">Primary</Button>
+            <Button variant="accent">Accent</Button>
             <Button variant="destructive">Destructive</Button>
             <Button variant="outline">Outline</Button>
             <Button variant="ghost">Ghost</Button>
             <Button variant="link">Link</Button>
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             <Button size="sm">Small</Button>
-            <Button>Default</Button>
-            <Button size="lg">Large</Button>
+            <Button variant="primary">Default</Button>
+            <Button variant="primary" size="lg">
+              Large
+            </Button>
             <Button size="icon">
-              <X className="h-4 w-4" />
+              <Plus />
             </Button>
           </div>
         </CardContent>
@@ -265,9 +317,9 @@ const CoreComponents = () => {
             <CardContent>
               <p>Card content goes here</p>
             </CardContent>
-            <CardFooter className="flex justify-end gap-4">
-              <Button variant="outline">Cancel</Button>
-              <Button>Submit</Button>
+            <CardFooter className="flex justify-end gap-3">
+              <Button>Cancel</Button>
+              <Button variant="primary">Submit</Button>
             </CardFooter>
           </Card>
         </CardContent>
@@ -374,7 +426,9 @@ const CoreComponents = () => {
 
           <div className="flex items-center space-x-2">
             <Input className="max-w-sm" placeholder="Search..." />
-            <Button type="submit">Search</Button>
+            <Button variant="primary" type="submit">
+              Search
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -475,7 +529,7 @@ const CoreComponents = () => {
         <CardContent className="flex justify-center">
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline">Open Popover</Button>
+              <Button>Open Popover</Button>
             </PopoverTrigger>
             <PopoverContent className="w-80">
               <div className="space-y-1.5">
@@ -860,8 +914,8 @@ const CoreComponents = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <X className="h-4 w-4" />
+                <Button variant="ghost" size="icon">
+                  <X />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>

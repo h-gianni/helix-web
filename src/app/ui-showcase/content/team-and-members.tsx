@@ -81,28 +81,32 @@ const performanceCategories = [
     label: "Outstanding",
     minRating: 4.5,
     maxRating: 5,
-    className: "text-success-darker",
+    className: "text-success-darker", // Keep for backward compatibility
+    badgeVariant: "success-light" as const, // Badge can use light variant
     Icon: ChartSpline
   },
   {
     label: "Exceeds Expectations",
     minRating: 4.0,
     maxRating: 4.49,
-    className: "text-success-darker",
+    className: "text-success-darker", // Keep for backward compatibility
+    badgeVariant: "success-light" as const, // Badge can use light variant
     Icon: ChartSpline
   },
   {
     label: "Meets Expectations",
     minRating: 3.0,
     maxRating: 3.99,
-    className: "text-primary-darker",
+    className: "text-primary-darker", // Keep for backward compatibility
+    badgeVariant: "primary-light" as const, // Badge can use light variant
     Icon: ChartSpline
   },
   {
     label: "Needs Improvement",
     minRating: 0,
     maxRating: 2.99,
-    className: "text-warning-darker",
+    className: "text-warning-darker", // Keep for backward compatibility
+    badgeVariant: "warning-light" as const, // Badge can use light variant
     Icon: ChartSpline
   }
 ];
@@ -125,7 +129,9 @@ const TeamAndMembersTab = () => {
         label: "Not Rated",
         minRating: 0,
         maxRating: 0,
-        className: "text-foreground-weak",
+        className: "text-foreground-weak", // Keep for backward compatibility
+        badgeVariant: "outline" as const, // Badge variant
+        starVariant: "outline" as const, // Star variant - no -light version
         Icon: ChartSpline
       };
     }
@@ -137,8 +143,8 @@ const TeamAndMembersTab = () => {
 
   return (
     <div className="space-y-8 mt-8">
-      <div>
-        <h2 className="heading-2 mb-2">Team and Members Components</h2>
+      <div className="space-y-2">
+        <h2 className="heading-1">Team and Members Components</h2>
         <p className="text-muted-foreground">Showcase of team and member management components</p>
       </div>
       
@@ -215,12 +221,11 @@ const TeamAndMembersTab = () => {
         
         {/* Member Cards Tab */}
         <TabsContent value="member-cards" className="space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>Member Card Variants</CardTitle>
-              <CardDescription>Individual member cards with performance information</CardDescription>
-            </CardHeader>
-            <CardContent>
+          <div className="space-y-6">
+          <div className="space-y-1">
+            <h2 className="heading-2">Member Card Variants</h2>
+              <p>Individual member cards with performance information</p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {members.slice(0, 6).map((member) => {
                   const category = getPerformanceCategory(member.averageRating, member.ratingsCount);
@@ -237,8 +242,7 @@ const TeamAndMembersTab = () => {
                   );
                 })}
               </div>
-            </CardContent>
-          </Card>
+          </div>
           
           <Card>
             <CardHeader>
@@ -272,7 +276,7 @@ const TeamAndMembersTab = () => {
               <CardTitle>Members Table</CardTitle>
               <CardDescription>Tabular view of team members with actions</CardDescription>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="px-0">
               <MembersTable
                 members={members}
                 teams={teams}
@@ -292,7 +296,7 @@ const TeamAndMembersTab = () => {
               <CardTitle>Filtered Members Table</CardTitle>
               <CardDescription>Members table for a specific team</CardDescription>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="px-0">
               <MembersTable
                 members={members.filter(m => m.teamId === "team-1")}
                 teams={teams}

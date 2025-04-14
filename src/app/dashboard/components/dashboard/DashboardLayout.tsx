@@ -165,16 +165,20 @@ export default function DashboardLayout({
           </AlertDescription>
         </Alert> */}
 
-<Tabs
+        <Tabs
           defaultValue="team"
           size="lg"
           className="w-full"
           onValueChange={(value) => setCurrentTab(value)}
         >
-          <div 
+          <div
             ref={tabsRef}
             className={`flex justify-between items-center mb-4 transition-all z-10 bg-transparent
-              ${isTabsSticky ? 'sticky top-0 shadow-md lg:shadow-none w-screen lg:w-auto lg:py-4 -mx-4 -my-0 lg:m-0' : ''}`}
+              ${
+                isTabsSticky
+                  ? "sticky top-0 shadow-md lg:shadow-none w-screen lg:w-auto lg:py-4 -mx-4 -my-0 lg:m-0"
+                  : ""
+              }`}
           >
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="team">Team Overview</TabsTrigger>

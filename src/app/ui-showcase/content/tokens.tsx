@@ -34,12 +34,38 @@ const TokensShowcase = () => {
             <BrandLogo variant="icon" className="size-4" />
           </div>
           <div className="flex justify-center">
-          <BrandLogo variant="icon" className="size-6" />
+            <BrandLogo variant="icon" className="size-6" />
           </div>
           <div className="flex justify-center">
-          <BrandLogo variant="icon" className="size-8" />
+            <BrandLogo variant="icon" className="size-8" />
           </div>
         </div>
+      </div>
+
+      <div className="grid grid-cols-4 h-[400px]">
+
+        <div className="flex flex-col h-full">
+          <div className="bg-primary-base h-full"></div>
+          <div className="bg-primary-base h-full"></div>
+        </div>
+
+        <div className="flex flex-col h-full">
+          <div className="bg-neutral-darkest h-full"></div>
+          <div className="bg-neutral-darkest h-full flex flex-col justify-end">
+            <div className="bg-accent size-24 m-8 -ml-12"></div>
+          </div>
+        </div>
+
+        <div className="flex flex-col h-full">
+          <div className="bg-neutral-lighter h-full"></div>
+          <div className="bg-neutral-lightest h-full"></div>
+        </div>
+
+        <div className="flex flex-col h-full">
+          <div className="bg-neutral-lightest h-full"></div>
+          <div className="bg-white h-full"></div>
+        </div>
+
       </div>
 
       <div>

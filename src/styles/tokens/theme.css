@@ -15,6 +15,14 @@
   --neutral-darker: hsl(36 2% 24%);
   --neutral-darkest: hsl(36 2% 10%);
 
+  /* --neutral-lightest: hsl(205 21% 96%);
+  --neutral-lighter: hsl(205 21% 90%);
+  --neutral-light: hsl(205 21% 72%);
+  --neutral-base: hsl(205 21% 50%);
+  --neutral-dark: hsl(205 21% 36%);
+  --neutral-darker: hsl(205 21% 24%);
+  --neutral-darkest: hsl(205 21% 10%); */
+
   /* Primary */  
   /* --primary-lightest: hsl(345 90% 94%);
   --primary-lighter: hsl(345 90% 86%);
@@ -23,13 +31,22 @@
   --primary-dark: hsl(345 90% 36%);
   --primary-darker: hsl(345 90% 24%);
   --primary-darkest: hsl(345 90% 10%); */
-  --primary-lightest: hsl(200 100% 94%);
-  --primary-lighter: hsl(200 100% 86%);
-  --primary-light: hsl(200 100% 72%);
-  --primary-base: hsl(200 100% 36%);
-  --primary-dark: hsl(200 100% 28%);
-  --primary-darker: hsl(200 100% 20%);
-  --primary-darkest: hsl(200 100% 12%);
+
+  /* --primary-lightest: hsl(210 100% 94%);
+  --primary-lighter: hsl(210 100% 86%);
+  --primary-light: hsl(210 100% 72%);
+  --primary-base: hsl(210 100% 39%);
+  --primary-dark: hsl(210 100% 28%);
+  --primary-darker: hsl(210 100% 20%);
+  --primary-darkest: hsl(210 100% 12%); */
+  
+  --primary-lightest: hsl(344 84% 94%);
+  --primary-lighter: hsl(344 84% 86%);
+  --primary-light: hsl(344 84% 72%);
+  --primary-base: hsl(344 84% 50%);
+  --primary-dark: hsl(344 84% 28%);
+  --primary-darker: hsl(344 84% 20%);
+  --primary-darkest: hsl(344 84% 12%);
 
   /* Warning */
   /* --warning-lightest: hsl(35 100% 94%);
@@ -40,13 +57,13 @@
   --warning-darker: hsl(35 100% 24%);
   --warning-darkest: hsl(35 100% 10%); */
 
-  --warning-lightest: hsl(29 89% 94%);
-  --warning-lighter: hsl(29 89% 86%);
-  --warning-light: hsl(29 89% 72%);
-  --warning-base: hsl(29 89% 50%);
-  --warning-dark: hsl(29 89% 36%);
-  --warning-darker: hsl(29 89% 24%);
-  --warning-darkest: hsl(29 89% 10%);
+  --warning-lightest: hsl(42 100% 94%);
+  --warning-lighter: hsl(42 100% 86%);
+  --warning-light: hsl(42 95% 72%);
+  --warning-base: hsl(42 90% 50%);
+  --warning-dark: hsl(42 95% 36%);
+  --warning-darker: hsl(42 100% 24%);
+  --warning-darkest: hsl(42 100% 10%);
 
   /* Destructive */
   /* --destructive-lightest: hsl(3 100% 94%);
@@ -56,22 +73,23 @@
   --destructive-dark: hsl(3 100% 36%);
   --destructive-darker: hsl(3 100% 24%);
   --destructive-darkest: hsl(3 100% 10%); */
-  --destructive-lightest: hsl(1 67% 94%);
-  --destructive-lighter: hsl(1 67% 86%);
-  --destructive-light: hsl(1 67% 72%);
-  --destructive-base: hsl(1 67% 50%);
-  --destructive-dark: hsl(1 67% 36%);
-  --destructive-darker: hsl(1 67% 24%);
-  --destructive-darkest: hsl(1 67% 10%);
+
+  --destructive-lightest: hsl(1 100% 94%);
+  --destructive-lighter: hsl(1 95% 86%);
+  --destructive-light: hsl(1 90% 72%);
+  --destructive-base: hsl(1 80% 50%);
+  --destructive-dark: hsl(1 90% 36%);
+  --destructive-darker: hsl(1 95% 24%);
+  --destructive-darkest: hsl(1 100% 10%);
 
   /* Success */
-  --success-lightest: hsl(135 59% 94%);
-  --success-lighter: hsl(135 59% 86%);
-  --success-light: hsl(135 59% 72%);
-  --success-base: hsl(135 59% 50%);
-  --success-dark: hsl(135 59% 36%);
-  --success-darker: hsl(135 59% 24%);
-  --success-darkest: hsl(135 59% 10%);
+  --success-lightest: hsl(138 100% 94%);
+  --success-lighter: hsl(138 95% 86%);
+  --success-light: hsl(138 90% 72%);
+  --success-base: hsl(138 80% 50%);
+  --success-dark: hsl(138 90% 36%);
+  --success-darker: hsl(138 95% 24%);
+  --success-darkest: hsl(138 100% 10%);
 
   /* Accent */
   /* --accent-lightest: hsl(75 90% 94%);
@@ -82,30 +100,46 @@
   --accent-darker: hsl(75 90% 24%);
   --accent-darkest: hsl(75 90% 10%); */
 
-  --accent-lightest: hsl(76 100% 94%);
+  /* --accent-lightest: hsl(76 100% 94%);
   --accent-lighter: hsl(76 100% 86%);
   --accent-light: hsl(76 100% 72%);
   --accent-base: hsl(76 100% 50%);
   --accent-dark: hsl(76 100% 36%);
   --accent-darker: hsl(76 100% 24%);
-  --accent-darkest: hsl(76 100% 10%);
+  --accent-darkest: hsl(76 100% 10%); */
+
+  --accent-lightest: hsl(56 100% 94%);
+  --accent-lighter: hsl(56 100% 86%);
+  --accent-light: hsl(56 100% 72%);
+  --accent-base: hsl(56 100% 50%);
+  --accent-dark: hsl(56 100% 36%);
+  --accent-darker: hsl(56 100% 24%);
+  --accent-darkest: hsl(56 100% 10%);
 
   /* Info */
-  --info-lightest: hsl(210 27% 94%);
+  /* --info-lightest: hsl(210 27% 94%);
   --info-lighter: hsl(210 27% 86%);
   --info-light: hsl(210 27% 72%);
   --info-base: hsl(210 22% 50%);
   --info-dark: hsl(210 27% 36%);
   --info-darker: hsl(210 27% 24%);
-  --info-darkest: hsl(210 27% 10%);
+  --info-darkest: hsl(210 27% 10%); */
 
-  --info-lightest: hsl(67 11% 94%);
-  --info-lighter: hsl(67 11% 86%);
-  --info-light: hsl(67 11% 72%);
-  --info-base: hsl(67 11% 50%);
-  --info-dark: hsl(67 11% 36%);
-  --info-darker: hsl(67 11% 24%);
-  --info-darkest: hsl(67 11% 10%);
+  /* --info-lightest: hsl(205 77% 94%);
+  --info-lighter: hsl(205 77% 86%);
+  --info-light: hsl(205 77% 72%);
+  --info-base: hsl(205 77% 50%);
+  --info-dark: hsl(205 77% 36%);
+  --info-darker: hsl(205 77% 24%);
+  --info-darkest: hsl(205 77% 10%); */
+
+  --info-lightest: hsl(221 16% 94%);
+  --info-lighter: hsl(221 16% 86%);
+  --info-light: hsl(221 16% 72%);
+  --info-base: hsl(221 16% 50%);
+  --info-dark: hsl(221 16% 36%);
+  --info-darker: hsl(221 16% 24%);
+  --info-darkest: hsl(221 16% 10%);
 
   /* --chart-deep-ocean: hsl(200 95% 19%);
   --chart-midnight-sky: hsl(217 44% 33%);
@@ -116,7 +150,7 @@
   --chart-autumn-leaf: hsl(19 100% 64%);
   --chart-golden-sun: hsl(39 100% 53%); */
 
-  --chart-deep-ocean: hsl(200 100% 14%);
+  --chart-deep-ocean: hsl(210 100% 14%);
   --chart-midnight-sky: hsl(217 49% 28%);
   --chart-stormy-violet: hsl(261 21% 31%);
   --chart-wild-berry: hsl(312 38% 42%);
@@ -131,8 +165,14 @@
   --chart-label: hsl(220 10% 20%);
   --chart-tick: hsl(220 10% 50%);
 
+  /* Performance levels */
+  --performer-star: hsl(45 86% 65%);
+  --performer-strong: hsl(45 86% 60%);
+  --performer-solid: hsl(45 86% 55%);
+  --performer-lower: hsl(45 86% 50%);
+  --performer-poor: hsl(45 86% 45%);
+
   /* Star */
-  --star-rating: hsl(48 95% 58%);
 
   /* Border Radius */
   --radius-sm: 0.15rem;
@@ -206,6 +246,12 @@
   --color-info-darker: var(--info-darker);
   --color-info-darkest: var(--info-darkest);
 
+  --color-performer-star: var(--performer-star);
+  --color-performer-strong: var(--performer-strong);
+  --color-performer-solid: var(--performer-solid);
+  --color-performer-lower: var(--performer-lower);
+  --color-performer-poor: var(--performer-poor);
+
   /* Light theme semantic variables (default) */
   --color-background: var(--white);
   --color-foreground: var(--neutral-darker);
@@ -234,9 +280,11 @@
   --color-info: var(--info-lighter);
   --color-info-foreground: var(--info-darkest);
   --color-accent: var(--accent-base);
-  --color-accent-foreground: var(--neutral-lightest);
+  --color-accent-foreground: var(--accent-darkest);
   --color-destructive: var(--destructive-base);
   --color-destructive-foreground: var(--destructive-lightest);
+
+  --color-star-rating: var(--primary-darkest);
 
   /* Status colors */
   --color-info: var(--info-base);

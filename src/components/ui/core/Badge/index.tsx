@@ -9,31 +9,36 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border-transparent bg-primary-lightest text-primary-darker",
-        primary: "border-transparent bg-primary text-primary-foreground font-medium",
+          "border-transparent bg-neutral-lightest text-secondary-foreground",
+        strong:
+          "border-transparent bg-neutral-dark text-white",
+        primary:
+          "border-transparent bg-primary text-white",
         "primary-light":
-          "border-transparent bg-primary-lightest text-primary-darker",
-        secondary: "border-transparent bg-neutral-lighter text-secondary-foreground",
-        "secondary-light":
-          "border-transparent bg-secondary-lightest text-secondary-darker",
-
-        info: "border-transparent bg-info text-info-foreground",
-        "info-light": "border-transparent bg-info-lightest text-info-darker",
+          "border-transparent bg-primary-lightest text-primary-dark",
+        info: "border-transparent bg-info text-white",
+        "info-light": "border-transparent bg-info-lightest text-info-dark",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground",
+          "border-transparent bg-destructive text-white",
         "destructive-light":
-          "border-transparent bg-destructive-lightest text-destructive-darker",
+          "border-transparent bg-destructive-lightest text-destructive-dark",
         outline: "text-foreground border border-neutral-light",
-        accent: "border-transparent bg-accent text-accent-foreground",
+        accent: "border-transparent bg-accent text-neutral-darkest",
         "accent-light":
-          "border-transparent bg-accent-lightest text-accent-dark",
+          "border-transparent bg-accent-lightest text-accent-darker",
         success: "border-transparent bg-success text-success-foreground",
         "success-light":
-          "border-transparent bg-success-lightest text-success-darker",
+          "border-transparent bg-success-lightest text-success-dark",
         warning:
-          "border-transparent bg-warning text-warning-foreground hover:bg-warning/80",
+          "border-transparent bg-warning text-warning-foreground",
         "warning-light":
-          "border-transparent bg-warning-lightest text-warning-darker",
+          "border-transparent bg-warning-lightest text-warning-dark",
+
+        // To be removed
+        secondary:
+          "border-transparent bg-neutral-lighter text-secondary-foreground",
+        "secondary-light":
+          "border-transparent bg-secondary-lightest text-secondary-darker",
       },
     },
     defaultVariants: {

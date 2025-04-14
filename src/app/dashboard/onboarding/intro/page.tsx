@@ -14,9 +14,8 @@ import {
   User,
 } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
-import Image from "next/image";
-import LogoImage from "@/assets/shared/logo.svg";
 import { Card } from "@/components/ui/core/Card";
+import { BrandLogo } from "@/components/logo/BrandLogo";
 
 export default function OnboardingIntroPage() {
   const router = useRouter();
@@ -77,16 +76,8 @@ export default function OnboardingIntroPage() {
     <div>
       <div className="flex flex-col items-center justify-center px-8 py-16 text-center">
         <div className="space-y-8 mb-8">
-          <div className="space-y-4 mb-4">
-            <div className="flex justify-center mb-4">
-              <Image
-                src={LogoImage}
-                alt="JustScore"
-                className="size-16"
-                priority
-              />
-            </div>
-            <h1 className="display-1 mb-4">JustScore</h1>
+          <div className="mb-4">
+<BrandLogo variant="hero" />
           </div>
           <p className="body-lg text-foreground-weak max-w-xl mx-auto py-4">
             Let&apos;s get your organisation set up so you can start tracking and

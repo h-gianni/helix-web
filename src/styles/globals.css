@@ -273,12 +273,10 @@
 
 /* Star rating color */
 .star-color-off {
-  color: var(--neutral-base);
-  fill: var(--neutral-light);
+  @apply text-neutral-light fill-transparent;
 }
 .star-color-on {
-  color: var(--star-rating);
-  fill: var(--star-rating);
+  @apply text-neutral-darker fill-neutral-darker;
 }
 
 /* Tooltip */

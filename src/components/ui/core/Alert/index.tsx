@@ -4,15 +4,19 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const alertVariants = cva(
-  "relative w-full rounded-lg border px-4 py-3 text-sm shadow-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-3 [&>svg]:text-foreground [&>svg~*]:pl-7",
+  "relative w-full rounded-lg border min-h-8 px-4 py-3 text-sm shadow-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-3 [&>svg]:text-foreground [&>svg~*]:pl-6",
   {
     variants: {
       variant: {
-        default: "bg-background text-foreground",
+        default: "bg-background border-neutral-lighter text-neutral-darker dark:border-neutral-lighter [&>svg]:text-neutral",
+        primary:
+          "bg-primary-lightest border-primary-lighter text-primary-darker dark:border-primary-lighter [&>svg]:text-primary",
+        info:
+          "bg-info-lightest border-info-lighter text-info-darker dark:border-info-lighter [&>svg]:text-info",
         destructive:
-          "bg-destructive-lightest border-destructive-lighter text-destructive-darkest dark:border-destructive-lighter [&>svg]:text-destructive",
+          "bg-destructive-lightest border-destructive-lighter text-destructive-darker dark:border-destructive-lighter [&>svg]:text-destructive",
           warning:
-            "bg-warning-lightest border-warning-lighter text-warning-darkest dark:border-warning-lighter [&>svg]:text-warning",
+            "bg-warning-lightest border-warning-lighter text-warning-darker dark:border-warning-lighter [&>svg]:text-warning",
       },
     },
     defaultVariants: {
@@ -40,7 +44,7 @@ const AlertTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h5
     ref={ref}
-    className={cn("mb-1 font-semibold leading-none tracking-tight", className)}
+    className={cn("font-semibold leading-none tracking-tight py-1", className)}
     {...props}
   />
 ))
@@ -52,7 +56,7 @@ const AlertDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm [&_p]:leading-relaxed", className)}
+    className={cn("text-sm leading-4 mt-1", className)}
     {...props}
   />
 ))
