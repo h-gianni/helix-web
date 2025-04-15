@@ -13,12 +13,15 @@ import { useTeams, useCreateTeam } from "@/store/team-store";
 import { useSetupStore } from '@/store/setup-store';
 import { usePerformers } from "@/store/performers-store";
 import { useRouter } from "next/navigation";
+import { useProfileStore } from "@/store/user-store";
 
 export default function DashboardPage() {
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const { completeStep, steps } = useSetupStore();
+  
+  const { completeStep,isSetupComplete, steps } = useSetupStore();
   const [shouldShowDashboard, setShouldShowDashboard] = useState(true);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   const { 
     data: teams = [], 
@@ -34,39 +37,50 @@ export default function DashboardPage() {
     refetch: refetchPerformers
   } = usePerformers();
 
+  const { profile } = useProfileStore();
+
   const { mutateAsync: createTeam } = useCreateTeam();
 
-  const isLoading = isTeamsLoading || isPerformersLoading;
+  const isLoading = isTeamsLoading || isPerformersLoading || !initialLoadComplete;
   const error = teamsError || isPerformersError;
 
   // Check if the user has completed setup to determine what to display
   useEffect(() => {
+
+   
     // If the setup state and teams are loaded, we can make a decision
-    if (!isLoading && !error) {
+    if (!isTeamsLoading && !isPerformersLoading) {
       // Assume the user should see the dashboard if:
       // 1. They have at least one team, OR
       // 2. They have completed any of the setup steps
-      const hasAnySetupProgress = Object.values(steps).some(step => step);
+      // const hasAnySetupProgress = Object.values(steps).some(step => step);
+      const setupComplete = isSetupComplete();
       const hasTeams = teams.length > 0;
       
-      setShouldShowDashboard(hasTeams || hasAnySetupProgress);
+      // setShouldShowDashboard(hasTeams || hasAnySetupProgress);
+      setShouldShowDashboard(setupComplete || hasTeams);
+      setInitialLoadComplete(true);
     }
-  }, [teams, steps, isLoading, error]);
+  }, [teams, isSetupComplete, isTeamsLoading, isPerformersLoading]);
 
-  useEffect(() => {
-    router.push('/dashboard/onboarding/intro');
-  }, [router]);
+ // Only redirect to onboarding if necessary
+ useEffect(() => {
+  console.log(profile?.orgName, "ajgshfdfaiusdasdj")
+  // if (initialLoadComplete && !shouldShowDashboard) {
+  //   router.push('/dashboard/onboarding/intro');
+  // }
+}, [router, initialLoadComplete, shouldShowDashboard]);
 
-  const handleCreateTeam = async (name: string, teamFunctionId: string) => {
-    try {
-      const newTeam = await createTeam({ name, teamFunctionId });
-      setIsCreateModalOpen(false);
-      completeStep('createTeam');
-    } catch (error) {
-      console.error("Error creating team:", error);
-      throw error;
-    }
-  };
+const handleCreateTeam = async (name: string, teamFunctionId: string) => {
+  try {
+    const newTeam = await createTeam({ name, teamFunctionId });
+    setIsCreateModalOpen(false);
+    completeStep('createTeam');
+  } catch (error) {
+    console.error("Error creating team:", error);
+    throw error;
+  }
+};
 
   if (isLoading) {
     return (
@@ -106,7 +120,7 @@ export default function DashboardPage() {
 
   // If user should see dashboard based on other criteria (e.g., setup progress),
   // show the empty dashboard view - they can navigate to onboarding from there if needed
-  if (shouldShowDashboard) {
+  // if (shouldShowDashboard) {
     return (
       <>
         <EmptyDashboardView onCreateTeam={() => setIsCreateModalOpen(true)} />
@@ -117,10 +131,10 @@ export default function DashboardPage() {
         />
       </>
     );
-  }
+  // }
 
   // Otherwise, redirect to onboarding - this should rarely happen since middleware should handle this
 
 
-  return null; // Will redirect
+ // return null; // Will redirect
 }

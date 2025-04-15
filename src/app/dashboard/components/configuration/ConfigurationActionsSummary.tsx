@@ -76,7 +76,7 @@ function OrgActionsSummary({
 
   // Get favorites count for a category
   const getFavoritesCount = (categoryId: string): number => {
-    console.log(favorites, "favorites");
+    // console.log(favorites, "favorites");
     return favorites[categoryId]?.length || 0;
   };
 

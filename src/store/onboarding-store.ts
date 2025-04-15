@@ -58,6 +58,9 @@ const onboardingApi = {
     const { data } = await apiClient.post<
       ApiResponse<CompleteOnboardingResponse>
     >("/onboarding", input);
+
+  
+
     if (!data.success)
       throw new Error(data.error || "Failed to complete onboarding");
     return data.data!; // Add the non-null assertion operator
@@ -133,6 +136,8 @@ export const useCompleteOnboarding = () => {
   const { setIsCompleting, setError } = useOnboardingStore();
   // const { toast } = useToast();
 
+  
+
   return useMutation({
     mutationFn: async () => {
       // Format the data for the API
@@ -151,6 +156,8 @@ export const useCompleteOnboarding = () => {
           categories: team.categories || [],
         })),
       };
+      
+      console.log('teams id in local--------------------', payload)
 
       // Validate payload before sending
       if (!payload.organization.name?.trim()) {

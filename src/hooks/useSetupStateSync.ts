@@ -1,36 +1,33 @@
 // src/hooks/useSetupStateSync.ts
-import { useEffect } from 'react'
-import { useConfigStore } from '@/store/config-store'
-import { useTeams } from '@/store/team-store'
-import { usePerformers } from '@/store/performers-store'
 
-// Helper function to set a cookie
-function setCookie(name: string, value: string, days: number = 7) {
-  const expires = new Date(Date.now() + days * 864e5).toUTCString()
-  document.cookie = `${name}=${encodeURIComponent(value)};expires=${expires};path=/;samesite=strict${location.protocol === 'https:' ? ';secure' : ''}`
-}
+import React, { useEffect } from 'react';
+import Cookies from 'js-cookie';
+import { useSetupStore } from '@/store/setup-store';
 
+/**
+ * Hook to synchronize the setup state to cookies for middleware usage
+ * This helps the middleware determine if the user has completed onboarding
+ */
 export function useSetupStateSync() {
-  const config = useConfigStore((state) => state.config)
-  const { data: teams = [] } = useTeams()
-  const { data: performers = [] } = usePerformers()
+  const { steps, isSetupComplete } = useSetupStore();
   
+  // Update cookie whenever setup state changes
   useEffect(() => {
-    // Don't run on server side
-    if (typeof window === 'undefined') return
+    const setupComplete = isSetupComplete();
     
-    // Gather required info about setup state
-    const setupState = {
-      organizationName: config?.organization?.name || '',
-      hasActivities: Object.keys(config?.activities?.selectedByCategory || {}).length > 0,
-      hasTeams: teams.length > 0,
-      hasPerformers: performers.length > 0
-    }
+    // Set cookie with a long expiration
+    Cookies.set('onboarding-complete', setupComplete ? 'true' : 'false', { 
+      expires: 365, // 1 year
+      path: '/',
+      sameSite: 'strict'
+    });
     
-    // Store in localStorage for client-side access
-    localStorage.setItem('setup-state', JSON.stringify(setupState))
-    
-    // Also store in cookie for middleware access
-    setCookie('setup-state', JSON.stringify(setupState))
-  }, [config, teams, performers])
+    // Log to confirm state is synced
+    console.log('Setup state synced to cookies:', {
+      onboardingComplete: setupComplete,
+      steps
+    });
+  }, [steps, isSetupComplete]);
+  
+  return null;
 }

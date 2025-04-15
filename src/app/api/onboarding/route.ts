@@ -62,6 +62,9 @@ export async function POST(request: Request) {
     const body: CompleteOnboardingInput = await request.json();
     const { organization, activities, teams } = body;
 
+    console.log('teams----------------------- anme', teams)
+
+    // Validation checks
     if (!organization?.name?.trim()) {
       return NextResponse.json<ApiResponse<never>>(
         { success: false, error: "Organization name is required" },
@@ -76,53 +79,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // First, create or verify team functions outside of the main transaction
-    try {
-      const allFunctionIds = teams.flatMap(team => team.functions || []);
-      const uniqueFunctionIds = [...new Set(allFunctionIds)];
-      
-      // Check which functions already exist
-      const existingFunctions = await prisma.teamFunction.findMany({
-        where: {
-          id: { in: uniqueFunctionIds },
-          deletedAt: null
-        },
-        select: { id: true }
-      });
-      
-      const existingFunctionIds = existingFunctions.map(func => func.id);
-      const missingFunctionIds = uniqueFunctionIds.filter(id => !existingFunctionIds.includes(id));
-      
-      // Create missing team functions with default names
-      if (missingFunctionIds.length > 0) {
-        console.log(`Creating ${missingFunctionIds.length} missing team functions...`);
-        
-        for (const functionId of missingFunctionIds) {
-          // Use a separate transaction for each function to isolate errors
-          try {
-            await prisma.teamFunction.create({
-              data: {
-                id: functionId,
-                name: `Function ${functionId.substring(0, 8)}`,
-                description: 'Automatically created during onboarding'
-              }
-            });
-            console.log(`Created team function: ${functionId}`);
-          } catch (err) {
-            console.error(`Error creating team function ${functionId}:`, err);
-            // Continue trying to create other functions
-          }
-        }
-      }
-    } catch (err) {
-      console.error("Error handling team functions:", err);
-      return NextResponse.json<ApiResponse<never>>(
-        { success: false, error: "Failed to create team functions" },
-        { status: 500 }
-      );
-    }
-
-    // Now start a new transaction for the rest of the onboarding process
+    // Start transaction for the entire onboarding process
     try {
       const result = await prisma.$transaction(async (tx) => {
         // 1. Create or update organization name
@@ -147,7 +104,7 @@ export async function POST(request: Request) {
           }
         } catch (err) {
           console.error("Error managing organization name:", err);
-          // Instead of storing in OrgName, store in user customFields as fallback
+          // Fallback to storing in user customFields
           await tx.appUser.update({
             where: { id: user.id },
             data: {
@@ -166,13 +123,32 @@ export async function POST(request: Request) {
             continue; // Skip teams without names
           }
 
-          // Get the first function as teamFunctionId
-          const teamFunctionId = team.functions && team.functions.length > 0 
-            ? team.functions[0] 
-            : null;
+          // Create or get team function (based on first function in the array)
+          let teamFunction = null;
+          if (team.functions && team.functions.length > 0) {
+            const functionName = team.functions[0];
+            
+            // Try to find existing team function
+            teamFunction = await tx.teamFunction.findFirst({
+              where: { 
+                name: functionName,
+                deletedAt: null
+              }
+            });
 
-          if (!teamFunctionId) {
-            continue; // Skip teams without a function
+          
+            
+            // Create if not exists
+            if (!teamFunction) {
+              teamFunction = await tx.teamFunction.create({
+                data: {
+                  name: functionName,
+                  description: `Function for ${team.name}`
+                }
+              });
+            }
+
+            console.log('team function--------------------', teamFunction)
           }
 
           try {
@@ -184,55 +160,70 @@ export async function POST(request: Request) {
               createdTeam = await tx.gTeam.create({
                 data: {
                   name: team.name.trim(),
-                  teamFunctionId,
+                  teamFunctionId: teamFunction?.id ?? '',
                   ownerId: user.id,
                   customFields: {
-                    categories: team.categories || []
+                    categories: team.categories || [],
+                    functions: team.functions || []
                   }
                 }
               });
+
+              console.log('temp function if--------------------', createdTeam)
+
             } else {
+
+              console.log('team id--------------------', team.id)
+              
               // For existing IDs, try to update, if not found then create
               try {
                 const existingTeam = await tx.gTeam.findUnique({
                   where: { id: team.id },
                   select: { id: true, customFields: true }
                 });
+
+                console.log('existingTeam function if--------------------', createdTeam)
                 
                 if (existingTeam) {
                   createdTeam = await tx.gTeam.update({
                     where: { id: team.id },
                     data: {
                       name: team.name.trim(),
-                      teamFunctionId,
+                      teamFunctionId: teamFunction?.id ?? '',
                       customFields: {
                         ...((existingTeam.customFields as object) || {}),
-                        categories: team.categories || []
+                        categories: team.categories || [],
+                        functions: team.functions || []
                       }
                     }
                   });
+                  console.log('easy function if--------------------', createdTeam)
                 } else {
                   createdTeam = await tx.gTeam.create({
                     data: {
                       id: team.id,
                       name: team.name.trim(),
-                      teamFunctionId,
+                      teamFunctionId: teamFunction?.id ?? '',
                       ownerId: user.id,
                       customFields: {
-                        categories: team.categories || []
+                        categories: team.categories || [],
+                        functions: team.functions || []
                       }
                     }
                   });
                 }
+
+                console.log('easy function else--------------------', createdTeam)
               } catch (updateError) {
                 // If update fails, try creating
                 createdTeam = await tx.gTeam.create({
                   data: {
                     name: team.name.trim(),
-                    teamFunctionId,
+                    teamFunctionId: teamFunction?.id ?? '',
                     ownerId: user.id,
                     customFields: {
-                      categories: team.categories || []
+                      categories: team.categories || [],
+                      functions: team.functions || []
                     }
                   }
                 });
@@ -267,7 +258,7 @@ export async function POST(request: Request) {
               continue;
             }
             
-            // For each action, we need to create an OrgAction for teams that have this category
+            // For each action, create an OrgAction for teams that have this category
             for (const team of createdTeams) {
               const teamCategories = (team.customFields as any)?.categories || [];
               
@@ -301,7 +292,7 @@ export async function POST(request: Request) {
       }, {
         maxWait: 10000, // 10 seconds max wait time
         timeout: 30000, // 30 seconds timeout
-        isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted // Less strict isolation level
+        isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted
       });
 
       // Return a formatted response
