@@ -1,19 +1,20 @@
 // data/config-store.ts
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Configuration, ConfigStore } from './config-types';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { Configuration, ConfigStore } from "./config-types";
 
 const defaultConfig: Configuration = {
   organization: {
-    name: '',
+    name: "",
   },
   activities: {
     selected: [],
-    selectedByCategory: {}, 
+    selectedByCategory: {},
     favorites: {} as Record<string, string[]>,
-    hidden: {} as Record<string, string[]>
+    hidden: {} as Record<string, string[]>,
   },
   teams: [],
+  teamMembers: [], // Add the teamMembers array property
 };
 
 export const useConfigStore = create<ConfigStore>()(
@@ -30,65 +31,73 @@ export const useConfigStore = create<ConfigStore>()(
         })),
       updateActivities: (activities: string[]) =>
         set((state) => {
-          console.log('updateActivities', activities)
-          return ({
+          console.log("updateActivities", activities);
+          return {
             config: {
               ...state.config,
-              activities: { 
+              activities: {
                 ...state.config.activities,
-                selected: activities 
+                selected: activities,
               },
             },
-          })
+          };
         }),
-        // New function to update activities by category
-     // New function to update activities by category
-     updateActivitiesByCategory: (categoryId: string, activities: string[]) =>
-      set((state) => {
-        if (!categoryId) {
-          console.error("No categoryId provided to updateActivitiesByCategory");
-          return state; // Return state unchanged if no categoryId
-        }
-        
-        // Get current selected activities
-        const currentSelected = [...state.config.activities.selected];
-        
-        // Safely get current activities for this category
-        const selectedByCategory = state.config.activities.selectedByCategory || {};
-        const currentCategoryActivities = selectedByCategory[categoryId] || [];
-        
-        // Determine which activities to add and which to remove
-        const activitiesToRemove = currentCategoryActivities.filter(
-          id => !activities.includes(id)
-        );
-        const activitiesToAdd = activities.filter(
-          id => !currentCategoryActivities.includes(id)
-        );
-        
-        // Update the global selected activities list
-        const updatedSelected = currentSelected
-          .filter(id => !activitiesToRemove.includes(id))
-          .concat(activitiesToAdd);
-        
-        // Create a new selectedByCategory object with the updated activities
-        const updatedSelectedByCategory = {
-          ...selectedByCategory,
-          [categoryId]: activities
-        };
-        
-        console.log('updateActivitiesByCategory', updatedSelected, updatedSelectedByCategory)
+      // New function to update activities by category
+      // New function to update activities by category
+      updateActivitiesByCategory: (categoryId: string, activities: string[]) =>
+        set((state) => {
+          if (!categoryId) {
+            console.error(
+              "No categoryId provided to updateActivitiesByCategory"
+            );
+            return state; // Return state unchanged if no categoryId
+          }
 
-        return {
-          config: {
-            ...state.config,
-            activities: {
-              ...state.config.activities,
-              selected: updatedSelected,
-              selectedByCategory: updatedSelectedByCategory
+          // Get current selected activities
+          const currentSelected = [...state.config.activities.selected];
+
+          // Safely get current activities for this category
+          const selectedByCategory =
+            state.config.activities.selectedByCategory || {};
+          const currentCategoryActivities =
+            selectedByCategory[categoryId] || [];
+
+          // Determine which activities to add and which to remove
+          const activitiesToRemove = currentCategoryActivities.filter(
+            (id) => !activities.includes(id)
+          );
+          const activitiesToAdd = activities.filter(
+            (id) => !currentCategoryActivities.includes(id)
+          );
+
+          // Update the global selected activities list
+          const updatedSelected = currentSelected
+            .filter((id) => !activitiesToRemove.includes(id))
+            .concat(activitiesToAdd);
+
+          // Create a new selectedByCategory object with the updated activities
+          const updatedSelectedByCategory = {
+            ...selectedByCategory,
+            [categoryId]: activities,
+          };
+
+          console.log(
+            "updateActivitiesByCategory",
+            updatedSelected,
+            updatedSelectedByCategory
+          );
+
+          return {
+            config: {
+              ...state.config,
+              activities: {
+                ...state.config.activities,
+                selected: updatedSelected,
+                selectedByCategory: updatedSelectedByCategory,
+              },
             },
-          },
-        };
-      }),
+          };
+        }),
       updateFavorites: (category: string, activities: string[]) =>
         set((state) => ({
           config: {
@@ -97,8 +106,8 @@ export const useConfigStore = create<ConfigStore>()(
               ...state.config.activities,
               favorites: {
                 ...state.config.activities.favorites,
-                [category]: activities
-              }
+                [category]: activities,
+              },
             },
           },
         })),
@@ -110,21 +119,28 @@ export const useConfigStore = create<ConfigStore>()(
               ...state.config.activities,
               hidden: {
                 ...state.config.activities.hidden,
-                [category]: activities
-              }
+                [category]: activities,
+              },
             },
           },
         })),
-      updateTeams: (teams: Configuration['teams']) =>
+      updateTeams: (teams: Configuration["teams"]) =>
         set((state) => ({
           config: {
             ...state.config,
             teams,
           },
         })),
+      updateTeamMembers: (teamMembers: Configuration["teamMembers"]) =>
+        set((state) => ({
+          config: {
+            ...state.config,
+            teamMembers,
+          },
+        })),
     }),
     {
-      name: 'app-configuration',
+      name: "app-configuration",
     }
   )
 );

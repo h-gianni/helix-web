@@ -25,7 +25,7 @@ interface MemberListItem {
 
 export default function MembersPage() {
   // Use our custom hooks
-  const { isStepComplete } = useOnboardingConfig();
+  const { config, isStepComplete, updateTeamMembers } = useOnboardingConfig();
   const {
     members,
     formData,
@@ -70,8 +70,8 @@ export default function MembersPage() {
         title="Add Members"
         description={
           <>
-            Add the members who will be part of your teams. You&apos;ll be able to
-            assign them to specific teams in the next step.
+            Add the members who will be part of your teams. You&apos;ll be able
+            to assign them to specific teams in the next step.
           </>
         }
         previousHref="/dashboard/onboarding/function-actions"
