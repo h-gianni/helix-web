@@ -10,7 +10,7 @@ import TeamCreateModal from "./components/teams/TeamsCreateModal";
 import DashboardLayout from "./components/dashboard/DashboardLayout";
 import EmptyDashboardView from "./components/EmptyDashboardView";
 import { useTeams, useCreateTeam } from "@/store/team-store";
-import { useSetupStore } from '@/store/setup-store';
+import { useSetupStore } from "@/store/setup-store";
 import { usePerformers } from "@/store/performers-store";
 import { useRouter } from "next/navigation";
 import { useProfileStore } from "@/store/user-store";
@@ -18,36 +18,35 @@ import { useProfileStore } from "@/store/user-store";
 export default function DashboardPage() {
   const router = useRouter();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  
-  const { completeStep,isSetupComplete, steps } = useSetupStore();
+
+  const { completeStep, isSetupComplete, steps } = useSetupStore();
   const [shouldShowDashboard, setShouldShowDashboard] = useState(true);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
-  const { 
-    data: teams = [], 
-    isLoading: isTeamsLoading, 
+  const {
+    data: teams = [],
+    isLoading: isTeamsLoading,
     error: teamsError,
-    refetch: refetchTeams 
+    refetch: refetchTeams,
   } = useTeams();
 
   const {
     data: performers = [],
     isLoading: isPerformersLoading,
     error: isPerformersError,
-    refetch: refetchPerformers
+    refetch: refetchPerformers,
   } = usePerformers();
 
   const { profile } = useProfileStore();
 
   const { mutateAsync: createTeam } = useCreateTeam();
 
-  const isLoading = isTeamsLoading || isPerformersLoading || !initialLoadComplete;
+  const isLoading =
+    isTeamsLoading || isPerformersLoading || !initialLoadComplete;
   const error = teamsError || isPerformersError;
 
   // Check if the user has completed setup to determine what to display
   useEffect(() => {
-
-   
     // If the setup state and teams are loaded, we can make a decision
     if (!isTeamsLoading && !isPerformersLoading) {
       // Assume the user should see the dashboard if:
@@ -56,31 +55,30 @@ export default function DashboardPage() {
       // const hasAnySetupProgress = Object.values(steps).some(step => step);
       const setupComplete = isSetupComplete();
       const hasTeams = teams.length > 0;
-      
+      // alert(hasTeams);
       // setShouldShowDashboard(hasTeams || hasAnySetupProgress);
-      setShouldShowDashboard(setupComplete || hasTeams);
+      setShouldShowDashboard(setupComplete);
       setInitialLoadComplete(true);
     }
   }, [teams, isSetupComplete, isTeamsLoading, isPerformersLoading]);
 
- // Only redirect to onboarding if necessary
- useEffect(() => {
-  console.log(profile?.orgName, "ajgshfdfaiusdasdj")
-  // if (initialLoadComplete && !shouldShowDashboard) {
-  //   router.push('/dashboard/onboarding/intro');
-  // }
-}, [router, initialLoadComplete, shouldShowDashboard]);
+  // Only redirect to onboarding if necessary
+  useEffect(() => {
+    if (initialLoadComplete && !shouldShowDashboard) {
+      router.push("/dashboard/onboarding/intro");
+    }
+  }, [router, initialLoadComplete, shouldShowDashboard]);
 
-const handleCreateTeam = async (name: string, teamFunctionId: string) => {
-  try {
-    const newTeam = await createTeam({ name, teamFunctionId });
-    setIsCreateModalOpen(false);
-    completeStep('createTeam');
-  } catch (error) {
-    console.error("Error creating team:", error);
-    throw error;
-  }
-};
+  const handleCreateTeam = async (name: string, teamFunctionId: string) => {
+    try {
+      const newTeam = await createTeam({ name, teamFunctionId });
+      setIsCreateModalOpen(false);
+      completeStep("createTeam");
+    } catch (error) {
+      console.error("Error creating team:", error);
+      throw error;
+    }
+  };
 
   if (isLoading) {
     return (
@@ -89,7 +87,6 @@ const handleCreateTeam = async (name: string, teamFunctionId: string) => {
       </div>
     );
   }
-
   if (error) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-4">
@@ -115,26 +112,27 @@ const handleCreateTeam = async (name: string, teamFunctionId: string) => {
 
   // If user has teams, show the dashboard layout
   if (teams.length > 0) {
-    return <DashboardLayout performers={performers} teams={teams} router={router} />;
+    return (
+      <DashboardLayout performers={performers} teams={teams} router={router} />
+    );
   }
 
   // If user should see dashboard based on other criteria (e.g., setup progress),
   // show the empty dashboard view - they can navigate to onboarding from there if needed
   // if (shouldShowDashboard) {
-    return (
-      <>
-        <EmptyDashboardView onCreateTeam={() => setIsCreateModalOpen(true)} />
-        <TeamCreateModal
-          isOpen={isCreateModalOpen}
-          onClose={() => setIsCreateModalOpen(false)}
-          onCreateTeam={handleCreateTeam}
-        />
-      </>
-    );
+  return (
+    <>
+      <EmptyDashboardView onCreateTeam={() => setIsCreateModalOpen(true)} />
+      <TeamCreateModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onCreateTeam={handleCreateTeam}
+      />
+    </>
+  );
   // }
 
   // Otherwise, redirect to onboarding - this should rarely happen since middleware should handle this
 
-
- // return null; // Will redirect
+  // return null; // Will redirect
 }
