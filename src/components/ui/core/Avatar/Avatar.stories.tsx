@@ -1,23 +1,22 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Avatar, AvatarImage, AvatarFallback } from './index';
-
+import type { Meta, StoryObj } from "@storybook/react";
+import { Avatar, AvatarImage, AvatarFallback } from "./index";
 
 interface AvatarProps extends React.ComponentProps<typeof Avatar> {
-  size: 'sm' | 'md' | 'lg' | 'xl';
+  size: "sm" | "md" | "lg" | "xl";
 }
 
 const meta = {
-  title: 'Core/Avatar',
+  title: "Core/Avatar",
   component: Avatar,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     size: {
-      control: 'select',
-      options: ['sm', 'md', 'lg', 'xl'],
-      defaultValue: 'md',
+      control: "select",
+      options: ["sm", "md", "lg", "xl"],
+      defaultValue: "md",
     },
   },
 } satisfies Meta<AvatarProps>;
@@ -27,7 +26,7 @@ type Story = StoryObj<typeof meta>;
 
 // Basic example with image
 export const WithImage: Story = {
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Avatar {...args}>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
       <AvatarFallback>CN</AvatarFallback>
@@ -37,7 +36,7 @@ export const WithImage: Story = {
 
 // Example with fallback (no image or failed load)
 export const WithFallback: Story = {
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Avatar {...args}>
       <AvatarImage src="/broken-image.jpg" alt="@johndoe" />
       <AvatarFallback>JD</AvatarFallback>
@@ -47,8 +46,7 @@ export const WithFallback: Story = {
 
 // Different sizes
 export const Small: Story = {
- 
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Avatar {...args}>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
       <AvatarFallback>CN</AvatarFallback>
@@ -57,8 +55,7 @@ export const Small: Story = {
 };
 
 export const Medium: Story = {
- 
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Avatar {...args}>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
       <AvatarFallback>CN</AvatarFallback>
@@ -67,8 +64,7 @@ export const Medium: Story = {
 };
 
 export const Large: Story = {
- 
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Avatar {...args}>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
       <AvatarFallback>CN</AvatarFallback>
@@ -77,8 +73,7 @@ export const Large: Story = {
 };
 
 export const ExtraLarge: Story = {
- 
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Avatar {...args}>
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
       <AvatarFallback>CN</AvatarFallback>
@@ -88,7 +83,7 @@ export const ExtraLarge: Story = {
 
 // Fallback variations
 export const SingleLetter: Story = {
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Avatar {...args}>
       <AvatarFallback>A</AvatarFallback>
     </Avatar>
@@ -96,7 +91,7 @@ export const SingleLetter: Story = {
 };
 
 export const TwoLetters: Story = {
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Avatar {...args}>
       <AvatarFallback>JD</AvatarFallback>
     </Avatar>
@@ -105,7 +100,7 @@ export const TwoLetters: Story = {
 
 // Example with custom styling
 export const CustomStyling: Story = {
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Avatar {...args} className="border-2 border-[var(--color-primary)]">
       <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
       <AvatarFallback>CN</AvatarFallback>

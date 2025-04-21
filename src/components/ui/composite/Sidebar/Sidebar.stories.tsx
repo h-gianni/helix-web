@@ -24,7 +24,11 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/core/Collapsible";
 import { Button } from "@/components/ui/core/Button";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/core/Avatar";
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/components/ui/core/Avatar";
 import {
   Popover,
   PopoverContent,
@@ -82,7 +86,7 @@ const meta: Meta<typeof Sidebar> = {
     },
   },
   decorators: [
-    (Story) => (
+    (Story: React.FC) => (
       <StoryWrapper>
         <Story />
       </StoryWrapper>
@@ -97,10 +101,7 @@ const UserNav = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-        
-          className="w-full justify-start p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-        >
+        <Button className="w-full justify-start p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
           <div className="flex items-center justify-between gap-4 w-full">
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8">
@@ -123,31 +124,19 @@ const UserNav = () => {
       </PopoverTrigger>
       <PopoverContent className="w-56 p-1" align="start" side="right">
         <div className="space-y-0.5">
-          <Button
-          
-            className="w-full justify-start gap-2 text-sm"
-          >
+          <Button className="w-full justify-start gap-2 text-sm">
             <Star className="h-4 w-4" />
             Upgrade to Pro
           </Button>
-          <Button
-           
-            className="w-full justify-start gap-2 text-sm"
-          >
+          <Button className="w-full justify-start gap-2 text-sm">
             <Settings className="h-4 w-4" />
             Account
           </Button>
-          <Button
-           
-            className="w-full justify-start gap-2 text-sm"
-          >
+          <Button className="w-full justify-start gap-2 text-sm">
             <CreditCard className="h-4 w-4" />
             Billing
           </Button>
-          <Button
-          
-            className="w-full justify-start gap-2 text-sm"
-          >
+          <Button className="w-full justify-start gap-2 text-sm">
             <Bell className="h-4 w-4" />
             Notifications
           </Button>
@@ -162,10 +151,7 @@ const UserNav = () => {
             </div>
           </div>
 
-          <Button
-            
-            className="w-full justify-start gap-2 text-sm text-destructive hover:text-destructive hover:bg-destructive/10"
-          >
+          <Button className="w-full justify-start gap-2 text-sm text-destructive hover:text-destructive hover:bg-destructive/10">
             <LogOut className="h-4 w-4" />
             Log out
           </Button>
@@ -243,7 +229,7 @@ const NavMenuItem = ({
 };
 
 export const Configurator: Story = {
-  render: (args) => {
+  render: (args: Story["args"]) => {
     // const { isMobile } = useSidebar()
     const [selectedItem] = React.useState("dashboard");
 

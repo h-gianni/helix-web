@@ -205,7 +205,7 @@ export async function POST(request: Request) {
             }
 
             try {
-              let createdTeam;
+              let createdTeam: any;
 
               // Handle temporary IDs differently than existing IDs
               if (team.id.startsWith("temp-")) {
@@ -294,11 +294,7 @@ export async function POST(request: Request) {
               }
 
               if (createdTeam) {
-                let teamIndex = teams.findIndex((t) => t.id === team.id);
-                let createdMemberId = createdTeamMembers.find((mem) =>
-                  team.memberIds.includes(mem.email)
-                )?.id;
-                let teamMemberEmails = teamMembers
+                const teamMemberEmails = teamMembers
                   .filter((mem) => team.memberIds.includes(mem.id))
                   .map((mem) => mem.email);
                 createdTeam["memberIds"] = teamMemberEmails;
