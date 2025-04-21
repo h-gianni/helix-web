@@ -40,7 +40,7 @@ export default function MembersPage() {
   } = useMemberManagement();
 
   // Transform members for TeamList component
-  const memberListItems: MemberListItem[] = members.map((member) => ({
+  const memberListItems: MemberListItem[] = members?.map((member) => ({
     id: member.id,
     name: member.fullName,
     subtitle: (
@@ -107,7 +107,7 @@ export default function MembersPage() {
             </div>
             <div className="col-span-3">
               {/* Members List using TeamList component */}
-              {members.length > 0 ? (
+              {members?.length > 0 ? (
                 <TeamList
                   items={memberListItems}
                   selectedItemId={selectedMemberId}

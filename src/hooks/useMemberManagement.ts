@@ -50,8 +50,8 @@ export function useMemberManagement(): UseMemberManagementReturn {
     try {
       const savedMembers = config.teamMembers;
       if (savedMembers.length > 0) {
-        updateTeamMembers(config.teamMembers);
-        setMembers(savedMembers);
+        updateTeamMembers(config.teamMembers || []);
+        setMembers(savedMembers || []);
       }
     } catch (error) {
       console.error("Error loading members:", error);
@@ -84,7 +84,7 @@ export function useMemberManagement(): UseMemberManagementReturn {
         errors.email = "Please enter a valid email address";
       } else {
         // Check for duplicate email
-        const isDuplicate = config.teamMembers.some(
+        const isDuplicate = (config.teamMembers || []).some(
           (member) =>
             member.email.toLowerCase() === data.email.toLowerCase() &&
             (isEditing ? member.id !== selectedMemberId : true)
@@ -127,7 +127,7 @@ export function useMemberManagement(): UseMemberManagementReturn {
     if (isEditing && selectedMemberId) {
       // Update existing member
       updateTeamMembers(
-        config.teamMembers.map((member) =>
+        (config.teamMembers || []).map((member) =>
           member.id === selectedMemberId ? { ...member, ...formData } : member
         )
       );
@@ -142,7 +142,7 @@ export function useMemberManagement(): UseMemberManagementReturn {
         ...formData,
       };
 
-      updateTeamMembers([...config.teamMembers, newMember]);
+      updateTeamMembers([...(config.teamMembers || []), newMember]);
     }
 
     // Reset form
