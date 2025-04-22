@@ -59,21 +59,20 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
     if (variant === "setup") {
       try {
         // Load members
-        const savedMembers = localStorage.getItem("onboarding_members");
+        const savedMembers = configStore.config.teamMembers;
         if (savedMembers) {
-          setMembers(JSON.parse(savedMembers));
+          setMembers(savedMembers);
         }
 
         // Load team members assignments
-        const savedTeamMembers = localStorage.getItem("onboarding_team_members");
-        if (savedTeamMembers) {
-          const teamMembersData = JSON.parse(savedTeamMembers);
+
+        if (configTeams) {
           const teamMembersMap: Record<string, string[]> = {};
-          
-          teamMembersData.forEach((item: { teamId: string; memberIds: string[] }) => {
-            teamMembersMap[item.teamId] = item.memberIds || [];
+
+          configTeams.forEach((team) => {
+            teamMembersMap[team.id] = team.memberIds || [];
           });
-          
+
           setTeamMembers(teamMembersMap);
         }
       } catch (error) {
@@ -95,9 +94,9 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
   // Get member names for a team
   const getMemberNamesForTeam = (teamId: string): string[] => {
     const teamMemberIds = teamMembers[teamId] || [];
-    return teamMemberIds.map(memberId => {
-      const member = members.find(m => m.id === memberId);
-      return member ? member.fullName : 'Unknown Member';
+    return teamMemberIds.map((memberId) => {
+      const member = members.find((m) => m.id === memberId);
+      return member ? member.fullName : "Unknown Member";
     });
   };
 
@@ -105,24 +104,30 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
   const renderMemberNames = (teamId: string) => {
     const memberNames = useConfigData ? getMemberNamesForTeam(teamId) : [];
     const memberCount = memberNames.length;
-    
+
     if (memberCount === 0) {
       return <span className="text-foreground-weak">No members</span>;
     }
-    
+
     return (
       <div className="flex flex-col space-y-1">
         {memberNames.slice(0, MAX_DISPLAY_MEMBERS).map((name, index) => (
-          <div key={`${teamId}-member-${index}`} className="flex items-center gap-2">
+          <div
+            key={`${teamId}-member-${index}`}
+            className="flex items-center gap-2"
+          >
             <Avatar className="h-5 w-5">
-              <AvatarFallback className="text-2xs">{name.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="text-2xs">
+                {name.charAt(0)}
+              </AvatarFallback>
             </Avatar>
             <span className="text-sm">{name}</span>
           </div>
         ))}
         {memberCount > MAX_DISPLAY_MEMBERS && (
           <div className="text-xs text-foreground-weak ml-7">
-            +{memberCount - MAX_DISPLAY_MEMBERS} more {memberCount - MAX_DISPLAY_MEMBERS === 1 ? 'member' : 'members'}
+            +{memberCount - MAX_DISPLAY_MEMBERS} more{" "}
+            {memberCount - MAX_DISPLAY_MEMBERS === 1 ? "member" : "members"}
           </div>
         )}
       </div>

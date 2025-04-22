@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "./index";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "./index";
 
 const meta = {
   title: "Core/Accordion",
@@ -14,25 +19,19 @@ export default meta;
 type Story = StoryObj<typeof Accordion>;
 
 export const Default: Story = {
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Accordion {...args}>
       <AccordionItem value="item-1">
         <AccordionTrigger>Section 1</AccordionTrigger>
-        <AccordionContent>
-          Content for Section 1.
-        </AccordionContent>
+        <AccordionContent>Content for Section 1.</AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">
         <AccordionTrigger>Section 2</AccordionTrigger>
-        <AccordionContent>
-          Content for Section 2.
-        </AccordionContent>
+        <AccordionContent>Content for Section 2.</AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-3">
         <AccordionTrigger>Section 3</AccordionTrigger>
-        <AccordionContent>
-          Content for Section 3.
-        </AccordionContent>
+        <AccordionContent>Content for Section 3.</AccordionContent>
       </AccordionItem>
     </Accordion>
   ),
@@ -63,7 +62,6 @@ export const Default: Story = {
     // },
   },
 };
-
 
 // Example showing multiple Accordion types
 export const Types: Story = {
@@ -112,7 +110,9 @@ export const CustomContent: Story = {
       <AccordionItem value="item-2">
         <AccordionTrigger>Interactive Section</AccordionTrigger>
         <AccordionContent>
-          <button className="px-4 py-2 bg-blue-500 text-white rounded-md">Click Me</button>
+          <button className="px-4 py-2 bg-blue-500 text-white rounded-md">
+            Click Me
+          </button>
         </AccordionContent>
       </AccordionItem>
     </Accordion>

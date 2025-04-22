@@ -1,65 +1,65 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { MemberCard } from './index';
-import { TrendingUp } from 'lucide-react';
+import type { Meta, StoryObj } from "@storybook/react";
+import { MemberCard } from "./index";
+import { TrendingUp } from "lucide-react";
 
 const meta: Meta<typeof MemberCard> = {
-  title: 'Composite/MemberCard',
+  title: "Composite/MemberCard",
   component: MemberCard,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
     nextjs: {
       appDirectory: true,
     },
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   args: {
     member: {
-      id: '1',
-      name: 'John Doe',
-      title: 'Senior Developer',
+      id: "1",
+      name: "John Doe",
+      title: "Senior Developer",
       averageRating: 4.5,
       ratingsCount: 12,
-      teamId: 'team-1',
-      teamName: 'Engineering'
+      teamId: "team-1",
+      teamName: "Engineering",
     },
     teams: [
-      { id: 'team-1', name: 'Engineering' },
-      { id: 'team-2', name: 'Design' }
+      { id: "team-1", name: "Engineering" },
+      { id: "team-2", name: "Design" },
     ],
     category: {
-      label: 'Strong',
+      label: "Strong",
       minRating: 4,
       maxRating: 4.5,
-      className: 'text-success-500',
-      Icon: TrendingUp
+      className: "text-success-500",
+      Icon: TrendingUp,
     },
-    variant: 'desktop'
+    variant: "desktop",
   },
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['default', 'compact'],
-      description: 'Card layout variant',
+      control: "select",
+      options: ["default", "compact"],
+      description: "Card layout variant",
       table: {
-        defaultValue: { summary: 'default' }
-      }
+        defaultValue: { summary: "default" },
+      },
     },
-    onDelete: { 
-      action: 'deleted',
-      description: 'Callback when delete action is triggered'
+    onDelete: {
+      action: "deleted",
+      description: "Callback when delete action is triggered",
     },
     onGenerateReview: {
-      action: 'generateReview',
-      description: 'Callback when generate review action is triggered'
+      action: "generateReview",
+      description: "Callback when generate review action is triggered",
     },
     className: {
-      control: 'text',
-      description: 'Additional CSS classes'
+      control: "text",
+      description: "Additional CSS classes",
     },
     onNavigate: {
-      action: 'navigated',
-      description: 'Callback when navigation is triggered'
-    }
+      action: "navigated",
+      description: "Callback when navigation is triggered",
+    },
   },
 } satisfies Meta<typeof MemberCard>;
 
@@ -68,7 +68,7 @@ type Story = StoryObj<typeof MemberCard>;
 
 // Default card
 export const Default: Story = {
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="w-[350px]">
       <MemberCard {...args} />
     </div>
@@ -78,9 +78,9 @@ export const Default: Story = {
 // Compact variant
 export const Compact: Story = {
   args: {
-    variant: 'mobile'
+    variant: "mobile",
   },
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="w-[350px]">
       <MemberCard {...args} />
     </div>
@@ -89,26 +89,26 @@ export const Compact: Story = {
 
 // Different performance categories
 export const PerformanceCategories: Story = {
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="space-y-4">
       <div className="w-[350px]">
         <MemberCard
           {...args}
           category={{
-            label: 'Top',
+            label: "Top",
             minRating: 4.6,
             maxRating: 5,
-            className: 'text-success-600',
-            Icon: TrendingUp
+            className: "text-success-600",
+            Icon: TrendingUp,
           }}
           member={{
-            id: '2',
-            name: 'Sarah Smith',
-            title: 'Senior Engineer',
+            id: "2",
+            name: "Sarah Smith",
+            title: "Senior Engineer",
             averageRating: 4.8,
             ratingsCount: 15,
-            teamId: 'team-1',
-            teamName: 'Engineering'
+            teamId: "team-1",
+            teamName: "Engineering",
           }}
         />
       </div>
@@ -116,20 +116,20 @@ export const PerformanceCategories: Story = {
         <MemberCard
           {...args}
           category={{
-            label: 'Solid',
+            label: "Solid",
             minRating: 3,
             maxRating: 3.9,
-            className: 'text-info-600',
-            Icon: TrendingUp
+            className: "text-info-600",
+            Icon: TrendingUp,
           }}
           member={{
-            id: '3',
-            name: 'Mike Johnson',
-            title: 'Product Manager',
+            id: "3",
+            name: "Mike Johnson",
+            title: "Product Manager",
             averageRating: 3.5,
             ratingsCount: 8,
-            teamId: 'team-2',
-            teamName: 'Design'
+            teamId: "team-2",
+            teamName: "Design",
           }}
         />
       </div>
@@ -137,20 +137,20 @@ export const PerformanceCategories: Story = {
         <MemberCard
           {...args}
           category={{
-            label: 'Lower',
+            label: "Lower",
             minRating: 2.1,
             maxRating: 2.9,
-            className: 'text-warning-600',
-            Icon: TrendingUp
+            className: "text-warning-600",
+            Icon: TrendingUp,
           }}
           member={{
-            id: '4',
-            name: 'Alex Brown',
-            title: 'Developer',
+            id: "4",
+            name: "Alex Brown",
+            title: "Developer",
             averageRating: 2.5,
             ratingsCount: 6,
-            teamId: 'team-1',
-            teamName: 'Engineering'
+            teamId: "team-1",
+            teamName: "Engineering",
           }}
         />
       </div>
@@ -162,23 +162,23 @@ export const PerformanceCategories: Story = {
 export const NoRatings: Story = {
   args: {
     member: {
-      id: '1',
-      name: 'New Member',
-      title: 'Junior Developer',
+      id: "1",
+      name: "New Member",
+      title: "Junior Developer",
       averageRating: 0,
       ratingsCount: 0,
-      teamId: 'team-1',
-      teamName: 'Engineering'
+      teamId: "team-1",
+      teamName: "Engineering",
     },
     category: {
-      label: 'No Ratings',
+      label: "No Ratings",
       minRating: 0,
       maxRating: 0,
-      className: '',
-      Icon: TrendingUp
-    }
+      className: "",
+      Icon: TrendingUp,
+    },
   },
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="w-[350px]">
       <MemberCard {...args} />
     </div>
@@ -189,16 +189,16 @@ export const NoRatings: Story = {
 export const WithoutTitle: Story = {
   args: {
     member: {
-      id: '1',
-      name: 'John Doe',
+      id: "1",
+      name: "John Doe",
       title: null,
       averageRating: 4.5,
       ratingsCount: 12,
-      teamId: 'team-1',
-      teamName: 'Engineering'
-    }
+      teamId: "team-1",
+      teamName: "Engineering",
+    },
   },
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="w-[350px]">
       <MemberCard {...args} />
     </div>
@@ -207,40 +207,40 @@ export const WithoutTitle: Story = {
 
 // Grid example
 export const GridExample: Story = {
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="grid grid-cols-2 gap-4 w-[720px]">
       <MemberCard
         {...args}
         member={{
           ...args.member,
-          name: 'John Doe',
-          title: 'Senior Developer'
+          name: "John Doe",
+          title: "Senior Developer",
         }}
       />
       <MemberCard
         {...args}
         member={{
           ...args.member,
-          name: 'Jane Smith',
-          title: 'Product Manager',
-          teamId: 'team-2'
+          name: "Jane Smith",
+          title: "Product Manager",
+          teamId: "team-2",
         }}
       />
       <MemberCard
         {...args}
         member={{
           ...args.member,
-          name: 'Mike Johnson',
-          title: 'Designer',
-          teamId: 'team-2'
+          name: "Mike Johnson",
+          title: "Designer",
+          teamId: "team-2",
         }}
       />
       <MemberCard
         {...args}
         member={{
           ...args.member,
-          name: 'Sarah Wilson',
-          title: 'Tech Lead'
+          name: "Sarah Wilson",
+          title: "Tech Lead",
         }}
       />
     </div>

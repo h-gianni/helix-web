@@ -21,6 +21,12 @@ export interface CompleteOnboardingInput {
     functions: string[];
     categories: string[];
   }>;
+  teamMembers: Array<{
+    id: string;
+    fullName: string;
+    email: string;
+    jobTitle?: string;
+  }>;
 }
 
 export interface CompleteOnboardingResponse {
@@ -58,8 +64,6 @@ const onboardingApi = {
     const { data } = await apiClient.post<
       ApiResponse<CompleteOnboardingResponse>
     >("/onboarding", input);
-
-  
 
     if (!data.success)
       throw new Error(data.error || "Failed to complete onboarding");
@@ -136,8 +140,6 @@ export const useCompleteOnboarding = () => {
   const { setIsCompleting, setError } = useOnboardingStore();
   // const { toast } = useToast();
 
-  
-
   return useMutation({
     mutationFn: async () => {
       // Format the data for the API
@@ -154,10 +156,12 @@ export const useCompleteOnboarding = () => {
           name: team.name || "",
           functions: team.functions || [],
           categories: team.categories || [],
+          memberIds: team.memberIds || [],
         })),
+        teamMembers: config.teamMembers || [],
       };
-      
-      console.log('teams id in local--------------------', payload)
+
+      console.log("teams id in local--------------------", payload);
 
       // Validate payload before sending
       if (!payload.organization.name?.trim()) {
@@ -206,6 +210,7 @@ export const useCompleteOnboarding = () => {
           hidden: {},
         },
         teams: [],
+        teamMembers: [],
       });
 
       // Invalidate teams query so the dashboard loads fresh data

@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { MembersTable } from './index';
-import { TrendingUp } from 'lucide-react';
-import { te } from 'date-fns/locale';
+import type { Meta, StoryObj } from "@storybook/react";
+import { MembersTable } from "./index";
+import { TrendingUp } from "lucide-react";
+import { te } from "date-fns/locale";
 
 const performanceCategories = [
   {
@@ -67,46 +67,46 @@ const getPerformanceCategory = (rating: number, ratingsCount: number) => {
 
 const defaultMembers = [
   {
-    id: '1',
-    name: 'John Doe',
-    title: 'Senior Developer',
+    id: "1",
+    name: "John Doe",
+    title: "Senior Developer",
     averageRating: 4.8,
     ratingsCount: 15,
-    teamId: 'team-1',
-    teamName: 'Engineering'
+    teamId: "team-1",
+    teamName: "Engineering",
   },
   {
-    id: '2',
-    name: 'Jane Smith',
-    title: 'Product Manager',
+    id: "2",
+    name: "Jane Smith",
+    title: "Product Manager",
     averageRating: 4.2,
     ratingsCount: 10,
-    teamId: 'team-2',
-    teamName: 'Product'
+    teamId: "team-2",
+    teamName: "Product",
   },
   {
-    id: '3',
-    name: 'Mike Johnson',
-    title: 'UX Designer',
+    id: "3",
+    name: "Mike Johnson",
+    title: "UX Designer",
     averageRating: 3.5,
     ratingsCount: 8,
-    teamId: 'team-1',
-    teamName: 'Design'
-  }
+    teamId: "team-1",
+    teamName: "Design",
+  },
 ];
 
 const defaultTeams = [
-  { id: 'team-1', name: 'Engineering' },
-  { id: 'team-2', name: 'Product' }
+  { id: "team-1", name: "Engineering" },
+  { id: "team-2", name: "Product" },
 ];
 
 const meta: Meta<typeof MembersTable> = {
-  title: 'Composite/MembersTable',
+  title: "Composite/MembersTable",
   component: MembersTable,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   args: {
     members: defaultMembers,
     teams: defaultTeams,
@@ -116,30 +116,30 @@ const meta: Meta<typeof MembersTable> = {
     getPerformanceCategory,
   },
   argTypes: {
-          showAvatar: {
-      control: 'boolean',
-      description: 'Show member avatars',
+    showAvatar: {
+      control: "boolean",
+      description: "Show member avatars",
     },
     showActions: {
-      control: 'boolean',
-      description: 'Show action menu',
+      control: "boolean",
+      description: "Show action menu",
     },
-    onDelete: { 
-      action: 'deleted',
-      description: 'Callback when delete action is triggered'
+    onDelete: {
+      action: "deleted",
+      description: "Callback when delete action is triggered",
     },
     onGenerateReview: {
-      action: 'generateReview',
-      description: 'Callback when generate review action is triggered'
+      action: "generateReview",
+      description: "Callback when generate review action is triggered",
     },
     onNavigate: {
-      action: 'navigated',
-      description: 'Callback when navigation is triggered'
+      action: "navigated",
+      description: "Callback when navigation is triggered",
     },
     className: {
-      control: 'text',
-      description: 'Additional CSS classes'
-    }
+      control: "text",
+      description: "Additional CSS classes",
+    },
   },
 } satisfies Meta<typeof MembersTable>;
 
@@ -148,7 +148,7 @@ type Story = StoryObj<typeof MembersTable>;
 
 // Default table with all features
 export const Default: Story = {
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="w-full">
       <MembersTable {...args} />
     </div>
@@ -158,9 +158,9 @@ export const Default: Story = {
 // Without avatars
 export const WithoutAvatars: Story = {
   args: {
-    showAvatar: false
+    showAvatar: false,
   },
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="w-full">
       <MembersTable {...args} />
     </div>
@@ -170,9 +170,9 @@ export const WithoutAvatars: Story = {
 // Without actions
 export const WithoutActions: Story = {
   args: {
-    showActions: false
+    showActions: false,
   },
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="w-full">
       <MembersTable {...args} />
     </div>
@@ -184,18 +184,18 @@ export const WithNoRatings: Story = {
   args: {
     members: [
       {
-        id: '4',
-        name: 'New Member',
-        title: 'Junior Developer',
+        id: "4",
+        name: "New Member",
+        title: "Junior Developer",
         averageRating: 0,
         ratingsCount: 0,
-        teamId: 'team-1',
-        teamName: 'Engineering'
+        teamId: "team-1",
+        teamName: "Engineering",
       },
-      ...defaultMembers
-    ]
+      ...defaultMembers,
+    ],
   },
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="w-full">
       <MembersTable {...args} />
     </div>
@@ -205,9 +205,9 @@ export const WithNoRatings: Story = {
 // Empty state
 export const Empty: Story = {
   args: {
-    members: []
+    members: [],
   },
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <div className="w-full">
       <MembersTable {...args} />
     </div>

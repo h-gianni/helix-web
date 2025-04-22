@@ -1,23 +1,29 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { Alert, AlertTitle, AlertDescription } from './index';
-import { AlertCircle, Terminal, Info, XCircle, CheckCircle } from 'lucide-react';
+import type { Meta, StoryObj } from "@storybook/react";
+import { Alert, AlertTitle, AlertDescription } from "./index";
+import {
+  AlertCircle,
+  Terminal,
+  Info,
+  XCircle,
+  CheckCircle,
+} from "lucide-react";
 
 const meta = {
-  title: 'Components/Alert',
+  title: "Components/Alert",
   component: Alert,
   parameters: {
-    layout: 'centered',
+    layout: "centered",
   },
-  tags: ['autodocs'],
+  tags: ["autodocs"],
   argTypes: {
     variant: {
-      control: 'select',
-      options: ['default', 'destructive'],
-      description: 'The visual style of the alert',
+      control: "select",
+      options: ["default", "destructive"],
+      description: "The visual style of the alert",
     },
     className: {
-      control: 'text',
-      description: 'Additional CSS class names',
+      control: "text",
+      description: "Additional CSS class names",
     },
   },
 } satisfies Meta<typeof Alert>;
@@ -28,9 +34,9 @@ type Story = StoryObj<typeof Alert>;
 // Basic example
 export const Default: Story = {
   args: {
-    variant: 'default',
+    variant: "default",
   },
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Alert {...args}>
       <AlertCircle className="h-4 w-4" />
       <AlertTitle>Default Alert</AlertTitle>
@@ -44,9 +50,9 @@ export const Default: Story = {
 // Destructive variant
 export const Destructive: Story = {
   args: {
-    variant: 'destructive',
+    variant: "destructive",
   },
-  render: (args) => (
+  render: (args: Story["args"]) => (
     <Alert {...args}>
       <XCircle className="h-4 w-4" />
       <AlertTitle>Destructive Alert</AlertTitle>
@@ -64,19 +70,15 @@ export const WithDifferentIcons: Story = {
       <Alert>
         <Info className="h-4 w-4" />
         <AlertTitle>Information</AlertTitle>
-        <AlertDescription>
-          This alert uses the Info icon.
-        </AlertDescription>
+        <AlertDescription>This alert uses the Info icon.</AlertDescription>
       </Alert>
-      
+
       <Alert>
         <Terminal className="h-4 w-4" />
         <AlertTitle>System Update</AlertTitle>
-        <AlertDescription>
-          This alert uses the Terminal icon.
-        </AlertDescription>
+        <AlertDescription>This alert uses the Terminal icon.</AlertDescription>
       </Alert>
-      
+
       <Alert variant="destructive">
         <XCircle className="h-4 w-4" />
         <AlertTitle>Error</AlertTitle>
@@ -84,7 +86,7 @@ export const WithDifferentIcons: Story = {
           This alert uses the XCircle icon with destructive variant.
         </AlertDescription>
       </Alert>
-      
+
       <Alert>
         <CheckCircle className="h-4 w-4" />
         <AlertTitle>Success</AlertTitle>
@@ -101,9 +103,7 @@ export const WithoutTitle: Story = {
   render: () => (
     <Alert>
       <Info className="h-4 w-4" />
-      <AlertDescription>
-        This is an alert without a title.
-      </AlertDescription>
+      <AlertDescription>This is an alert without a title.</AlertDescription>
     </Alert>
   ),
 };
@@ -121,10 +121,13 @@ export const WithoutDescription: Story = {
 // Without icon
 export const WithoutIcon: Story = {
   render: () => (
-    <Alert className="pl-4"> {/* Remove the default left padding for icon */}
+    <Alert className="pl-4">
+      {" "}
+      {/* Remove the default left padding for icon */}
       <AlertTitle>Alert without icon</AlertTitle>
       <AlertDescription>
-        This is an alert without an icon. Notice we added pl-4 to adjust the padding.
+        This is an alert without an icon. Notice we added pl-4 to adjust the
+        padding.
       </AlertDescription>
     </Alert>
   ),
@@ -154,15 +157,16 @@ export const MultipleAlerts: Story = {
           A new software update is available for download.
         </AlertDescription>
       </Alert>
-      
+
       <Alert variant="destructive">
         <XCircle className="h-4 w-4" />
         <AlertTitle>Connection Error</AlertTitle>
         <AlertDescription>
-          Unable to connect to the server. Please check your internet connection.
+          Unable to connect to the server. Please check your internet
+          connection.
         </AlertDescription>
       </Alert>
-      
+
       <Alert>
         <CheckCircle className="h-4 w-4" />
         <AlertTitle>Success</AlertTitle>
