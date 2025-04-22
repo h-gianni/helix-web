@@ -46,24 +46,25 @@ export default function TeamList<T extends ListItem>({
           <ul className="divide-y divide-border-weak">
             {items.map((item) => {
               const isSelected = selectedItemId === item.id;
-              
+
               return (
                 <li
                   key={item.id}
                   className={cn(
                     "-ml-px py-3 pl-8 pr-4 flex items-center justify-between cursor-pointer border-l-1 border-border-weak hover:bg-neutral-lightest group",
-                    isSelected &&
-                      "bg-neutral-lightest border-l-primary"
+                    isSelected && "bg-neutral-lightest border-l-primary"
                   )}
                   onClick={() => onSelectItem(item)}
                 >
                   <div className="flex items-center gap-4">
-                    <div className={cn(
-                      "flex justify-center items-center size-12 rounded-full",
-                      isSelected 
-                        ? "bg-white text-primary" 
-                        : "bg-neutral-lightest text-neutral-darker"
-                    )}>
+                    <div
+                      className={cn(
+                        "flex justify-center items-center size-12 rounded-full",
+                        isSelected
+                          ? "bg-white text-primary"
+                          : "bg-neutral-lightest text-neutral-darker"
+                      )}
+                    >
                       {item.icon === "user" ? (
                         <User className="size-5" />
                       ) : (
@@ -71,7 +72,9 @@ export default function TeamList<T extends ListItem>({
                       )}
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-foreground-strong">{item.name}</div>
+                      <div className="font-medium text-foreground-strong">
+                        {item.name}
+                      </div>
                       {item.subtitle && (
                         <div className="text-sm text-foreground-weak">
                           {item.subtitle}
@@ -95,16 +98,19 @@ export default function TeamList<T extends ListItem>({
                         <Pencil className="size-4 text-foreground-weak" />
                       </Button>
                     )}
-                    
+
                     {/* Show remove button only when item is selected (in edit mode) */}
                     {isSelected && showRemoveButton && onRemoveItem && (
-                      <Popover open={popoverOpenId === item.id} onOpenChange={(open) => {
-                        if (open) {
-                          setPopoverOpenId(item.id);
-                        } else {
-                          setPopoverOpenId(null);
-                        }
-                      }}>
+                      <Popover
+                        open={popoverOpenId === item.id}
+                        onOpenChange={(open) => {
+                          if (open) {
+                            setPopoverOpenId(item.id);
+                          } else {
+                            setPopoverOpenId(null);
+                          }
+                        }}
+                      >
                         <PopoverTrigger asChild>
                           <Button
                             variant="ghost"
@@ -120,10 +126,12 @@ export default function TeamList<T extends ListItem>({
                         <PopoverContent className="w-auto p-4">
                           <div className="space-y-2">
                             <h4 className="font-medium">Confirm Deletion</h4>
-                            <p className="text-sm">Are you sure you want to delete this item?</p>
+                            <p className="text-sm">
+                              Are you sure you want to delete this item?
+                            </p>
                             <div className="flex justify-end gap-2 pt-2">
-                              <Button 
-                                variant="outline" 
+                              <Button
+                                variant="outline"
                                 size="sm"
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -132,8 +140,8 @@ export default function TeamList<T extends ListItem>({
                               >
                                 Cancel
                               </Button>
-                              <Button 
-                                variant="destructive" 
+                              <Button
+                                variant="destructive"
                                 size="sm"
                                 onClick={(e) => {
                                   e.stopPropagation();
