@@ -45,10 +45,10 @@ export interface PerformanceCategory {
 }
 
 export interface MemberCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  member: Member;
+  member?: Member;
   teamId?: string;
-  teams: Team[];
-  category: PerformanceCategory;
+  teams?: Team[];
+  category?: PerformanceCategory;
   onDelete?: (member: Member) => void;
   onGenerateReview?: (member: Member) => void;
   variant?: "mobile" | "desktop";
@@ -68,6 +68,13 @@ function MemberCard({
   ...props
 }: MemberCardProps) {
   const router = useRouter();
+
+  // Check if member is defined
+  if (!member) {
+    return <div>No member data available</div>; // Handle the case where member is undefined
+  } 
+
+  // Calculate effective team ID and encoded IDs
   const effectiveTeamId = teamId ?? member.teamId;
   const encodedTeamId = encodeURIComponent(effectiveTeamId);
   const encodedMemberId = encodeURIComponent(member.id);
@@ -122,7 +129,7 @@ function MemberCard({
                 <ChevronRight className="mr-1" />
                 View Details
               </DropdownMenuItem>
-              {onGenerateReview && (
+              {onGenerateReview && member && (
                 <DropdownMenuItem data-slot="dropdown-item" onClick={() => onGenerateReview(member)}>
                   <FileText className="mr-1" />
                   Generate Performance Review
@@ -237,13 +244,16 @@ function MemberCard({
             : "flex-col md:flex-col md:items-center"
         )}>
           <div className="flex items-center gap-2">
-       
-            {category.Icon && (
-              <category.Icon className={cn("size-4", category.className)} />
-            )}
+            {category && (
+              <>
+                {category.Icon && (
+                  <category.Icon className={cn("size-4", category.className)} />
+                )}
             <span className={cn("text-sm font-medium", category.className)}>
               {category.label}
-            </span>
+                </span>
+              </>
+            )}
           </div>
           <StarRating
             value={member.averageRating}

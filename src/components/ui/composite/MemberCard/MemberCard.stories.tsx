@@ -197,6 +197,17 @@ export const WithoutTitle: Story = {
       teamId: "team-1",
       teamName: "Engineering",
     },
+    teams: [
+      { id: "team-1", name: "Engineering" },
+      { id: "team-2", name: "Design" },
+    ],
+    category: {
+      label: "No Ratings",
+      minRating: 0,
+      maxRating: 0,
+      className: "",
+      Icon: TrendingUp,
+    },
   },
   render: (args: Story["args"]) => (
     <div className="w-[350px]">
@@ -211,37 +222,37 @@ export const GridExample: Story = {
     <div className="grid grid-cols-2 gap-4 w-[720px]">
       <MemberCard
         {...args}
-        member={{
-          ...args.member,
-          name: "John Doe",
-          title: "Senior Developer",
-        }}
+        // member={{
+        //   ...args.member,
+        //   name: "John Doe",
+        //   title: "Senior Developer",
+        // }}
       />
       <MemberCard
         {...args}
-        member={{
-          ...args.member,
-          name: "Jane Smith",
-          title: "Product Manager",
-          teamId: "team-2",
-        }}
+        // member={{
+        //   ...args.member,
+        //   name: "Jane Smith",
+        //   title: "Product Manager",
+        //   teamId: "team-2",
+        // }}
       />
       <MemberCard
         {...args}
-        member={{
-          ...args.member,
-          name: "Mike Johnson",
-          title: "Designer",
-          teamId: "team-2",
-        }}
+        // member={{
+        //   ...args.member,
+        //   name: "Mike Johnson",
+        //   title: "Designer",
+        //   teamId: "team-2",
+        // }}
       />
       <MemberCard
         {...args}
-        member={{
-          ...args.member,
-          name: "Sarah Wilson",
-          title: "Tech Lead",
-        }}
+        // member={{
+        //   ...args.member,
+        //   name: "Sarah Wilson",
+        //   title: "Tech Lead",
+        // }}
       />
     </div>
   ),
