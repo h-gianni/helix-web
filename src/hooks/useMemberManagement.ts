@@ -1,6 +1,7 @@
 // hooks/useMemberManagement.ts used in th eonboarding process
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
+import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
 
 export interface Member {
   id: string;
@@ -17,7 +18,7 @@ interface MemberFormErrors {
 
 interface UseMemberManagementReturn {
   members: Member[];
-  formData: Omit<Member, 'id'>;
+  formData: Omit<Member, "id">;
   formErrors: MemberFormErrors;
   selectedMemberId: string | null;
   isEditing: boolean;
@@ -26,15 +27,16 @@ interface UseMemberManagementReturn {
   handleEditMember: (memberId: string) => void;
   handleRemoveMember: (memberId: string) => void;
   handleCancelEdit: () => void;
-  validateMember: (data: Omit<Member, 'id'>) => MemberFormErrors;
+  validateMember: (data: Omit<Member, "id">) => MemberFormErrors;
 }
 
 export function useMemberManagement(): UseMemberManagementReturn {
-  const [members, setMembers] = useState<Member[]>([]);
-  const [formData, setFormData] = useState<Omit<Member, 'id'>>({
-    fullName: '',
-    email: '',
-    jobTitle: '',
+  const { config, isStepComplete, updateTeamMembers } = useOnboardingConfig();
+  const [members, setMembers] = useState<Member[]>(config.teamMembers || []);
+  const [formData, setFormData] = useState<Omit<Member, "id">>({
+    fullName: "",
+    email: "",
+    jobTitle: "",
   });
   const [formErrors, setFormErrors] = useState<MemberFormErrors>({});
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
@@ -46,66 +48,71 @@ export function useMemberManagement(): UseMemberManagementReturn {
     if (isInitialized) return;
 
     try {
-      const savedMembers = localStorage.getItem('onboarding_members');
-      if (savedMembers) {
-        setMembers(JSON.parse(savedMembers));
+      const savedMembers = config.teamMembers;
+      if (savedMembers.length > 0) {
+        updateTeamMembers(config.teamMembers || []);
+        setMembers(savedMembers || []);
       }
     } catch (error) {
-      console.error('Error loading members:', error);
+      console.error("Error loading members:", error);
     }
 
     setIsInitialized(true);
   }, [isInitialized]);
-
-  // Save members to localStorage when they change
   useEffect(() => {
-    if (isInitialized) {
-      try {
-        localStorage.setItem('onboarding_members', JSON.stringify(members));
-      } catch (error) {
-        console.error('Error saving members:', error);
-      }
+    try {
+      setMembers(config.teamMembers);
+    } catch (error) {
+      console.error("Error loading members:", error);
     }
-  }, [members, isInitialized]);
+
+    setIsInitialized(true);
+  }, [config.teamMembers]);
 
   // Validate member data
-  const validateMember = useCallback((data: Omit<Member, 'id'>): MemberFormErrors => {
-    const errors: MemberFormErrors = {};
+  const validateMember = useCallback(
+    (data: Omit<Member, "id">): MemberFormErrors => {
+      const errors: MemberFormErrors = {};
 
-    if (!data.fullName.trim()) {
-      errors.fullName = 'Full name is required';
-    }
-
-    if (!data.email.trim()) {
-      errors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(data.email)) {
-      errors.email = 'Please enter a valid email address';
-    } else {
-      // Check for duplicate email
-      const isDuplicate = members.some(
-        member => 
-          member.email.toLowerCase() === data.email.toLowerCase() && 
-          (isEditing ? member.id !== selectedMemberId : true)
-      );
-
-      if (isDuplicate) {
-        errors.email = 'This email is already used by another member';
+      if (!data.fullName.trim()) {
+        errors.fullName = "Full name is required";
       }
-    }
 
-    return errors;
-  }, [members, isEditing, selectedMemberId]);
+      if (!data.email.trim()) {
+        errors.email = "Email is required";
+      } else if (!/\S+@\S+\.\S+/.test(data.email)) {
+        errors.email = "Please enter a valid email address";
+      } else {
+        // Check for duplicate email
+        const isDuplicate = (config.teamMembers || []).some(
+          (member) =>
+            member.email.toLowerCase() === data.email.toLowerCase() &&
+            (isEditing ? member.id !== selectedMemberId : true)
+        );
+
+        if (isDuplicate) {
+          errors.email = "This email is already used by another member";
+        }
+      }
+
+      return errors;
+    },
+    [config.teamMembers, isEditing, selectedMemberId]
+  );
 
   // Handle form input changes
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear validation error when user types
-    if (formErrors[name as keyof MemberFormErrors]) {
-      setFormErrors(prev => ({ ...prev, [name]: undefined }));
-    }
-  }, [formErrors]);
+      // Clear validation error when user types
+      if (formErrors[name as keyof MemberFormErrors]) {
+        setFormErrors((prev) => ({ ...prev, [name]: undefined }));
+      }
+    },
+    [formErrors]
+  );
 
   // Add or update a member
   const handleAddMember = useCallback(() => {
@@ -119,8 +126,8 @@ export function useMemberManagement(): UseMemberManagementReturn {
 
     if (isEditing && selectedMemberId) {
       // Update existing member
-      setMembers(
-        members.map(member =>
+      updateTeamMembers(
+        (config.teamMembers || []).map((member) =>
           member.id === selectedMemberId ? { ...member, ...formData } : member
         )
       );
@@ -135,50 +142,64 @@ export function useMemberManagement(): UseMemberManagementReturn {
         ...formData,
       };
 
-      setMembers(prev => [...prev, newMember]);
+      updateTeamMembers([...(config.teamMembers || []), newMember]);
     }
 
     // Reset form
     setFormData({
-      fullName: '',
-      email: '',
-      jobTitle: '',
+      fullName: "",
+      email: "",
+      jobTitle: "",
     });
-  }, [formData, isEditing, selectedMemberId, members, validateMember]);
+  }, [
+    formData,
+    isEditing,
+    selectedMemberId,
+    config.teamMembers,
+    validateMember,
+  ]);
 
   // Select a member for editing
-  const handleEditMember = useCallback((memberId: string) => {
-    const member = members.find(m => m.id === memberId);
-    if (member) {
-      setSelectedMemberId(memberId);
-      setIsEditing(true);
-      setFormData({
-        fullName: member.fullName,
-        email: member.email,
-        jobTitle: member.jobTitle || '',
-      });
-      setFormErrors({});
-    }
-  }, [members]);
+  const handleEditMember = useCallback(
+    (memberId: string) => {
+      const member = config.teamMembers.find((m) => m.id === memberId);
+      if (member) {
+        setSelectedMemberId(memberId);
+        setIsEditing(true);
+        setFormData({
+          fullName: member.fullName,
+          email: member.email,
+          jobTitle: member.jobTitle || "",
+        });
+        setFormErrors({});
+      }
+    },
+    [config.teamMembers]
+  );
 
   // Remove a member
-  const handleRemoveMember = useCallback((memberId: string) => {
-    setMembers(prev => prev.filter(member => member.id !== memberId));
+  const handleRemoveMember = useCallback(
+    (memberId: string) => {
+      updateTeamMembers([
+        ...config.teamMembers.filter((member) => member.id !== memberId),
+      ]);
 
-    // If we're removing the member being edited, reset the form
-    if (memberId === selectedMemberId) {
-      handleCancelEdit();
-    }
-  }, [selectedMemberId]);
+      // If we're removing the member being edited, reset the form
+      if (memberId === selectedMemberId) {
+        handleCancelEdit();
+      }
+    },
+    [selectedMemberId]
+  );
 
   // Cancel editing
   const handleCancelEdit = useCallback(() => {
     setIsEditing(false);
     setSelectedMemberId(null);
     setFormData({
-      fullName: '',
-      email: '',
-      jobTitle: '',
+      fullName: "",
+      email: "",
+      jobTitle: "",
     });
     setFormErrors({});
   }, []);

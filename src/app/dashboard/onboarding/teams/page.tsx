@@ -27,13 +27,15 @@ interface TeamListItem {
 
 export default function TeamsPage() {
   const [showValidationErrors, setShowValidationErrors] = useState(false);
-  
+
   // Get action categories to map IDs to names
   const { data: actionCategories, isLoading: isLoadingActions } = useActions();
-  
+
   // Get the selected actions from config store
-  const selectedByCategory = useConfigStore(state => state.config.activities.selectedByCategory || {});
-  
+  const selectedByCategory = useConfigStore(
+    (state) => state.config.activities.selectedByCategory || {}
+  );
+
   const {
     teams,
     members,
@@ -58,22 +60,24 @@ export default function TeamsPage() {
   // Helper function to get category name by ID
   const getCategoryNameById = (categoryId: string): string | undefined => {
     if (!actionCategories) return categoryId;
-    
+
     const category = actionCategories.find((cat) => cat.id === categoryId);
     return category ? category.name : categoryId;
   };
 
   // Filter categories to only include those with selected actions and not mandatory categories
-  const filteredDisplayCategories = Object.keys(selectedByCategory).filter((categoryId) => {
-    // Only include categories with selected actions
-    if (!selectedByCategory[categoryId]?.length) return false;
-    
-    // Get the category name
-    const categoryName = getCategoryNameById(categoryId);
-    
-    // Exclude mandatory categories
-    return !MANDATORY_CATEGORIES.includes(categoryName || "");
-  });
+  const filteredDisplayCategories = Object.keys(selectedByCategory).filter(
+    (categoryId) => {
+      // Only include categories with selected actions
+      if (!selectedByCategory[categoryId]?.length) return false;
+
+      // Get the category name
+      const categoryName = getCategoryNameById(categoryId);
+
+      // Exclude mandatory categories
+      return !MANDATORY_CATEGORIES.includes(categoryName || "");
+    }
+  );
 
   // Helper function to get action count
   const getActionCountForCategory = (categoryId: string): number => {
@@ -97,14 +101,14 @@ export default function TeamsPage() {
             </Badge>
           ))}
         </div>
-        <span className="text-xs">{team.members?.length || 0} members</span>
+        <span className="text-xs">{team.memberIds?.length || 0} members</span>
       </div>
     ),
     icon: "users" as const,
     // Keep original data
     functions: team.functions,
     categories: team.categories,
-    members: team.members,
+    members: team.memberIds,
   }));
 
   // Handle selecting a team from the list
@@ -117,12 +121,12 @@ export default function TeamsPage() {
   const handleCreateTeam = () => {
     // Show validation errors if there are any issues
     setShowValidationErrors(true);
-    
+
     // Check if the current team data is valid
-    const hasName = currentTeam.name.trim() !== '';
+    const hasName = currentTeam.name.trim() !== "";
     const hasFunctions = currentTeam.functions.length > 0;
     const hasMembers = currentTeam.members.length > 0;
-    
+
     // Only create if all required fields are filled
     if (hasName && hasFunctions && hasMembers) {
       createTeam(getCategoryNameById);
@@ -134,12 +138,12 @@ export default function TeamsPage() {
   const handleUpdateTeam = () => {
     // Show validation errors if there are any issues
     setShowValidationErrors(true);
-    
+
     // Check if the current team data is valid
-    const hasName = currentTeam.name.trim() !== '';
+    const hasName = currentTeam.name.trim() !== "";
     const hasFunctions = currentTeam.functions.length > 0;
     const hasMembers = currentTeam.members.length > 0;
-    
+
     // Only update if all required fields are filled
     if (hasName && hasFunctions && hasMembers) {
       updateTeam(getCategoryNameById);
@@ -155,7 +159,10 @@ export default function TeamsPage() {
   // Log available categories for debugging
   useEffect(() => {
     if (actionCategories) {
-      console.log("Available categories:", actionCategories.map(c => ({ id: c.id, name: c.name })));
+      console.log(
+        "Available categories:",
+        actionCategories.map((c) => ({ id: c.id, name: c.name }))
+      );
       console.log("Selected actions by category:", selectedByCategory);
       console.log("Filtered display categories:", filteredDisplayCategories);
     }
@@ -168,7 +175,8 @@ export default function TeamsPage() {
         description={
           <>
             Create one or more teams and assign functions and members to each
-            team. <br />Teams will be evaluated based on their assigned functions.
+            team. <br />
+            Teams will be evaluated based on their assigned functions.
           </>
         }
         previousHref="/dashboard/onboarding/members"
@@ -198,11 +206,23 @@ export default function TeamsPage() {
               selectedFunctions={currentTeam.functions}
               selectedMembers={currentTeam.members}
               formError={formErrors.general || ""}
-              formErrors={showValidationErrors ? {
-                teamName: !currentTeam.name.trim() ? "Team name is required" : undefined,
-                functions: currentTeam.functions.length === 0 ? "Please select at least one function" : undefined,
-                members: currentTeam.members.length === 0 ? "Please select at least one team member" : undefined,
-              } : {}}
+              formErrors={
+                showValidationErrors
+                  ? {
+                      teamName: !currentTeam.name.trim()
+                        ? "Team name is required"
+                        : undefined,
+                      functions:
+                        currentTeam.functions.length === 0
+                          ? "Please select at least one function"
+                          : undefined,
+                      members:
+                        currentTeam.members.length === 0
+                          ? "Please select at least one team member"
+                          : undefined,
+                    }
+                  : {}
+              }
               isEditing={currentTeam.id !== null}
               members={members}
               displayCategories={filteredDisplayCategories}
@@ -237,12 +257,12 @@ export default function TeamsPage() {
                   <p className="text-foreground-weak mb-6">
                     Create your first team using the form.
                   </p>
-                    <div className="text-sm text-foreground-weak">
-                      <p>
-                        Required fields marked with{" "}
-                        <span className="text-destructive">*</span>
-                      </p>
-                    </div>
+                  <div className="text-sm text-foreground-weak">
+                    <p>
+                      Required fields marked with{" "}
+                      <span className="text-destructive">*</span>
+                    </p>
+                  </div>
                 </div>
               </div>
             )}

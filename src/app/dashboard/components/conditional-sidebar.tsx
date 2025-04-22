@@ -6,6 +6,8 @@ import { useSetupProgress } from "@/hooks/useSetupProgress";
 
 export default function ConditionalSidebar() {
   const { showMainDashboard } = useSetupProgress();
+
+  console.log("showMainDashboard:", showMainDashboard);
   
   if (!showMainDashboard) {
     return null;

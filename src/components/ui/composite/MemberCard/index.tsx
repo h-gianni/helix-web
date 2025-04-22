@@ -37,11 +37,10 @@ export interface Member {
 }
 
 export interface MemberCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  member: Member;
+  member?: Member;
   teamId?: string;
-  teams: Team[];
-  // Still accepting category for backward compatibility, but it's not used
-  category?: any;
+  teams?: Team[];
+  category?: PerformanceCategory;
   onDelete?: (member: Member) => void;
   onGenerateReview?: (member: Member) => void;
   variant?: "mobile" | "desktop";
@@ -61,6 +60,13 @@ function MemberCard({
   ...props
 }: MemberCardProps) {
   const router = useRouter();
+
+  // Check if member is defined
+  if (!member) {
+    return <div>No member data available</div>; // Handle the case where member is undefined
+  } 
+
+  // Calculate effective team ID and encoded IDs
   const effectiveTeamId = teamId ?? member.teamId;
   const encodedTeamId = encodeURIComponent(effectiveTeamId);
   const encodedMemberId = encodeURIComponent(member.id);
@@ -115,7 +121,7 @@ function MemberCard({
                 <ChevronRight className="mr-1" />
                 View Details
               </DropdownMenuItem>
-              {onGenerateReview && (
+              {onGenerateReview && member && (
                 <DropdownMenuItem data-slot="dropdown-item" onClick={() => onGenerateReview(member)}>
                   <FileText className="mr-1" />
                   Generate Performance Review
@@ -229,11 +235,18 @@ function MemberCard({
             ? "flex-col items-center" 
             : "flex-col md:flex-col md:items-center"
         )}>
-          <PerformanceBadge 
-            value={member.averageRating}
-            ratingsCount={member.ratingsCount}
-            showTooltip
-          />
+          <div className="flex items-center gap-2">
+            {category && (
+              <>
+                {category.Icon && (
+                  <category.Icon className={cn("size-4", category.className)} />
+                )}
+            <span className={cn("text-sm font-medium", category.className)}>
+              {category.label}
+                </span>
+              </>
+            )}
+          </div>
           <StarRating
             value={member.averageRating}
             disabled

@@ -24,7 +24,7 @@ function EmptyDashboardView({ onCreateTeam }: EmptyDashboardViewProps) {
 
   // Handler for going to onboarding or setup
   const handleContinueSetup = () => {
-    router.push("/dashboard/onboarding/intro");
+    // router.push("/dashboard/onboarding/intro");
   };
 
   return (
