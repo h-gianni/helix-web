@@ -46,7 +46,7 @@ export default function MemberForm({
         <div className="flex flex-col gap-3 pt-2">
           <div className="space-y-1.5">
             <Label htmlFor="fullName">
-              Full Name <span className="text-destructive">*</span>
+              Full Name <span className="text-primary">*</span>
             </Label>
             <Input
               id="fullName"
@@ -66,7 +66,7 @@ export default function MemberForm({
 
           <div className="space-y-1.5">
             <Label htmlFor="email">
-              Email <span className="text-destructive">*</span>
+              Email <span className="text-primary">*</span>
             </Label>
             <Input
               id="email"
@@ -96,13 +96,13 @@ export default function MemberForm({
               >
                 Update Member
               </Button>
-              <Button variant="secondary" onClick={onCancelEdit} size="xl" className="w-full">
-                Cancel
+              <Button variant="default" onClick={onCancelEdit} size="xl" className="w-full">
+                Cancel Edit
               </Button>
             </>
           ) : (
             <Button
-              variant="default"
+              variant="primary"
               onClick={onAddMember}
               size="xl"
               className="gap-2 w-full"

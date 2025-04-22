@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import TeamActionsDialog from "@/app/dashboard/components/configuration/ConfigurationTeamActionsDialog";
 import StarRating from "../../core/StarRating";
 import Image from "next/image";
-import TeamImage from "@/assets/shared/team01-primary2.svg";
+import TeamImage from "@/assets/shared/team04.svg";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 
 const TEXT = {

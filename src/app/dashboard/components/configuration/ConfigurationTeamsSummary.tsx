@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/core/Card";
 import { useUserTeams } from "@/store/user-store";
 import { useConfigStore } from "@/store/config-store";
+import { HeroBadge } from "@/components/ui/core/HeroBadge";
 
 interface TeamsSummaryProps {
   onEdit: () => void;
@@ -161,13 +162,11 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
       >
         <CardTitle data-slot="card-title">
           <div className="flex-shrink-0 mb-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-neutral-lightest">
-              <Users className="size-5 text-primary" />
-            </div>
+            <HeroBadge variant="primary" size="base" icon={Users} />
           </div>
           My Teams
         </CardTitle>
-        <Button data-slot="button" variant="ghost" onClick={onEdit}>
+        <Button data-slot="button" variant="ghost" size="icon" onClick={onEdit}>
           <Pen />
         </Button>
       </CardHeader>

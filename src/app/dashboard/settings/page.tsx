@@ -105,7 +105,7 @@ export default function SettingsPage() {
               {
                 label: "Job Title",
                 value: profileData?.clerkProfile?.title || (
-                  <span className="ui-text-body-helper">Not set</span>
+                  <span>Not set</span>
                 ),
               },
             ]}

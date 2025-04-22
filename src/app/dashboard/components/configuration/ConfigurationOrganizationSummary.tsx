@@ -11,6 +11,7 @@ import { useConfigStore } from "@/store/config-store";
 import OrganizationDialog from "./ConfigurationOrganizationEditDialog";
 import { useProfile, useUpdateOrgName } from "@/store/user-store";
 import { Loader } from "@/components/ui/core/Loader";
+import { HeroBadge } from "@/components/ui/core/HeroBadge";
 
 interface OrganizationSummaryProps {
   onEdit?: () => void;
@@ -65,13 +66,11 @@ function OrganizationSummary({
         <CardHeader className="flex flex-row items-start justify-between pb-4">
           <CardTitle>
             <div className="flex-shrink-0 mb-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-neutral-lightest">
-                <Building2 className="size-5 text-primary" />
-              </div>
+              <HeroBadge variant="primary" size="base" icon={Building2} />
             </div>
             {displayOrgName}
           </CardTitle>
-          <Button variant="ghost" onClick={handleEdit}>
+          <Button variant="ghost" size="icon" onClick={handleEdit}>
             <Pen />
           </Button>
         </CardHeader>

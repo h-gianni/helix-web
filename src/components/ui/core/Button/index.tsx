@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 pb-0.5 whitespace-nowrap rounded-md text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
+  "inline-flex items-center justify-center gap-2 pb-0.5 whitespace-nowrap rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
   {
     variants: {
       variant: {
@@ -15,8 +15,8 @@ const buttonVariants = cva(
         destructive:
           "bg-linear-to-br from-destructive-500 to-destructive-600 text-white hover:opacity-90",
         outline:
-          "border border-border bg-transparent hover:bg-neutral-50 text-neutral-900 hover:bg-neutral-50",
-        accent: "bg-linear-to-br from-accent-400 to-accent-500 text-accent-foreground hover:opacity-90",
+          "border border-border-strong bg-transparent hover:bg-neutral-50 text-neutral-900 hover:bg-neutral-50",
+        accent: "bg-linear-to-br from-accent-400 to-accent-600/80 text-accent-foreground hover:opacity-90",
         ghost: "text-foreground-strong hover:bg-neutral-50 hover:opacity-90",
         link: "text-primary underline-offset-4 hover:underline",
           
@@ -25,9 +25,9 @@ const buttonVariants = cva(
         "bg-secondary text-secondary-foreground hover:bg-secondary/80",
       },
       size: {
-        default: "h-10 px-6",
+        default: "h-10 px-4 text-sm",
         sm: "h-8 px-3 text-sm",
-        lg: "h-12 rounded-md px-8 text-base",
+        lg: "h-12 rounded-md px-6 text-base",
         icon: "size-9 rounded-full",
         
         // To be removed

@@ -403,7 +403,7 @@
 
   /* Border */
   --color-border-weak: var(--neutral-100);
-  --color-border: var(--neutral-100);
+  --color-border: var(--neutral-200);
   --color-border-strong: var(--neutral-300);
   --color-input: var(--neutral-400);
   --color-ring: var(--primary-500);
@@ -412,7 +412,7 @@
   --color-card: var(--white);
   --color-card-foreground: var(--neutral-700);
   --color-raised: var(--white);
-  --color-popover: var(--neutral-50);
+  --color-popover: var(--white);
   --color-popover-foreground: var(--neutral-800);
 
   /* Interactive/status elements */
@@ -434,75 +434,75 @@
   --color-star-rating: var(--primary-400);
 
   /* Component specific */
-  --sidebar: var(--neutral-lightest);
-  --sidebar-background: var(--neutral-lightest);
-  --sidebar-foreground: var(--neutral-darkest);
-  --navbar: var(--neutral-lightest);
-  --navbar-foreground: var(--neutral-darkest);
-  --footer: var(--neutral-lightest);
-  --footer-foreground: var(--neutral-darkest);
-  --sidebar-primary: var(--primary-lightest);
-  --sidebar-primary-foreground: var(--primary-darkest);
-  --sidebar-accent: var(--accent-lightest);
-  --sidebar-accent-foreground: var(--accent-darkest);
-  --sidebar-border: var(--neutral-lighter);
-  --sidebar-ring: var(--neutral-lighter);
+  /* --color-sidebar: var(--neutral-50); */
+  /* --color-sidebar-background: var(--neutral-50); */
+  --color-sidebar-foreground: var(--neutral-600);
+  --color-navbar: var(--neutral-50);
+  --color-navbar-foreground: var(--neutral-900);
+  --color-footer: var(--neutral-50);
+  --color-footer-foreground: var(--neutral-900);
+  --color-sidebar-primary: var(--primary-50);
+  --color-sidebar-primary-foreground: var(--primary-950);
+  /* --color-sidebar-accent: var(--primary-50); */
+  --color-sidebar-accent-foreground: var(--primary-950);
+  --color-sidebar-border: var(--neutral-200);
+  --color-sidebar-ring: var(--neutral-200);
 }
 
 /* Dark theme overrides */
 .dark {
   /* Base backgrounds & text */
-  --color-background: var(--neutral-darkest);
+  /* --color-background: var(--neutral-darkest);
   --color-foreground: var(--neutral-lightest);
   --color-foreground-strong: var(--neutral-lightest);
   --color-foreground-weak: var(--neutral-base);
-  --color-foreground-muted: var(--neutral-dark);
+  --color-foreground-muted: var(--neutral-dark); */
 
   /* Surface colors */
-  --card: var(--neutral-darkest);
+  /* --card: var(--neutral-darkest);
   --card-foreground: var(--neutral-lightest);
   --popover: var(--neutral-darkest);
-  --popover-foreground: var(--neutral-lightest);
+  --popover-foreground: var(--neutral-lightest); */
 
   /* UI states */
-  --color-muted: var(--neutral-darker);
+  /* --color-muted: var(--neutral-darker);
   --color-muted-foreground: var(--neutral-light);
   --color-border-weak: var(--neutral-darker);
   --color-border: var(--neutral-dark);
   --color-border-strong: var(--neutral-base);
   --color-input: var(--neutral-darker);
-  --color-ring: var(--primary-light);
+  --color-ring: var(--primary-light); */
 
   /* Interactive elements */
-  --color-primary: var(--primary-light);
+  /* --color-primary: var(--primary-light);
   --color-primary-foreground: var(--black);
   --color-neutral: var(--neutral-darker);
   --color-neutral-foreground: var(--neutral-lightest);
   --color-accent: var(--accent-light);
   --color-accent-foreground: var(--black);
   --color-destructive: var(--destructive-light);
-  --color-destructive-foreground: var(--black);
+  --color-destructive-foreground: var(--black); */
 
   /* Status colors */
-  --color-info: var(--info-light);
+  /* --color-info: var(--info-light);
   --color-info-foreground: var(--black);
   --color-success: var(--success-light);
   --color-success-foreground: var(--black);
   --color-warning: var(--warning-light);
   --color-warning-foreground: var(--black);
   --color-error: var(--destructive-light);
-  --color-error-foreground: var(--black);
+  --color-error-foreground: var(--black); */
 
   /* Component specific */
-  --color-sidebar: var(--neutral-darkest);
+  /* --color-sidebar: var(--neutral-darkest);
   --color-sidebar-foreground: var(--neutral-lightest);
   --color-navbar: var(--neutral-darkest);
   --color-navbar-foreground: var(--neutral-lightest);
   --color-footer: var(--neutral-darkest);
-  --color-footer-foreground: var(--neutral-lightest);
+  --color-footer-foreground: var(--neutral-lightest); */
 
   /* Shadows */
-  --shadow-sm: 0px 6px 20px -4px hsl(206 23% 22% / 0.08);
+  /* --shadow-sm: 0px 6px 20px -4px hsl(206 23% 22% / 0.08);
   --shadow-base: 0px 7px 30px -6px hsl(206 23% 22% / 0.2);
   --shadow-md: 0px 8px 40px -8px hsl(206 23% 22% / 0.34);
   --shadow-lg: 0px 9px 50px -12px hsl(206 23% 22% / 0.48);
@@ -511,5 +511,5 @@
   --chart-grid: hsl(220 10% 25%);
   --chart-axis: hsl(220 10% 30%);
   --chart-label: hsl(220 10% 90%);
-  --chart-tick: hsl(220 10% 70%);
+  --chart-tick: hsl(220 10% 70%); */
 }

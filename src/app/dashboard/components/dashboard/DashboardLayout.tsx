@@ -83,13 +83,13 @@ export default function DashboardLayout({
     <>
       <PageBreadcrumbs items={breadcrumbItems} />
       <div className="hidden lg:block">
-        <PageHeader
+        {/* <PageHeader
           title="Dashboard"
           actions={
             <>
               <Button
                 data-slot="button"
-                variant="secondary"
+                variant="outline"
                 onClick={() => router.push("/dashboard/feedback")}
                 className="gap-2"
               >
@@ -97,7 +97,7 @@ export default function DashboardLayout({
               </Button>
               <Button
                 data-slot="button"
-                variant="default"
+                variant="primary"
                 onClick={() => openRatingModal(true)}
                 className="gap-2"
               >
@@ -105,7 +105,7 @@ export default function DashboardLayout({
               </Button>
             </>
           }
-        />
+        /> */}
       </div>
 
       <main className="layout-page-main">

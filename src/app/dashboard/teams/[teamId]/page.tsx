@@ -297,7 +297,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
             <AlertDialogAction
               data-slot="alert-dialog-action"
               onClick={handleDeleteTeam}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="bg-destructive text-white hover:bg-destructive/90"
             >
               Delete
             </AlertDialogAction>

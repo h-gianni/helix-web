@@ -8,9 +8,10 @@ import { SignUpButton } from "@clerk/nextjs";
 import { ArrowRight, Film } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
-import Image from "next/image";
-import LogoImage from "@/assets/shared/logo.svg";
-import HeroImage from "@/assets/marketing/hero.svg";
+// import Image from "next/image";
+// import LogoImage from "@/assets/shared/logo.svg";
+// import HeroImage from "@/assets/marketing/hero.svg";
+import { BrandLogo } from "@/components/logo/BrandLogo";
 
 export const Hero = () => {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -35,10 +36,7 @@ export const Hero = () => {
       <div className="section-container">
         <div className="hero-centered">
           <div className="lg:hidden flex flex-col pt-6 pb-2">
-            <div className="mx-auto">
-              <Image src={LogoImage} alt="JustScore" className="size-16" />
-            </div>
-            <div className="marketing-h2">JustScore</div>
+          <BrandLogo variant="vertical" size="hero" />
           </div>
           <div>
             <Badge variant="primary-light">Powered by AI, for humans</Badge>
@@ -110,13 +108,13 @@ export const Hero = () => {
           <polygon points="0,0 100,0 50,100" fill="white" />
         </svg> */}
 
-        <Image
+        {/* <Image
           src={HeroImage}
           alt="Hero Image"
           // width={1080}
           // height={600}
           className="relative z-0 mx-auto min-h-56 bg-white"
-        />
+        /> */}
       </div>
     </section>
   );

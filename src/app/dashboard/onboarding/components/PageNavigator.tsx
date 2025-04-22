@@ -60,7 +60,7 @@ export default function PageNavigator({
           <div className="w-[25%]"></div> // Empty spacer to maintain layout
         ) : (
           <button
-            className="flex flex-col justify-center items-center bg-white p-16 rounded-br-xl cursor-pointer hover:bg-neutral-lightest"
+            className="flex flex-col justify-center items-center bg-transparent p-16 rounded-br-xl cursor-pointer hover:bg-neutral-50"
             onClick={() => router.push(previousHref)}
             aria-label="Go to previous step"
           >
@@ -79,7 +79,7 @@ export default function PageNavigator({
               </Badge>
           )} */}
           {/* <div className="flex-shrink-0 mx-auto">
-            <div className="flex size-12 items-center justify-center rounded-full bg-neutral-lightest">
+            <div className="flex size-12 items-center justify-center rounded-full bg-neutral-50">
               <User className="size-6 text-primary" />
             </div>
           </div> */}
@@ -92,7 +92,7 @@ export default function PageNavigator({
           <div></div> // Empty spacer to maintain layout
         ) : (
           <button
-            className="flex flex-col justify-center items-center bg-white p-16 rounded-bl-xl cursor-pointer hover:bg-neutral-lightest"
+            className="flex flex-col justify-center items-center bg-transparent p-16 rounded-bl-xl cursor-pointer hover:bg-neutral-50"
             onClick={handleNextClick}
             aria-label="Go to next step"
           >
@@ -104,11 +104,10 @@ export default function PageNavigator({
         )}
       </div>
       {/* Show error alert if validation fails */}
-      <div className="pb-4">
+      <div className="max-w-2xl mx-auto pb-4">
       {showErrorAlert && !canContinue && (
         <Alert
           variant="destructive"
-          className="w-min whitespace-nowrap mx-auto"
         >
           <AlertCircle className="size-4" />
           <AlertDescription>{disabledTooltip}</AlertDescription>

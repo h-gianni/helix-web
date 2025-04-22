@@ -89,7 +89,7 @@ function ProfileSection() {
             {
               label: "Job Title",
               value: profileData?.clerkProfile?.title || (
-                <span className="ui-text-body-helper">Not set</span>
+                <span className="body-sm">Not set</span>
               ),
             },
           ]}

@@ -4,7 +4,7 @@ import * as React from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/core/Card";
 import { Label } from "@/components/ui/core/Label";
 import { Button } from "@/components/ui/core/Button";
-import { PenSquare } from "lucide-react";
+import { Pen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -37,24 +37,24 @@ function ProfileCard({
     <Button
       data-slot="button"
       variant="ghost"
+      size="icon"
       onClick={onEdit}
-      className={cn("gap-2", editButtonPosition === "footer" && "w-full")}
+      className={cn(editButtonPosition === "footer" && "w-full")}
     >
-      <PenSquare />
-      {editButtonText}
+      <Pen />
     </Button>
   );
 
   const renderFields = () => (
-    <div className="space-y-2">
+    <div className="divide-y divide-border w-full">
       {fields.map((field, index) => (
-        <div key={index} className="first:[&>Label]:hidden">
+        <div key={index} className="first:[&>Label]:hidden pt-2 pb-2.5">
           <Label data-slot="label">{field.label}</Label>
           <p
             className={cn(
-              "-mt-0.5",
+              "",
               field.variant === "title" && "heading-3",
-              field.variant === "strong" && "font-medium"
+              field.variant === "strong" && "body-sm"
             )}
           >
             {field.value}
@@ -71,7 +71,7 @@ function ProfileCard({
         alt="Profile"
         width={96}
         height={96}
-        className="bg-neutral-darkest rounded-full object-cover size-auto"
+        className="bg-neutral-900 rounded-full object-cover size-auto"
       />
     </div>
   );
@@ -90,8 +90,8 @@ function ProfileCard({
         <>
           <CardContent data-slot="card-content" className="p-0">
             <div className="h-24">
-              <div className="relative h-14 bg-secondary rounded-t-lg">
-                <div className="size-20 absolute -bottom-10 left-4 rounded-full border-2 border-white shadow-base">
+              <div className="relative h-14 bg-neutral rounded-t-lg">
+                <div className="size-20 absolute -bottom-10 left-4 rounded-full border-2 border-white shadow">
                   <ProfileImage />
                 </div>
               </div>
@@ -108,12 +108,12 @@ function ProfileCard({
         <>
           <CardContent data-slot="card-content" className="p-0">
             <div className="flex">
-              <div className="bg-secondary p-8 rounded-l-lg">
+              <div className="bg-neutral p-8 rounded-l-lg">
                 <div className="size-32 rounded-full border-2 border-white shadow">
                   <ProfileImage />
                 </div>
               </div>
-              <div className="flex flex-col items-start gap-6 p-8">
+              <div className="flex flex-col items-start gap-6 p-8 w-full">
                 {renderFields()}
               </div>
             </div>

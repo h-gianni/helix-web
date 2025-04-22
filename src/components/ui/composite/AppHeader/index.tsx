@@ -96,7 +96,7 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
   const { showMainDashboard } = useSetupProgress();
 
   return (
-    <header className="flex items-center justify-between gap-8 pb-4">
+    <header className="flex items-center justify-between gap-8 pb-4 pt-1">
       {showMainDashboard ? (
         <div className="flex items-center gap-1 -ml-1.5">
           <SidebarTrigger className="hidden lg:flex" />

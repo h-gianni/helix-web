@@ -16,10 +16,21 @@ import {
   ChevronRight,
   FileText,
   Trash2,
+  LucideIcon
 } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
 import { PerformanceBadge } from "@/components/ui/core/PerformanceBadge";
+
+import { PerformanceVariant } from "@/components/ui/core/PerformanceBadge";
+
+// Define the missing PerformanceCategory type
+export interface PerformanceCategory {
+  label: string;
+  className: string;
+  variant: PerformanceVariant;
+  Icon?: LucideIcon;
+}
 
 export interface Team {
   id: string;
@@ -52,7 +63,7 @@ function MemberCard({
   member,
   teamId,
   teams,
-  category: _category, // Accept but don't use
+  category, // Fix: Remove underscore to use the category
   onDelete,
   onGenerateReview,
   variant = "mobile",
@@ -241,12 +252,23 @@ function MemberCard({
                 {category.Icon && (
                   <category.Icon className={cn("size-4", category.className)} />
                 )}
-            <span className={cn("text-sm font-medium", category.className)}>
-              {category.label}
+                <span className={cn("text-sm font-medium", category.className)}>
+                  {category.label}
                 </span>
               </>
             )}
           </div>
+          
+          {/* Show performance badge based on rating */}
+          <div className="flex items-center">
+            <PerformanceBadge
+              value={member.averageRating}
+              ratingsCount={member.ratingsCount}
+              showTooltip
+              size="base"
+            />
+          </div>
+          
           <StarRating
             value={member.averageRating}
             disabled

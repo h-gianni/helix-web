@@ -6,50 +6,12 @@
 @import "./tokens/typography.css";
 @import "./tokens/spacing.css";
 
-/* Use @source directive for component styles with layers */
-/* @source "./components/typography.css";
-@source "./components/spacing.css";
-@source "./components/index.css";
-@source "./components/core/card.css";
-@source "./components/composite/members-table.css";
-@source "./components/composite/page-header.css";
-@source "./components/composite/profile-card.css";
-@source "./components/composite/side-bar.css"; */
-
 /* Base layer is now automatically created with @import "tailwindcss" */
 @layer base {
   body {
     @apply bg-background/25 text-foreground text-base leading-normal antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-}
-
-@layer base {
-  :root {
-    --sidebar-background: hsl(0 0% 98%);
-    --sidebar-foreground: hsl(240 5.3% 26.1%);
-    --sidebar-primary: hsl(240 5.9% 10%);
-    --sidebar-primary-foreground: hsl(0 0% 98%);
-    --sidebar-accent: hsl(240 4.8% 95.9%);
-    --sidebar-accent-foreground: hsl(240 5.9% 10%);
-    --sidebar-border: hsl(220 13% 91%);
-    --sidebar-ring: hsl(217.2 91.2% 59.8%);
-
-    --sidebar-width: 16rem;
-    --sidebar-width-icon: 3rem;
-    --sidebar-width-mobile: 18rem;
-  }
-
-  /* .dark {
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  } */
 }
 
 /* Add this to your globals.css */
@@ -155,7 +117,7 @@
 /************************* LAYOUT + SPACING */
 
 .layout-page {
-  @apply w-full p-4 sm:p-6;
+  @apply w-full p-4;
 }
 .layout-page-main {
   @apply space-y-4 py-4 w-full;
@@ -256,7 +218,7 @@
 
 /* Actions container */
 .page-header-actions {
-  @apply flex items-center gap-2 md:gap-4;
+  @apply flex items-center gap-2 md:gap-3;
 }
 .page-header-actions button {
   @apply w-full lg:w-auto;

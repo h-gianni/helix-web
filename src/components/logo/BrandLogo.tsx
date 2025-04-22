@@ -17,7 +17,7 @@ export function BrandLogo({
   const isVertical = variant === "vertical";
   const isIcon = variant === "icon";
   const isLogotype = variant === "logotype";
-  const fillClass = color === "light" ? "text-white" : "text-neutral-950";
+  const fillClass = color === "light" ? "text-white" : "text-neutral-900";
 
   const heightClass = isVertical
     ? {

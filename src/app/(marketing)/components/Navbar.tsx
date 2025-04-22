@@ -103,7 +103,7 @@ export const Navbar = () => {
       <div className="lg:container relative mx-auto min-h-20 flex gap-4 flex-row items-center justify-between">
         {/* LEFT: Logo */}
         <div className="flex items-center gap-4 lg:gap-6">
-          <BrandLogo />
+          <BrandLogo size="sm" />
 
           {/* DESKTOP NAVIGATION */}
           <div className="flex items-center gap-2">

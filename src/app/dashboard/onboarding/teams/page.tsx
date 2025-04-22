@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/core/Badge";
 import { useTeamsManagement } from "@/hooks/useTeamsManagement";
 import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
 import { useConfigStore } from "@/store/config-store";
+import { HeroBadge } from "@/components/ui/core/HeroBadge";
 
 // Interface for TeamList compatible item
 interface TeamListItem {
@@ -249,18 +250,16 @@ export default function TeamsPage() {
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center border-l border-border-weak">
-                <div className="text-center p-8 max-w-md">
-                  <div className="bg-neutral-lightest rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                    <Users className="text-primary size-8" />
-                  </div>
-                  <h3 className="heading-4 mb-2">No Teams Created</h3>
-                  <p className="text-foreground-weak mb-6">
+                <div className="flex flex-col items-center text-center p-8 max-w-md">
+                  <HeroBadge variant="primary" size="lg" icon={Users} />
+                  <h3 className="heading-4 mt-4">No Teams Created</h3>
+                  <p className="text-foreground-weak mb-4">
                     Create your first team using the form.
                   </p>
-                  <div className="text-sm text-foreground-weak">
+                  <div className="caption text-foreground-weak">
                     <p>
                       Required fields marked with{" "}
-                      <span className="text-destructive">*</span>
+                      <span className="text-primary">*</span>
                     </p>
                   </div>
                 </div>
