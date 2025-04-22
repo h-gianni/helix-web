@@ -307,7 +307,7 @@ export default function ActionsSelector({
       {/* Two-column layout */}
       <div className="flex flex-col md:flex-row">
         {/* Left column: Categories */}
-        <div className="w-full md:w-1/3 border-r border-neutral-lighter">
+        <div className="w-full md:w-1/3 border-r border-border-weak">
           <div className="p-8 pb-6">
             <h2 className="heading-3">{categoriesTitle}</h2>
             {/* <p className="body-sm text-foreground-weak">

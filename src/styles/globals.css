@@ -1,28 +1,25 @@
 @import "tailwindcss";
 /* @custom-variant dark (&:where(.dark, .dark *)); */
 
-/* Import tokens */
+/* Rest of your imports */
 @import "./tokens/theme.css";
 @import "./tokens/typography.css";
 @import "./tokens/spacing.css";
 
 /* Use @source directive for component styles with layers */
-@source "./components/typography.css";
+/* @source "./components/typography.css";
 @source "./components/spacing.css";
 @source "./components/index.css";
 @source "./components/core/card.css";
 @source "./components/composite/members-table.css";
 @source "./components/composite/page-header.css";
 @source "./components/composite/profile-card.css";
-@source "./components/composite/side-bar.css";
+@source "./components/composite/side-bar.css"; */
 
 /* Base layer is now automatically created with @import "tailwindcss" */
 @layer base {
-  * {
-    @apply border-neutral-light;
-  }
   body {
-    @apply bg-background text-foreground text-base leading-normal antialiased;
+    @apply bg-background/25 text-foreground text-base leading-normal antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
@@ -96,7 +93,7 @@
 
 /* Headings */
 .heading-1 {
-  @apply text-2xl font-semibold tracking-tighter leading-tight text-foreground-strong;
+  @apply text-2xl font-semibold tracking-tight leading-tight text-foreground-strong;
 }
 .heading-2 {
   @apply text-xl font-semibold tracking-tight leading-snug text-foreground-strong;
@@ -114,24 +111,24 @@
   @apply text-xs font-bold tracking-normal leading-normal text-foreground-strong;
 }
 .heading-upper {
-  @apply text-2xs font-medium tracking-wide uppercase leading-normal text-foreground-weak subpixel-antialiased;
+  @apply text-2xs font-medium tracking-wide uppercase leading-normal text-foreground-strong subpixel-antialiased;
 }
 
 /* Body */
 .body-lg {
-  @apply text-lg font-normal tracking-normal leading-relaxed;
+  @apply text-lg/6 tracking-normal;
   max-width: var(--max-width-copy-lg);
 }
 .body-base {
-  @apply text-base font-normal tracking-normal leading-normal;
+  @apply text-base tracking-normal leading-normal;
   max-width: var(--max-width-copy-base);
 }
 .body-sm {
-  @apply text-sm font-normal tracking-normal leading-normal;
+  @apply text-sm tracking-normal leading-normal;
   max-width: var(--max-width-copy-base);
 }
 .body-xs {
-  @apply text-2xs font-normal tracking-normal leading-normal;
+  @apply text-2xs tracking-normal leading-normal;
   max-width: var(--max-width-copy-base);
 }
 .body-link {
@@ -276,7 +273,7 @@
   @apply text-neutral-light fill-transparent;
 }
 .star-color-on {
-  @apply text-neutral-darker fill-neutral-darker;
+  @apply text-star-rating fill-star-rating;
 }
 
 /* Tooltip */

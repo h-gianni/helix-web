@@ -1,62 +1,80 @@
 /* tokens/theme.css */
 
 /* Base color primitives and design tokens */
-@theme {
+  @theme {
   /* Base colors */
   --white: hsl(0 0% 100%);
   --black: hsl(0 0% 0%);
 
   /* Core grayscale */
-  --neutral-lightest: hsl(36 2% 96%);
-  --neutral-lighter: hsl(36 2% 90%);
-  --neutral-light: hsl(36 2% 72%);
-  --neutral-base: hsl(36 2% 50%);
-  --neutral-dark: hsl(36 2% 36%);
-  --neutral-darker: hsl(36 2% 24%);
-  --neutral-darkest: hsl(36 2% 10%);
+  --neutral-50: hsl(250 3% 98%);
+  --neutral-100: hsl(250 3% 94%);
+  --neutral-200: hsl(250 3% 86%);
+  --neutral-300: hsl(250 3% 78%);
+  --neutral-400: hsl(250 3% 66%);
+  --neutral-500: hsl(250 3% 50%);
+  --neutral-600: hsl(250 3% 42%);
+  --neutral-700: hsl(250 3% 34%);
+  --neutral-800: hsl(250 3% 26%);
+  --neutral-900: hsl(250 3% 18%);
+  --neutral-950: hsl(250 3% 10%);
 
-  /* --neutral-lightest: hsl(205 21% 96%);
-  --neutral-lighter: hsl(205 21% 90%);
-  --neutral-light: hsl(205 21% 72%);
-  --neutral-base: hsl(205 21% 50%);
-  --neutral-dark: hsl(205 21% 36%);
-  --neutral-darker: hsl(205 21% 24%);
-  --neutral-darkest: hsl(205 21% 10%); */
+  --neutral-lightest: hsl(36 4% 96%);
+  --neutral-lighter: hsl(36 4% 90%);
+  --neutral-light: hsl(36 4% 72%);
+  --neutral-base: hsl(36 4% 50%);
+  --neutral-dark: hsl(36 4% 36%);
+  --neutral-darker: hsl(36 4% 24%);
+  --neutral-darkest: hsl(36 4% 10%);
 
   /* Primary */  
-  /* --primary-lightest: hsl(345 90% 94%);
-  --primary-lighter: hsl(345 90% 86%);
-  --primary-light: hsl(345 90% 72%);
-  --primary-base: hsl(345 90% 50%);
-  --primary-dark: hsl(345 90% 36%);
-  --primary-darker: hsl(345 90% 24%);
-  --primary-darkest: hsl(345 90% 10%); */
-
-  /* --primary-lightest: hsl(210 100% 94%);
-  --primary-lighter: hsl(210 100% 86%);
-  --primary-light: hsl(210 100% 72%);
-  --primary-base: hsl(210 100% 39%);
-  --primary-dark: hsl(210 100% 28%);
-  --primary-darker: hsl(210 100% 20%);
-  --primary-darkest: hsl(210 100% 12%); */
+  --primary-50: hsl(250 58% 98%);
+  --primary-100: hsl(250 58% 94%);
+  --primary-200: hsl(250 58% 86%);
+  --primary-300: hsl(250 58% 78%);
+  --primary-400: hsl(250 58% 66%);
+  --primary-500: hsl(250 58% 50%);
+  --primary-600: hsl(250 58% 42%);
+  --primary-700: hsl(250 58% 34%);
+  --primary-800: hsl(250 58% 26%);
+  --primary-900: hsl(250 58% 18%);
+  --primary-950: hsl(250 58% 10%);
   
-  --primary-lightest: hsl(344 84% 94%);
-  --primary-lighter: hsl(344 84% 86%);
-  --primary-light: hsl(344 84% 72%);
-  --primary-base: hsl(344 84% 50%);
-  --primary-dark: hsl(344 84% 28%);
-  --primary-darker: hsl(344 84% 20%);
-  --primary-darkest: hsl(344 84% 12%);
+  --primary-lightest: hsl(10 100% 94%);
+  --primary-lighter: hsl(10 100% 86%);
+  --primary-light: hsl(10 100% 72%);
+  --primary-base: hsl(100 60% 45%);
+  --primary-dark: hsl(10 100% 28%);
+  --primary-darker: hsl(10 100% 20%);
+  --primary-darkest: hsl(10 100% 12%);
+
+  /* Secondary */  
+  --secondary-50: hsl(224 87% 98%);
+  --secondary-100: hsl(224 87% 94%);
+  --secondary-200: hsl(224 87% 86%);
+  --secondary-300: hsl(224 87% 78%);
+  --secondary-400: hsl(224 87% 66%);
+  --secondary-500: hsl(224 87% 50%);
+  --secondary-600: hsl(224 87% 42%);
+  --secondary-700: hsl(224 87% 34%);
+  --secondary-800: hsl(224 87% 26%);
+  --secondary-900: hsl(224 87% 18%);
+  --secondary-950: hsl(224 87% 10%);
+
+  /* Tertiary */  
+  --tertiary-50: hsl(289 47% 98%);
+  --tertiary-100: hsl(289 47% 94%);
+  --tertiary-200: hsl(289 47% 86%);
+  --tertiary-300: hsl(289 47% 78%);
+  --tertiary-400: hsl(289 47% 66%);
+  --tertiary-500: hsl(289 47% 50%);
+  --tertiary-600: hsl(289 47% 42%);
+  --tertiary-700: hsl(289 47% 34%);
+  --tertiary-800: hsl(289 47% 26%);
+  --tertiary-900: hsl(289 47% 18%);
+  --tertiary-950: hsl(289 47% 10%);
 
   /* Warning */
-  /* --warning-lightest: hsl(35 100% 94%);
-  --warning-lighter: hsl(35 100% 86%);
-  --warning-light: hsl(35 100% 72%);
-  --warning-base: hsl(35 100% 50%);
-  --warning-dark: hsl(35 100% 36%);
-  --warning-darker: hsl(35 100% 24%);
-  --warning-darkest: hsl(35 100% 10%); */
-
   --warning-lightest: hsl(42 100% 94%);
   --warning-lighter: hsl(42 100% 86%);
   --warning-light: hsl(42 95% 72%);
@@ -65,22 +83,38 @@
   --warning-darker: hsl(42 100% 24%);
   --warning-darkest: hsl(42 100% 10%);
 
-  /* Destructive */
-  /* --destructive-lightest: hsl(3 100% 94%);
-  --destructive-lighter: hsl(3 100% 86%);
-  --destructive-light: hsl(3 100% 72%);
-  --destructive-base: hsl(3 100% 50%);
-  --destructive-dark: hsl(3 100% 36%);
-  --destructive-darker: hsl(3 100% 24%);
-  --destructive-darkest: hsl(3 100% 10%); */
+  --warning-50: hsl(42 90% 98%);
+  --warning-100: hsl(42 90% 94%);
+  --warning-200: hsl(42 90% 86%);
+  --warning-300: hsl(42 90% 78%);
+  --warning-400: hsl(42 90% 66%);
+  --warning-500: hsl(42 90% 50%);
+  --warning-600: hsl(42 90% 42%);
+  --warning-700: hsl(42 90% 34%);
+  --warning-800: hsl(42 90% 26%);
+  --warning-900: hsl(42 90% 18%);
+  --warning-950: hsl(42 90% 10%);
 
-  --destructive-lightest: hsl(1 100% 94%);
-  --destructive-lighter: hsl(1 95% 86%);
-  --destructive-light: hsl(1 90% 72%);
-  --destructive-base: hsl(1 80% 50%);
-  --destructive-dark: hsl(1 90% 36%);
-  --destructive-darker: hsl(1 95% 24%);
-  --destructive-darkest: hsl(1 100% 10%);
+  /* Destructive */
+  --destructive-lightest: hsl(0 100% 94%);
+  --destructive-lighter: hsl(0 95% 86%);
+  --destructive-light: hsl(0 90% 72%);
+  --destructive-base: hsl(0 80% 50%);
+  --destructive-dark: hsl(0 90% 36%);
+  --destructive-darker: hsl(0 95% 24%);
+  --destructive-darkest: hsl(0 100% 10%);
+
+  --destructive-50: hsl(0 90% 98%);
+  --destructive-100: hsl(0 90% 94%);
+  --destructive-200: hsl(0 90% 86%);
+  --destructive-300: hsl(0 90% 78%);
+  --destructive-400: hsl(0 90% 66%);
+  --destructive-500: hsl(0 90% 50%);
+  --destructive-600: hsl(0 90% 42%);
+  --destructive-700: hsl(0 90% 34%);
+  --destructive-800: hsl(0 90% 26%);
+  --destructive-900: hsl(0 90% 18%);
+  --destructive-950: hsl(0 90% 10%);
 
   /* Success */
   --success-lightest: hsl(138 100% 94%);
@@ -91,48 +125,40 @@
   --success-darker: hsl(138 95% 24%);
   --success-darkest: hsl(138 100% 10%);
 
+  --success-50: hsl(138 90% 98%);
+  --success-100: hsl(138 90% 94%);
+  --success-200: hsl(138 90% 86%);
+  --success-300: hsl(138 90% 78%);
+  --success-400: hsl(138 90% 66%);
+  --success-500: hsl(138 90% 50%);
+  --success-600: hsl(138 90% 42%);
+  --success-700: hsl(138 90% 34%);
+  --success-800: hsl(138 90% 26%);
+  --success-900: hsl(138 90% 18%);
+  --success-950: hsl(138 90% 10%);
+
   /* Accent */
-  /* --accent-lightest: hsl(75 90% 94%);
-  --accent-lighter: hsl(75 90% 86%);
-  --accent-light: hsl(75 90% 72%);
-  --accent-base: hsl(75 90% 50%);
-  --accent-dark: hsl(75 90% 36%);
-  --accent-darker: hsl(75 90% 24%);
-  --accent-darkest: hsl(75 90% 10%); */
+  --accent-lightest: hsl(72 100% 94%);
+  --accent-lighter: hsl(72 100% 86%);
+  --accent-light: hsl(72 100% 72%);
+  --accent-base: hsl(72 60% 45%);
+  --accent-dark: hsl(72 100% 36%);
+  --accent-darker: hsl(72 100% 24%);
+  --accent-darkest: hsl(72 100% 10%);
 
-  /* --accent-lightest: hsl(76 100% 94%);
-  --accent-lighter: hsl(76 100% 86%);
-  --accent-light: hsl(76 100% 72%);
-  --accent-base: hsl(76 100% 50%);
-  --accent-dark: hsl(76 100% 36%);
-  --accent-darker: hsl(76 100% 24%);
-  --accent-darkest: hsl(76 100% 10%); */
-
-  --accent-lightest: hsl(56 100% 94%);
-  --accent-lighter: hsl(56 100% 86%);
-  --accent-light: hsl(56 100% 72%);
-  --accent-base: hsl(56 100% 50%);
-  --accent-dark: hsl(56 100% 36%);
-  --accent-darker: hsl(56 100% 24%);
-  --accent-darkest: hsl(56 100% 10%);
+  --accent-50: hsl(72 90% 98%);
+  --accent-100: hsl(72 90% 94%);
+  --accent-200: hsl(72 90% 86%);
+  --accent-300: hsl(72 90% 78%);
+  --accent-400: hsl(72 90% 66%);
+  --accent-500: hsl(72 90% 50%);
+  --accent-600: hsl(72 90% 42%);
+  --accent-700: hsl(72 90% 34%);
+  --accent-800: hsl(72 90% 26%);
+  --accent-900: hsl(72 90% 18%);
+  --accent-950: hsl(72 90% 10%);
 
   /* Info */
-  /* --info-lightest: hsl(210 27% 94%);
-  --info-lighter: hsl(210 27% 86%);
-  --info-light: hsl(210 27% 72%);
-  --info-base: hsl(210 22% 50%);
-  --info-dark: hsl(210 27% 36%);
-  --info-darker: hsl(210 27% 24%);
-  --info-darkest: hsl(210 27% 10%); */
-
-  /* --info-lightest: hsl(205 77% 94%);
-  --info-lighter: hsl(205 77% 86%);
-  --info-light: hsl(205 77% 72%);
-  --info-base: hsl(205 77% 50%);
-  --info-dark: hsl(205 77% 36%);
-  --info-darker: hsl(205 77% 24%);
-  --info-darkest: hsl(205 77% 10%); */
-
   --info-lightest: hsl(221 16% 94%);
   --info-lighter: hsl(221 16% 86%);
   --info-light: hsl(221 16% 72%);
@@ -140,6 +166,18 @@
   --info-dark: hsl(221 16% 36%);
   --info-darker: hsl(221 16% 24%);
   --info-darkest: hsl(221 16% 10%);
+
+  --info-50: hsl(224 47% 98%);
+  --info-100: hsl(224 47% 94%);
+  --info-200: hsl(224 47% 86%);
+  --info-300: hsl(224 47% 78%);
+  --info-400: hsl(224 47% 66%);
+  --info-500: hsl(224 47% 50%);
+  --info-600: hsl(224 47% 42%);
+  --info-700: hsl(224 47% 34%);
+  --info-800: hsl(224 47% 26%);
+  --info-900: hsl(224 47% 18%);
+  --info-950: hsl(224 47% 10%);
 
   /* --chart-deep-ocean: hsl(200 95% 19%);
   --chart-midnight-sky: hsl(217 44% 33%);
@@ -150,27 +188,20 @@
   --chart-autumn-leaf: hsl(19 100% 64%);
   --chart-golden-sun: hsl(39 100% 53%); */
 
-  --chart-deep-ocean: hsl(210 100% 14%);
-  --chart-midnight-sky: hsl(217 49% 28%);
-  --chart-stormy-violet: hsl(261 21% 31%);
-  --chart-wild-berry: hsl(312 38% 42%);
-  --chart-rosewood: hsl(327 59% 51%);
-  --chart-sunset-blush: hsl(350 91% 62%);
-  --chart-autumn-leaf: hsl(19 100% 59%);
-  --chart-golden-sun: hsl(39 100% 48%);
+  --chart-deep-ocean: hsl(200 60% 45%);
+  --chart-midnight-sky: hsl(217 60% 45%);
+  --chart-stormy-violet: hsl(261 60% 45%);
+  --chart-wild-berry: hsl(302 60% 45%);
+  --chart-rosewood: hsl(327 60% 45%);
+  --chart-sunset-blush: hsl(360 60% 45%);
+  --chart-autumn-leaf: hsl(19 60% 45%);
+  --chart-golden-sun: hsl(39 60% 45%);
   
   /* Chart utility variables */
   --chart-grid: hsl(220 10% 90%);
   --chart-axis: hsl(220 10% 85%);
   --chart-label: hsl(220 10% 20%);
   --chart-tick: hsl(220 10% 50%);
-
-  /* Performance levels */
-  --performer-star: hsl(45 86% 65%);
-  --performer-strong: hsl(45 86% 60%);
-  --performer-solid: hsl(45 86% 55%);
-  --performer-lower: hsl(45 86% 50%);
-  --performer-poor: hsl(45 86% 45%);
 
   /* Star */
 
@@ -181,15 +212,124 @@
 
   /* Shadows */
   --shadow-sm: 0px 6px 20px -4px hsl(206 23% 22% / 0.08);
-  --shadow-base: 0px 7px 30px -6px hsl(206 23% 22% / 0.2);
-  --shadow-md: 0px 8px 40px -8px hsl(206 23% 22% / 0.34);
-  --shadow-lg: 0px 9px 50px -12px hsl(206 23% 22% / 0.48);
+  --shadow: 0px 7px 30px -6px hsl(206 23% 22% / 0.2);
+  --shadow-md: 0px 8px 35px -7px hsl(206 23% 22% / 0.30);
+  --shadow-lg: 0px 9px 45px -12px hsl(206 23% 22% / 0.48);
   --shadow-xl: 0px 10px 65px -16px hsl(206 23% 22% / 0.68);
 }
 
 /* Color mapping for utility classes access */
 @theme inline {
   /* Map color tokens to utility class variables */
+
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+  --color-neutral-950: var(--neutral-950);
+
+  --color-primary-50: var(--primary-50);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  --color-primary-950: var(--primary-950);
+
+  --color-secondary-50: var(--secondary-50);
+  --color-secondary-100: var(--secondary-100);
+  --color-secondary-200: var(--secondary-200);
+  --color-secondary-300: var(--secondary-300);
+  --color-secondary-400: var(--secondary-400);
+  --color-secondary-500: var(--secondary-500);
+  --color-secondary-600: var(--secondary-600);
+  --color-secondary-700: var(--secondary-700);
+  --color-secondary-800: var(--secondary-800);
+  --color-secondary-900: var(--secondary-900);
+  --color-secondary-950: var(--secondary-950);
+
+  --color-tertiary-50: var(--tertiary-50);
+  --color-tertiary-100: var(--tertiary-100);
+  --color-tertiary-200: var(--tertiary-200);
+  --color-tertiary-300: var(--tertiary-300);
+  --color-tertiary-400: var(--tertiary-400);
+  --color-tertiary-500: var(--tertiary-500);
+  --color-tertiary-600: var(--tertiary-600);
+  --color-tertiary-700: var(--tertiary-700);
+  --color-tertiary-800: var(--tertiary-800);
+  --color-tertiary-900: var(--tertiary-900);
+  --color-tertiary-950: var(--tertiary-950);
+
+  --color-accent-50: var(--accent-50);
+  --color-accent-100: var(--accent-100);
+  --color-accent-200: var(--accent-200);
+  --color-accent-300: var(--accent-300);
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+  --color-accent-700: var(--accent-700);
+  --color-accent-800: var(--accent-800);
+  --color-accent-900: var(--accent-900);
+  --color-accent-950: var(--accent-950);
+
+  --color-destructive-50: var(--destructive-50);
+  --color-destructive-100: var(--destructive-100);
+  --color-destructive-200: var(--destructive-200);
+  --color-destructive-300: var(--destructive-300);
+  --color-destructive-400: var(--destructive-400);
+  --color-destructive-500: var(--destructive-500);
+  --color-destructive-600: var(--destructive-600);
+  --color-destructive-700: var(--destructive-700);
+  --color-destructive-800: var(--destructive-800);
+  --color-destructive-900: var(--destructive-900);
+  --color-destructive-950: var(--destructive-950);
+
+  --color-warning-50: var(--warning-50);
+  --color-warning-100: var(--warning-100);
+  --color-warning-200: var(--warning-200);
+  --color-warning-300: var(--warning-300);
+  --color-warning-400: var(--warning-400);
+  --color-warning-500: var(--warning-500);
+  --color-warning-600: var(--warning-600);
+  --color-warning-700: var(--warning-700);
+  --color-warning-800: var(--warning-800);
+  --color-warning-900: var(--warning-900);
+  --color-warning-950: var(--warning-950);
+
+  --color-success-50: var(--success-50);
+  --color-success-100: var(--success-100);
+  --color-success-200: var(--success-200);
+  --color-success-300: var(--success-300);
+  --color-success-400: var(--success-400);
+  --color-success-500: var(--success-500);
+  --color-success-600: var(--success-600);
+  --color-success-700: var(--success-700);
+  --color-success-800: var(--success-800);
+  --color-success-900: var(--success-900);
+  --color-success-950: var(--success-950);
+
+  --color-info-50: var(--info-50);
+  --color-info-100: var(--info-100);
+  --color-info-200: var(--info-200);
+  --color-info-300: var(--info-300);
+  --color-info-400: var(--info-400);
+  --color-info-500: var(--info-500);
+  --color-info-600: var(--info-600);
+  --color-info-700: var(--info-700);
+  --color-info-800: var(--info-800);
+  --color-info-900: var(--info-900);
+  --color-info-950: var(--info-950);
+
   --color-neutral-lightest: var(--neutral-lightest);
   --color-neutral-lighter: var(--neutral-lighter);
   --color-neutral-light: var(--neutral-light);
@@ -252,49 +392,46 @@
   --color-performer-lower: var(--performer-lower);
   --color-performer-poor: var(--performer-poor);
 
-  /* Light theme semantic variables (default) */
-  --color-background: var(--white);
-  --color-foreground: var(--neutral-darker);
-  --color-foreground-strong: var(--neutral-darkest);
-  --color-foreground-weak: var(--neutral-dark);
-  --color-foreground-muted: var(--neutral-base);
-  --color-muted: var(--neutral-lighter);
-  --color-muted-foreground: var(--neutral-dark);
-  --color-border-light: var(--neutral-lighter);
-  --color-border: var(--neutral-light);
-  --color-border-strong: var(--neutral-base);
-  --color-input: var(--neutral-light);
-  --color-ring: var(--primary-base);
+  /* Background & Foreground */
+  --color-background: var(--neutral-50);
+  --color-foreground: var(--neutral-700);
+  --color-foreground-strong: var(--neutral-900);
+  --color-foreground-weak: var(--neutral-600);
+  --color-foreground-muted: var(--neutral-400);
+  --color-muted: var(--neutral-100);
+  --color-muted-foreground: var(--neutral-500);
+
+  /* Border */
+  --color-border-weak: var(--neutral-100);
+  --color-border: var(--neutral-100);
+  --color-border-strong: var(--neutral-300);
+  --color-input: var(--neutral-400);
+  --color-ring: var(--primary-500);
 
   /* Surface colors */
   --color-card: var(--white);
-  --color-card-foreground: var(--neutral-darker);
-  --color-popover: var(--neutral-lightest);
-  --color-popover-foreground: var(--neutral-darker);
+  --color-card-foreground: var(--neutral-700);
+  --color-raised: var(--white);
+  --color-popover: var(--neutral-50);
+  --color-popover-foreground: var(--neutral-800);
 
-  /* Interactive elements */
-  --color-primary: var(--primary-base);
-  --color-primary-foreground: var(--neutral-lightest);
-  --color-secondary: var(--neutral-lighter);
-  --color-secondary-foreground: var(--neutral-darkest);
-  --color-info: var(--info-lighter);
-  --color-info-foreground: var(--info-darkest);
-  --color-accent: var(--accent-base);
-  --color-accent-foreground: var(--accent-darkest);
-  --color-destructive: var(--destructive-base);
-  --color-destructive-foreground: var(--destructive-lightest);
+  /* Interactive/status elements */
+  --color-primary: var(--primary-500);
+  --color-primary-foreground: var(--white);
+  --color-neutral: var(--neutral-100);
+  --color-neutral-foreground: var(--neutral-900);
+  --color-info: var(--info-500);
+  --color-info-foreground: var(--info-600);
+  --color-accent: var(--accent-500);
+  --color-accent-foreground: var(--accent-950);
+  --color-destructive: var(--destructive-500);
+  --color-destructive-foreground: var(--destructive-600);
+  --color-success: var(--success-600);
+  --color-success-foreground: var(--success-700);
+  --color-warning: var(--warning-500);
+  --color-warning-foreground: var(--warning-700);
 
-  --color-star-rating: var(--primary-darkest);
-
-  /* Status colors */
-  --color-info: var(--info-base);
-  --color-info-foreground: var(--neutral-lightest);
-  --color-success: var(--success-base);
-  --color-success-foreground: var(--neutral-lightest);
-  --color-warning: var(--warning-base);
-  --color-warning-foreground: var(--black);
-  --color-error: var(--destructive-base);
-  --color-error-foreground: var(--neutral-lightest);
+  --color-star-rating: var(--primary-400);
 
   /* Component specific */
   --sidebar: var(--neutral-lightest);
@@ -330,7 +467,7 @@
   /* UI states */
   --color-muted: var(--neutral-darker);
   --color-muted-foreground: var(--neutral-light);
-  --color-border-light: var(--neutral-darker);
+  --color-border-weak: var(--neutral-darker);
   --color-border: var(--neutral-dark);
   --color-border-strong: var(--neutral-base);
   --color-input: var(--neutral-darker);
@@ -339,8 +476,8 @@
   /* Interactive elements */
   --color-primary: var(--primary-light);
   --color-primary-foreground: var(--black);
-  --color-secondary: var(--neutral-darker);
-  --color-secondary-foreground: var(--neutral-lightest);
+  --color-neutral: var(--neutral-darker);
+  --color-neutral-foreground: var(--neutral-lightest);
   --color-accent: var(--accent-light);
   --color-accent-foreground: var(--black);
   --color-destructive: var(--destructive-light);
@@ -365,11 +502,11 @@
   --color-footer-foreground: var(--neutral-lightest);
 
   /* Shadows */
-  --shadow-sm: none;
-  --shadow-base: none;
-  --shadow-md: none;
-  --shadow-lg: none;
-  --shadow-xl: none;
+  --shadow-sm: 0px 6px 20px -4px hsl(206 23% 22% / 0.08);
+  --shadow-base: 0px 7px 30px -6px hsl(206 23% 22% / 0.2);
+  --shadow-md: 0px 8px 40px -8px hsl(206 23% 22% / 0.34);
+  --shadow-lg: 0px 9px 50px -12px hsl(206 23% 22% / 0.48);
+  --shadow-xl: 0px 10px 65px -16px hsl(206 23% 22% / 0.68);
 
   --chart-grid: hsl(220 10% 25%);
   --chart-axis: hsl(220 10% 30%);

@@ -1,29 +1,31 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
-  "relative w-full rounded-lg border min-h-8 px-4 py-3 text-sm shadow-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-3 [&>svg]:text-foreground [&>svg~*]:pl-6",
+  "relative w-full rounded-lg border min-h-7 px-3.5 py-2.5 text-sm shadow-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-3.5 [&>svg]:top-3 [&>svg]:text-foreground [&>svg]:size-4 [&>svg~*]:pl-6",
   {
     variants: {
       variant: {
-        default: "bg-background border-neutral-lighter text-neutral-darker dark:border-neutral-lighter [&>svg]:text-neutral",
+        default:
+          "bg-background border-neutral-200 text-foreground border-border [&>svg]:text-neutral-foreground",
         primary:
-          "bg-primary-lightest border-primary-lighter text-primary-darker dark:border-primary-lighter [&>svg]:text-primary",
-        info:
-          "bg-info-lightest border-info-lighter text-info-darker dark:border-info-lighter [&>svg]:text-info",
+          "bg-primary-50 border-primary-200 text-primary [&>svg]:text-primary-500",
+        info: "bg-info-50 border-info-200 text-info-foreground [&>svg]:text-info-foreground",
         destructive:
-          "bg-destructive-lightest border-destructive-lighter text-destructive-darker dark:border-destructive-lighter [&>svg]:text-destructive",
-          warning:
-            "bg-warning-lightest border-warning-lighter text-warning-darker dark:border-warning-lighter [&>svg]:text-warning",
+          "bg-destructive-50 border-destructive-200 text-destructive-foreground [&>svg]:text-destructive-foreground",
+        warning:
+          "bg-warning-50 border-warning-400 text-warning-800 [&>svg]:text-warning-700",
+        success:
+          "bg-success-50 border-success-400 text-success-800 [&>svg]:text-success-700",
       },
     },
     defaultVariants: {
       variant: "default",
     },
   }
-)
+);
 
 const Alert = React.forwardRef<
   HTMLDivElement,
@@ -35,8 +37,8 @@ const Alert = React.forwardRef<
     className={cn(alertVariants({ variant }), className)}
     {...props}
   />
-))
-Alert.displayName = "Alert"
+));
+Alert.displayName = "Alert";
 
 const AlertTitle = React.forwardRef<
   HTMLParagraphElement,
@@ -44,22 +46,18 @@ const AlertTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h5
     ref={ref}
-    className={cn("font-semibold leading-none tracking-tight py-1", className)}
+    className={cn("font-bold leading-none tracking-tight py-1", className)}
     {...props}
   />
-))
-AlertTitle.displayName = "AlertTitle"
+));
+AlertTitle.displayName = "AlertTitle";
 
 const AlertDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("text-sm leading-4 mt-1", className)}
-    {...props}
-  />
-))
-AlertDescription.displayName = "AlertDescription"
+  <div ref={ref} className={cn("body-sm mt-1", className)} {...props} />
+));
+AlertDescription.displayName = "AlertDescription";
 
-export { Alert, AlertTitle, AlertDescription }
+export { Alert, AlertTitle, AlertDescription };

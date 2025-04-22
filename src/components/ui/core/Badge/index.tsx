@@ -8,37 +8,28 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          "border-transparent bg-neutral-lightest text-secondary-foreground",
-        strong:
-          "border-transparent bg-neutral-dark text-white",
-        primary:
-          "border-transparent bg-primary text-white",
-        "primary-light":
-          "border-transparent bg-primary-lightest text-primary-dark",
-        info: "border-transparent bg-info text-white",
-        "info-light": "border-transparent bg-info-lightest text-info-dark",
-        destructive:
-          "border-transparent bg-destructive text-white",
-        "destructive-light":
-          "border-transparent bg-destructive-lightest text-destructive-dark",
-        outline: "text-foreground border border-neutral-light",
-        accent: "border-transparent bg-accent text-neutral-darkest",
-        "accent-light":
-          "border-transparent bg-accent-lightest text-accent-darker",
-        success: "border-transparent bg-success text-success-foreground",
-        "success-light":
-          "border-transparent bg-success-lightest text-success-dark",
-        warning:
-          "border-transparent bg-warning text-warning-foreground",
-        "warning-light":
-          "border-transparent bg-warning-lightest text-warning-dark",
-
-        // To be removed
-        secondary:
-          "border-transparent bg-neutral-lighter text-secondary-foreground",
+        default: "border-transparent bg-neutral-100/60 text-secondary-foreground",
+        neutral: "border-transparent bg-neutral-950 text-white",
+        primary: "border-transparent bg-primary text-primary-foreground",
+        "primary-light": "border-transparent bg-primary-100/60 text-primary",
+        secondary: "border-transparent bg-secondary-500 text-secondary-50",
         "secondary-light":
-          "border-transparent bg-secondary-lightest text-secondary-darker",
+          "border-transparent bg-secondary-50/60 text-secondary-600",
+        tertiary: "border-transparent bg-tertiary-500 text-tertiary-50",
+        "tertiary-light": "border-transparent bg-tertiary-50/60 text-tertiary-600",
+        info: "border-transparent bg-info text-info-50",
+        "info-light": "border-transparent bg-info-100/60 text-info-foreground",
+        outline: "text-foreground border border-input",
+        accent: "border-transparent bg-accent text-accent-950",
+        destructive: "border-transparent bg-destructive text-destructive-50",
+        "destructive-light":
+          "border-transparent bg-destructive-100/60 text-destructive-foreground",
+        success: "border-transparent bg-success text-white",
+        "success-light":
+          "border-transparent bg-success-100/60 text-success-foreground",
+        warning: "border-transparent bg-warning text-white",
+        "warning-light":
+          "border-transparent bg-warning-100/60 text-warning-foreground",
       },
     },
     defaultVariants: {

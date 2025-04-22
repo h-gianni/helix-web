@@ -39,11 +39,11 @@ export default function TeamList<T extends ListItem>({
   }
 
   return (
-    <div className="w-full border-l border-neutral-lighter h-full">
+    <div className="w-full border-l border-border-weak h-full">
       <div className="py-8 space-y-4">
         <h3 className="heading-3 px-8">{title}</h3>
         <div>
-          <ul className="divide-y divide-neutral-lighter">
+          <ul className="divide-y divide-border-weak">
             {items.map((item) => {
               const isSelected = selectedItemId === item.id;
               
@@ -51,7 +51,7 @@ export default function TeamList<T extends ListItem>({
                 <li
                   key={item.id}
                   className={cn(
-                    "-ml-px py-3 pl-8 pr-4 flex items-center justify-between cursor-pointer border-l-1 border-neutral-lighter hover:bg-neutral-lightest group",
+                    "-ml-px py-3 pl-8 pr-4 flex items-center justify-between cursor-pointer border-l-1 border-border-weak hover:bg-neutral-lightest group",
                     isSelected &&
                       "bg-neutral-lightest border-l-primary"
                   )}

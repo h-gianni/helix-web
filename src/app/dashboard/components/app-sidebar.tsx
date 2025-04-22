@@ -90,7 +90,7 @@ function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center gap-3 px-4 py-4">
-          <BrandLogo />
+          <BrandLogo size="sm" />
         </div>
       </SidebarHeader>
 

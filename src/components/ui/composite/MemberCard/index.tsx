@@ -16,11 +16,10 @@ import {
   ChevronRight,
   FileText,
   Trash2,
-  LucideIcon,
 } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
-import { Badge } from "../../core/Badge";
+import { PerformanceBadge } from "@/components/ui/core/PerformanceBadge";
 
 export interface Team {
   id: string;
@@ -37,22 +36,12 @@ export interface Member {
   teamName: string;
 }
 
-export interface PerformanceCategory {
-  label: string;
-  minRating: number;
-  maxRating: number;
-  className?: string; // Keep for backward compatibility
-  badgeVariant?: "default" | "strong" | "primary" | "primary-light" | "info" | "info-light" | 
-           "destructive" | "destructive-light" | "outline" | "accent" | "accent-light" | 
-           "success" | "success-light" | "warning" | "warning-light" | "secondary" | "secondary-light";
-  Icon: LucideIcon;
-}
-
 export interface MemberCardProps extends React.HTMLAttributes<HTMLDivElement> {
   member: Member;
   teamId?: string;
   teams: Team[];
-  category: PerformanceCategory;
+  // Still accepting category for backward compatibility, but it's not used
+  category?: any;
   onDelete?: (member: Member) => void;
   onGenerateReview?: (member: Member) => void;
   variant?: "mobile" | "desktop";
@@ -64,7 +53,7 @@ function MemberCard({
   member,
   teamId,
   teams,
-  category,
+  category: _category, // Accept but don't use
   onDelete,
   onGenerateReview,
   variant = "mobile",
@@ -235,22 +224,16 @@ function MemberCard({
         className="flex-1 space-y-4"
       >
         <div className={cn(
-          "flex items-start justify-between gap-2 md:gap-4",
+          "flex items-start justify-between gap-2 md:gap-3",
           variant === "desktop" 
             ? "flex-col items-center" 
             : "flex-col md:flex-col md:items-center"
         )}>
-          <Badge 
-            variant={category.badgeVariant || "default"} 
-            className="flex items-center gap-2"
-          >
-            {category.Icon && (
-              <category.Icon className="size-3" />
-            )}
-            <span>
-              {category.label}
-            </span>
-          </Badge>
+          <PerformanceBadge 
+            value={member.averageRating}
+            ratingsCount={member.ratingsCount}
+            showTooltip
+          />
           <StarRating
             value={member.averageRating}
             disabled

@@ -23,13 +23,12 @@ import {
   PenSquare,
   ChartSpline,
   Trash2,
-  LucideIcon,
 } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/core/Badge";
+import { PerformanceBadge } from "@/components/ui/core/PerformanceBadge";
 
-// Types remain unchanged except for PerformanceCategory
+// Types updated to remove PerformanceCategory dependency
 export interface Team {
   id: string;
   name: string;
@@ -45,21 +44,7 @@ export interface Member {
   teamName: string;
 }
 
-export interface PerformanceCategory {
-  label: string;
-  minRating: number;
-  maxRating: number;
-  className?: string; // Keep for backward compatibility
-  badgeVariant?: "default" | "strong" | "primary" | "primary-light" | "info" | "info-light" | 
-                 "destructive" | "destructive-light" | "outline" | "accent" | "accent-light" | 
-                 "success" | "success-light" | "warning" | "warning-light" | "secondary" | "secondary-light";
-  starVariant?: "default" | "strong" | "primary" | "primary-light" | "info" | "info-light" | 
-                "destructive" | "destructive-light" | "outline" | "accent" | "accent-light" | 
-                "success" | "success-light" | "warning" | "warning-light" | "secondary" | "secondary-light";
-  Icon: LucideIcon;
-}
-
-type MembersTableDOMProps = Omit<React.HTMLAttributes<HTMLDivElement>, "performanceCategories">;
+type MembersTableDOMProps = React.HTMLAttributes<HTMLDivElement>;
 
 export interface MembersTableProps extends MembersTableDOMProps {
   members: Member[];
@@ -71,11 +56,6 @@ export interface MembersTableProps extends MembersTableDOMProps {
   onDelete?: (member: Member) => void;
   onGenerateReview?: (member: Member) => void;
   onNavigate?: (path: string) => void;
-  performanceCategories: PerformanceCategory[];
-  getPerformanceCategory: (
-    rating: number,
-    ratingsCount: number
-  ) => PerformanceCategory;
 }
 
 function MembersTable({
@@ -89,8 +69,6 @@ function MembersTable({
   onDelete,
   onGenerateReview,
   onNavigate,
-  performanceCategories: _performanceCategories,
-  getPerformanceCategory,
   ...props
 }: MembersTableProps) {
   const showTeamColumn = teams.length > 1;
@@ -121,10 +99,6 @@ function MembersTable({
         )}
         <TableBody data-slot="table-body">
           {sortedMembers.map((member) => {
-            const category = getPerformanceCategory(
-              member.averageRating,
-              member.ratingsCount
-            );
             const effectiveTeamId = teamId || member.teamId;
             const detailsPath = `/dashboard/teams/${encodeURIComponent(
               effectiveTeamId
@@ -164,19 +138,12 @@ function MembersTable({
                   Seniority grade
                 </TableCell>
                 <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant={category.badgeVariant || "default"} 
-                      className="flex items-center gap-2"
-                    >
-                      {category.Icon && (
-                        <category.Icon className="size-3" />
-                      )}
-                      <span>
-                        {category.label}
-                      </span>
-                    </Badge>
-                  </div>
+                  <PerformanceBadge 
+                    value={member.averageRating} 
+                    ratingsCount={member.ratingsCount}
+                    showTooltip 
+                    size="base"
+                  />
                 </TableCell>
                 <TableCell data-slot="table-cell" className="w-[200px] whitespace-nowrap align-middle">
                   <StarRating
@@ -185,9 +152,6 @@ function MembersTable({
                     size="sm"
                     ratingsCount={member.ratingsCount}
                     className="w-[180px]"
-                    variant={category.starVariant || (category.badgeVariant?.includes('-light') 
-                      ? category.badgeVariant.split('-')[0] as any 
-                      : category.badgeVariant) || "default"}
                   />
                 </TableCell>
                 {showActions && (
@@ -232,7 +196,7 @@ function MembersTable({
                           <DropdownMenuItem
                             data-slot="dropdown-item"
                             onClick={() => onDelete(member)}
-                            className="text-destructive focus:text-destructive"
+                            className="text-destructive-foreground focus:text-destructive-foreground"
                           >
                             <Trash2 className="mr-1" />
                             Delete Member

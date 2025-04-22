@@ -41,7 +41,7 @@ export const Hero = () => {
             <div className="marketing-h2">JustScore</div>
           </div>
           <div>
-            <Badge variant="accent-light">Powered by AI, for humans</Badge>
+            <Badge variant="primary-light">Powered by AI, for humans</Badge>
             {/* <Button variant="secondary" size="sm" className="gap-4">
               Read our launch article <ArrowRight className="w-4 h-4" />
             </Button> */}
@@ -85,7 +85,7 @@ export const Hero = () => {
               Show me a short demo <Film />
             </Button>
             <SignUpButton>
-              <Button size="xl" variant="accent" className="shadow-lg">
+              <Button size="xl" variant="primary" className="shadow-lg">
                 I want to try it <ArrowRight />
               </Button>
             </SignUpButton>

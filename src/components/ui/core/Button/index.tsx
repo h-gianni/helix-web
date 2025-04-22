@@ -5,18 +5,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 pb-0.5 whitespace-nowrap rounded text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
+  "inline-flex items-center justify-center gap-2 pb-0.5 whitespace-nowrap rounded-md text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 cursor-pointer",
   {
     variants: {
       variant: {
-        default: "bg-neutral-lighter text-neutral-darkest hover:opacity-90",
-        primary: "bg-primary text-white hover:opacity-90",
+        default: "bg-linear-to-br from-neutral-100 to-neutral-200/75 text-neutral-950 hover:opacity-90",
+        neutral: "bg-linear-to-br from-neutral-900 to-neutral-950 text-white hover:opacity-90",
+        primary: "bg-linear-to-br from-secondary-500 to-primary-500 text-white hover:opacity-90",
         destructive:
-          "bg-destructive-lightest text-destructive hover:bg-destructive/90",
+          "bg-linear-to-br from-destructive-500 to-destructive-600 text-white hover:opacity-90",
         outline:
-          "border border-input bg-background hover:bg-secondary hover:text-secondary-foreground",
-        accent: "bg-accent text-accent-foreground hover:opacity-90",
-        ghost: "hover:bg-secondary hover:text-secondary-foreground",
+          "border border-border bg-transparent hover:bg-neutral-50 text-neutral-900 hover:bg-neutral-50",
+        accent: "bg-linear-to-br from-accent-400 to-accent-500 text-accent-foreground hover:opacity-90",
+        ghost: "text-foreground-strong hover:bg-neutral-50 hover:opacity-90",
         link: "text-primary underline-offset-4 hover:underline",
           
         // To be removed

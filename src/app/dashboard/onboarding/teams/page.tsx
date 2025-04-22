@@ -228,7 +228,7 @@ export default function TeamsPage() {
                 showRemoveButton={true}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center border-l border-neutral-lighter">
+              <div className="w-full h-full flex items-center justify-center border-l border-border-weak">
                 <div className="text-center p-8 max-w-md">
                   <div className="bg-neutral-lightest rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                     <Users className="text-primary size-8" />
