@@ -26,10 +26,11 @@ import { Alert } from "@/components/ui/core/Alert";
 import {
   UserPlus,
   Trash2,
-  PenSquare,
+  Pen,
   ArrowLeft,
   MoreVertical,
   AlertCircle,
+  Settings,
 } from "lucide-react";
 import { AddMemberModal } from "@/app/dashboard/components/teams/team/TeamAddMemberModal";
 import { TeamPerformanceSummary } from "@/app/dashboard/components/teams/team/TeamPerformanceSummary";
@@ -62,7 +63,9 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
   } = useTeamStore();
 
   // Create state for effective view type (to handle mobile responsiveness)
-  const [effectiveViewType, setEffectiveViewType] = useState<"table" | "grid">(viewType);
+  const [effectiveViewType, setEffectiveViewType] = useState<"table" | "grid">(
+    viewType
+  );
 
   // Update view type based on screen size
   useEffect(() => {
@@ -80,10 +83,10 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
     handleResize();
 
     // Add event listener
-    window.addEventListener('resize', handleResize);
-    
+    window.addEventListener("resize", handleResize);
+
     // Clean up
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [viewType]);
 
   const {
@@ -131,7 +134,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
   // Handle view change
   const handleViewChange = (newViewType: "table" | "grid") => {
     setViewType(newViewType);
-    
+
     // Only apply if not on mobile
     if (window.innerWidth >= 768) {
       setEffectiveViewType(newViewType);
@@ -208,28 +211,35 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
           <>
             <Button
               data-slot="button"
+              variant="outline"
               onClick={() => setAddMemberModalOpen(true)}
-              className="gap-2"
             >
-              <UserPlus className="size-4" />
+              <UserPlus />
               Add Member
+            </Button>
+            <Button
+              data-slot="button"
+              variant="outline"
+              onClick={() => setEditModalOpen(true)}
+            >
+              <Settings />
+              Team Settings
             </Button>
             <DropdownMenu data-slot="dropdown-menu">
               <DropdownMenuTrigger data-slot="dropdown-menu-trigger" asChild>
-                <Button
-                  data-slot="button"
-                  variant="ghost"
-                  size="icon"
-                >
-                  <MoreVertical className="size-4" />
+                <Button data-slot="button" variant="outline" icon>
+                  <MoreVertical />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent data-slot="dropdown-menu-content" align="end">
+              <DropdownMenuContent
+                data-slot="dropdown-menu-content"
+                align="end"
+              >
                 <DropdownMenuItem
                   data-slot="dropdown-menu-item"
                   onClick={() => setEditModalOpen(true)}
                 >
-                  <PenSquare className="size-4 mr-2" />
+                  <Settings />
                   Team Settings
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -237,7 +247,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
                   onClick={() => setDeleteDialogOpen(true)}
                   className="text-destructive focus:text-destructive"
                 >
-                  <Trash2 className="size-4 mr-2" />
+                  <Trash2 />
                   Delete Team
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -246,19 +256,19 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         }
       />
 
-      <main className="layout-page-main">
-        {!team.members?.length || !performanceData?.members?.length ? (
-          <EmptyTeamView onAddMember={() => setAddMemberModalOpen(true)} />
-        ) : (
-          <TeamPerformanceSummary
-            teamId={team.id}
-            teamName={team.name}
-            members={performanceData.members}
-            viewType={viewType}
-            onViewChange={handleViewChange}
-          />
-        )}
-      </main>
+      <div className="bg-neutral-100 h-64 flex flex-col items-center justify-center my-2 rounded-xl">Team Statistics</div>
+
+      {!team.members?.length || !performanceData?.members?.length ? (
+        <EmptyTeamView onAddMember={() => setAddMemberModalOpen(true)} />
+      ) : (
+        <TeamPerformanceSummary
+          teamId={team.id}
+          teamName={team.name}
+          members={performanceData.members}
+          viewType={viewType}
+          onViewChange={handleViewChange}
+        />
+      )}
 
       <AddMemberModal
         isOpen={isAddMemberModalOpen}

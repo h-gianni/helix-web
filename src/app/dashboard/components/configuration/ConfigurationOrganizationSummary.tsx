@@ -70,7 +70,7 @@ function OrganizationSummary({
             </div>
             {displayOrgName}
           </CardTitle>
-          <Button variant="ghost" size="icon" onClick={handleEdit}>
+          <Button variant="ghost" icon onClick={handleEdit}>
             <Pen />
           </Button>
         </CardHeader>

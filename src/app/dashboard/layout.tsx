@@ -17,7 +17,7 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <ConditionalSidebar />
-      <main className="layout-page">{children}</main>
+      <div className="layout-page">{children}</div>
       <div className="h-16 lg:hidden">
         <MobileBottomNav />
       </div>

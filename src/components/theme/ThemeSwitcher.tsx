@@ -23,7 +23,7 @@ export function ThemeSwitcher() {
   
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" className="text-foreground">
+      <Button variant="ghost" icon className="text-foreground">
         <Sun className="h-[1.2rem] w-[1.2rem]" />
         <span className="sr-only">Toggle theme</span>
       </Button>
@@ -33,7 +33,7 @@ export function ThemeSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-foreground">
+        <Button variant="ghost" icon className="text-foreground">
           {theme === 'dark' ? (
             <Moon className="h-[1.2rem] w-[1.2rem]" />
           ) : (

@@ -113,6 +113,10 @@
 .caption {
   @apply text-sm font-normal tracking-normal leading-snug;
 }
+/* Captions */
+.text-unavailable {
+  @apply text-sm font-normal tracking-normal leading-snug text-foreground-muted;
+}
 
 /************************* LAYOUT + SPACING */
 
@@ -120,7 +124,7 @@
   @apply w-full p-4;
 }
 .layout-page-main {
-  @apply space-y-4 py-4 w-full;
+  @apply space-y-4 py-2 w-full;
 }
 
 /* Layout Spacing */
@@ -193,12 +197,12 @@
 /************************* PAGE HEADER */
 /* Base container styles */
 .page-header {
-  @apply pb-4 min-h-8;
+  @apply min-h-8 py-2;
 }
 
 /* Layout container */
 .page-header-container {
-  @apply flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:gap-8;
+  @apply flex flex-col md:flex-row md:items-start md:justify-between space-y-4 md:gap-8;
 }
 
 /* Left side with title and content */
@@ -218,7 +222,7 @@
 
 /* Actions container */
 .page-header-actions {
-  @apply flex items-center gap-2 md:gap-3;
+  @apply flex items-center gap-2 md:gap-3 pt-1.5;
 }
 .page-header-actions button {
   @apply w-full lg:w-auto;

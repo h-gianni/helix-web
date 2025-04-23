@@ -2,13 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MemberCard } from "@/components/ui/composite/MemberCard";
+import { MemberCard, PerformanceCategory } from "@/components/ui/composite/MemberCard";
 import { MembersTable } from "@/components/ui/composite/MembersTable";
 import { Card, CardContent } from "@/components/ui/core/Card";
-import {
-  usePerformersStore,
-  useGenerateReview,
-} from "@/store/performers-store";
+import { PerformanceVariant } from "@/components/ui/core/PerformanceBadge";
+import { usePerformersStore, useGenerateReview } from "@/store/performers-store";
 import { cn } from "@/lib/utils";
 
 interface Team {
@@ -54,8 +52,7 @@ export function TeamPerformanceView({
   onViewChange,
 }: TeamPerformanceViewProps) {
   const router = useRouter();
-  const { getSortedMembers, getPerformanceCategory, performanceCategories } =
-    usePerformersStore();
+  const { getSortedMembers, getPerformanceCategory } = usePerformersStore();
   const { mutate: generateReview } = useGenerateReview();
 
   const sortedMembers = getSortedMembers(members);
@@ -125,6 +122,30 @@ export function TeamPerformanceView({
     router.push(path);
   };
 
+  // Map performanceCategory to include the required 'variant' property
+  const mapPerformanceCategory = (category: any): PerformanceCategory => {
+    // Ensure we have all required properties for PerformanceCategory
+    return {
+      ...category,
+      // Make sure to include the variant property required by MemberCard
+      variant: (category.variant || mapVariantFromRating(category.label)) as PerformanceVariant
+    };
+  };
+
+  // Helper function to map performance labels to variants
+  const mapVariantFromRating = (label?: string): PerformanceVariant => {
+    if (!label) return "solid";
+    
+    const labelLower = label.toLowerCase();
+    if (labelLower.includes("star")) return "star";
+    if (labelLower.includes("strong")) return "strong";
+    if (labelLower.includes("solid")) return "solid";
+    if (labelLower.includes("inconsistent")) return "inconsistent";
+    if (labelLower.includes("needs help") || labelLower.includes("low")) return "low";
+    
+    return "solid"; // Default
+  };
+
   if (members.length === 0) {
     return (
       <Card data-slot="card">
@@ -151,17 +172,18 @@ export function TeamPerformanceView({
           onDelete={onMemberDelete}
           onGenerateReview={handleGenerateReview}
           onNavigate={handleNavigate}
-          performanceCategories={performanceCategories}
-          getPerformanceCategory={getPerformanceCategory}
           className="shadow-sm"
         />
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {sortedMembers.map((member) => {
-            const category = getPerformanceCategory(
+            const rawCategory = getPerformanceCategory(
               member.averageRating,
               member.ratingsCount
             );
+            // Map the category to include the variant property
+            const category = mapPerformanceCategory(rawCategory);
+            
             return (
               <MemberCard
                 key={member.id}

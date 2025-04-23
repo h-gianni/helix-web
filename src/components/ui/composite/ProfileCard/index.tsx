@@ -37,7 +37,7 @@ function ProfileCard({
     <Button
       data-slot="button"
       variant="ghost"
-      size="icon"
+      icon
       onClick={onEdit}
       className={cn(editButtonPosition === "footer" && "w-full")}
     >

@@ -165,7 +165,7 @@ export const MobileBottomNav = () => {
                 <BrandLogo />
                 <Button
                   variant="ghost"
-                  size="icon"
+                  icon
                   className="text-foreground hover:text-primary-light"
                   onClick={closeMenu}
                 >

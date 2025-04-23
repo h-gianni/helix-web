@@ -16,20 +16,18 @@ import {
   ChevronRight,
   FileText,
   Trash2,
-  LucideIcon
 } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
-import { PerformanceBadge } from "@/components/ui/core/PerformanceBadge";
+import { PerformanceBadge, PerformanceVariant } from "@/components/ui/core/PerformanceBadge";
+import { TrendBadge, type TrendVariant } from "@/components/ui/core/TrendBadge";
 
-import { PerformanceVariant } from "@/components/ui/core/PerformanceBadge";
-
-// Define the missing PerformanceCategory type
+// Define the PerformanceCategory type with trend property
 export interface PerformanceCategory {
   label: string;
   className: string;
   variant: PerformanceVariant;
-  Icon?: LucideIcon;
+  trend?: TrendVariant;
 }
 
 export interface Team {
@@ -63,7 +61,7 @@ function MemberCard({
   member,
   teamId,
   teams,
-  category, // Fix: Remove underscore to use the category
+  category,
   onDelete,
   onGenerateReview,
   variant = "mobile",
@@ -120,7 +118,7 @@ function MemberCard({
               <Button
                 data-slot="button"
                 variant="ghost"
-                size="icon"
+                icon
                 className="size-8"
                 aria-label="Member actions"
               >
@@ -203,7 +201,7 @@ function MemberCard({
                 <Button
                   data-slot="button"
                   variant="ghost"
-                  size="icon"
+                  icon
                   className="size-8"
                   aria-label="Member actions"
                 >
@@ -246,18 +244,16 @@ function MemberCard({
             ? "flex-col items-center" 
             : "flex-col md:flex-col md:items-center"
         )}>
-          <div className="flex items-center gap-2">
-            {category && (
-              <>
-                {category.Icon && (
-                  <category.Icon className={cn("size-4", category.className)} />
-                )}
-                <span className={cn("text-sm font-medium", category.className)}>
-                  {category.label}
-                </span>
-              </>
-            )}
-          </div>
+          {/* TrendBadge with centralized handling for missing data */}
+          {category && (
+            <TrendBadge
+              variant={category.trend || "stable"}
+              size={variant === "desktop" ? "default" : "sm"}
+              label={category.label}
+              showTooltip
+              noTrendData={!category.trend}
+            />
+          )}
           
           {/* Show performance badge based on rating */}
           <div className="flex items-center">

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Card,
   CardHeader,
@@ -12,9 +12,13 @@ import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
 import { Users, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import TeamActionsDialog from "@/app/dashboard/components/configuration/ConfigurationTeamActionsDialog";
-import StarRating from "../../core/StarRating";
+import StarRating from "@/components/ui/core/StarRating";
 import Image from "next/image";
-import TeamImage from "@/assets/shared/team04.svg";
+import Team01Image from "@/assets/shared/team01.svg";
+import Team02Image from "@/assets/shared/team02.svg";
+import Team03Image from "@/assets/shared/team03.svg";
+import Team04Image from "@/assets/shared/team04.svg";
+import Team05Image from "@/assets/shared/team05.svg";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 
 const TEXT = {
@@ -27,7 +31,7 @@ const TEXT = {
   EDIT: "Edit",
 };
 
-const MAX_AVATARS = 4;
+const MAX_AVATARS = 5;
 
 interface TeamMember {
   id: string;
@@ -70,6 +74,17 @@ export function TeamCard({
   const memberCount = members.length;
   const hasMembers = memberCount > 0;
   const hasPerformanceData = typeof averagePerformance === 'number';
+
+  // Determine which team image to use based on member count
+  const teamImage = useMemo(() => {
+    if (!hasMembers) return Team01Image;
+    
+    if (memberCount === 1) return Team01Image;
+    if (memberCount === 2) return Team02Image;
+    if (memberCount === 3) return Team03Image;
+    if (memberCount === 4) return Team04Image;
+    return Team05Image; // 5+ members
+  }, [memberCount, hasMembers]);
 
   const handleRefineActions = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -140,11 +155,11 @@ export function TeamCard({
 
     return (
       <Image
-        src={TeamImage}
+        src={teamImage}
         alt={`${name} team image`}
         className={cn(
           imageStyles[size],
-          !hasMembers && "opacity-20 transition-opacity"
+          !hasMembers && "opacity-50 transition-opacity"
         )}
       />
     );

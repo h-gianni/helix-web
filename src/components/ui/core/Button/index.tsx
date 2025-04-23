@@ -21,22 +21,42 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
           
         // To be removed
-      secondary:
-        "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
       },
       size: {
         default: "h-10 px-4 text-sm",
         sm: "h-8 px-3 text-sm",
         lg: "h-12 rounded-md px-6 text-base",
-        icon: "size-9 rounded-full",
         
         // To be removed
         xl: "h-12 rounded-md px-8 text-base",
       },
+      icon: {
+        true: "",
+      },
     },
+    compoundVariants: [
+      {
+        icon: true,
+        size: "default",
+        className: "!size-10 p-0",
+      },
+      {
+        icon: true,
+        size: "sm",
+        className: "!size-8 p-0",
+      },
+      {
+        icon: true,
+        size: "lg",
+        className: "!size-12 p-0",
+      },
+    ],
     defaultVariants: {
       variant: "default",
       size: "default",
+      icon: false,
     },
   }
 );
@@ -45,14 +65,15 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  icon?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, icon, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, icon, className }))}
         ref={ref}
         {...props}
       />

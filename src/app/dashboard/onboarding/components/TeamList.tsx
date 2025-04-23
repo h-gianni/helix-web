@@ -84,7 +84,7 @@ export default function TeamList<T extends ListItem>({
                     {!isSelected && (
                       <Button
                         variant="ghost"
-                        size="icon"
+                        icon
                         onClick={(e) => {
                           e.stopPropagation();
                           onSelectItem(item);
@@ -108,7 +108,7 @@ export default function TeamList<T extends ListItem>({
                         <PopoverTrigger asChild>
                           <Button
                             variant="ghost"
-                            size="icon"
+                            icon
                             onClick={(e) => {
                               e.stopPropagation();
                             }}

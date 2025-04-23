@@ -159,7 +159,7 @@ export const usePerformersStore = create<PerformersStore>((set) => ({
         label: "No trend available",
         minRating: 0,
         maxRating: 0,
-        className: "text-sm font-normal",
+        className: "text-unavailable",
         Icon: TrendingUp,
       };
     }

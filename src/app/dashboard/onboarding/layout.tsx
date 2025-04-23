@@ -22,9 +22,9 @@ export default function OnboardingLayout({ children }: OnboardingLayoutProps) {
       {!isIntroPage && <ProgressBar />}
       
       <div className={cn("fade-in min-h-screen flex flex-col")}>
-        <main className="flex-1 pb-24 w-full mx-auto">
+        <div className="flex-1 pb-24 w-full mx-auto">
           {children}
-        </main>
+        </div>
       </div>
     </div>
   );

@@ -99,7 +99,7 @@ function OrgActionsSummary({
             </div>
             Team&apos;s actions
           </CardTitle>
-          <Button data-slot="button" variant="ghost" size="icon" onClick={onEdit}>
+          <Button data-slot="button" variant="ghost" icon onClick={onEdit}>
             <Pen />
           </Button>
         </CardHeader>

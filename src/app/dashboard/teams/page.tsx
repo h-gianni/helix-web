@@ -28,30 +28,29 @@ import { cn } from "@/lib/utils";
 function TeamsGrid({ teams }: { teams: TeamResponse[] }) {
   const router = useRouter();
 
-
-
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {teams.map((team) => {
-          console.log('teams in card----------', team)
+        console.log("teams in card----------", team);
         return (
           <TeamCard
             key={team.id}
             id={team.id}
             name={team.name}
             functions={team.teamFunction ? [team.teamFunction.name] : []}
-            members={Array.isArray(team.members) 
-              ? team.members.map((member) => ({
-                  ...member,
-                  name: member.name ?? "Unknown",
-                }))
-              : []
+            members={
+              Array.isArray(team.members)
+                ? team.members.map((member) => ({
+                    ...member,
+                    name: member.name ?? "Unknown",
+                  }))
+                : []
             }
             averagePerformance={team.averagePerformance}
             size="lg"
             onClick={() => router.push(`/dashboard/teams/${team.id}`)}
           />
-        )
+        );
       })}
     </div>
   );
@@ -80,7 +79,7 @@ function TeamsContent({ onCreateTeam }: { onCreateTeam: () => void }) {
         </Alert>
         <Button
           data-slot="button"
-          variant="secondary"
+          variant="neutral"
           onClick={() => refetch()}
           className="mt-4"
         >

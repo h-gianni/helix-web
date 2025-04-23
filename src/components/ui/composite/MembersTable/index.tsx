@@ -161,7 +161,7 @@ function MembersTable({
                         <Button
                           data-slot="button"
                           variant="ghost"
-                          size="icon"
+                          icon
                           className="size-8"
                           aria-label="Member actions"
                         >

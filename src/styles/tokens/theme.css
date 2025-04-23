@@ -405,7 +405,7 @@
   --color-border-weak: var(--neutral-100);
   --color-border: var(--neutral-200);
   --color-border-strong: var(--neutral-300);
-  --color-input: var(--neutral-400);
+  --color-input: var(--neutral-300);
   --color-ring: var(--primary-500);
 
   /* Surface colors */
@@ -417,7 +417,11 @@
 
   /* Interactive/status elements */
   --color-primary: var(--primary-500);
-  --color-primary-foreground: var(--white);
+  --color-primary-foreground: var(--primary-600);
+  --color-secondary: var(--secondary-500);
+  --color-secondary-foreground: var(--secondary-600);
+  --color-tertiary: var(--tertiary-500);
+  --color-tertiary-foreground: var(--tertiary-600);
   --color-neutral: var(--neutral-100);
   --color-neutral-foreground: var(--neutral-900);
   --color-info: var(--info-500);

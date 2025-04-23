@@ -317,7 +317,7 @@ const TeamSetup = () => {
                 data-slot="button"
                 type="button"
                 variant="ghost"
-                size="icon"
+                icon
                 className="absolute top-2 right-2"
                 onClick={() => removeTeam(team.id)}
               >
