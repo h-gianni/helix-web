@@ -2,7 +2,7 @@
 
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/core/Button";
 import {
@@ -16,9 +16,18 @@ import {
 import { Badge } from "@/components/ui/core/Badge";
 import { Card } from "@/components/ui/core/Card";
 import { BrandLogo } from "@/components/logo/BrandLogo";
+import { useSetupStore } from "@/store/setup-store";
 
 export default function OnboardingIntroPage() {
   const router = useRouter();
+  const isSetupComplete = useSetupStore((state) => state.isSetupComplete());
+
+  // Redirect to dashboard if onboarding is already complete
+  useEffect(() => {
+    if (isSetupComplete) {
+      router.push("/dashboard");
+    }
+  }, [isSetupComplete, router]);
 
   // Define steps without completion status
   const setupSteps = [
@@ -71,6 +80,11 @@ export default function OnboardingIntroPage() {
     // Always start at the beginning
     router.push("/dashboard/onboarding/organisation");
   };
+
+  // Only render the intro content if onboarding is not complete
+  if (isSetupComplete) {
+    return null; // Return empty during redirect to avoid flash of content
+  }
 
   return (
     <div>
