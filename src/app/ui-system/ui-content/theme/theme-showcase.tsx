@@ -3,11 +3,22 @@
 import React from "react";
 import { useTheme } from "next-themes";
 import ShowcaseLayout from "@/app/ui-system/components/ShowcaseLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/core/Card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/core/Card";
 import { Button } from "@/components/ui/core/Button";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/core/Tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/core/Tabs";
 import { Moon, Sun, Laptop } from "lucide-react";
 
 export default function ThemeShowcase() {
@@ -22,16 +33,17 @@ export default function ThemeShowcase() {
         {/* Introduction Section */}
         <section className="prose max-w-none">
           <p className="text-lg">
-            The theme system provides support for light and dark modes, with the ability to 
-            respect the user's system preferences. This page demonstrates the various theme 
-            components and how they can be integrated into your application.
+            The theme system provides support for light and dark modes, with the
+            ability to respect the user&#39;s system preferences. This page
+            demonstrates the various theme components and how they can be
+            integrated into your application.
           </p>
         </section>
 
         {/* Theme Toggles Section */}
         <section className="space-y-6">
           <h2 className="heading-2">Theme Controls</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
@@ -46,7 +58,9 @@ export default function ThemeShowcase() {
                   Current theme: <span className="font-medium">{theme}</span>
                 </div>
                 <p className="text-sm">
-                  Import and use <code className="bg-muted rounded p-1">ThemeToggle</code> for a simple switch between light and dark modes.
+                  Import and use{" "}
+                  <code className="bg-muted rounded p-1">ThemeToggle</code> for
+                  a simple switch between light and dark modes.
                 </p>
               </CardContent>
             </Card>
@@ -64,7 +78,9 @@ export default function ThemeShowcase() {
                   Current theme: <span className="font-medium">{theme}</span>
                 </div>
                 <p className="text-sm">
-                  Import and use <code className="bg-muted rounded p-1">ThemeSwitcher</code> for a dropdown with more theme options.
+                  Import and use{" "}
+                  <code className="bg-muted rounded p-1">ThemeSwitcher</code>{" "}
+                  for a dropdown with more theme options.
                 </p>
               </CardContent>
             </Card>
@@ -74,7 +90,7 @@ export default function ThemeShowcase() {
         {/* Manual Theme Selection */}
         <section className="space-y-6">
           <h2 className="heading-2">Manual Theme Selection</h2>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Set Theme Programmatically</CardTitle>
@@ -84,7 +100,7 @@ export default function ThemeShowcase() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-4 justify-center">
-                <Button 
+                <Button
                   onClick={() => setTheme("light")}
                   variant={theme === "light" ? "primary" : "outline"}
                   className="flex items-center gap-2"
@@ -92,8 +108,8 @@ export default function ThemeShowcase() {
                   <Sun className="h-4 w-4" />
                   Light Mode
                 </Button>
-                
-                <Button 
+
+                <Button
                   onClick={() => setTheme("dark")}
                   variant={theme === "dark" ? "primary" : "outline"}
                   className="flex items-center gap-2"
@@ -101,8 +117,8 @@ export default function ThemeShowcase() {
                   <Moon className="h-4 w-4" />
                   Dark Mode
                 </Button>
-                
-                <Button 
+
+                <Button
                   onClick={() => setTheme("system")}
                   variant={theme === "system" ? "primary" : "outline"}
                   className="flex items-center gap-2"
@@ -111,9 +127,11 @@ export default function ThemeShowcase() {
                   System Theme
                 </Button>
               </div>
-              
+
               <div className="mt-6 text-center text-sm text-muted-foreground">
-                Use <code className="bg-muted rounded p-1">useTheme()</code> from next-themes to access and control the current theme programmatically.
+                Use <code className="bg-muted rounded p-1">useTheme()</code>{" "}
+                from next-themes to access and control the current theme
+                programmatically.
               </div>
             </CardContent>
           </Card>
@@ -122,31 +140,38 @@ export default function ThemeShowcase() {
         {/* Theme Preview Section */}
         <section className="space-y-6">
           <h2 className="heading-2">Theme Preview</h2>
-          
+
           <Tabs defaultValue="components">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="components">UI Components</TabsTrigger>
               <TabsTrigger value="colors">Color Tokens</TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="components" className="space-y-4 pt-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Sample Card */}
                 <Card>
                   <CardHeader>
                     <CardTitle>Card Component</CardTitle>
-                    <CardDescription>Cards adapt to the current theme</CardDescription>
+                    <CardDescription>
+                      Cards adapt to the current theme
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p>This content will appear differently in light and dark modes.</p>
+                    <p>
+                      This content will appear differently in light and dark
+                      modes.
+                    </p>
                   </CardContent>
                 </Card>
-                
+
                 {/* Sample Buttons */}
                 <Card>
                   <CardHeader>
                     <CardTitle>Buttons</CardTitle>
-                    <CardDescription>Buttons adapt to the current theme</CardDescription>
+                    <CardDescription>
+                      Buttons adapt to the current theme
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="flex flex-wrap gap-2">
                     <Button variant="primary">Primary</Button>
@@ -155,17 +180,21 @@ export default function ThemeShowcase() {
                     <Button variant="destructive">Destructive</Button>
                   </CardContent>
                 </Card>
-                
+
                 {/* Background & Text */}
                 <Card>
                   <CardHeader>
                     <CardTitle>Background & Text</CardTitle>
-                    <CardDescription>Colors adapt to maintain contrast</CardDescription>
+                    <CardDescription>
+                      Colors adapt to maintain contrast
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
                       <p className="text-foreground">Default text color</p>
-                      <p className="text-foreground-strong">Strong text color</p>
+                      <p className="text-foreground-strong">
+                        Strong text color
+                      </p>
                       <p className="text-foreground-weak">Weak text color</p>
                       <p className="text-muted-foreground">Muted text color</p>
                     </div>
@@ -173,12 +202,14 @@ export default function ThemeShowcase() {
                 </Card>
               </div>
             </TabsContent>
-            
+
             <TabsContent value="colors" className="pt-4">
               <Card>
                 <CardHeader>
                   <CardTitle>Color Tokens</CardTitle>
-                  <CardDescription>See how color tokens adapt between themes</CardDescription>
+                  <CardDescription>
+                    See how color tokens adapt between themes
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -187,37 +218,37 @@ export default function ThemeShowcase() {
                       <div className="h-12 rounded-md bg-background border"></div>
                       <p className="text-xs font-medium">Background</p>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="h-12 rounded-md bg-card border"></div>
                       <p className="text-xs font-medium">Card</p>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="h-12 rounded-md bg-primary"></div>
                       <p className="text-xs font-medium">Primary</p>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="h-12 rounded-md bg-neutral-100 dark:bg-neutral-800"></div>
                       <p className="text-xs font-medium">Neutral</p>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="h-12 rounded-md bg-accent"></div>
                       <p className="text-xs font-medium">Accent</p>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="h-12 rounded-md bg-destructive"></div>
                       <p className="text-xs font-medium">Destructive</p>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="h-12 rounded-md bg-success-500"></div>
                       <p className="text-xs font-medium">Success</p>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <div className="h-12 rounded-md bg-warning-500"></div>
                       <p className="text-xs font-medium">Warning</p>
@@ -232,7 +263,7 @@ export default function ThemeShowcase() {
         {/* Implementation Guide */}
         <section className="space-y-6">
           <h2 className="heading-2">Implementation Guide</h2>
-          
+
           <Card>
             <CardHeader>
               <CardTitle>Adding Theme Support</CardTitle>
@@ -244,62 +275,60 @@ export default function ThemeShowcase() {
               <div className="space-y-2">
                 <h3 className="text-lg font-medium">1. Setup ThemeProvider</h3>
                 <p className="text-sm">
-                  Add the ThemeProvider to your root layout component to enable theme switching throughout your application.
+                  Add the ThemeProvider to your root layout component to enable
+                  theme switching throughout your application.
                 </p>
-                <div className="bg-muted p-3 rounded-md text-sm font-mono">
-                  &lt;ThemeProvider
-                  <br />
-                  &nbsp;&nbsp;attribute="class"
-                  <br />
-                  &nbsp;&nbsp;defaultTheme="system"
-                  <br />
-                  &nbsp;&nbsp;enableSystem
-                  <br />
-                  &gt;
-                  <br />
-                  &nbsp;&nbsp;{'{children}'}
-                  <br />
-                  &lt;/ThemeProvider&gt;
-                </div>
+                <pre className="bg-muted p-3 rounded-md text-sm font-mono whitespace-pre overflow-x-auto">
+                  {`<ThemeProvider
+  attribute="class"
+  defaultTheme="system"
+  enableSystem
+>
+  {children}
+</ThemeProvider>`}
+                </pre>
               </div>
-              
+
               <div className="space-y-2">
-                <h3 className="text-lg font-medium">2. Add Theme Switcher Component</h3>
+                <h3 className="text-lg font-medium">
+                  2. Add Theme Switcher Component
+                </h3>
                 <p className="text-sm">
-                  Add one of the theme switching components to your application header or navbar.
+                  Add one of the theme switching components to your application
+                  header or navbar.
                 </p>
-                <div className="bg-muted p-3 rounded-md text-sm font-mono">
-                  import {'{ ThemeSwitcher }'} from "@/components/ThemeSwitcher";<br />
-                  <br />
-                  // In your header component<br />
-                  &lt;header className="flex justify-between"&gt;<br />
-                  &nbsp;&nbsp;&lt;Logo /&gt;<br />
-                  &nbsp;&nbsp;&lt;ThemeSwitcher /&gt;<br />
-                  &lt;/header&gt;
-                </div>
+                <pre className="bg-muted p-3 rounded-md text-sm font-mono whitespace-pre overflow-x-auto">
+                  {`import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+
+// In your header component
+<header className="flex justify-between">
+  <Logo />
+  <ThemeSwitcher />
+</header>`}
+                </pre>
               </div>
-              
+
               {/* <div className="space-y-2">
                 <h3 className="text-lg font-medium">3. Access Theme in Components</h3>
                 <p className="text-sm">
                   Use the useTheme hook to access or change the theme in any client component.
                 </p>
-                <div className="bg-muted p-3 rounded-md text-sm font-mono">
-                  "use client";<br />
-                  <br />
-                  import {'{ useTheme }'} from "next-themes";<br />
-                  <br />
-                  function MyComponent() {'{'}<br />
-                  &nbsp;&nbsp;const {'{ theme, setTheme }'} = useTheme();<br />
-                  <br />
-                  &nbsp;&nbsp;return (<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;div&gt;<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Current theme: {'{theme}'}<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;button onClick={() =&gt; setTheme("dark")}&gt;Dark&lt;/button&gt;<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;&lt;/div&gt;<br />
-                  &nbsp;&nbsp;);<br />
-                  {'}'}
-                </div>
+                <pre className="bg-muted p-3 rounded-md text-sm font-mono whitespace-pre overflow-x-auto">
+                  {`"use client";
+
+import { useTheme } from "next-themes";
+
+function MyComponent() {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <div>
+      Current theme: {theme}
+      <button onClick={() => setTheme("dark")}>Dark</button>
+    </div>
+  );
+}`}
+                </pre>
               </div> */}
             </CardContent>
           </Card>
