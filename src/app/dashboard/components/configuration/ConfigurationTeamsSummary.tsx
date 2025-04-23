@@ -173,7 +173,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
       <CardContent data-slot="card-content">
         {!teams || teams.length === 0 ? (
           <div className="text-center py-6">
-            <p className="text-foreground-muted">
+            <p className="text-unavailable">
               No teams have been created yet.
             </p>
           </div>

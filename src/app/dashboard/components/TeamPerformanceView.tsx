@@ -153,7 +153,7 @@ export function TeamPerformanceView({
           data-slot="card-content"
           className="flex items-center justify-center py-8"
         >
-          <p>No team members found.</p>
+          <p className="text-unavailable">No team members found.</p>
         </CardContent>
       </Card>
     );

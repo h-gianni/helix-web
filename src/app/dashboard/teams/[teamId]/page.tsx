@@ -237,13 +237,6 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
               >
                 <DropdownMenuItem
                   data-slot="dropdown-menu-item"
-                  onClick={() => setEditModalOpen(true)}
-                >
-                  <Settings />
-                  Team Settings
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  data-slot="dropdown-menu-item"
                   onClick={() => setDeleteDialogOpen(true)}
                   className="text-destructive focus:text-destructive"
                 >
@@ -256,7 +249,7 @@ export default function TeamDetailsPage({ params }: TeamDetailsPageProps) {
         }
       />
 
-      <div className="bg-neutral-100 h-64 flex flex-col items-center justify-center my-2 rounded-xl">Team Statistics</div>
+      <div className="bg-white h-64 flex flex-col items-center justify-center my-2 rounded-xl shadow-sm border border-border-weak">Team Statistics</div>
 
       {!team.members?.length || !performanceData?.members?.length ? (
         <EmptyTeamView onAddMember={() => setAddMemberModalOpen(true)} />

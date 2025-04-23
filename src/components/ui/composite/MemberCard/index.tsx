@@ -3,20 +3,8 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "@/components/ui/core/Card";
-import { Button } from "@/components/ui/core/Button";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/core/DropdownMenu";
-import {
-  MoreVertical,
-  ChevronRight,
-  FileText,
-  Trash2,
-} from "lucide-react";
+// Removed ChevronRight import
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
 import { PerformanceBadge, PerformanceVariant } from "@/components/ui/core/PerformanceBadge";
@@ -50,8 +38,6 @@ export interface MemberCardProps extends React.HTMLAttributes<HTMLDivElement> {
   teamId?: string;
   teams?: Team[];
   category?: PerformanceCategory;
-  onDelete?: (member: Member) => void;
-  onGenerateReview?: (member: Member) => void;
   variant?: "mobile" | "desktop";
   onNavigate?: (path: string) => void;
 }
@@ -62,8 +48,6 @@ function MemberCard({
   teamId,
   teams,
   category,
-  onDelete,
-  onGenerateReview,
   variant = "mobile",
   onNavigate,
   ...props
@@ -79,9 +63,10 @@ function MemberCard({
   const effectiveTeamId = teamId ?? member.teamId;
   const encodedTeamId = encodeURIComponent(effectiveTeamId);
   const encodedMemberId = encodeURIComponent(member.id);
+  const detailPath = `/dashboard/teams/${encodedTeamId}/members/${encodedMemberId}`;
 
-  const handleViewDetails = () => {
-    const path = `/dashboard/teams/${encodedTeamId}/members/${encodedMemberId}`;
+  const handleCardClick = () => {
+    const path = detailPath;
     if (onNavigate) {
       onNavigate(path);
     } else {
@@ -89,15 +74,24 @@ function MemberCard({
     }
   };
 
-  // Use responsive classes instead of JS-based media queries
   return (
     <Card
       data-slot="card"
       className={cn(
-        "flex flex-col",
+        "flex flex-col cursor-pointer transition-shadow hover:shadow-md",
         variant === "desktop" ? "relative" : "md:relative",
         className
       )}
+      onClick={handleCardClick}
+      tabIndex={0}
+      role="button"
+      aria-label={`View details for ${member.name}`}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleCardClick();
+        }
+      }}
       {...props}
     >
       <CardHeader 
@@ -109,47 +103,6 @@ function MemberCard({
             : "md:flex md:flex-col md:items-center md:pt-6"
         )}
       >
-        {/* Desktop dropdown positioning - always show for desktop variant, show on md+ for mobile variant */}
-        <div className={cn(
-          variant === "desktop" ? "absolute top-2 right-2" : "hidden md:block md:absolute md:top-2 md:right-2"
-        )}>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                data-slot="button"
-                variant="ghost"
-                icon
-                className="size-8"
-                aria-label="Member actions"
-              >
-                <MoreVertical className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent data-slot="dropdown-content" align="end">
-              <DropdownMenuItem data-slot="dropdown-item" onClick={handleViewDetails}>
-                <ChevronRight className="mr-1" />
-                View Details
-              </DropdownMenuItem>
-              {onGenerateReview && member && (
-                <DropdownMenuItem data-slot="dropdown-item" onClick={() => onGenerateReview(member)}>
-                  <FileText className="mr-1" />
-                  Generate Performance Review
-                </DropdownMenuItem>
-              )}
-              {onDelete && (
-                <DropdownMenuItem
-                  data-slot="dropdown-item"
-                  onClick={() => onDelete(member)}
-                  className="text-destructive focus:text-destructive"
-                >
-                  <Trash2 className="mr-1" />
-                  Delete
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        
         <div className={cn(
           "flex",
           variant === "desktop" 
@@ -180,57 +133,13 @@ function MemberCard({
             <div className={cn(
               variant === "desktop" ? "text-center" : "md:text-center"
             )}>
-              <h3 className="heading-3">
-                <button
-                  onClick={handleViewDetails}
-                  className="hover:underline"
-                >
-                  {member.name}
-                </button>
+              <h3 className="heading-3 group-hover:underline">
+                {member.name}
               </h3>
               <p className="text-sm text-foreground-weak">
                 {member.title || "No title"}
               </p>
             </div>
-          </div>
-          
-          {/* Mobile dropdown - hide on md+ breakpoint */}
-          <div className={variant === "desktop" ? "hidden" : "block md:hidden"}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  data-slot="button"
-                  variant="ghost"
-                  icon
-                  className="size-8"
-                  aria-label="Member actions"
-                >
-                  <MoreVertical className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent data-slot="dropdown-content" align="end">
-                <DropdownMenuItem data-slot="dropdown-item" onClick={handleViewDetails}>
-                  <ChevronRight className="mr-1" />
-                  View Details
-                </DropdownMenuItem>
-                {onGenerateReview && (
-                  <DropdownMenuItem data-slot="dropdown-item" onClick={() => onGenerateReview(member)}>
-                    <FileText className="mr-1" />
-                    Generate Performance Review
-                  </DropdownMenuItem>
-                )}
-                {onDelete && (
-                  <DropdownMenuItem
-                    data-slot="dropdown-item"
-                    onClick={() => onDelete(member)}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="mr-1" />
-                    Delete
-                  </DropdownMenuItem>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </div>
       </CardHeader>
@@ -239,7 +148,7 @@ function MemberCard({
         className="flex-1 space-y-4"
       >
         <div className={cn(
-          "flex items-start justify-between gap-2 md:gap-3",
+          "flex items-start justify-between gap-2",
           variant === "desktop" 
             ? "flex-col items-center" 
             : "flex-col md:flex-col md:items-center"

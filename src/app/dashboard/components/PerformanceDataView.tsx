@@ -141,7 +141,7 @@ export default function PerformanceDataView({ performers, teams }: PerformanceDa
             </div>
             <div className="p-4 border rounded-md text-center">
               <div className="text-2xl font-bold">{performers.filter(p => p.ratingsCount === 0).length}</div>
-              <div className="text-sm text-muted-foreground">Not Rated</div>
+              <div className="text-unavailable">Not Rated</div>
             </div>
           </div>
         </CardContent>

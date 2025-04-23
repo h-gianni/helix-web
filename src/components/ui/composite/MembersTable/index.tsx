@@ -27,8 +27,9 @@ import {
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
 import { PerformanceBadge } from "@/components/ui/core/PerformanceBadge";
+import { TrendBadge, type TrendVariant } from "@/components/ui/core/TrendBadge";
 
-// Types updated to remove PerformanceCategory dependency
+// Updated types to include trend information
 export interface Team {
   id: string;
   name: string;
@@ -42,6 +43,7 @@ export interface Member {
   ratingsCount: number;
   teamId: string;
   teamName: string;
+  trend?: TrendVariant; // Added trend property
 }
 
 type MembersTableDOMProps = React.HTMLAttributes<HTMLDivElement>;
@@ -86,14 +88,24 @@ function MembersTable({
         {showTableHead && (
           <TableHeader data-slot="table-header">
             <TableRow data-slot="table-row">
-              {showAvatar && <TableHead data-slot="table-head" className="w-10 px-0" />}
-              <TableHead data-slot="table-head" className="pl-2">Name</TableHead>
-              {showTeamColumn && <TableHead data-slot="table-head">Team</TableHead>}
+              {showAvatar && (
+                <TableHead data-slot="table-head" className="w-10 px-0" />
+              )}
+              <TableHead data-slot="table-head" className="pl-2">
+                Name
+              </TableHead>
+              {showTeamColumn && (
+                <TableHead data-slot="table-head">Team</TableHead>
+              )}
               <TableHead data-slot="table-head">Job Title</TableHead>
-              <TableHead data-slot="table-head">Seniority</TableHead>
+              <TableHead data-slot="table-head">Quarterly Trend</TableHead>
               <TableHead data-slot="table-head">Performance</TableHead>
-              <TableHead data-slot="table-head" className="w-[200px]">Scores</TableHead>
-              {showActions && <TableHead data-slot="table-head" className="w-10" />}
+              <TableHead data-slot="table-head" className="w-[200px]">
+                Scores
+              </TableHead>
+              {showActions && (
+                <TableHead data-slot="table-head" className="w-10" />
+              )}
             </TableRow>
           </TableHeader>
         )}
@@ -103,14 +115,20 @@ function MembersTable({
             const detailsPath = `/dashboard/teams/${encodeURIComponent(
               effectiveTeamId
             )}/members/${encodeURIComponent(member.id)}`;
-            const teamName =
-              teams.find((team) => team.id === member.teamId)?.name ||
-              "No team";
+            const teamName = teams.find(
+              (team) => team.id === member.teamId
+            )?.name;
+            const teamNameDisplay = teamName || (
+              <span className="text-unavailable">No team</span>
+            );
 
             return (
               <TableRow data-slot="table-row" key={member.id}>
                 {showAvatar && (
-                  <TableCell data-slot="table-cell" className="px-2">
+                  <TableCell
+                    data-slot="table-cell"
+                    className="px-2 align-middle"
+                  >
                     <Avatar data-slot="avatar" className="size-8">
                       <AvatarFallback data-slot="avatar-fallback">
                         {member.name.charAt(0).toUpperCase()}
@@ -118,7 +136,13 @@ function MembersTable({
                     </Avatar>
                   </TableCell>
                 )}
-                <TableCell data-slot="table-cell" className={cn("w-[40%] pl-2 align-middle", !showTeamColumn && "w-[55%]")}>
+                <TableCell
+                  data-slot="table-cell"
+                  className={cn(
+                    "w-[30%] pl-2 align-middle",
+                    !showTeamColumn && "w-[40%]"
+                  )}
+                >
                   <button
                     onClick={() => onNavigate?.(detailsPath)}
                     className="text-sm font-semibold text-foreground-strong hover:underline"
@@ -127,25 +151,47 @@ function MembersTable({
                   </button>
                 </TableCell>
                 {showTeamColumn && (
-                  <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
-                    {teamName}
+                  <TableCell
+                    data-slot="table-cell"
+                    className="w-[15%] whitespace-nowrap align-middle"
+                  >
+                    {teamNameDisplay}
                   </TableCell>
                 )}
-                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
-                  {member.title || "No title"}
+                <TableCell
+                  data-slot="table-cell"
+                  className="w-[15%] whitespace-nowrap align-middle"
+                >
+                  {member.title || (
+                    <span className="text-unavailable">No title</span>
+                  )}
                 </TableCell>
-                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
-                  Seniority grade
+                <TableCell
+                  data-slot="table-cell"
+                  className="w-[15%] whitespace-nowrap align-middle"
+                >
+                  <TrendBadge
+                    variant={member.trend || "stable"}
+                    size="sm"
+                    showTooltip
+                    noTrendData={!member.trend}
+                  />
                 </TableCell>
-                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
-                  <PerformanceBadge 
-                    value={member.averageRating} 
+                <TableCell
+                  data-slot="table-cell"
+                  className="w-[15%] whitespace-nowrap align-middle"
+                >
+                  <PerformanceBadge
+                    value={member.averageRating}
                     ratingsCount={member.ratingsCount}
-                    showTooltip 
+                    showTooltip
                     size="base"
                   />
                 </TableCell>
-                <TableCell data-slot="table-cell" className="w-[200px] whitespace-nowrap align-middle">
+                <TableCell
+                  data-slot="table-cell"
+                  className="w-[200px] whitespace-nowrap align-middle"
+                >
                   <StarRating
                     value={member.averageRating}
                     disabled
@@ -155,7 +201,10 @@ function MembersTable({
                   />
                 </TableCell>
                 {showActions && (
-                  <TableCell data-slot="table-cell" className="w-0 pr-2 align-middle">
+                  <TableCell
+                    data-slot="table-cell"
+                    className="w-0 pr-2 align-middle"
+                  >
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -168,7 +217,10 @@ function MembersTable({
                           <MoreVertical className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent data-slot="dropdown-content" align="end">
+                      <DropdownMenuContent
+                        data-slot="dropdown-content"
+                        align="end"
+                      >
                         <DropdownMenuItem
                           data-slot="dropdown-item"
                           onClick={() => onNavigate?.(detailsPath)}

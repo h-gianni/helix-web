@@ -14,12 +14,15 @@ const SelectValue = SelectPrimitive.Value
 
 const SelectTrigger = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
+    noBorder?: boolean
+  }
+>(({ className, children, noBorder = false, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex gap-2 h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm hover:shadow-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      "flex gap-2 h-9 w-full items-center justify-between whitespace-nowrap rounded-md border bg-transparent px-3 py-2 text-sm hover:shadow-sm ring-offset-background data-[placeholder]:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      noBorder ? "border-transparent" : "border-input",
       className
     )}
     {...props}

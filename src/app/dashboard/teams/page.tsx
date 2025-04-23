@@ -125,9 +125,9 @@ export default function TeamsPage() {
             <Button
               data-slot="button"
               onClick={() => toggleTeamModal()}
-              variant="default"
+              variant="outline"
             >
-              <Plus className="size-4" /> Create Team
+              <Plus /> Create Team
             </Button>
           )
         }

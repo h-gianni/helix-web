@@ -42,13 +42,17 @@ const performanceTrends = [
 ];
 
 const TeamAndMembersComponents = () => {
-  // Memoized table data for better performance
+  // Memoized table data for better performance with added trend data
   const tableMemberData = useMemo(
     () =>
-      MEMBERS_DATA.map((member) => ({
+      MEMBERS_DATA.map((member, index) => ({
         ...member,
         averageRating: member.averageRating || 0,
         ratingsCount: member.ratingsCount || 0,
+        // Add trend data to each member based on their index
+        trend: index < performanceTrends.length 
+          ? performanceTrends[index] 
+          : performanceTrends[index % performanceTrends.length],
       })),
     []
   );
@@ -60,32 +64,6 @@ const TeamAndMembersComponents = () => {
     <div className="space-y-8">
       {/* Team Cards Section */}
       <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {TEAMS.slice(0, 4).map((team) => {
-            // Assign different member counts to showcase variety
-            let teamMembers = EMPTY_TEAM_MEMBERS;
-            if (team.id === "team-1") {
-              teamMembers = getTeamMembers("team-1", 8); // Engineering team with 8 members
-            } else if (team.id === "team-3") {
-              teamMembers = getTeamMembers("team-3", 6); // Design team with 6 members
-            } else if (team.id !== "team-6") {
-              teamMembers = getTeamMembers(team.id, 4); // Standard 4 members
-            }
-
-            return (
-              <TeamCard
-                key={team.id}
-                id={team.id}
-                name={team.name}
-                functions={team.functions}
-                members={teamMembers}
-                averagePerformance={team.id === "team-3" ? undefined : 4.5}
-                size="sm"
-                onClick={() => console.log(`Clicked team: ${team.name}`)}
-              />
-            );
-          })}
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {TEAMS.slice(0, 3).map((team) => {
@@ -187,10 +165,6 @@ const TeamAndMembersComponents = () => {
                   variant: performanceVariant,
                   trend: performanceTrends[index]
                 }}
-                onDelete={(m) => console.log(`Delete member: ${m.name}`)}
-                onGenerateReview={(m) =>
-                  console.log(`Generate review for: ${m.name}`)
-                }
                 onNavigate={(path) => console.log(`Navigate to: ${path}`)}
               />
             );

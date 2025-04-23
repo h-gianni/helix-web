@@ -163,7 +163,7 @@ export function PerformanceBadge({
             size === "lg" ? "size-2.5" : "size-2"
           )} 
         />
-        <span>Not Rated</span>
+        <span className="text-unavailable">Not Rated</span>
       </Badge>
     );
   }

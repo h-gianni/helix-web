@@ -117,7 +117,7 @@ function AppSidebar() {
       <SidebarContent className="px-2">
         {/* New Performance Group */}
         <SidebarGroup>
-          {/* <SidebarGroupLabel>Actions</SidebarGroupLabel> */}
+          <SidebarGroupLabel>Core Actions</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -125,6 +125,7 @@ function AppSidebar() {
                   <button
                     type="button"
                     onClick={() => openRatingModal(true)}
+                    className=""
                   >
                     <Star className="size-4 shrink-0" />
                     <span>Score Performance</span>
@@ -146,9 +147,9 @@ function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarSeparator />
+        
         <SidebarGroup>
-          {/* <SidebarGroupLabel>Management</SidebarGroupLabel> */}
+          <SidebarGroupLabel>Management</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {renderNavItems().map((item) => (
