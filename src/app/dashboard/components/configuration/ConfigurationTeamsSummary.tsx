@@ -174,7 +174,7 @@ const TeamsSummary: React.FC<TeamsSummaryProps> = ({
         {!teams || teams.length === 0 ? (
           <div className="text-center py-6">
             <p className="text-unavailable">
-              No teams have been created yet.
+              No teams have been created.
             </p>
           </div>
         ) : (

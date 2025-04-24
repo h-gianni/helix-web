@@ -205,7 +205,7 @@ export default function MemberDetailsPage() {
               </TabsContent>
 
               <TabsContent value="feedbacks">
-                <div className="missing-content">No feedback yet.</div>
+                <div className="missing-content">No feedback.</div>
               </TabsContent>
 
               <TabsContent value="reviews">

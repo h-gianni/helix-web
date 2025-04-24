@@ -34,12 +34,11 @@ import { TrendBadge, TrendVariant } from "@/components/ui/core/TrendBadge";
 import StarRating from "@/components/ui/core/StarRating";
 
 // Create simple trend data for demonstration
-const performanceTrends = [
-  "up" as TrendVariant,
-  "stable" as TrendVariant,
-  "stable" as TrendVariant,
-  "down" as TrendVariant,
-  "down" as TrendVariant,
+const performanceTrends: TrendVariant[] = [
+  "up",
+  "stable",
+  "down",
+  "unavailable",
 ];
 
 const TeamAndMembersComponents = () => {
@@ -151,13 +150,17 @@ const TeamAndMembersComponents = () => {
       <div className="space-y-4">
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {tableMemberData.slice(0, 3).map((member) => {
-            // Empty placeholder since we no longer need to pass the category
-            const placeholderCategory: PerformanceCategory = {
-              label: "",
+          {tableMemberData.slice(0, 3).map((member, index) => {
+            const performanceVariant = getPerformanceVariant(member.averageRating);
+            
+            // Create a category object that matches our updated interface
+            const category: PerformanceCategory = {
+              label: getPerformanceLabel(performanceVariant),
               minRating: 0,
               maxRating: 5,
-              Icon: () => null,
+              Icon: null,
+              variant: performanceVariant,
+              trend: performanceTrends[index % performanceTrends.length]
             };
 
             return (
@@ -165,12 +168,7 @@ const TeamAndMembersComponents = () => {
                 key={member.id}
                 member={member}
                 teams={TEAMS}
-                category={{
-                  label: "", // Will be set by TrendBadge component
-                  className: "", // Will be set by TrendBadge component
-                  variant: performanceVariant,
-                  trend: performanceTrends[index]
-                }}
+                category={category}
                 onNavigate={(path) => console.log(`Navigate to: ${path}`)}
               />
             );
@@ -187,12 +185,16 @@ const TeamAndMembersComponents = () => {
               ratingsCount: 15,
             };
 
-            // Empty placeholder since we no longer need to pass the category
-            const placeholderCategory = {
-              label: "",
+            const performanceVariant = getPerformanceVariant(rating);
+            
+            // Create a category object that matches our updated interface
+            const category: PerformanceCategory = {
+              label: getPerformanceLabel(performanceVariant),
               minRating: 0,
               maxRating: 5,
-              Icon: () => null,
+              Icon: null,
+              variant: performanceVariant,
+              trend: index < performanceTrends.length ? performanceTrends[index] : undefined
             };
 
             return (
@@ -200,12 +202,7 @@ const TeamAndMembersComponents = () => {
                 key={sampleMember.id}
                 member={sampleMember}
                 teams={TEAMS}
-                category={{
-                  label: "", // Will be set by TrendBadge component
-                  className: "", // Will be set by TrendBadge component
-                  variant: performanceVariant,
-                  trend: index < performanceTrends.length ? performanceTrends[index] : undefined
-                }}
+                category={category}
                 variant="desktop"
                 onNavigate={(path) => console.log(`Navigate to: ${path}`)}
               />
@@ -224,8 +221,10 @@ const TeamAndMembersComponents = () => {
             }}
             teams={TEAMS}
             category={{
-              label: "", // Will be set by TrendBadge component
-              className: "", // Will be set by TrendBadge component
+              label: "Star Performer",
+              minRating: 4.5,
+              maxRating: 5.0,
+              Icon: null,
               variant: "star",
               trend: "up"
             }}
@@ -243,8 +242,10 @@ const TeamAndMembersComponents = () => {
             }}
             teams={TEAMS}
             category={{
-              label: "", // Will be set by TrendBadge component
-              className: "", // Will be set by TrendBadge component
+              label: "Solid Performer",
+              minRating: 2.5,
+              maxRating: 3.5,
+              Icon: null,
               variant: "solid",
               trend: "stable"
             }}
@@ -262,8 +263,10 @@ const TeamAndMembersComponents = () => {
             }}
             teams={TEAMS}
             category={{
-              label: "", // Will be set by TrendBadge component
-              className: "", // Will be set by TrendBadge component
+              label: "Inconsistent Performer",
+              minRating: 1.5,
+              maxRating: 2.5,
+              Icon: null,
               variant: "inconsistent",
               trend: "down"
             }}
@@ -281,8 +284,10 @@ const TeamAndMembersComponents = () => {
             }}
             teams={TEAMS}
             category={{
-              label: "", // Will be set by TrendBadge component
-              className: "", // Will be set by TrendBadge component
+              label: "Solid Performer",
+              minRating: 2.5,
+              maxRating: 3.5,
+              Icon: null,
               variant: "solid",
               // trend is intentionally omitted to demonstrate the unavailable state
             }}
@@ -310,10 +315,6 @@ const TeamAndMembersComponents = () => {
               teams={TEAMS}
               showAvatar={true}
               showActions={true}
-              onDelete={(m) => console.log(`Delete member: ${m.name}`)}
-              onGenerateReview={(m) =>
-                console.log(`Generate review for: ${m.name}`)
-              }
               onNavigate={(path) => console.log(`Navigate to: ${path}`)}
             />
           </CardContent>
@@ -328,15 +329,11 @@ const TeamAndMembersComponents = () => {
           </CardHeader>
           <CardContent className="px-0">
             <MembersTable
-              members={tableMemberData.filter((m) => m.teamId === "team-1")}
+              members={tableMemberData.filter((m) => m.teamId === "team-4")}
               teams={TEAMS}
-              teamId="team-1"
+              teamId="team-4"
               showAvatar={true}
               showActions={true}
-              onDelete={(m) => console.log(`Delete member: ${m.name}`)}
-              onGenerateReview={(m) =>
-                console.log(`Generate review for: ${m.name}`)
-              }
               onNavigate={(path) => console.log(`Navigate to: ${path}`)}
             />
           </CardContent>
@@ -353,6 +350,24 @@ function getPerformanceVariant(rating: number): PerformanceVariant {
   if (rating >= 2.5) return "solid";
   if (rating >= 1.5) return "inconsistent";
   return "low";
+}
+
+// Helper function to get performance label based on variant
+function getPerformanceLabel(variant: PerformanceVariant): string {
+  switch (variant) {
+    case "star":
+      return "Star Performer";
+    case "strong":
+      return "Strong Performer";
+    case "solid":
+      return "Solid Performer";
+    case "inconsistent":
+      return "Inconsistent Performer";
+    case "low":
+      return "Needs Improvement";
+    default:
+      return "Unknown";
+  }
 }
 
 export default TeamAndMembersComponents;

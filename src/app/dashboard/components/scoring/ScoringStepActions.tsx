@@ -238,7 +238,7 @@ export default function ScoringStepActions({
       return (
         <div className="p-6 text-center border rounded-lg bg-muted">
           <Heart className="size-8 mx-auto mb-2 text-foreground-muted" />
-          <p className="text-foreground font-medium">No favorites saved yet</p>
+          <p className="text-foreground font-medium">No favorites saved</p>
           <p className="text-sm text-foreground-muted mt-1">
             You can mark actions as favorites in the other tabs or in the Settings/Org actions section
           </p>

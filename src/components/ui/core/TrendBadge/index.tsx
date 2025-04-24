@@ -5,10 +5,9 @@ import { TrendingUp, TrendingDown, MoveRight } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/core/Badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/core/Tooltip";
 
 const trendBadgeVariants = cva(
-  "inline-flex items-center gap-1.5 cursor-default",
+  "inline-flex items-center gap-1.5 cursor-auto",
   {
     variants: {
       size: {
@@ -28,25 +27,21 @@ const TREND_CONFIG = {
     icon: TrendingUp,
     label: "Improving",
     badgeClassName: "bg-success-100/60 text-success-foreground",
-    tooltip: "Performance is improving over time",
   },
   down: {
     icon: TrendingDown,
     label: "Declining",
     badgeClassName: "bg-warning-100/60 text-warning-foreground",
-    tooltip: "Performance requires attention",
   },
   stable: {
     icon: MoveRight,
     label: "Stable",
     badgeClassName: "bg-info-100/60 text-info-foreground",
-    tooltip: "Performance remains stable",
   },
   unavailable: {
     icon: null,
-    label: "Trend data not available yet",
+    label: "Trend not available",
     badgeClassName: "bg-transparent text-unavailable",
-    tooltip: "Performance trend data has not been collected yet",
   },
 } as const;
 
@@ -57,7 +52,6 @@ export interface TrendBadgeProps
     VariantProps<typeof trendBadgeVariants> {
   variant?: TrendVariant;
   label?: string;
-  showTooltip?: boolean;
   // If true, will use the unavailable variant
   noTrendData?: boolean;
 }
@@ -68,7 +62,7 @@ export interface TrendBadgeProps
  * 
  * @example
  * ```tsx
- * <TrendBadge variant="up" label="Improving" showTooltip />
+ * <TrendBadge variant="up" label="Improving" />
  * ```
  */
 export function TrendBadge({
@@ -76,7 +70,6 @@ export function TrendBadge({
   variant = "stable",
   size = "default",
   label,
-  showTooltip = false,
   noTrendData = false,
   ...props
 }: TrendBadgeProps) {
@@ -87,7 +80,7 @@ export function TrendBadge({
   // Use custom label if provided, otherwise use default from config
   const displayLabel = label || config.label;
   
-  const badge = (
+  return (
     <Badge
       className={cn(
         trendBadgeVariants({ size }),
@@ -101,24 +94,5 @@ export function TrendBadge({
       )}
       <span>{displayLabel}</span>
     </Badge>
-  );
-
-  // Return badge without tooltip if not requested
-  if (!showTooltip) {
-    return badge;
-  }
-
-  // Wrap with tooltip if requested
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          {badge}
-        </TooltipTrigger>
-        <TooltipContent className="max-w-xs">
-          {config.tooltip}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   );
 }

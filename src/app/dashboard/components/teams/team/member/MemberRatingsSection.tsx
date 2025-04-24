@@ -54,7 +54,7 @@ function RatingsSection({ teamId, memberId, onAddRating }: RatingsSectionProps) 
   }
 
   if (!data?.ratings.length) {
-    return <div className="missing-content">No ratings yet.</div>;
+    return <div className="missing-content">No ratings.</div>;
   }
 
   return (

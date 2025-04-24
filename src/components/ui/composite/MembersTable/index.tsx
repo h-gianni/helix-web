@@ -9,21 +9,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/core/Table";
-import { Button } from "@/components/ui/core/Button";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/core/DropdownMenu";
-import {
-  MoreVertical,
-  Eye,
-  PenSquare,
-  ChartSpline,
-  Trash2,
-} from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
 import { PerformanceBadge } from "@/components/ui/core/PerformanceBadge";
@@ -55,8 +42,6 @@ export interface MembersTableProps extends MembersTableDOMProps {
   showAvatar?: boolean;
   showActions?: boolean;
   showTableHead?: boolean;
-  onDelete?: (member: Member) => void;
-  onGenerateReview?: (member: Member) => void;
   onNavigate?: (path: string) => void;
 }
 
@@ -68,8 +53,6 @@ function MembersTable({
   showAvatar = true,
   showActions = true,
   showTableHead = true,
-  onDelete,
-  onGenerateReview,
   onNavigate,
   ...props
 }: MembersTableProps) {
@@ -122,8 +105,28 @@ function MembersTable({
               <span className="text-unavailable">No team</span>
             );
 
+            const handleRowClick = () => {
+              if (onNavigate) {
+                onNavigate(detailsPath);
+              }
+            };
+
             return (
-              <TableRow data-slot="table-row" key={member.id}>
+              <TableRow 
+                data-slot="table-row" 
+                key={member.id}
+                onClick={handleRowClick}
+                className="cursor-pointer hover:bg-neutral-50"
+                tabIndex={0}
+                role="button"
+                aria-label={`View details for ${member.name}`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleRowClick();
+                  }
+                }}
+              >
                 {showAvatar && (
                   <TableCell
                     data-slot="table-cell"
@@ -143,24 +146,21 @@ function MembersTable({
                     !showTeamColumn && "w-[40%]"
                   )}
                 >
-                  <button
-                    onClick={() => onNavigate?.(detailsPath)}
-                    className="text-sm font-semibold text-foreground-strong hover:underline"
-                  >
+                  <span className="text-sm font-semibold text-foreground-strong leading-4">
                     {member.name}
-                  </button>
+                  </span>
                 </TableCell>
                 {showTeamColumn && (
                   <TableCell
                     data-slot="table-cell"
-                    className="w-[15%] whitespace-nowrap align-middle"
+                    className="w-[15%] align-middle leading-4"
                   >
                     {teamNameDisplay}
                   </TableCell>
                 )}
                 <TableCell
                   data-slot="table-cell"
-                  className="w-[15%] whitespace-nowrap align-middle"
+                  className="w-[15%] align-middle leading-4"
                 >
                   {member.title || (
                     <span className="text-unavailable">No title</span>
@@ -168,36 +168,34 @@ function MembersTable({
                 </TableCell>
                 <TableCell
                   data-slot="table-cell"
-                  className="w-[15%] whitespace-nowrap align-middle"
+                  className="w-[15%] align-middle"
                 >
                   <TrendBadge
                     variant={member.trend || "stable"}
                     size="sm"
-                    showTooltip
                     noTrendData={!member.trend}
                   />
                 </TableCell>
                 <TableCell
                   data-slot="table-cell"
-                  className="w-[15%] whitespace-nowrap align-middle"
+                  className="w-[15%] align-middle"
                 >
                   <PerformanceBadge
                     value={member.averageRating}
                     ratingsCount={member.ratingsCount}
-                    showTooltip
                     size="base"
                   />
                 </TableCell>
                 <TableCell
                   data-slot="table-cell"
-                  className="w-[200px] whitespace-nowrap align-middle"
+                  className="w-[180px] whitespace-nowrap align-middle"
                 >
                   <StarRating
                     value={member.averageRating}
                     disabled
                     size="sm"
                     ratingsCount={member.ratingsCount}
-                    className="w-[180px]"
+                    className="w-[150px]"
                   />
                 </TableCell>
                 {showActions && (
@@ -205,57 +203,7 @@ function MembersTable({
                     data-slot="table-cell"
                     className="w-0 pr-2 align-middle"
                   >
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          data-slot="button"
-                          variant="ghost"
-                          icon
-                          className="size-8"
-                          aria-label="Member actions"
-                        >
-                          <MoreVertical className="size-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        data-slot="dropdown-content"
-                        align="end"
-                      >
-                        <DropdownMenuItem
-                          data-slot="dropdown-item"
-                          onClick={() => onNavigate?.(detailsPath)}
-                        >
-                          <Eye className="mr-1" />
-                          Quick View Details
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          data-slot="dropdown-item"
-                          onClick={() => onNavigate?.(detailsPath)}
-                        >
-                          <PenSquare className="mr-1" />
-                          Edit Details
-                        </DropdownMenuItem>
-                        {onGenerateReview && (
-                          <DropdownMenuItem
-                            data-slot="dropdown-item"
-                            onClick={() => onGenerateReview(member)}
-                          >
-                            <ChartSpline className="mr-1" />
-                            Performance Reviews
-                          </DropdownMenuItem>
-                        )}
-                        {onDelete && (
-                          <DropdownMenuItem
-                            data-slot="dropdown-item"
-                            onClick={() => onDelete(member)}
-                            className="text-destructive-foreground focus:text-destructive-foreground"
-                          >
-                            <Trash2 className="mr-1" />
-                            Delete Member
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <ChevronRight className="size-4 text-foreground-muted" />
                   </TableCell>
                 )}
               </TableRow>

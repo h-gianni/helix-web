@@ -141,7 +141,7 @@ export function ActivitiesSection({
           <div className="space-y-base text-center">
             <Target className="mx-auto size-12 text-muted-foreground" />
             <div className="space-y-2">
-              <h3 className="text-lg font-medium">No business activities yet</h3>
+              <h3 className="text-lg font-medium">No business activities</h3>
               <p className="text-sm text-muted-foreground">
                 Create business activities to track team performance.
               </p>

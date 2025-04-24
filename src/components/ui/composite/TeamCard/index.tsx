@@ -22,7 +22,7 @@ import Team05Image from "@/assets/shared/team05.svg";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 
 const TEXT = {
-  NO_PERFORMANCE_DATA: "No data available yet to show team performance rating",
+  NO_PERFORMANCE_DATA: "No data available to show team performance rating",
   AVERAGE_PERFORMANCE: "Average team performance",
   NO_MEMBERS: "No members found. Please add members to the team.",
   MEMBER_SINGULAR: "member",

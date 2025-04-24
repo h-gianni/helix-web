@@ -83,7 +83,7 @@ function MemberReviewsList({
         <FileText className="size-16 mx-auto text-muted-foreground" />
         <h3 className="text-lg font-medium">No Performance Reviews</h3>
         <p className="text-muted-foreground max-w-md mx-auto">
-          There are no performance reviews for this team member yet.
+          There are no performance reviews for this team member.
           Generate a review to provide structured feedback on their performance.
         </p>
         <Button onClick={onGenerateReview} className="mt-4">

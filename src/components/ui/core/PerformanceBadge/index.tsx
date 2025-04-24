@@ -4,12 +4,6 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/core/Badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/core/Tooltip";
 import { Circle } from "lucide-react";
 
 const performanceBadgeVariants = cva(
@@ -32,16 +26,18 @@ export type PerformanceVariant =
   | "strong"
   | "solid"
   | "inconsistent"
-  | "low";
+  | "low"
+  | "unavailable";
 
 export interface PerformanceBadgeProps
   extends React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof performanceBadgeVariants> {
   variant?: PerformanceVariant;
-  showTooltip?: boolean;
   value?: number | null;
   isLoading?: boolean; // For API loading states
   ratingsCount?: number; // Optional count of ratings
+  // If true, will use the unavailable variant
+  noPerformanceData?: boolean;
 }
 
 // Performance configuration with color circles instead of different icons
@@ -50,31 +46,31 @@ const PERFORMANCE_CONFIG = {
     label: "Star Performer",
     circleColor: "text-primary-500 fill-primary-500",
     badgeClassName: "bg-neutral-50 text-neutral-foreground",
-    tooltip: "Top 5-10% of performers. Consistently exceeds expectations with outstanding results."
   },
   strong: {
     label: "Strong Performer",
     circleColor: "text-secondary-500 fill-secondary-500",
     badgeClassName: "bg-neutral-50 text-neutral-foreground",
-    tooltip: "Frequently exceeds expectations. Delivers high-quality work consistently."
   },
   solid: {
     label: "Solid Performer",
     circleColor: "text-tertiary-500 fill-tertiary-500",
     badgeClassName: "bg-neutral-50 text-neutral-foreground",
-    tooltip: "Meets all expectations consistently. A reliable team member."
   },
   inconsistent: {
     label: "Inconsistent Performer",
     circleColor: "text-warning-500 fill-warning-500",
     badgeClassName: "bg-neutral-50 text-neutral-foreground",
-    tooltip: "Shows potential but results vary. Needs coaching in specific areas."
   },
   low: {
     label: "Needs Help",
     circleColor: "text-destructive-500 fill-destructive-500",
     badgeClassName: "bg-neutral-50 text-neutral-foreground",
-    tooltip: "Currently falling short of expectations. Requires focused development plan."
+  },
+  unavailable: {
+    label: "Not Rated",
+    circleColor: "text-neutral-400 fill-neutral-400",
+    badgeClassName: "bg-transparent text-unavailable",
   },
 } as const;
 
@@ -111,20 +107,23 @@ type PerformanceConfigKey = keyof PerformanceConfigType;
  * @example
  * ```tsx
  * // With explicit variant
- * <PerformanceBadge variant="star" showTooltip />
+ * <PerformanceBadge variant="star" />
  *
  * // With automatic variant based on value
- * <PerformanceBadge value={4.8} showTooltip />
+ * <PerformanceBadge value={4.8} />
+ * 
+ * // With unavailable data
+ * <PerformanceBadge noPerformanceData />
  * ```
  */
 export function PerformanceBadge({
   className,
   variant,
   size = "base",
-  showTooltip = false,
   value,
   isLoading = false,
   ratingsCount,
+  noPerformanceData = false,
   ...props
 }: PerformanceBadgeProps) {
   // Move all state calculations to the top, before any conditional returns
@@ -132,6 +131,8 @@ export function PerformanceBadge({
 
   // Determine variant based on value if provided, otherwise use passed variant or default to "solid"
   const resolvedVariant: PerformanceVariant = React.useMemo(() => {
+    // If noPerformanceData is true, use unavailable variant
+    if (noPerformanceData) return "unavailable";
     // If explicitly has no ratings, show "solid" variant
     if (hasNoRatings) return "solid";
     // Otherwise use value if available
@@ -139,7 +140,7 @@ export function PerformanceBadge({
       return getVariantFromValue(value);
     // Fall back to the provided variant or "solid"
     return variant || "solid";
-  }, [value, variant, hasNoRatings]);
+  }, [value, variant, hasNoRatings, noPerformanceData]);
 
   const config = PERFORMANCE_CONFIG[resolvedVariant];
 
@@ -162,7 +163,7 @@ export function PerformanceBadge({
   }
 
   // Display a "Not Rated" badge when explicitly has no ratings
-  if (hasNoRatings) {
+  if (hasNoRatings && !noPerformanceData) {
     return (
       <Badge
         className={cn(
@@ -183,7 +184,7 @@ export function PerformanceBadge({
     );
   }
 
-  const badge = (
+  return (
     <Badge
       className={cn(
         performanceBadgeVariants({ size }),
@@ -200,20 +201,5 @@ export function PerformanceBadge({
       />
       <span>{config.label}</span>
     </Badge>
-  );
-
-  // Return badge without tooltip if not requested
-  if (!showTooltip) {
-    return badge;
-  }
-
-  // Wrap with tooltip if requested
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>{badge}</TooltipTrigger>
-        <TooltipContent className="max-w-xs">{config.tooltip}</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   );
 }

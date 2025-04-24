@@ -1,13 +1,18 @@
 // src/store/member.ts
 import type { LucideIcon } from "lucide-react";
+import { PerformanceVariant } from "@/components/ui/core/PerformanceBadge";
+import { TrendVariant } from "@/components/ui/core/TrendBadge";
 
 export interface PerformanceCategory {
   label: string;
   minRating: number;
   maxRating: number;
   className?: string;
-  Icon: any;
+  Icon: LucideIcon | null;
   description?: string;
+  // Added UI-specific properties
+  variant: PerformanceVariant;
+  trend?: TrendVariant;
 }
 
 // This is our base member type used across the application

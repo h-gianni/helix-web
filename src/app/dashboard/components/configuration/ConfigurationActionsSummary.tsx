@@ -111,7 +111,7 @@ function OrgActionsSummary({
           ) : !selectedActivities || selectedActivities.length === 0 ? (
             <div className="text-center py-6">
               <p className="text-foreground-muted">
-                No activities have been selected yet.
+                No activities have been selected.
               </p>
             </div>
           ) : (

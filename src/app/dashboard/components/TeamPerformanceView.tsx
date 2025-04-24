@@ -2,12 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { MemberCard, PerformanceCategory } from "@/components/ui/composite/MemberCard";
+import { MemberCard } from "@/components/ui/composite/MemberCard";
 import { MembersTable } from "@/components/ui/composite/MembersTable";
 import { Card, CardContent } from "@/components/ui/core/Card";
 import { PerformanceVariant } from "@/components/ui/core/PerformanceBadge";
-import { usePerformersStore, useGenerateReview } from "@/store/performers-store";
+import { usePerformersStore } from "@/store/performers-store";
 import { cn } from "@/lib/utils";
+import { PerformanceCategory } from "@/store/member";
+import { TrendVariant } from "@/components/ui/core/TrendBadge";
 
 interface Team {
   id: string;
@@ -32,7 +34,6 @@ interface TeamPerformanceViewProps {
   showActions?: boolean;
   showTableHead?: boolean;
   className?: string;
-  onMemberDelete?: (member: MemberPerformance) => void;
   mode?: "desktop" | "mobile";
   viewType?: "table" | "grid";
   onViewChange?: (value: "table" | "grid") => void;
@@ -46,14 +47,12 @@ export function TeamPerformanceView({
   showActions = true,
   showTableHead = true,
   className,
-  onMemberDelete,
   mode = "mobile",
   viewType = "grid",
   onViewChange,
 }: TeamPerformanceViewProps) {
   const router = useRouter();
   const { getSortedMembers, getPerformanceCategory } = usePerformersStore();
-  const { mutate: generateReview } = useGenerateReview();
 
   const sortedMembers = getSortedMembers(members);
 
@@ -114,36 +113,61 @@ export function TeamPerformanceView({
     return () => window.removeEventListener("resize", handleResize);
   }, [mode, viewType]);
 
-  const handleGenerateReview = (member: MemberPerformance) => {
-    generateReview(member.id);
-  };
-
   const handleNavigate = (path: string) => {
     router.push(path);
   };
 
-  // Map performanceCategory to include the required 'variant' property
-  const mapPerformanceCategory = (category: any): PerformanceCategory => {
-    // Ensure we have all required properties for PerformanceCategory
+  // Helper function to ensure category has required variant property
+  const ensureCompleteCategory = (categoryData: any): PerformanceCategory => {
+    // Check if we have valid performance data to determine the variant
+    const hasPerformanceData = 
+      categoryData.averageRating !== undefined && 
+      categoryData.averageRating !== null && 
+      categoryData.ratingsCount !== 0;
+    
+    // Default to unavailable if no performance data exists
+    const variantValue = hasPerformanceData 
+      ? (categoryData.variant || mapVariantFromRating(categoryData.label))
+      : "unavailable";
+    
+    // Check if we have trend data
+    const hasTrendData = 
+      categoryData.averageRating !== undefined && 
+      categoryData.averageRating !== null;
+    
+    // Default to undefined for trend if no data available
+    const trendValue = hasTrendData
+      ? (categoryData.trend || determineTrendVariant(categoryData.averageRating))
+      : undefined;
+    
     return {
-      ...category,
-      // Make sure to include the variant property required by MemberCard
-      variant: (category.variant || mapVariantFromRating(category.label)) as PerformanceVariant
-    };
+      ...categoryData,
+      variant: variantValue,
+      trend: trendValue,
+      noPerformanceData: !hasPerformanceData,
+      noTrendData: !hasTrendData
+    } as PerformanceCategory;
+  };
+
+  // Helper function to determine trend variant based on rating
+  const determineTrendVariant = (rating: number): TrendVariant | undefined => {
+    if (rating > 4.0) return "up";
+    if (rating < 2.5) return "down";
+    return "stable";
   };
 
   // Helper function to map performance labels to variants
   const mapVariantFromRating = (label?: string): PerformanceVariant => {
-    if (!label) return "solid";
+    if (!label) return "unavailable";
     
-    const labelLower = label.toLowerCase();
+    const labelLower = (label || "").toLowerCase();
     if (labelLower.includes("star")) return "star";
     if (labelLower.includes("strong")) return "strong";
     if (labelLower.includes("solid")) return "solid";
     if (labelLower.includes("inconsistent")) return "inconsistent";
     if (labelLower.includes("needs help") || labelLower.includes("low")) return "low";
     
-    return "solid"; // Default
+    return "unavailable"; // Default changed from "solid" to "unavailable"
   };
 
   if (members.length === 0) {
@@ -169,8 +193,6 @@ export function TeamPerformanceView({
           showAvatar={showAvatar}
           showActions={showActions}
           showTableHead={showTableHead}
-          onDelete={onMemberDelete}
-          onGenerateReview={handleGenerateReview}
           onNavigate={handleNavigate}
           className="shadow-sm"
         />
@@ -181,8 +203,8 @@ export function TeamPerformanceView({
               member.averageRating,
               member.ratingsCount
             );
-            // Map the category to include the variant property
-            const category = mapPerformanceCategory(rawCategory);
+            // Ensure category has all required properties
+            const completeCategory = ensureCompleteCategory(rawCategory);
             
             return (
               <MemberCard
@@ -190,9 +212,7 @@ export function TeamPerformanceView({
                 member={member}
                 teamId={teamId}
                 teams={teams}
-                category={category}
-                onDelete={onMemberDelete}
-                onGenerateReview={handleGenerateReview}
+                category={completeCategory}
                 variant={cardVariant}
                 onNavigate={handleNavigate}
               />
