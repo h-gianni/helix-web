@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group"
-import { Circle, CircleCheckBig } from "lucide-react"
+import { Circle, CircleCheckIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const RadioGroupCards = React.forwardRef<
@@ -55,7 +55,7 @@ const RadioGroupCardsContainer = React.forwardRef<
         "flex",
         layout === "loose" ? "gap-2" : "",
         direction === "vertical" ? "flex-col" : "flex-row",
-        layout === "compact" && "overflow-hidden border",
+        layout === "compact" && "overflow-hidden border border-border",
         layout === "compact" && direction === "vertical" && "divide-y divide-border",
         layout === "compact" && direction === "horizontal" && "divide-x divide-border",
         shouldScroll ? 
@@ -158,7 +158,7 @@ const RadioGroupCard = React.forwardRef<
           "h-full w-full",
           
           // Loose layout styling: Rounded borders for all items
-          layout === "loose" && "border rounded-lg mx-auto",
+          layout === "loose" && "border border-border rounded-lg mx-auto",
         
           // Compact layout styling: No borders by default
           layout === "compact" && "border-none",
@@ -178,7 +178,7 @@ const RadioGroupCard = React.forwardRef<
           disabled && "cursor-not-allowed opacity-50",
         
           // Selected state styling
-          "peer-data-[state=checked]:bg-primary-lightest peer-data-[state=checked]:text-primary-darker",
+          "peer-data-[state=checked]:bg-primary-50 peer-data-[state=checked]:text-primary-600",
           "peer-focus-visible:ring-2 peer-focus-visible:ring-ring peer-focus-visible:ring-offset-2"
         )}
         
@@ -188,10 +188,10 @@ const RadioGroupCard = React.forwardRef<
           radioSymbol ? "items-center gap-3" : "items-center justify-center"
         )}>
           {radioSymbol && isChecked && (
-            <CircleCheckBig className="size-4 text-primary shrink-0" />
+            <CircleCheckIcon className="size-4 text-primary shrink-0" />
           )}
           {radioSymbol && !isChecked && (
-            <Circle className="size-4 text-neutral-light shrink-0" />
+            <Circle className="size-4 text-neutral-300 shrink-0" />
           )}
           {children}
         </div>

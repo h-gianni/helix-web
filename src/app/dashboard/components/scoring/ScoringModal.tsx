@@ -2,14 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/core/Button";
-import { ChevronLeft, ArrowLeft, ArrowRight, Tally5 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import {
   Modal,
   ModalContent,
   ModalHeader,
   ModalFooter,
   ModalTitle,
-  ModalDescription,
 } from "@/components/ui/core/Modal";
 import {
   usePerformanceRatingStore,
@@ -17,6 +16,7 @@ import {
 } from "@/store/performance-rating-store";
 import StarRating from "@/components/ui/core/StarRating";
 
+// Import the updated step components
 import ScoringStepTeam from "@/app/dashboard/components/scoring/ScoringStepTeam";
 import ScoringStepMember from "@/app/dashboard/components/scoring/ScoringStepMember";
 import ScoringStepActions from "@/app/dashboard/components/scoring/ScoringStepActions";
@@ -60,7 +60,7 @@ export default function PerformanceScoringModal({
     if (isOpen) {
       if (teamId) {
         setSelectedTeamId(teamId);
-        setCurrentStep(teamId && !memberId ? 2 : 1);
+        setCurrentStep(teamId && memberId ? 3 : 2);
       }
       if (memberId) {
         setSelectedMemberId(memberId);
@@ -75,19 +75,25 @@ export default function PerformanceScoringModal({
       } else {
         setTotalSteps(4); // All steps
       }
+      
+      // Initialize with 1 star if no rating is set
+      if (rating === 0) {
+        setRating(1);
+      }
     }
-  }, [isOpen, teamId, memberId, setSelectedTeamId, setSelectedMemberId]);
+  }, [isOpen, teamId, memberId, setSelectedTeamId, setSelectedMemberId, rating, setRating]);
 
   // Reset steps when modal closes
   useEffect(() => {
     if (!isOpen) {
       setCurrentStep(1);
+      // Don't reset selected values to allow returning to previous selections
     }
   }, [isOpen]);
 
   const handleSubmit = async () => {
-    const currentTeamId = selectedTeamId || teamId;
-    const currentMemberId = selectedMemberId || memberId;
+    const currentTeamId = selectedTeamId || teamId || "";
+    const currentMemberId = selectedMemberId || memberId || "";
 
     if (
       !currentTeamId ||
@@ -121,35 +127,11 @@ export default function PerformanceScoringModal({
     setCurrentStep(1);
   };
 
-  const handleNext = () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep((prev) => prev + 1);
-    } else {
-      handleSubmit();
-    }
-  };
-
   const handleBack = () => {
     if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
     } else {
       setIsOpen(false);
-    }
-  };
-
-  // Check if next button should be disabled
-  const isNextDisabled = () => {
-    switch (currentStep) {
-      case 1: // Team selection
-        return !selectedTeamId;
-      case 2: // Member selection
-        return !selectedMemberId;
-      case 3: // Activity selection
-        return !selectedActivityId;
-      case 4: // Rating
-        return rating === 0;
-      default:
-        return false;
     }
   };
 
@@ -163,7 +145,7 @@ export default function PerformanceScoringModal({
       case 3:
         return "Select Action";
       case 4:
-        return "Score Performance";
+        return "";
       default:
         return "Score Performance";
     }
@@ -173,21 +155,33 @@ export default function PerformanceScoringModal({
     <Modal open={isOpen} onOpenChange={setIsOpen}>
       <ModalContent size="base" fixed={true}>
         <ModalHeader>
-          <div className="flex items-center">
-            <div className="flex flex-col space-y-1 items-center justify-center mx-auto pt-4 lg:pb-4">
-              <ModalDescription>
-                Step {currentStep} of {totalSteps}
-              </ModalDescription>
-              <ModalTitle>{getStepTitle()}</ModalTitle>
-            </div>
+          <div className="flex items-center justify-between w-full absolute left-0 top-0 z-20 bg-white p-2 bg-white/50 rounded-t-xl">
+            {currentStep > 1 ? (
+              <Button 
+                onClick={handleBack}
+                variant="ghost"
+                icon
+                aria-label="Back"
+                className=""
+              >
+                <ArrowLeft />
+              </Button>
+            ) : (
+              <div className="w-10"></div>
+            )}
+            
+            <ModalTitle className="w-full text-center py-2">{getStepTitle()}</ModalTitle>
+            
+            <div className="w-10"></div> {/* Spacer for symmetry */}
           </div>
         </ModalHeader>
 
-        <div className="px-2 lg:px-6 pb-24">
-          {currentStep === 1 && !teamId && (
+        <div className="mt-6 px-4 pb-6">
+          {currentStep === 1 && (
             <ScoringStepTeam
               selectedTeamId={selectedTeamId}
               setSelectedTeamId={setSelectedTeamId}
+              onNext={() => setCurrentStep(2)}
             />
           )}
 
@@ -198,6 +192,7 @@ export default function PerformanceScoringModal({
               setSelectedMemberId={setSelectedMemberId}
               memberName={memberName}
               memberTitle={memberTitle}
+              onNext={() => setCurrentStep(3)}
             />
           )}
 
@@ -206,79 +201,49 @@ export default function PerformanceScoringModal({
               teamId={selectedTeamId || teamId || ""}
               selectedActivityId={selectedActivityId}
               setSelectedActivityId={setSelectedActivityId}
+              onNext={() => setCurrentStep(4)}
             />
           )}
 
           {currentStep === 4 && (
-            <ScoringStepStars
-              teamId={selectedTeamId || teamId || ""}
-              memberId={selectedMemberId || memberId || ""}
-              activityId={selectedActivityId || ""}
-              feedback={feedback}
-              setFeedback={setFeedback}
-              isSubmitting={submitRating.isPending}
-              error={submitRating.error}
-              onChangeStep={setCurrentStep}
-            />
-          )}
-        </div>
-
-        <ModalFooter className="flex flex-col">
-          {currentStep === 4 && (
-            <div className="px-4 pt-6 w-full text-center border-t">
-              <div className="heading-4 mb-2">What&apos;s your score?</div>
-              <div className="flex justify-center">
-                <StarRating
-                  value={rating}
-                  onChange={setRating}
-                  size="xl"
-                  showValue
-                  disabled={submitRating.isPending}
-                />
+            <div className="space-y-4">
+              <ScoringStepStars
+                teamId={selectedTeamId || teamId || ""}
+                memberId={selectedMemberId || memberId || ""}
+                activityId={selectedActivityId || ""}
+                feedback={feedback}
+                setFeedback={setFeedback}
+                isSubmitting={submitRating.isPending}
+                error={submitRating.error}
+                onChangeStep={setCurrentStep}
+              />
+              
+              <div className="max-w-lg mx-auto w-full text-center">
+                <div className="heading-4 mb-2">Your Score</div>
+                <div className="flex justify-center mb-8">
+                  <StarRating
+                    value={rating}
+                    onChange={setRating}
+                    size="xl"
+                    showValue
+                    disabled={submitRating.isPending}
+                    activeScore={true} // Using the new prop for the scoring interface
+                  />
+                </div>
+                
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="w-full"
+                  onClick={handleSubmit}
+                  disabled={rating === 0 || submitRating.isPending}
+                >
+                  {submitRating.isPending ? "Saving..." : "Submit Score"}
+                </Button>
               </div>
             </div>
           )}
-
-          <div className="flex gap-4 w-full p-4 lg:p-6">
-            <Button
-              variant="secondary"
-              size="xl"
-              className="w-full"
-              onClick={handleBack}
-              disabled={submitRating.isPending}
-              type="button"
-            >
-              {currentStep === 1 ? (
-                "Cancel"
-              ) : (
-                <>
-                  <ArrowLeft />
-                  Back
-                </>
-              )}
-            </Button>
-            <Button
-              variant={currentStep === totalSteps ? "accent" : "default"}
-              size="xl"
-              className="w-full"
-              onClick={handleNext}
-              disabled={isNextDisabled() || submitRating.isPending}
-            >
-              {currentStep === totalSteps ? (
-                submitRating.isPending ? (
-                  "Saving..."
-                ) : (
-                  <>Save Score</>
-                )
-              ) : (
-                <>
-                  Next
-                  <ArrowRight />
-                </>
-              )}
-            </Button>
-          </div>
-        </ModalFooter>
+        </div>
       </ModalContent>
     </Modal>
   );

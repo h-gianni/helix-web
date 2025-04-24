@@ -10,6 +10,7 @@ import {
   useTeamActivities,
 } from "@/store/performance-rating-store";
 import { Loader, User, PencilRuler, Users } from "lucide-react";
+import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
 
 interface ScoringStepStarsProps {
   teamId: string;
@@ -50,90 +51,43 @@ export default function ScoringStepStars({
   const activityName = activity?.name || "Selected Activity";
 
   return (
-    <div className="max-w-xl mx-auto space-y-8 py-4">
-      {/* {error && (
-        <Alert variant="destructive">
-          <AlertDescription>
-            {error instanceof Error 
-              ? error.message 
-              : typeof error === 'object' && error !== null && 'message' in error
-                ? String(error.message)
-                : "Failed to submit rating"}
-          </AlertDescription>
-        </Alert>
-      )} */}
-
-      <div className="space-y-4">
-        {/* Team */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-              <Users className="size-4" />
-            </div>
-            <div className="space-y-0.5">
-              <p className="text-sm text-foreground-weak leading-none">Team</p>
-              <p className="text-base text-foreground-strong font-medium truncate">
-                {teamName}
-              </p>
-            </div>
+    <div className="space-y-4 -mt-4">
+      <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-4">
+          <Avatar className="size-16">
+            <AvatarFallback>
+              {memberName.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="text-center">
+            {/* <div className="heading-upper">{teamName}</div> */}
+            <h2 className="display-2">{memberName}</h2>
+            <button
+              onClick={() => onChangeStep?.(1)}
+              className="body-link text-2xs text-foreground-weak"
+            >
+              Change
+            </button>
           </div>
-          <button
-            onClick={() => onChangeStep?.(1)}
-            className="body-link text-xs text-foreground-weak hover:text-primary transition-colors"
-          >
-            Change
-          </button>
         </div>
 
-        {/* Member */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-              <User className="size-4" />
-            </div>
-            <div className="space-y-0.5">
-              <p className="text-sm text-foreground-weak leading-none">
-                Team Member
-              </p>
-              <p className="text-base text-foreground-strong font-medium truncate">
-                {memberName}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => onChangeStep?.(2)}
-            className="body-link text-xs text-foreground-weak hover:text-primary transition-colors"
-          >
-            Change
-          </button>
-        </div>
-
-        {/* Action */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex-shrink-0 size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-              <PencilRuler className="size-4" />
-            </div>
-            <div className="space-y-0.5">
-              <p className="text-sm text-foreground-weak leading-none">
-                Action
-              </p>
-              <p className="text-base text-foreground-strong font-medium truncate">
-                {activityName}
-              </p>
+          <div className="text-center w-full max-w-lg mx-auto">
+            <div className="bg-white p-4 text-center">
+              <div className="flex gap-2 justify-center py-1">
+                <span className="caption">Action performed</span>
+                <button
+                  onClick={() => onChangeStep?.(3)}
+                  className="body-link text-2xs text-foreground-weak"
+                >
+                  Change
+                </button>
+              </div>
+              <h2 className="heading-2">{activityName}</h2>
             </div>
           </div>
-          <button
-            onClick={() => onChangeStep?.(3)}
-            className="body-link text-xs text-foreground-weak hover:text-primary transition-colors"
-          >
-            Change
-          </button>
         </div>
-      </div>
 
-      {/* Feedback Textarea */}
-      <div className="space-y-2">
+      <div className="max-w-lg mx-auto space-y-2">
         <Label htmlFor="feedback">
           Add Feedback <span className="text-foreground-weak">(Optional)</span>
         </Label>
