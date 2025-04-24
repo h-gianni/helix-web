@@ -30,6 +30,17 @@ export default clerkMiddleware(async (auth, request) => {
     return NextResponse.next();
   }
 
+  // Get the onboarding completion status from cookie
+  const onboardingComplete =
+    request.cookies.get("onboarding-complete")?.value === "true";
+
+  // If user is at main dashboard but hasn't completed onboarding, redirect to onboarding
+  if (pathname === "/dashboard" && !onboardingComplete) {
+    return NextResponse.redirect(
+      new URL("/dashboard/onboarding/intro", request.url)
+    );
+  }
+
   // Get the setup state from cookies
   const setupState = request.cookies.get("setup-state")?.value;
   let setupData = {
@@ -50,20 +61,13 @@ export default clerkMiddleware(async (auth, request) => {
     console.error("Failed to parse setup state", e);
   }
 
-  const { organizationName, hasActivities, hasTeams } = setupData;
-
-  // Check if user has completed onboarding
-  const hasCompletedOnboarding = Boolean(
-    organizationName && hasActivities && hasTeams
-  );
-
   // ROUTING LOGIC:
 
   // Handle direct access to onboarding root or intro page after onboarding is complete
   if (
     (pathname === "/dashboard/onboarding" ||
       pathname === "/dashboard/onboarding/intro") &&
-    hasCompletedOnboarding
+    onboardingComplete
   ) {
     // If onboarding is complete, redirect to main dashboard
     return NextResponse.redirect(new URL("/dashboard", request.url));

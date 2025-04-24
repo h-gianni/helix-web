@@ -57,13 +57,11 @@ export const How = () => (
             {/* Step Content */}
             <div className="space-y-4 max-w-lg -mt-1">
               <div>
-                <Badge variant="accent-light">Step {index + 1}</Badge>
+                <Badge variant="accent">Step {index + 1}</Badge>
               </div>
               <div className="space-y-1.5">
-              <h3 className="marketing-h4">{step.title}</h3>
-              <p className="marketing-body pb-8">
-                {step.description}
-              </p>
+                <h3 className="marketing-h4">{step.title}</h3>
+                <p className="marketing-body pb-8">{step.description}</p>
               </div>
             </div>
           </div>

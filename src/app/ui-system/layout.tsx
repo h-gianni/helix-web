@@ -79,7 +79,7 @@ const NavGroup = ({
   );
 };
 
-export default function systemLayout({
+export default function SystemLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -107,7 +107,7 @@ export default function systemLayout({
           <BrandLogo size="sm" className="text-neutral-900" />
           <Badge variant="primary-light">UI</Badge>
         </div>
-        
+
         {/* Theme Switcher added here */}
         <div className="flex items-center">
           <ThemeSwitcher />
@@ -274,9 +274,7 @@ export default function systemLayout({
             </div>
 
             <div className="space-y-2">
-              <h3 className="pr-3 heading-upper text-neutral-950">
-                Composite
-              </h3>
+              <h3 className="pr-3 heading-upper text-neutral-950">Composite</h3>
               <div>
                 <NavItem
                   href="/ui-system/ui-content/teamAndMembers"

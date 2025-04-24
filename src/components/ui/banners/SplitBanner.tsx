@@ -21,7 +21,7 @@ const SplitBanner = ({
 }) => {
   const Content = () => (
     <div className="flex flex-col justify-center space-y-4 p-6 md:p-8">
-      <Badge variant="accent-light" className="w-fit">
+      <Badge variant="accent" className="w-fit">
         {badgeText}
       </Badge>
       <div className="space-y-2">

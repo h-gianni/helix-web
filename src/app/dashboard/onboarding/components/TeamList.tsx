@@ -46,7 +46,7 @@ export default function TeamList<T extends ListItem>({
           <ul className="divide-y divide-border-weak">
             {items.map((item) => {
               const isSelected = selectedItemId === item.id;
-              
+
               return (
                 <li
                   key={item.id}
@@ -71,7 +71,9 @@ export default function TeamList<T extends ListItem>({
                       )}
                     </div>
                     <div className="flex-1">
-                      <div className="font-medium text-foreground-strong">{item.name}</div>
+                      <div className="font-medium text-foreground-strong">
+                        {item.name}
+                      </div>
                       {item.subtitle && (
                         <div className="text-sm text-foreground-weak">
                           {item.subtitle}
@@ -95,16 +97,19 @@ export default function TeamList<T extends ListItem>({
                         <Pencil className="size-4 text-foreground-weak" />
                       </Button>
                     )}
-                    
+
                     {/* Show remove button only when item is selected (in edit mode) */}
                     {isSelected && showRemoveButton && onRemoveItem && (
-                      <Popover open={popoverOpenId === item.id} onOpenChange={(open) => {
-                        if (open) {
-                          setPopoverOpenId(item.id);
-                        } else {
-                          setPopoverOpenId(null);
-                        }
-                      }}>
+                      <Popover
+                        open={popoverOpenId === item.id}
+                        onOpenChange={(open) => {
+                          if (open) {
+                            setPopoverOpenId(item.id);
+                          } else {
+                            setPopoverOpenId(null);
+                          }
+                        }}
+                      >
                         <PopoverTrigger asChild>
                           <Button
                             variant="ghost"
@@ -132,8 +137,8 @@ export default function TeamList<T extends ListItem>({
                               >
                                 Keep
                               </Button>
-                              <Button 
-                                variant="destructive" 
+                              <Button
+                                variant="destructive"
                                 size="sm"
                                 onClick={(e) => {
                                   e.stopPropagation();

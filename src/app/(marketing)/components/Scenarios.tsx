@@ -93,7 +93,10 @@ export const Scenarios = () => (
         {scenarios.map((scenario, index) =>
           scenario.isImage ? (
             // IMAGE DIVS AFTER SECOND SCENARIO
-            <div key={index} className="hidden lg:block relative w-full rounded-md overflow-hidden bg-muted items-stretch">
+            <div
+              key={index}
+              className="hidden lg:block relative w-full rounded-md overflow-hidden bg-muted items-stretch"
+            >
               <Image
                 src={scenario.imageSrc}
                 alt={scenario.alt}
@@ -112,7 +115,7 @@ export const Scenarios = () => (
             >
               {/* <User className="w-8 h-8 stroke-1" /> */}
               <div>
-                <Badge variant="accent-light">Scenario {index + 1}</Badge>
+                <Badge variant="accent">Scenario {index + 1}</Badge>
               </div>
 
               <div className="flex flex-col gap-4 flex-1">
@@ -123,9 +126,7 @@ export const Scenarios = () => (
                     <p className="marketing-body-sm"> {scenario.pain} </p>
                   </div>
                   <div className="space-y-1">
-                    <h4 className="marketing-h6">
-                      With JustScore
-                    </h4>
+                    <h4 className="marketing-h6">With JustScore</h4>
                     <p className="marketing-body-sm"> {scenario.solution} </p>
                   </div>
                 </div>

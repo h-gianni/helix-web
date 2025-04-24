@@ -2,7 +2,7 @@
 
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/core/Button";
 import {
@@ -17,10 +17,19 @@ import {
 import { Badge } from "@/components/ui/core/Badge";
 import { Card } from "@/components/ui/core/Card";
 import { BrandLogo } from "@/components/logo/BrandLogo";
+import { useSetupStore } from "@/store/setup-store";
 import { HeroBadge } from "@/components/ui/core/HeroBadge";
 
 export default function OnboardingIntroPage() {
   const router = useRouter();
+  const isSetupComplete = useSetupStore((state) => state.isSetupComplete());
+
+  // Redirect to dashboard if onboarding is already complete
+  useEffect(() => {
+    if (isSetupComplete) {
+      router.push("/dashboard");
+    }
+  }, [isSetupComplete, router]);
 
   // Define steps without completion status
   const setupSteps = [
@@ -74,12 +83,17 @@ export default function OnboardingIntroPage() {
     router.push("/dashboard/onboarding/organisation");
   };
 
+  // Only render the intro content if onboarding is not complete
+  if (isSetupComplete) {
+    return null; // Return empty during redirect to avoid flash of content
+  }
+
   return (
     <div>
       <div className="flex flex-col items-center justify-center px-8 py-16 text-center">
         <div className="space-y-4 mb-8">
           <div className="mb-4">
-            <BrandLogo variant="vertical" size="xl" />
+<BrandLogo variant="hero" />
           </div>
           <p className="body-lg text-foreground-weak max-w-xl mx-auto py-4">
             Let&apos;s get your organisation set up so you can start tracking

@@ -4,7 +4,7 @@ import React from "react";
 import ConditionalSidebar from "./components/conditional-sidebar";
 import { SidebarProvider } from "@/components/ui/composite/Sidebar";
 import { MobileBottomNav } from "./components/MobileNav";
-import { useSetupStateSync } from '@/hooks/useSetupStateSync';
+import { useSetupStateSync } from "@/store/setup-store";
 
 export default function DashboardLayout({
   children,
@@ -13,7 +13,7 @@ export default function DashboardLayout({
 }) {
   // Sync setup state to cookies for middleware
   useSetupStateSync();
-  
+
   return (
     <SidebarProvider>
       <ConditionalSidebar />
