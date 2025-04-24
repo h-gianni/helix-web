@@ -11,6 +11,7 @@ import {
   CardDescription,
 } from "@/components/ui/core/Card";
 import { Separator } from "@/components/ui/core/Separator";
+import { PerformanceCategory } from "@/store/member";
 
 // Team & Member Components
 import { TeamCard } from "@/components/ui/composite/TeamCard";
@@ -156,13 +157,13 @@ const TeamAndMembersComponents = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {tableMemberData.slice(0, 3).map((member) => {
             // Empty placeholder since we no longer need to pass the category
-            const placeholderCategory = {
+            const placeholderCategory: PerformanceCategory = {
               label: "",
               minRating: 0,
               maxRating: 5,
               Icon: () => null,
             };
-            
+
             return (
               <MemberCard
                 key={member.id}
@@ -189,7 +190,7 @@ const TeamAndMembersComponents = () => {
               averageRating: rating,
               ratingsCount: 15,
             };
-            
+
             // Empty placeholder since we no longer need to pass the category
             const placeholderCategory = {
               label: "",

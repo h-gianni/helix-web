@@ -27,7 +27,7 @@ export interface TeamListItem {
   icon: "users";
   functions: string[];
   categories: string[];
-  members: string[];
+  memberIds: string[];
 }
 
 export interface TeamFormInput {
@@ -103,19 +103,21 @@ export function useTeamsManagement() {
     } catch (error) {
       console.error("Error loading members:", error);
     }
-
+    console.log("Loaded configTeams:", configTeams);
     // Load teams from config store
     if (configTeams.length > 0) {
+      console.log("Loaded configTeams:", configTeams);
       // Convert config teams to the internal Team structure
       const loadedTeams = configTeams.map((team) => {
         // Get team members from store if possible
         let teamMembers: string[] = [];
         try {
-          if (teams) {
+          if (team.memberIds) {
             const teamData = teams.find((item: any) => item.id === team.id);
             if (teamData && teamData.memberIds) {
               teamMembers = teamData.memberIds;
             }
+            teamMembers = team.memberIds;
           }
         } catch (error) {
           console.error("Error loading team members:", error);
@@ -126,7 +128,7 @@ export function useTeamsManagement() {
           name: team.name,
           functions: team.functions || [],
           categories: team.categories || [],
-          memberIds: teamMembers,
+          memberIds: teamMembers || [],
         };
       });
 
@@ -148,10 +150,10 @@ export function useTeamsManagement() {
 
   // Sync teams to config store
   useEffect(() => {
+    console.error("Syncing teams to config store:", teams);
     if (!initialized) return;
-
     // Update config store
-    const configTeams = teams.map((team) => ({
+    const configTeamsUpdated = teams.map((team) => ({
       id: team.id,
       name: team.name,
       functions: team.functions,
@@ -159,8 +161,8 @@ export function useTeamsManagement() {
       memberIds: team.memberIds,
     }));
 
-    updateTeams(configTeams);
-  }, [teams, updateTeams, initialized]);
+    updateTeams(configTeamsUpdated);
+  }, [teams, initialized]);
 
   // Compute assigned member IDs
   const assignedMemberIds = useMemo(() => {
@@ -316,7 +318,7 @@ export function useTeamsManagement() {
                 return getCategoryNameById ? getCategoryNameById(id) || id : id;
               }),
               categories: currentTeam.functions,
-              members: currentTeam.members,
+              memberIds: currentTeam.members,
             };
           }
           return team;
@@ -387,6 +389,7 @@ export function useTeamsManagement() {
   }, [updateTeams, cancelEdit]);
 
   return {
+    config,
     teams,
     members,
     displayCategories,

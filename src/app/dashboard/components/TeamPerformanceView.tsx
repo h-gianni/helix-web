@@ -151,8 +151,8 @@ export function TeamPerformanceView({
           onDelete={onMemberDelete}
           onGenerateReview={handleGenerateReview}
           onNavigate={handleNavigate}
-          performanceCategories={performanceCategories}
-          getPerformanceCategory={getPerformanceCategory}
+          // performanceCategories={performanceCategories}
+          // getPerformanceCategory={getPerformanceCategory}
           className="shadow-sm"
         />
       ) : (

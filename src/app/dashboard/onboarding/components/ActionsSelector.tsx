@@ -106,7 +106,7 @@ export default function ActionsSelector({
       }
 
       const isCurrentlySelected = selectedActivities.includes(activityId);
-      
+
       // If we're deselecting and it's favorited, remove from favorites too
       if (isCurrentlySelected && isFavorite(activityId, categoryId)) {
         try {
@@ -210,7 +210,7 @@ export default function ActionsSelector({
       if (!category || !category.actions || category.actions.length === 0) {
         return;
       }
-      
+
       const categoryActionIds = category.actions.map((action) => action.id);
 
       if (checked) {
@@ -226,12 +226,14 @@ export default function ActionsSelector({
         // For each deselected action, also remove it from favorites
         for (const actionId of categoryActionIds) {
           // Skip if it's a mandatory action we need to keep
-          if (isMandatory && 
-              minRequiredActionsPerCategory > 0 && 
-              categoryActionIds.indexOf(actionId) < minRequiredActionsPerCategory) {
+          if (
+            isMandatory &&
+            minRequiredActionsPerCategory > 0 &&
+            categoryActionIds.indexOf(actionId) < minRequiredActionsPerCategory
+          ) {
             continue;
           }
-          
+
           // If favorited, unfavorite it
           if (isFavorite(actionId, category.id)) {
             try {
@@ -241,7 +243,10 @@ export default function ActionsSelector({
                 isFavorite: false,
               });
             } catch (err) {
-              console.error(`Failed to remove favorite status for action ${actionId}:`, err);
+              console.error(
+                `Failed to remove favorite status for action ${actionId}:`,
+                err
+              );
             }
           }
         }
@@ -296,7 +301,13 @@ export default function ActionsSelector({
         setHasInteracted(true);
       }
     }
-  }, [categories, selectedCategoryId, isLoading, setHasInteracted, hasInteracted]);
+  }, [
+    categories,
+    selectedCategoryId,
+    isLoading,
+    setHasInteracted,
+    hasInteracted,
+  ]);
 
   if (isLoading) {
     return <div className="flex justify-center py-12">Loading actions...</div>;
@@ -320,39 +331,41 @@ export default function ActionsSelector({
                 No functions available
               </div>
             ) : (
-              categories.map((category) => {
-                const selectedCount = getSelectedCount(category.id);
-                const isSelected = selectedCategoryId === category.id;
-                const hasMinimumSelected =
-                  minRequiredActionsPerCategory > 0
-                    ? selectedCount >= minRequiredActionsPerCategory
-                    : false;
-                const isMandatoryCategory = mandatoryCategories.includes(
-                  category.name
-                );
+              categories
+                .filter((cat) => cat.actions.length > 0)
+                .map((category) => {
+                  const selectedCount = getSelectedCount(category.id);
+                  const isSelected = selectedCategoryId === category.id;
+                  const hasMinimumSelected =
+                    minRequiredActionsPerCategory > 0
+                      ? selectedCount >= minRequiredActionsPerCategory
+                      : false;
+                  const isMandatoryCategory = mandatoryCategories.includes(
+                    category.name
+                  );
 
-                return (
-                  <div
-                    key={category.id}
-                    className={cn(
-                      "min-h-12 px-8 py-2 flex justify-between items-center cursor-pointer hover:bg-muted/50",
-                      isSelected &&
-                        "bg-neutral-lightest border-l-4 border-l-primary",
-                      !isSelected && "border-l-4 border-l-transparent"
-                    )}
-                    onClick={() => handleCategorySelect(category.id)}
-                  >
-                    <div>
-                      <h3 className="font-medium">{category.name}</h3>
+                  return (
+                    <div
+                      key={category.id}
+                      className={cn(
+                        "min-h-12 px-8 py-2 flex justify-between items-center cursor-pointer hover:bg-muted/50",
+                        isSelected &&
+                          "bg-neutral-lightest border-l-4 border-l-primary",
+                        !isSelected && "border-l-4 border-l-transparent"
+                      )}
+                      onClick={() => handleCategorySelect(category.id)}
+                    >
+                      <div>
+                        <h3 className="font-medium">{category.name}</h3>
+                      </div>
+                      {selectedCount > 0 && (
+                        <Badge variant="primary">
+                          <Check className="size-3 mr-1" /> {selectedCount}
+                        </Badge>
+                      )}
                     </div>
-                    {selectedCount > 0 && (
-                      <Badge variant="primary">
-                        <Check className="size-3 mr-1" /> {selectedCount}
-                      </Badge>
-                    )}
-                  </div>
-                );
-              })
+                  );
+                })
             )}
           </div>
         </div>
@@ -480,17 +493,19 @@ export default function ActionsSelector({
                                 <Heart
                                   className={cn(
                                     "size-4",
-                                    actionIsFavorite && isSelected && "fill-current"
+                                    actionIsFavorite &&
+                                      isSelected &&
+                                      "fill-current"
                                   )}
                                 />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              {!isSelected 
+                              {!isSelected
                                 ? "Select action first to favorite it"
                                 : actionIsFavorite
-                                  ? "Remove from favorites"
-                                  : "Add to favorites"}
+                                ? "Remove from favorites"
+                                : "Add to favorites"}
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>

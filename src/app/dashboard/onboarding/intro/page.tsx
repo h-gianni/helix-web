@@ -2,7 +2,7 @@
 
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/core/Button";
 import {
@@ -16,9 +16,18 @@ import {
 import { Badge } from "@/components/ui/core/Badge";
 import { Card } from "@/components/ui/core/Card";
 import { BrandLogo } from "@/components/logo/BrandLogo";
+import { useSetupStore } from "@/store/setup-store";
 
 export default function OnboardingIntroPage() {
   const router = useRouter();
+  const isSetupComplete = useSetupStore((state) => state.isSetupComplete());
+
+  // Redirect to dashboard if onboarding is already complete
+  useEffect(() => {
+    if (isSetupComplete) {
+      router.push("/dashboard");
+    }
+  }, [isSetupComplete, router]);
 
   // Define steps without completion status
   const setupSteps = [
@@ -72,30 +81,35 @@ export default function OnboardingIntroPage() {
     router.push("/dashboard/onboarding/organisation");
   };
 
+  // Only render the intro content if onboarding is not complete
+  if (isSetupComplete) {
+    return null; // Return empty during redirect to avoid flash of content
+  }
+
   return (
     <div>
       <div className="flex flex-col items-center justify-center px-8 py-16 text-center">
         <div className="space-y-8 mb-8">
           <div className="mb-4">
-<BrandLogo variant="hero" />
+            <BrandLogo variant="default" />
           </div>
           <p className="body-lg text-foreground-weak max-w-xl mx-auto py-4">
-            Let&apos;s get your organisation set up so you can start tracking and
-            improving team performance. <br />
+            Let&apos;s get your organisation set up so you can start tracking
+            and improving team performance. <br />
             This quick and easy onboarding will guide you through the
             configuration.
           </p>
           <div className="space-y-6 pb-4">
             <Badge variant="secondary">Est. 1-3 min</Badge>
             <div>
-            <Button
-              size="xl"
-              variant="primary"
-              onClick={handleStartOnboarding}
-              className="gap-2"
-            >
-              Start Onboarding <ArrowRight className="size-4" />
-            </Button>
+              <Button
+                size="xl"
+                variant="primary"
+                onClick={handleStartOnboarding}
+                className="gap-2"
+              >
+                Start Onboarding <ArrowRight className="size-4" />
+              </Button>
             </div>
           </div>
           <Card className="w-full grid md:grid-cols-3 items-start gap-4 max-w-4xl p-8 text-left">
