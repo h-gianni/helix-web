@@ -30,6 +30,7 @@ import {
 import { useTeams } from "@/lib/context/teams-context";
 import { Button } from "@/components/ui/core/Button";
 import { usePerformanceRatingStore } from "@/store/performance-rating-store";
+import { useFeedbackStore } from "@/store/feedback-store";
 
 interface Team {
   id: string;
@@ -75,7 +76,8 @@ const mainNavItems: NavItem[] = [
 function AppSidebar() {
   const { teams, isLoading, fetchTeams } = useTeams();
   const pathname = usePathname();
-    const { setIsOpen: openRatingModal } = usePerformanceRatingStore();
+  const { setIsOpen: openRatingModal } = usePerformanceRatingStore();
+  const { setIsOpen: openFeedbackModal } = useFeedbackStore();
 
   useEffect(() => {
     fetchTeams();
@@ -105,17 +107,8 @@ function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      {/* <div className="space-y-0 px-4">
-          <div className="bg-white px-4 py-2 mb-px text-sm font-semibold text-foreground flex justify-center items-center rounded-lg shadow-sm">
-            Score a Performance
-          </div>
-        <Button variant="ghost" size="sm" className="w-full">
-          Add a Feedback
-        </Button>
-      </div> */}
-
       <SidebarContent className="px-2">
-        {/* New Performance Group */}
+        {/* Core Actions Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Core Actions</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -125,7 +118,7 @@ function AppSidebar() {
                   <button
                     type="button"
                     onClick={() => openRatingModal(true)}
-                    className=""
+                    className="cursor-pointer"
                   >
                     <Star className="size-4 shrink-0" />
                     <span>Score Performance</span>
@@ -137,9 +130,10 @@ function AppSidebar() {
                 <SidebarMenuButton asChild tooltip="Add Feedback">
                   <button
                     type="button"
-                    // onClick={() => openRatingModal(true)}
+                    onClick={() => openFeedbackModal(true)}
+                    className="cursor-pointer"
                   >
-                    <MessageSquare />
+                    <MessageSquare className="size-4 shrink-0" />
                     <span>Add Feedback</span>
                   </button>
                 </SidebarMenuButton>

@@ -17,11 +17,13 @@ import {
   AlertTitle,
 } from "@/components/ui/core/Alert";
 import PerformanceRatingModal from "@/app/dashboard/components/scoring/ScoringModal";
+import FeedbackModal from "@/app/dashboard/components/feedback/FeedbackModal";
 import EmptyDashboardView from "@/app/dashboard/components/EmptyDashboardView";
 import type { Member } from "@/store/member";
 import type { TeamResponse } from "@/lib/types/api";
 import { usePerformersStore } from "@/store/performers-store";
 import { usePerformanceRatingStore } from "@/store/performance-rating-store";
+import { useFeedbackStore } from "@/store/feedback-store";
 import ViewTeamOverview from "@/app/dashboard/components/dashboard/views/ViewTeamOverview";
 import IndividualPerformanceTab from "@/app/dashboard/components/dashboard/views/ViewIndividualPerformance";
 import ViewSkillAnalysis from "@/app/dashboard/components/dashboard/views/ViewSkillAnalysis";
@@ -46,6 +48,7 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   const { viewType, setViewType } = usePerformersStore();
   const { setIsOpen: openRatingModal } = usePerformanceRatingStore();
+  const { setIsOpen: openFeedbackModal } = useFeedbackStore();
   const [currentTab, setCurrentTab] = useState("team");
   const [isTabsSticky, setIsTabsSticky] = useState(false);
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -90,7 +93,7 @@ export default function DashboardLayout({
               <Button
                 data-slot="button"
                 variant="outline"
-                onClick={() => router.push("/dashboard/feedback")}
+                onClick={() => openFeedbackModal(true)}
                 className="gap-2"
               >
                 <MessageSquare className="hidden md:block" /> Add a Feedback
@@ -211,7 +214,9 @@ export default function DashboardLayout({
         </Tabs>
       </main>
 
+      {/* Global modals */}
       <PerformanceRatingModal />
+      <FeedbackModal />
     </>
   );
 }

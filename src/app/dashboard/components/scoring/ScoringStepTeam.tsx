@@ -43,7 +43,7 @@ export default function ScoringStepTeam({
           return (
             <NavListItem
               key={team.id}
-              icon={<Users className="size-5 text-primary" />}
+              icon={<Users className="size-4" />}
               onClick={() => handleTeamSelect(team.id)}
               trailingContent={
                 <Badge variant="primary-light">{membersCount}</Badge>

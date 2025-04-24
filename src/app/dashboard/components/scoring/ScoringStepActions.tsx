@@ -5,20 +5,15 @@ import {
   Loader, Heart, Building2, PencilRuler, Activity, 
   LayoutGrid, Star, Users 
 } from "lucide-react";
-import { 
-  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger 
-} from "@/components/ui/core/Tooltip";
-import { NavList, NavListItem, NavListSection } from "@/components/ui/core/NavList";
 import { Badge } from "@/components/ui/core/Badge";
-import { Button } from "@/components/ui/core/Button";
+import { NavList, NavListItem, NavListSection } from "@/components/ui/core/NavList";
 import { cn } from "@/lib/utils";
 import { 
   useTeamActivities, 
 } from "@/store/performance-rating-store";
 import { 
   useFavoritesStore, 
-  useFavorites, 
-  useToggleFavorite 
+  useFavorites
 } from '@/store/favorites-store';
 
 // Activity type definition
@@ -51,7 +46,6 @@ export default function ScoringStepActions({
   // Load favorites
   const { isLoading: isFavoritesLoading } = useFavorites();
   const favorites = useFavoritesStore((state) => state.favorites);
-  const toggleFavorite = useToggleFavorite();
   
   // State to store organized activities
   const [organizedActivities, setOrganizedActivities] = useState<Record<string, Record<string, Activity[]>>>({
@@ -159,32 +153,6 @@ export default function ScoringStepActions({
     }
   };
 
-  // Handle toggle favorite
-  const handleToggleFavorite = async (
-    activityId: string, 
-    categoryId: string, 
-    e: React.MouseEvent
-  ) => {
-    e.stopPropagation(); // Prevent selection
-  
-    // Extract the base ID for consistency
-    const baseActivityId = extractBaseActionId(activityId);
-    
-    // Check if it's currently a favorite
-    const currentStatus = isActivityFavorite(activityId, categoryId);
-    
-    try {
-      // Use the base ID for toggling favorite status
-      await toggleFavorite.mutateAsync({
-        actionId: baseActivityId,
-        categoryId,
-        isFavorite: !currentStatus,
-      });
-    } catch (err) {
-      console.error("Failed to toggle favorite:", err);
-    }
-  };
-
   // Categories with their icons for the group selector
   const groups = [
     { id: "favorite", name: "Favorites", icon: <Heart className="size-4" /> },
@@ -241,7 +209,7 @@ export default function ScoringStepActions({
           <Heart className="size-6 mx-auto mb-2 text-foreground-muted" />
           <p className="heading-4">No favorites saved</p>
           <p className="body-sm text-foreground-weak mt-1 mx-auto">
-            You can mark the most popular actions as favorites. Go to settings and check on the favourite (heart) icon of the actions from the function categories list.
+          You can mark the most popular actions as favorites. Go to settings and check on the favourite (heart) icon of the actions from the function categories list.
           </p>
         </div>
       );
@@ -253,7 +221,6 @@ export default function ScoringStepActions({
           {favoriteActivities.map((activity) => (
             <NavListItem
               key={activity.id}
-              icon={<Heart className="size-5 text-primary fill-current" />}
               onClick={() => handleActivitySelect(activity.id)}
               trailingContent={
                 typeof activity.category === 'object' ? (
@@ -290,61 +257,21 @@ export default function ScoringStepActions({
             ([category, categoryActivities]) => (
               <NavListSection key={category} title={category}>
                 <NavList>
-                  {categoryActivities.map((activity) => {
-                    const categoryId = typeof activity.category === 'object' 
-                      ? activity.category?.id 
-                      : '';
-                    const actionIsFavorite = categoryId 
-                      ? isActivityFavorite(activity.id, categoryId)
-                      : false;
-                      
-                    return (
-                      <NavListItem
-                        key={activity.id}
-                        icon={
-                          activeGroup === "global" 
-                            ? <Building2 className="size-5 text-primary" />
-                            : <Activity className="size-5 text-primary" />
-                        }
-                        onClick={() => handleActivitySelect(activity.id)}
-                        trailingContent={
-                          categoryId ? (
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={(e) => handleToggleFavorite(activity.id, categoryId, e)}
-                                    className={cn(
-                                      "p-1 h-7 w-7",
-                                      actionIsFavorite
-                                        ? "text-accent hover:text-accent/80"
-                                        : "text-foreground/25 hover:text-foreground/50"
-                                    )}
-                                  >
-                                    <Heart
-                                      className={cn(
-                                        "size-4",
-                                        actionIsFavorite && "fill-current"
-                                      )}
-                                    />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  {actionIsFavorite
-                                    ? "Remove from favorites"
-                                    : "Add to favorites"}
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          ) : null
-                        }
-                      >
-                        {activity.name}
-                      </NavListItem>
-                    );
-                  })}
+                  {categoryActivities.map((activity) => (
+                    <NavListItem
+                      key={activity.id}
+                      onClick={() => handleActivitySelect(activity.id)}
+                      trailingContent={
+                        typeof activity.category === 'object' ? (
+                          <Badge variant="outline" className="ml-2">
+                            {activity.category.name}
+                          </Badge>
+                        ) : null
+                      }
+                    >
+                      {activity.name}
+                    </NavListItem>
+                  ))}
                 </NavList>
               </NavListSection>
             )
