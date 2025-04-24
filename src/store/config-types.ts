@@ -18,6 +18,7 @@ export interface Team {
 export interface Configuration {
   organization: {
     name: string;
+    domain: string;
   };
   activities: {
     selected: string[];
@@ -38,7 +39,7 @@ export interface Configuration {
 export interface ConfigStore {
   config: Configuration;
   setConfig: (config: Configuration) => void;
-  updateOrganization: (name: string) => void;
+  updateOrganization: (values: any) => void;
   updateActivities: (activities: string[]) => void;
   updateActivitiesByCategory: (
     categoryId: string,

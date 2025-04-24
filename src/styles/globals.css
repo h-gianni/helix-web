@@ -155,6 +155,9 @@
 /************************* LAYOUT + SPACING */
 
 .layout-page {
+  @apply w-full;
+}
+.layout-page.dashboard {
   @apply w-full p-4 sm:p-6;
 }
 .layout-page-main {
@@ -281,5 +284,3 @@
   color: var(--neutral-lightest);
   background: var(--neutral-darkest);
 }
-
-

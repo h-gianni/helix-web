@@ -765,7 +765,7 @@ const CoreComponents = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Switch id="notifications" defaultChecked />
+            <Switch id="notifications" />
             <Label htmlFor="notifications">Notifications</Label>
           </div>
 

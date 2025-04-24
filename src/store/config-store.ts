@@ -6,6 +6,7 @@ import { Configuration, ConfigStore } from "./config-types";
 const defaultConfig: Configuration = {
   organization: {
     name: "",
+    domain: "",
   },
   activities: {
     selected: [],
@@ -22,11 +23,11 @@ export const useConfigStore = create<ConfigStore>()(
     (set) => ({
       config: defaultConfig,
       setConfig: (config) => set({ config }),
-      updateOrganization: (name: string) =>
+      updateOrganization: (values: any) =>
         set((state) => ({
           config: {
             ...state.config,
-            organization: { name },
+            organization: { ...values },
           },
         })),
       updateActivities: (activities: string[]) =>
