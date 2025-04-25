@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Users, Loader } from "lucide-react";
+import { Users } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { NavList, NavListItem } from "@/components/ui/core/NavList";
 import { useTeams } from "@/store/performance-rating-store";

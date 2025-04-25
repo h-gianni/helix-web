@@ -9,8 +9,9 @@ import {
   useTeamMembers,
   useTeamActivities,
 } from "@/store/performance-rating-store";
-import { Loader, User, PencilRuler, Users } from "lucide-react";
+import { User, PencilRuler, Users } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
+import { Loader } from "@/components/ui/core/Loader";
 
 interface ScoringStepStarsProps {
   teamId: string;
@@ -108,8 +109,7 @@ export default function ScoringStepStars({
 
       {isSubmitting && (
         <div className="flex justify-center items-center py-2">
-          <Loader className="size-5 animate-spin text-primary mr-2" />
-          <span>Saving your score...</span>
+          <Loader label="Saving your score..." />
         </div>
       )}
     </div>

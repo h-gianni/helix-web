@@ -12,8 +12,9 @@ import {
 } from "@/components/ui/core/Modal";
 import {
   useFeedbackStore,
-  useSubmitFeedback,
 } from "@/store/feedback-store";
+import { Loader } from "@/components/ui/core/Loader";
+import { useToast } from "@/components/ui/core/Toast/use-toast";
 
 // Import step components
 import ScoringStepTeam from "@/app/dashboard/components/scoring/ScoringStepTeam";
@@ -45,9 +46,10 @@ export default function FeedbackModal({
     reset,
   } = useFeedbackStore();
 
-  const submitFeedback = useSubmitFeedback();
+  const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [totalSteps, setTotalSteps] = useState(3);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Initialize with props when the modal opens
   useEffect(() => {
@@ -76,33 +78,36 @@ export default function FeedbackModal({
   useEffect(() => {
     if (!isOpen) {
       setCurrentStep(1);
-      // Don't reset selected values to allow returning to previous selections
     }
   }, [isOpen]);
 
-  const handleSubmit = async () => {
-    const currentTeamId = selectedTeamId || teamId || "";
-    const currentMemberId = selectedMemberId || memberId || "";
-
-    if (
-      !currentTeamId ||
-      !currentMemberId ||
-      !feedback.trim()
-    )
-      return;
-
-    try {
-      await submitFeedback.mutateAsync({
-        teamId: currentTeamId,
-        memberId: currentMemberId,
-        feedback,
-      });
-
-      handleReset();
+  // Simple simulation of feedback submission
+  const handleSubmit = () => {
+    // Immediately show loading state
+    setIsSubmitting(true);
+    
+    // Simulate a short delay for loading effect
+    setTimeout(() => {
+      // Close the modal first
       setIsOpen(false);
-    } catch (error) {
-      console.error("Failed to submit feedback:", error);
-    }
+      
+      // Reset form state
+      reset();
+      setFeedback("");
+      
+      // Show success toast after modal is closed
+      setTimeout(() => {
+        toast({
+          variant: "success",
+          title: "Feedback Submitted",
+          description: "Your feedback has been sent successfully!",
+          duration: 3000,
+        });
+        
+        // Reset submission state
+        setIsSubmitting(false);
+      }, 100);
+    }, 500); // Simulate network delay
   };
 
   const handleReset = () => {
@@ -136,7 +141,20 @@ export default function FeedbackModal({
   };
 
   return (
-    <Modal open={isOpen} onOpenChange={setIsOpen}>
+    <Modal 
+      open={isOpen} 
+      onOpenChange={(open) => {
+        // Don't allow manual closing during "submission"
+        if (isSubmitting && !open) return;
+        
+        // If closing, we can reset everything
+        if (!open) {
+          setFeedback("");
+        }
+        
+        setIsOpen(open);
+      }}
+    >
       <ModalContent size="base" fixed={true}>
         <ModalHeader>
           <div className="flex items-center justify-between w-full absolute left-0 top-0 z-20 bg-white p-2 bg-white/50 rounded-t-xl">
@@ -147,6 +165,7 @@ export default function FeedbackModal({
                 icon
                 aria-label="Back"
                 className=""
+                disabled={isSubmitting}
               >
                 <ArrowLeft />
               </Button>
@@ -187,9 +206,15 @@ export default function FeedbackModal({
               feedback={feedback}
               setFeedback={setFeedback}
               onSubmit={handleSubmit}
-              isSubmitting={submitFeedback.isPending}
-              error={submitFeedback.error}
+              isSubmitting={isSubmitting}
+              error={null} // No error in prototype
             />
+          )}
+
+          {isSubmitting && currentStep !== 3 && (
+            <div className="flex justify-center items-center mt-4">
+              <Loader size="base" label="Processing..." />
+            </div>
           )}
         </div>
       </ModalContent>

@@ -15,6 +15,8 @@ import {
   useSubmitRating,
 } from "@/store/performance-rating-store";
 import StarRating from "@/components/ui/core/StarRating";
+import { Loader } from "@/components/ui/core/Loader";
+import { useToast } from "@/components/ui/core/Toast";
 
 // Import the updated step components
 import ScoringStepTeam from "@/app/dashboard/components/scoring/ScoringStepTeam";
@@ -51,6 +53,7 @@ export default function PerformanceScoringModal({
     reset,
   } = usePerformanceRatingStore();
 
+  const { toast } = useToast();
   const submitRating = useSubmitRating();
   const [currentStep, setCurrentStep] = useState(1);
   const [totalSteps, setTotalSteps] = useState(4);
@@ -112,10 +115,31 @@ export default function PerformanceScoringModal({
         feedback: feedback.trim() || undefined,
       });
 
-      handleReset();
+      // Close the modal first
       setIsOpen(false);
+      
+      // Reset form state
+      handleReset();
+      
+      // Show success toast after modal is closed
+      setTimeout(() => {
+        toast({
+          variant: "success",
+          title: "Score Submitted",
+          description: "Your performance rating has been recorded successfully!",
+          duration: 3000,
+        });
+      }, 100);
     } catch (error) {
       console.error("Failed to submit rating:", error);
+      
+      // Show error toast
+      toast({
+        variant: "destructive",
+        title: "Submission Failed",
+        description: "There was a problem submitting your score. Please try again.",
+        duration: 5000,
+      });
     }
   };
 
@@ -152,7 +176,14 @@ export default function PerformanceScoringModal({
   };
 
   return (
-    <Modal open={isOpen} onOpenChange={setIsOpen}>
+    <Modal 
+      open={isOpen} 
+      onOpenChange={(open) => {
+        // Don't allow manual closing during submission
+        if (submitRating.isPending && !open) return;
+        setIsOpen(open);
+      }}
+    >
       <ModalContent size="base" fixed={true}>
         <ModalHeader>
           <div className="flex items-center justify-between w-full absolute left-0 top-0 z-20 bg-white p-2 bg-white/50 rounded-t-xl">
@@ -163,6 +194,7 @@ export default function PerformanceScoringModal({
                 icon
                 aria-label="Back"
                 className=""
+                disabled={submitRating.isPending}
               >
                 <ArrowLeft />
               </Button>
@@ -238,7 +270,14 @@ export default function PerformanceScoringModal({
                   onClick={handleSubmit}
                   disabled={rating === 0 || submitRating.isPending}
                 >
-                  {submitRating.isPending ? "Saving..." : "Submit Score"}
+                  {submitRating.isPending ? (
+                    <span className="flex items-center gap-2">
+                      <Loader />
+                      <span>Saving...</span>
+                    </span>
+                  ) : (
+                    "Submit Score"
+                  )}
                 </Button>
               </div>
             </div>

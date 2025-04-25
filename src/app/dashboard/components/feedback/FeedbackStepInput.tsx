@@ -6,8 +6,9 @@ import { Textarea } from "@/components/ui/core/Textarea";
 import { Button } from "@/components/ui/core/Button";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { useTeamMembers } from "@/store/feedback-store";
-import { Loader, User } from "lucide-react";
+import { User } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
+import { Loader } from "@/components/ui/core/Loader";
 
 interface FeedbackStepInputProps {
   teamId: string;
@@ -91,10 +92,10 @@ export default function FeedbackStepInput({
           disabled={!feedback.trim() || isSubmitting}
         >
           {isSubmitting ? (
-            <>
-              <Loader className="size-4 mr-2 animate-spin" />
-              Submitting...
-            </>
+            <span className="flex items-center gap-2">
+              <Loader size="sm" />
+              <span>Submitting...</span>
+            </span>
           ) : (
             "Submit Feedback"
           )}

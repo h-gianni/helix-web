@@ -3,7 +3,8 @@ import "../styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { TeamsProvider } from "@/lib/context/teams-context";
-import Providers from "./components/Provider";
+import { ClientToaster } from "@/components/ui/core/Toast/ClientToaster"
+import Providers from "@/app/components/Provider";
 
 export const metadata: Metadata = {
   title: "JustScore",
@@ -22,15 +23,18 @@ export default function RootLayout({
           <link rel="stylesheet" href="https://use.typekit.net/hxf0vyi.css" />
         </head> */}
         <body className="antialiased">
-          <ThemeProvider 
+          <ThemeProvider
             attribute="class"
-            defaultTheme="system" 
+            defaultTheme="system"
             enableSystem
             disableTransitionOnChange
             storageKey="ui-theme"
           >
             <TeamsProvider>
-              <Providers>{children}</Providers>
+              <Providers>
+                {children}
+                <ClientToaster />
+              </Providers>
             </TeamsProvider>
           </ThemeProvider>
         </body>

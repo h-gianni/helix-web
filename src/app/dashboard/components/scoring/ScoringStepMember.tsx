@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { User, Users, Loader } from "lucide-react";
+import { User, Users } from "lucide-react";
 import { NavList, NavListItem } from "@/components/ui/core/NavList";
 import { useTeamMembers } from "@/store/performance-rating-store";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";

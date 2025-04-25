@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { VariantProps, cva } from "class-variance-authority";
 import { Label } from "@/components/ui/core/Label";
+import { Loader } from "@/components/ui/core/Loader";
 
 /* NavList - A mobile-first navigation component
  * 
@@ -120,10 +121,7 @@ const NavList = React.forwardRef<HTMLDivElement, NavListProps>(
     if (isLoading) {
       return (
         <div className="flex justify-center items-center py-6 border border-border rounded-lg bg-white">
-          <div className="flex flex-col items-center gap-2">
-            <div className="size-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-            <p className="text-sm text-foreground-weak">Loading...</p>
-          </div>
+          <Loader label="Loading..." />
         </div>
       );
     }

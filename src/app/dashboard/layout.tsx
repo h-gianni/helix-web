@@ -15,12 +15,14 @@ export default function DashboardLayout({
   useSetupStateSync();
 
   return (
-    <SidebarProvider>
-      <ConditionalSidebar />
-      <div className="layout-page">{children}</div>
-      <div className="h-16 lg:hidden">
-        <MobileBottomNav />
-      </div>
-    </SidebarProvider>
+    <>
+      <SidebarProvider>
+        <ConditionalSidebar />
+        <div className="layout-page">{children}</div>
+        <div className="h-16 lg:hidden">
+          <MobileBottomNav />
+        </div>
+      </SidebarProvider>
+    </>
   );
 }

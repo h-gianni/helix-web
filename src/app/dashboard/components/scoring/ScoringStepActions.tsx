@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { 
-  Loader, Heart, Building2, PencilRuler, Activity, 
+  Heart, Building2, PencilRuler, Activity, 
   LayoutGrid, Star, Users 
 } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
@@ -15,6 +15,7 @@ import {
   useFavoritesStore, 
   useFavorites
 } from '@/store/favorites-store';
+import { Loader } from "@/components/ui/core/Loader";
 
 // Activity type definition
 interface Activity {
@@ -164,7 +165,7 @@ export default function ScoringStepActions({
   if (activitiesLoading || isFavoritesLoading) {
     return (
       <div className="flex justify-center items-center py-12">
-        <Loader className="size-6 animate-spin text-primary" />
+        <Loader label="Loading..."  />
       </div>
     );
   }
