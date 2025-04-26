@@ -12,6 +12,40 @@ export interface EmailInputProps
   inputSize?: "sm" | "base" | "lg" | "xl";
 }
 
+// Custom SwitchToggle component that properly wraps Toggle for switch-like behavior
+const SwitchToggle = React.forwardRef<
+  React.ElementRef<typeof Toggle>,
+  React.ComponentPropsWithoutRef<typeof Toggle>
+>(({ className, pressed, onPressedChange, children, ...props }, ref) => (
+  <Toggle
+    pressed={pressed}
+    onPressedChange={onPressedChange}
+    className={cn(
+      "relative h-6 w-11 rounded-full p-0 border-0 transition-colors focus-visible:ring-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+      pressed
+        ? "!bg-primary !text-primary-foreground data-[state=on]:!bg-primary"
+        : "!bg-muted !text-muted-foreground",
+      className
+    )}
+    ref={ref}
+    {...props}
+  >
+    <span
+      className={cn(
+        "absolute block w-5 h-5 rounded-full transform transition-transform duration-200",
+        pressed
+          ? "left-[calc(100%-1.375rem)] bg-white shadow-md"
+          : "left-0.5 bg-background shadow-sm",
+        "top-0.5" // Center vertically
+      )}
+      aria-hidden="true"
+    />
+    <span className="sr-only">{children}</span>
+  </Toggle>
+));
+
+SwitchToggle.displayName = "SwitchToggle";
+
 const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
   (
     {
@@ -30,6 +64,11 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
   ) => {
     const [useCustomEmail, setUseCustomEmail] = React.useState(false);
     const [username, setUsername] = React.useState("");
+    const [customEmail, setCustomEmail] = React.useState("");
+    const inputRef = React.useRef<HTMLInputElement>(null);
+
+    // Use the provided ref or create our own
+    const combinedRef = useCombinedRef(ref, inputRef);
 
     // Helper to check if email uses default domain
     const isDefaultDomainEmail = (email: string): boolean => {
@@ -51,6 +90,7 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
       // Clear internal state when value becomes empty
       if (!emailValue) {
         setUsername("");
+        setCustomEmail("");
         setUseCustomEmail(false);
         return;
       }
@@ -60,8 +100,11 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
           const isDefaultDomain = isDefaultDomainEmail(emailValue);
           setUseCustomEmail(!isDefaultDomain);
 
-          // Extract username if default domain, otherwise keep full value
-          if (isDefaultDomain) {
+          if (!isDefaultDomain) {
+            // It's a custom email - store in customEmail state
+            setCustomEmail(emailValue);
+          } else {
+            // Extract username from default domain email
             setUsername(extractUsername(emailValue));
           }
         } else {
@@ -72,24 +115,37 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
       }
     }, [value, defaultDomain]);
 
-    // Handle toggling between custom email and username + domain
-    const handleToggleCustomEmail = (pressed: boolean) => {
-      setUseCustomEmail((prev) => {
-        const newValue = pressed;
-        const currentValue = value || "";
+    // Fix for toggle requiring two clicks
+    const handleToggleCustomEmail = React.useCallback(
+      (pressed: boolean) => {
+        // Immediately update state without relying on the previous state
+        setUseCustomEmail(pressed);
 
-        if (newValue) {
-          // When switching to custom, pre-populate with current username + domain
+        // Use setTimeout to ensure state updates before focusing
+        setTimeout(() => {
+          // Focus the input after state changes
+          if (combinedRef.current) {
+            combinedRef.current.focus();
+          }
+        }, 0);
+
+        if (pressed) {
+          // Switching to custom email mode
+          // Don't prefill the domain - just start with username or empty string
+          const newCustomEmail = username || "";
+          setCustomEmail(newCustomEmail);
+
           const customEvent = {
             target: {
               name,
-              value: username ? `${username}@${defaultDomain}` : "",
+              value: newCustomEmail,
             },
           } as React.ChangeEvent<HTMLInputElement>;
-
           onChange(customEvent);
         } else {
-          // When switching to domain mode, extract username
+          // Switching to default domain mode
+          // Extract username from current value if it exists
+          const currentValue = value || "";
           const extractedUsername = extractUsername(
             typeof currentValue === "string" ? currentValue : ""
           );
@@ -98,35 +154,42 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
           const newEvent = {
             target: {
               name,
-              value: `${extractedUsername}@${defaultDomain}`,
+              value: extractedUsername
+                ? `${extractedUsername}@${defaultDomain}`
+                : "",
             },
           } as React.ChangeEvent<HTMLInputElement>;
-
           onChange(newEvent);
         }
-
-        return newValue;
-      });
-    };
+      },
+      [username, value, name, defaultDomain, onChange, combinedRef]
+    );
 
     // Handle user input
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+
       if (useCustomEmail) {
+        // Store custom email value
+        setCustomEmail(newValue);
         // Pass through the full email value
         onChange(e);
       } else {
-        // Store username locally and send combined value to parent
-        const newUsername = e.target.value;
-        setUsername(newUsername);
+        // In default mode, strip out "@" characters if entered
+        // This prevents unexpected behavior while keeping cursor position
+        const sanitizedValue = newValue.replace(/@/g, "");
+        setUsername(sanitizedValue);
 
-        const customEvent = {
-          target: {
-            name: e.target.name,
-            value: `${newUsername}@${defaultDomain}`,
-          },
-        } as React.ChangeEvent<HTMLInputElement>;
-
-        onChange(customEvent);
+        // Only update if the value actually changed (to avoid unnecessary events)
+        if (sanitizedValue !== username) {
+          const customEvent = {
+            target: {
+              name: e.target.name,
+              value: `${sanitizedValue}@${defaultDomain}`,
+            },
+          } as React.ChangeEvent<HTMLInputElement>;
+          onChange(customEvent);
+        }
       }
     };
 
@@ -148,7 +211,7 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
                   className
                 )}
                 aria-invalid={!!error}
-                ref={ref}
+                ref={combinedRef}
                 {...props}
                 style={
                   {
@@ -165,7 +228,7 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
               id={id}
               name={name}
               type="email"
-              value={value}
+              value={customEmail}
               onChange={handleInputChange}
               placeholder="Enter full email address"
               className={cn(
@@ -173,7 +236,7 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
                 className
               )}
               aria-invalid={!!error}
-              ref={ref}
+              ref={combinedRef}
               inputSize={inputSize}
               {...props}
             />
@@ -181,22 +244,34 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
         </div>
 
         <div className="flex items-center space-x-2">
-          <Toggle
-            id={`${id}-toggle-custom`}
-            pressed={useCustomEmail}
-            onPressedChange={handleToggleCustomEmail}
-            size="sm"
-            variant="outline"
+          <button
+            type="button"
+            onClick={() => handleToggleCustomEmail(!useCustomEmail)}
             className={cn(
-              "bg-transparent",
-              useCustomEmail && "text-primary border-primary"
+              "relative h-6 w-11 rounded-full p-0 border-0 transition-colors focus-visible:ring-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              useCustomEmail
+                ? "bg-primary text-primary-foreground"
+                : "bg-muted text-muted-foreground"
             )}
+            aria-pressed={useCustomEmail}
             aria-label={
               useCustomEmail ? "Use default domain" : "Use custom email"
             }
           >
-            {useCustomEmail ? "Custom" : "Default"}
-          </Toggle>
+            <span
+              className={cn(
+                "absolute block w-5 h-5 rounded-full transform transition-transform duration-200",
+                useCustomEmail
+                  ? "left-[calc(100%-1.375rem)] bg-white shadow-md"
+                  : "left-0.5 bg-background shadow-sm",
+                "top-0.5" // Center vertically
+              )}
+              aria-hidden="true"
+            />
+            <span className="sr-only">
+              {useCustomEmail ? "Use default domain" : "Use custom email"}
+            </span>
+          </button>
           <Label
             htmlFor={`${id}-toggle-custom`}
             className="text-xs text-muted-foreground"
@@ -210,6 +285,31 @@ const EmailInput = React.forwardRef<HTMLInputElement, EmailInputProps>(
     );
   }
 );
+
+// Helper function to combine refs
+function useCombinedRef<T>(
+  forwardedRef: React.ForwardedRef<T>,
+  localRef: React.RefObject<T>
+) {
+  return React.useMemo(() => {
+    if (!forwardedRef) return localRef;
+
+    return {
+      get current() {
+        return localRef.current;
+      },
+      set current(value) {
+        // @ts-ignore - This pattern works for combining refs
+        if (typeof forwardedRef === "function") {
+          forwardedRef(value);
+        } else {
+          forwardedRef.current = value;
+        }
+        localRef.current = value;
+      },
+    };
+  }, [forwardedRef, localRef]);
+}
 
 EmailInput.displayName = "EmailInput";
 

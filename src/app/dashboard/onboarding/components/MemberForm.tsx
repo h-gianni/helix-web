@@ -81,6 +81,7 @@ export default function MemberForm({
               onChange={onInputChange}
               className={formErrors.email ? "border-destructive" : ""}
               error={formErrors.email}
+              inputSize="xl"
             />
             {formErrors.email && (
               <p className="text-destructive text-xs mt-1">
