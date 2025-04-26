@@ -6,7 +6,7 @@ import { Configuration, ConfigStore } from "./config-types";
 const defaultConfig: Configuration = {
   organization: {
     name: "",
-    domain: "",
+    siteDomain: "",
   },
   activities: {
     selected: [],

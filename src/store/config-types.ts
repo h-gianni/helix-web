@@ -18,7 +18,7 @@ export interface Team {
 export interface Configuration {
   organization: {
     name: string;
-    domain: string;
+    siteDomain: string;
   };
   activities: {
     selected: string[];

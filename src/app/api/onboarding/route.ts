@@ -8,6 +8,7 @@ import { Prisma } from "@prisma/client";
 export interface CompleteOnboardingInput {
   organization: {
     name: string;
+    siteDomain: string;
   };
   activities: {
     selected: string[];
@@ -32,6 +33,7 @@ export interface CompleteOnboardingResponse {
   organization: {
     id: string;
     name: string;
+    siteDomain: string;
   };
   teams: Array<{
     id: string;
@@ -106,12 +108,16 @@ export async function POST(request: Request) {
             if (orgNameRecord) {
               orgNameRecord = await tx.orgName.update({
                 where: { id: orgNameRecord.id },
-                data: { name: organization.name.trim() },
+                data: {
+                  name: organization.name.trim(),
+                  siteDomain: organization.siteDomain.trim(),
+                },
               });
             } else {
               orgNameRecord = await tx.orgName.create({
                 data: {
                   name: organization.name.trim(),
+                  siteDomain: organization.siteDomain.trim(),
                   userId: user.id,
                 },
               });
@@ -400,6 +406,7 @@ export async function POST(request: Request) {
         organization: {
           id: user.id,
           name: organization.name.trim(),
+          siteDomain: organization.siteDomain.trim(),
         },
         teams: result.teams.map((team) => ({
           id: team.id,

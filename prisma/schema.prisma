@@ -357,6 +357,7 @@ model OrgName {
   createdAt DateTime @default(now())
   user AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+  siteDomain String?
 
   @@map("org_name")
 }

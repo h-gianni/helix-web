@@ -105,8 +105,8 @@ export default function MembersPage() {
                 onAddMember={handleAddMember}
                 onCancelEdit={handleCancelEdit}
                 defaultDomain={
-                  config?.organization.domain
-                    ? trimDomain(config.organization.domain)
+                  config?.organization.siteDomain
+                    ? trimDomain(config.organization.siteDomain)
                     : ""
                 }
               />

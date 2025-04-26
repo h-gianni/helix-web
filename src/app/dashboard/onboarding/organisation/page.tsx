@@ -16,11 +16,11 @@ export default function OrganisationPage() {
 
   // Local state
   const [name, setName] = useState(orgConfig.name || "");
-  const [domain, setDomain] = useState(orgConfig.domain || "");
+  const [siteDomain, setSiteDomain] = useState(orgConfig.siteDomain || "");
   const [showError, setShowError] = useState(false);
 
   // Validation function
-  const isValid = () => Boolean(name.trim() && domain.trim());
+  const isValid = () => Boolean(name.trim() && siteDomain.trim());
 
   // Handle name change
   const handleNameChange = (value: string) => {
@@ -28,16 +28,16 @@ export default function OrganisationPage() {
     updateOrganization({
       ...orgConfig,
       name: value.trim(),
-      domain: orgConfig.domain,
+      siteDomain: orgConfig.siteDomain,
     });
   };
 
   // Handle domain change
   const handleDomainChange = (value: string) => {
-    setDomain(value);
+    setSiteDomain(value);
     updateOrganization({
       ...orgConfig,
-      domain: value.trim(),
+      siteDomain: value.trim(),
       name: orgConfig.name,
     });
   };
@@ -109,7 +109,7 @@ export default function OrganisationPage() {
           <Input
             id="org-domain"
             inputSize="xl"
-            value={domain}
+            value={siteDomain}
             onChange={(e) => {
               handleDomainChange(e.target.value);
               // Clear error state when user starts typing after an error
@@ -118,15 +118,17 @@ export default function OrganisationPage() {
             placeholder="Enter your organisation domain (e.g., example.com)"
             className={cn(
               "bg-white/30 backdrop-blur-lg shadow-sm",
-              showError && !domain.trim() && "border-destructive"
+              showError && !siteDomain.trim() && "border-destructive"
             )}
-            aria-invalid={showError && !domain.trim()}
+            aria-invalid={showError && !siteDomain.trim()}
             aria-describedby={
-              showError && !domain.trim() ? "org-domain-error" : undefined
+              showError && !siteDomain.trim()
+                ? "ositeDg-domain-error"
+                : undefined
             }
             required
           />
-          {showError && !domain.trim() && (
+          {showError && !siteDomain.trim() && (
             <p id="org-domain-error" className="text-sm text-destructive">
               Organisation domain is required
             </p>

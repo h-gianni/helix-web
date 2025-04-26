@@ -202,7 +202,7 @@ export const useCompleteOnboarding = () => {
 
       // Reset the onboarding state in the store
       setConfig({
-        organization: { name: "", domain: "" },
+        organization: { name: "", siteDomain: "" },
         activities: {
           selected: [],
           selectedByCategory: {},
