@@ -236,7 +236,7 @@
 
 /* Star rating color */
 .star-color-off {
-  @apply text-neutral-light fill-transparent;
+  @apply text-neutral-200 fill-transparent;
 }
 .star-color-on {
   @apply text-star-rating fill-star-rating;
@@ -244,8 +244,8 @@
 
 /* Tooltip */
 .tooltip-color {
-  color: var(--neutral-lightest);
-  background: var(--neutral-darkest);
+  color: var(--neutral-50);
+  background: var(--neutral-900);
 }
 
 

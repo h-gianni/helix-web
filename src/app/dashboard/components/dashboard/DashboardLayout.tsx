@@ -145,7 +145,7 @@ export default function DashboardLayout({
             secondaryCta="See What's Included"
             onPrimaryClick={handleClaimOffer}
             onSecondaryClick={handleLearnMore}
-            bgColor="bg-gradient-to-r from-[var(--accent-dark)] to-[var(--primary-darker)]"
+            bgColor="bg-gradient-to-r from-[var(--accent-700)] to-[var(--primary-800)]"
           /> */}
           {/* <AnnouncementBanner
             badgeText="New feature"

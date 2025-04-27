@@ -8,9 +8,9 @@ const CountdownBanner = ({
   description = "Upgrade to our premium plan and save 30%. This offer is available for a limited time only.",
   endDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Default 7 days from now
   primaryCta = "Claim Offer",
-  secondaryCta = "Learn More",
+  neutralCta = "Learn More",
   onPrimaryClick = () => {},
-  onSecondaryClick = () => {},
+  onneutralClick = () => {},
   bgColor = "bg-gradient-to-r from-[var(--accent-base)] to-[var(--primary-base)]",
 }) => {
   const [timeLeft, setTimeLeft] = useState({
@@ -59,7 +59,7 @@ const CountdownBanner = ({
   return (
     <div className={`w-full rounded-[var(--radius-lg)] overflow-hidden shadow-[var(--shadow-lg)] ${bgColor} p-6 md:p-8`}>
       <div className="flex flex-col items-center text-center">
-        <Badge variant="secondary" className="mb-4 bg-white/20 text-white border-transparent">
+        <Badge variant="neutral" className="mb-4 bg-white/20 text-white border-transparent">
           {badgeText}
         </Badge>
         
@@ -85,9 +85,9 @@ const CountdownBanner = ({
           <Button 
             variant="outline" 
             size="lg"
-            onClick={onSecondaryClick}
+            onClick={onneutralClick}
           >
-            {secondaryCta}
+            {neutralCta}
           </Button>
           <Button 
           variant="accent"

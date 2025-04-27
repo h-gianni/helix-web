@@ -27,7 +27,7 @@ const SplitBanner = ({
       <div className="space-y-2">
         <h2 className="display-1">{title}</h2>
 
-        <p className="text-[var(--neutral-darker)] text-sm md:text-base">
+        <p className="text-[var(--neutral-800)] text-sm md:text-base">
           {description}
         </p>
       </div>
@@ -37,7 +37,7 @@ const SplitBanner = ({
           {bulletPoints.map((point, index) => (
             <li key={index} className="flex items-start">
               <svg
-                className="size-4 text-[var(--primary-darker)] mr-2 mt-0.5"
+                className="size-4 text-[var(--primary-800)] mr-2 mt-0.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -49,7 +49,7 @@ const SplitBanner = ({
                   d="M5 13l4 4L19 7"
                 />
               </svg>
-              <span className="text-[var(--neutral-darker)]">{point}</span>
+              <span className="text-[var(--neutral-800)]">{point}</span>
             </li>
           ))}
         </ul>
@@ -77,7 +77,7 @@ const SplitBanner = ({
   );
 
   return (
-    <div className="w-full overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] bg-[var(--white)] border border-[var(--neutral-light)]">
+    <div className="w-full overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-sm)] bg-[var(--white)] border border-[var(--neutral-200)]">
       <div className="flex flex-col md:flex-row">
         {imagePosition === "left" ? (
           <>

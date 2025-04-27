@@ -135,14 +135,14 @@ export const MobileBottomNav = () => {
       )}
 
       {/* Bottom Navigation Bar - Always visible */}
-      <div className="fixed bottom-0 left-0 z-50 w-full bg-neutral-darkest border-t lg:hidden shadow-lg">
+      <div className="fixed bottom-0 left-0 z-50 w-full bg-neutral-900 border-t lg:hidden shadow-lg">
         <div className="grid grid-cols-5 h-16">
           <button
             onClick={() => setMenuOpen(!isMenuOpen)}
             className={`flex flex-col items-center justify-center ${
               isMenuOpen
-                ? "text-primary-light"
-                : "text-neutral-light hover:text-primary"
+                ? "text-primary-200"
+                : "text-neutral-200 hover:text-primary"
             }`}
           >
             {isMenuOpen ? (
@@ -211,7 +211,7 @@ export const MobileBottomNav = () => {
           <SignedIn>
             <Link
               href="/dashboard"
-              className="flex flex-col items-center justify-center text-primary-light font-medium"
+              className="flex flex-col items-center justify-center text-primary-200 font-medium"
             >
               <Gauge className="size-5" />
               <span className="text-xs mt-1">Dashboard</span>

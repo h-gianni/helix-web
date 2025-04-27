@@ -321,7 +321,7 @@ const SettingsShowcase = () => {
                   <p className="body-sm">
                     Measure the performance of your team against what is
                     valuable in your organisation, beyond your function.{" "}
-                    <span className="text-warning-darker">
+                    <span className="text-warning-800">
                       At least 3 actions per category must be selected.
                     </span>
                   </p>

@@ -351,7 +351,7 @@ export function ActivityModal({
               <div
                 className={cn(
                   "relative flex h-64 flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors duration-200",
-                  dragActive ? "border-primary bg-primary/5" : "border-input hover:bg-secondary"
+                  dragActive ? "border-primary bg-primary/5" : "border-input hover:bg-neutral"
                 )}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}

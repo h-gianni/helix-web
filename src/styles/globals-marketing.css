@@ -55,7 +55,7 @@
   @apply h-14 shadow;
 }
 /* .btn-primary {
-  @apply bg-primary-darkest text-accent hover:bg-accent/80;
+  @apply bg-primary-900 text-accent hover:bg-accent/80;
 }
 .btn-secondary {
   @apply bg-secondary text-secondary-foreground hover:bg-secondary/80;

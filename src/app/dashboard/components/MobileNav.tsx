@@ -166,7 +166,7 @@ export const MobileBottomNav = () => {
                 <Button
                   variant="ghost"
                   icon
-                  className="text-foreground hover:text-primary-light"
+                  className="text-foreground hover:text-primary-200"
                   onClick={closeMenu}
                 >
                   <X className="size-6" />
@@ -225,15 +225,15 @@ export const MobileBottomNav = () => {
       )}
 
       {/* Bottom Navigation Bar - Always visible */}
-      <div className="fixed bottom-0 left-0 z-50 w-full bg-neutral-darkest lg:hidden shadow-lg">
+      <div className="fixed bottom-0 left-0 z-50 w-full bg-neutral-900 lg:hidden shadow-lg">
         <div className="grid grid-cols-5 h-16">
           {/* Dashboard */}
           <Link
             href="/dashboard"
             className={`flex flex-col items-center justify-center ${
               pathname === "/dashboard"
-                ? "text-primary-light"
-                : "text-neutral-base hover:text-primary-light"
+                ? "text-primary-200"
+                : "text-neutral-base hover:text-primary-200"
             }`}
           >
             <Gauge className="size-5" />
@@ -245,8 +245,8 @@ export const MobileBottomNav = () => {
             href="/dashboard/teams"
             className={`flex flex-col items-center justify-center ${
               pathname.startsWith("/dashboard/teams")
-                ? "text-primary-light"
-                : "text-neutral-base hover:text-primary-light"
+                ? "text-primary-200"
+                : "text-neutral-base hover:text-primary-200"
             }`}
           >
             <Users className="size-5" />
@@ -258,8 +258,8 @@ export const MobileBottomNav = () => {
             href="/score"
             className={`flex flex-col items-center justify-center ${
               pathname === "/score"
-                ? "text-primary-light"
-                : "text-neutral-base hover:text-primary-light"
+                ? "text-primary-200"
+                : "text-neutral-base hover:text-primary-200"
             }`}
           >
             <Tally5 className="size-5" />
@@ -271,8 +271,8 @@ export const MobileBottomNav = () => {
             href="/feedback"
             className={`flex flex-col items-center justify-center ${
               pathname === "/feedback"
-                ? "text-primary-light"
-                : "text-neutral-base hover:text-primary-light"
+                ? "text-primary-200"
+                : "text-neutral-base hover:text-primary-200"
             }`}
           >
             <MessageCirclePlus className="size-5" />
@@ -284,8 +284,8 @@ export const MobileBottomNav = () => {
             onClick={() => setMenuOpen(!isMenuOpen)}
             className={`flex flex-col items-center justify-center ${
               isMenuOpen
-                ? "text-primary-light"
-                : "text-neutral-base hover:text-primary-light"
+                ? "text-primary-200"
+                : "text-neutral-base hover:text-primary-200"
             }`}
           >
             {isMenuOpen ? (

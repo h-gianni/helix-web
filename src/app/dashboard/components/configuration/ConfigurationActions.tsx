@@ -408,7 +408,7 @@ function ActionsConfig({
                       className={cn(
                         "text-base font-semibold",
                         getSelectedCount(category.id) > 0
-                          ? "text-primary-dark"
+                          ? "text-primary-700"
                           : "text-foreground",
                         // Add this line for the open state
                         "group-[&[data-state=open]]:text-foreground-strong"
@@ -452,7 +452,7 @@ function ActionsConfig({
             <p className="body-sm">
               Measure the performance of your team against what is valuable in
               your organisation, beyond your function.{" "}
-              <span className="text-warning-darker">
+              <span className="text-warning-800">
                 At least 3 actions per category must be selected.
               </span>
             </p>
@@ -476,7 +476,7 @@ function ActionsConfig({
                       className={cn(
                         "text-base font-semibold",
                         getSelectedCount(category.id) > 0
-                          ? "text-primary-dark"
+                          ? "text-primary-700"
                           : "text-foreground",
                         // Add this line for the open state
                         "group-[&[data-state=open]]:text-foreground-strong"

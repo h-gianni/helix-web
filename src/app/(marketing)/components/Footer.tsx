@@ -56,7 +56,7 @@ export const Footer = () => {
   ];
 
   return (
-    <div className="w-full px-4 lg:px-8 py-20 lg:py-40 bg-neutral-darkest text-background">
+    <div className="w-full px-4 lg:px-8 py-20 lg:py-40 bg-neutral-900 text-background">
       <div className="container mx-auto space-y-8 text-center">
         <div className="space-y-2">
           <h2 className="marketing-h2 text-white text-center">JustScore</h2>

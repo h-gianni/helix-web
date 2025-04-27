@@ -86,7 +86,7 @@ const AuthenticationForm = () => {
         if (passwordStrength <= 4) return "bg-warning-base";
         return "bg-success-base";
       }
-      return "bg-neutral-lighter";
+      return "bg-neutral-100";
     };
 
     return (
@@ -125,7 +125,7 @@ const AuthenticationForm = () => {
 
   const IconInput = ({ icon: Icon, ...props }: IconInputProps) => (
     <div className="relative">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-dark">
+      <div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-700">
         <Icon size={18} />
       </div>
       <Input
@@ -142,7 +142,7 @@ const AuthenticationForm = () => {
         variant={authMethod === "password" ? "default" : "outline"}
         size="sm"
         onClick={() => setAuthMethod("password")}
-        className="rounded-r-none flex-1 bg-primary-base hover:bg-primary-dark text-white"
+        className="rounded-r-none flex-1 bg-primary-base hover:bg-primary-700 text-white"
       >
         <Lock size={16} className="mr-2" />
         Password
@@ -151,7 +151,7 @@ const AuthenticationForm = () => {
         variant={authMethod === "passwordless" ? "default" : "outline"}
         size="sm"
         onClick={() => setAuthMethod("passwordless")}
-        className="rounded-l-none flex-1 bg-primary-base hover:bg-primary-dark text-white"
+        className="rounded-l-none flex-1 bg-primary-base hover:bg-primary-700 text-white"
       >
         <Fingerprint size={16} className="mr-2" />
         Passwordless
@@ -318,7 +318,7 @@ const AuthenticationForm = () => {
                   </div>
 
                   <Button
-                    className="w-full bg-primary-base hover:bg-primary-dark text-white"
+                    className="w-full bg-primary-base hover:bg-primary-700 text-white"
                     size="lg"
                   >
                     Sign In
@@ -335,7 +335,7 @@ const AuthenticationForm = () => {
                   <div className="text-center">
                     <Badge
                       variant="outline"
-                      className="bg-primary-lightest text-primary-dark mb-2"
+                      className="bg-primary-50 text-primary-700 mb-2"
                     >
                       <Fingerprint size={14} className="mr-1" />
                       Passwordless Authentication
@@ -357,7 +357,7 @@ const AuthenticationForm = () => {
                     </div>
 
                     <Button
-                      className="w-full mt-2 bg-primary-base hover:bg-primary-dark text-white"
+                      className="w-full mt-2 bg-primary-base hover:bg-primary-700 text-white"
                       size="lg"
                     >
                       Send Login Link
@@ -438,7 +438,7 @@ const AuthenticationForm = () => {
               </div>
 
               <Button
-                className="w-full bg-primary-base hover:bg-primary-dark text-white"
+                className="w-full bg-primary-base hover:bg-primary-700 text-white"
                 size="lg"
               >
                 Create Account
@@ -448,7 +448,7 @@ const AuthenticationForm = () => {
         </div>
 
         {/* Bottom Section - Info */}
-        <div className="bg-gradient-to-r from-info-darker to-info-darkest text-white p-6 md:p-8">
+        <div className="bg-gradient-to-r from-info-800 to-info-900 text-white p-6 md:p-8">
           <div className="">
             {/* <h2 className="heading-2 !text-white mb-4">
               Welcome {activeTab === "signin" ? "Back" : "to Our Platform"}
@@ -472,7 +472,7 @@ const AuthenticationForm = () => {
                   <ShieldCheck className="mt-1 flex-shrink-0" />
                   <div className="space-y-1">
                     <h3 className="heading-5 !text-white">Enhanced Security</h3>
-                    <p className="body-xs text-neutral-light">
+                    <p className="body-xs text-foreground-weak">
                       Your data is protected with industry-leading encryption.
                     </p>
                   </div>
@@ -483,7 +483,7 @@ const AuthenticationForm = () => {
                     <h3 className="heading-5 !text-white">
                       Passwordless Options
                     </h3>
-                    <p className="body-xs text-neutral-light">
+                    <p className="body-xs text-foreground-weak">
                       Sign in quickly and securely with modern authentication
                       methods.
                     </p>

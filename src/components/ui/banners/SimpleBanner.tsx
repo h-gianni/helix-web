@@ -12,7 +12,7 @@ const SimpleBanner = ({
   onSecondaryClick = () => {},
 }) => {
   return (
-    <div className="w-full bg-gradient-to-r from-[var(--primary-base)] to-[var(--primary-darkest)] rounded-[var(--radius-lg)] p-6 md:p-8 shadow-md">
+    <div className="w-full bg-gradient-to-r from-[var(--primary-base)] to-[var(--primary-900)] rounded-[var(--radius-lg)] p-6 md:p-8 shadow-md">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-4">
           <Badge

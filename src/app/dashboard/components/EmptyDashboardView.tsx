@@ -43,7 +43,7 @@ function EmptyDashboardView({ onCreateTeam }: EmptyDashboardViewProps) {
               <p className="body-lg max-w-xl mx-auto">
                 To get started, you need to complete the configuration process.
               </p>
-              <Badge data-slot="badge" variant="secondary">Est. 1-3 min</Badge>
+              <Badge data-slot="badge" variant="neutral">Est. 1-3 min</Badge>
             </div>
           </div>
         ) : (
@@ -55,7 +55,7 @@ function EmptyDashboardView({ onCreateTeam }: EmptyDashboardViewProps) {
             <div className="flex flex-wrap gap-2 justify-center py-4">
               <Button
                 data-slot="button"
-                variant="secondary"
+                variant="neutral"
                 onClick={() => router.push("/dashboard/teams")}
               >
                 Go to teams

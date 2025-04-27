@@ -276,7 +276,7 @@ const TokensShowcase = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="space-y-2">
-                  <div className="w-full text-center p-4 font-semibold bg-primary text-primary-foreground">
+                  <div className="w-full text-center p-4 font-semibold bg-primary text-primary-50">
                     Primary
                   </div>
                   <div className="text-xs">

@@ -8,9 +8,9 @@ const AnnouncementBanner = ({
   title = "Join our upcoming webinar",
   description = "Learn how to maximize your productivity with our platform. Live Q&A with our product team included.",
   primaryCta = "Register Now",
-  secondaryCta = "Add to Calendar",
+  neutralCta = "Add to Calendar",
   onPrimaryClick = () => {},
-  onSecondaryClick = () => {},
+  onneutralClick = () => {},
   onDismiss = () => {},
   color = "primary", // Options: primary, warning, success, destructive, accent, info
 }) => {
@@ -18,12 +18,12 @@ const AnnouncementBanner = ({
   
   // Color variants mapping based on theme.css
   const colorVariants: Record<string, string> = {
-    primary: "bg-[var(--primary-lightest)] border-[var(--primary-lighter)] [&_h3]:text-[var(--primary-darkest)] [&_p]:text-[var(--primary-darker)] [&_.badge]:bg-[var(--primary-lighter)] [&_.badge]:text-[var(--primary-darkest)] [&_.primary-btn]:bg-[var(--primary-base)] [&_.primary-btn]:hover:bg-[var(--primary-dark)] [&_.primary-btn]:text-white [&_.secondary-btn]:text-[var(--primary-darkest)] [&_.secondary-btn]:border-[var(--primary-light)] [&_.secondary-btn]:hover:bg-[var(--primary-lighter)]",
-    warning: "bg-[var(--warning-lightest)] border-[var(--warning-lighter)] [&_h3]:text-[var(--warning-darkest)] [&_p]:text-[var(--warning-darker)] [&_.badge]:bg-[var(--warning-lighter)] [&_.badge]:text-[var(--warning-darkest)] [&_.primary-btn]:bg-[var(--warning-base)] [&_.primary-btn]:hover:bg-[var(--warning-dark)] [&_.primary-btn]:text-white [&_.secondary-btn]:text-[var(--warning-darkest)] [&_.secondary-btn]:border-[var(--warning-light)] [&_.secondary-btn]:hover:bg-[var(--warning-lighter)]",
-    success: "bg-[var(--success-lightest)] border-[var(--success-lighter)] [&_h3]:text-[var(--success-darkest)] [&_p]:text-[var(--success-darker)] [&_.badge]:bg-[var(--success-lighter)] [&_.badge]:text-[var(--success-darkest)] [&_.primary-btn]:bg-[var(--success-base)] [&_.primary-btn]:hover:bg-[var(--success-dark)] [&_.primary-btn]:text-white [&_.secondary-btn]:text-[var(--success-darkest)] [&_.secondary-btn]:border-[var(--success-light)] [&_.secondary-btn]:hover:bg-[var(--success-lighter)]",
-    destructive: "bg-[var(--destructive-lightest)] border-[var(--destructive-lighter)] [&_h3]:text-[var(--destructive-darkest)] [&_p]:text-[var(--destructive-darker)] [&_.badge]:bg-[var(--destructive-lighter)] [&_.badge]:text-[var(--destructive-darkest)] [&_.primary-btn]:bg-[var(--destructive-base)] [&_.primary-btn]:hover:bg-[var(--destructive-dark)] [&_.primary-btn]:text-white [&_.secondary-btn]:text-[var(--destructive-darkest)] [&_.secondary-btn]:border-[var(--destructive-light)] [&_.secondary-btn]:hover:bg-[var(--destructive-lighter)]",
-    accent: "bg-[var(--accent-lightest)] border-[var(--accent-lighter)] [&_h3]:text-[var(--accent-darkest)] [&_p]:text-[var(--accent-darker)] [&_.badge]:bg-[var(--accent-lighter)] [&_.badge]:text-[var(--accent-darkest)] [&_.primary-btn]:bg-[var(--accent-base)] [&_.primary-btn]:hover:bg-[var(--accent-dark)] [&_.primary-btn]:text-white [&_.secondary-btn]:text-[var(--accent-darkest)] [&_.secondary-btn]:border-[var(--accent-light)] [&_.secondary-btn]:hover:bg-[var(--accent-lighter)]",
-    info: "bg-[var(--info-lightest)] border-[var(--info-lighter)] [&_h3]:text-[var(--info-darkest)] [&_p]:text-[var(--info-darker)] [&_.badge]:bg-[var(--info-lighter)] [&_.badge]:text-[var(--info-darkest)] [&_.primary-btn]:bg-[var(--info-base)] [&_.primary-btn]:hover:bg-[var(--info-dark)] [&_.primary-btn]:text-white [&_.secondary-btn]:text-[var(--info-darkest)] [&_.secondary-btn]:border-[var(--info-light)] [&_.secondary-btn]:hover:bg-[var(--info-lighter)]",
+    primary: "bg-[var(--primary-50)] border-[var(--primary-100)] [&_h3]:text-[var(--primary-900)] [&_p]:text-[var(--primary-800)] [&_.badge]:bg-[var(--primary-100)] [&_.badge]:text-[var(--primary-900)] [&_.primary-btn]:bg-[var(--primary-base)] [&_.primary-btn]:hover:bg-[var(--primary-700)] [&_.primary-btn]:text-white [&_.neutral-btn]:text-[var(--primary-900)] [&_.neutral-btn]:border-[var(--primary-200)] [&_.neutral-btn]:hover:bg-[var(--primary-100)]",
+    warning: "bg-[var(--warning-50)] border-[var(--warning-100)] [&_h3]:text-[var(--warning-900)] [&_p]:text-[var(--warning-800)] [&_.badge]:bg-[var(--warning-100)] [&_.badge]:text-[var(--warning-900)] [&_.primary-btn]:bg-[var(--warning-base)] [&_.primary-btn]:hover:bg-[var(--warning-700)] [&_.primary-btn]:text-white [&_.neutral-btn]:text-[var(--warning-900)] [&_.neutral-btn]:border-[var(--warning-200)] [&_.neutral-btn]:hover:bg-[var(--warning-100)]",
+    success: "bg-[var(--success-50)] border-[var(--success-100)] [&_h3]:text-[var(--success-900)] [&_p]:text-[var(--success-800)] [&_.badge]:bg-[var(--success-100)] [&_.badge]:text-[var(--success-900)] [&_.primary-btn]:bg-[var(--success-base)] [&_.primary-btn]:hover:bg-[var(--success-700)] [&_.primary-btn]:text-white [&_.neutral-btn]:text-[var(--success-900)] [&_.neutral-btn]:border-[var(--success-200)] [&_.neutral-btn]:hover:bg-[var(--success-100)]",
+    destructive: "bg-[var(--destructive-50)] border-[var(--destructive-100)] [&_h3]:text-[var(--destructive-900)] [&_p]:text-[var(--destructive-800)] [&_.badge]:bg-[var(--destructive-100)] [&_.badge]:text-[var(--destructive-900)] [&_.primary-btn]:bg-[var(--destructive-base)] [&_.primary-btn]:hover:bg-[var(--destructive-700)] [&_.primary-btn]:text-white [&_.neutral-btn]:text-[var(--destructive-900)] [&_.neutral-btn]:border-[var(--destructive-200)] [&_.neutral-btn]:hover:bg-[var(--destructive-100)]",
+    accent: "bg-[var(--accent-50)] border-[var(--accent-100)] [&_h3]:text-[var(--accent-900)] [&_p]:text-[var(--accent-800)] [&_.badge]:bg-[var(--accent-100)] [&_.badge]:text-[var(--accent-900)] [&_.primary-btn]:bg-[var(--accent-base)] [&_.primary-btn]:hover:bg-[var(--accent-700)] [&_.primary-btn]:text-white [&_.neutral-btn]:text-[var(--accent-900)] [&_.neutral-btn]:border-[var(--accent-200)] [&_.neutral-btn]:hover:bg-[var(--accent-100)]",
+    info: "bg-[var(--info-50)] border-[var(--info-100)] [&_h3]:text-[var(--info-900)] [&_p]:text-[var(--info-800)] [&_.badge]:bg-[var(--info-100)] [&_.badge]:text-[var(--info-900)] [&_.primary-btn]:bg-[var(--info-base)] [&_.primary-btn]:hover:bg-[var(--info-700)] [&_.primary-btn]:text-white [&_.neutral-btn]:text-[var(--info-900)] [&_.neutral-btn]:border-[var(--info-200)] [&_.neutral-btn]:hover:bg-[var(--info-100)]",
   };
 
   const handleDismiss = () => {
@@ -55,10 +55,10 @@ const AnnouncementBanner = ({
           </Button>
           <Button 
             variant="outline" 
-            onClick={onSecondaryClick}
-            className="secondary-btn w-full sm:w-auto"
+            onClick={onneutralClick}
+            className="neutral-btn w-full sm:w-auto"
           >
-            {secondaryCta}
+            {neutralCta}
           </Button>
         </div>
         
@@ -66,7 +66,7 @@ const AnnouncementBanner = ({
           variant="ghost" 
           icon
           onClick={handleDismiss}
-          className="absolute right-2 top-2 md:relative md:right-0 md:top-0 text-[var(--neutral-dark)] hover:bg-[var(--neutral-lighter)]"
+          className="absolute right-2 top-2 md:relative md:right-0 md:top-0 text-[var(--neutral-700)] hover:bg-[var(--neutral-100)]"
         >
           <X className="h-4 w-4" />
           <span className="sr-only">Dismiss</span>

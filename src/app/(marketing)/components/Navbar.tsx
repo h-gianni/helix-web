@@ -28,7 +28,7 @@ const ListItem = React.forwardRef<
         <a
           ref={ref}
           className={cn(
-            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-secondary hover:text-foreground focus:bg-secondary focus:text-foreground",
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-neutral hover:text-foreground focus:bg-neutral focus:text-foreground",
             className
           )}
           {...props}
@@ -117,12 +117,12 @@ export const Navbar = () => {
           <Button variant="ghost">Watch a demo</Button>
           <div className="border-r h-6 hidden md:inline"></div>
           <SignedOut>
-            <Button variant="secondary" asChild>
+            <Button variant="neutral" asChild>
               <Link href="/sign-in">Sign in</Link>
             </Button>
           </SignedOut>
           <SignedIn>
-            <Button asChild variant="secondary">
+            <Button asChild variant="neutral">
               <Link href="/dashboard">Dashboard</Link>
             </Button>
           </SignedIn>

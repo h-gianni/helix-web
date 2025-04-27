@@ -325,7 +325,7 @@ export default function ActionsSelector({
               {categoriesDescription}
             </p> */}
           </div>
-          <div className="divide-y divide-neutral-lighter">
+          <div className="divide-y divide-neutral-100">
             {categories.length === 0 ? (
               <div className="p-4 text-foreground-weak">
                 No functions available
@@ -425,7 +425,7 @@ export default function ActionsSelector({
               </div>
 
               <div className="flex-1 overflow-auto">
-                <div className="divide-y divide-neutral-lighter">
+                <div className="divide-y divide-neutral-100">
                   {selectedCategory.actions.map((action) => {
                     const isSelected = selectedByCategory[
                       selectedCategory.id

@@ -40,7 +40,7 @@ interface MemberReviewsListProps {
 type TrendType = "up" | "down" | "neutral" | undefined;
 
 const statusVariants = {
-  DRAFT: "secondary",
+  DRAFT: "neutral",
   PUBLISHED: "success",
   ACKNOWLEDGED: "success",
 };
@@ -134,7 +134,7 @@ function MemberReviewsList({
           </AlertDescription>
         </Alert>
         <div className="flex justify-center">
-          <Button variant="secondary" onClick={() => refetch()}>
+          <Button variant="neutral" onClick={() => refetch()}>
             <RotateCcw className="size-4 mr-2" />
             Retry
           </Button>
@@ -241,7 +241,7 @@ function MemberReviewsList({
                     </Button>
                   ) : (
                     <Button 
-                      variant="secondary" 
+                      variant="neutral" 
                       size="sm"
                       onClick={() => handleViewReview(review.id)}
                     >
