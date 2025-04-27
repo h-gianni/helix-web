@@ -14,7 +14,7 @@ interface NoteStepInputProps {
   teamId: string;
   memberId: string;
   note: string;
-  setNote: (feedback: string) => void;
+  setNote: (note: string) => void;
   onSubmit: () => void;
   isSubmitting: boolean;
   error: Error | null | unknown;
@@ -59,14 +59,14 @@ export default function NoteStepInput({
       </div>
 
       <div className="max-w-lg mx-auto space-y-3">
-        <Label htmlFor="feedback" className="heading-4">
-          Your Feedback
+        <Label htmlFor="note" className="heading-4">
+          Your note
         </Label>
         <Textarea
-          id="feedback"
+          id="note"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Share your feedback about this team member..."
+          placeholder="Share your note about this team member..."
           rows={5}
           maxLength={500}
           className="w-full resize-none"
@@ -79,7 +79,7 @@ export default function NoteStepInput({
         {/* {error && (
           <Alert variant="destructive">
             <AlertDescription>
-              {error instanceof Error ? error.message : "Failed to submit feedback. Please try again."}
+              {error instanceof Error ? error.message : "Failed to submit note. Please try again."}
             </AlertDescription>
           </Alert>
         )} */}
@@ -97,7 +97,7 @@ export default function NoteStepInput({
               <span>Submitting...</span>
             </span>
           ) : (
-            "Submit Feedback"
+            "Submit note"
           )}
         </Button>
       </div>

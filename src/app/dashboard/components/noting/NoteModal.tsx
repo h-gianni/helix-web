@@ -19,7 +19,7 @@ import { useToast } from "@/components/ui/core/Toast/use-toast";
 // Import step components
 import ScoringStepTeam from "@/app/dashboard/components/scoring/ScoringStepTeam";
 import ScoringStepMember from "@/app/dashboard/components/scoring/ScoringStepMember";
-import NoteStepInput from "@/app/dashboard/components/note/NoteStepInput";
+import NoteStepInput from "@/app/dashboard/components/noting/NoteStepInput";
 
 interface NoteModalProps {
   teamId?: string;

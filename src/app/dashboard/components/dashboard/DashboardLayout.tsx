@@ -17,7 +17,7 @@ import {
   AlertTitle,
 } from "@/components/ui/core/Alert";
 import PerformanceRatingModal from "@/app/dashboard/components/scoring/ScoringModal";
-import NoteModal from "@/app/dashboard/components/note/NoteModal";
+import NoteModal from "@/app/dashboard/components/noting/NoteModal";
 import EmptyDashboardView from "@/app/dashboard/components/EmptyDashboardView";
 import type { Member } from "@/store/member";
 import type { TeamResponse } from "@/lib/types/api";
