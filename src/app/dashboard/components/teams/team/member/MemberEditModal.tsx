@@ -141,21 +141,6 @@ function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
               onChange={handleChange}
             />
           </div>
-
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              data-slot="checkbox"
-              id="isAdmin"
-              checked={formData.isAdmin}
-              onCheckedChange={(checked) =>
-                setFormData((prev) => ({ ...prev, isAdmin: checked === true }))
-              }
-            />
-            <div className="grid gap-1.5 leading-none">
-              <Label htmlFor="isAdmin">Admin Access</Label>
-              <p className="text-sm">Grant admin privileges to this member</p>
-            </div>
-          </div>
         </div>
 
         <DialogFooter data-slot="dialog-footer">
@@ -169,6 +154,7 @@ function EditMemberModal({ memberId, teamId }: EditMemberModalProps) {
           </Button>
           <Button
             data-slot="button"
+            variant="primary"
             onClick={handleSubmit}
             disabled={updateMember.isPending}
           >

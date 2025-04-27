@@ -54,7 +54,7 @@ export function StatItem({
   return (
     <div className="flex flex-col">
       <div className="flex items-center justify-between -mt-0.5">
-        <h3 className={`text-sm font-medium pb-1 -mt-0.5 ${isNA ? "opacity-50" : ""} !text-foreground-strong truncate`}>{title}</h3>
+        <h3 className={`heading-5 pb-0.5 ${isNA ? "opacity-50" : ""} truncate`}>{title}</h3>
         {icon && <div className="ml-2 flex-shrink-0 -mr-1 -mt-1"><HeroBadge icon={icon} size="sm" variant="neutral" /></div>}
       </div>
       <div className="mt-0">

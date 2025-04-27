@@ -12,6 +12,7 @@ import {
   LifeBuoy,
 } from "lucide-react";
 import type { Member, Rating, PerformanceCategory } from "./member";
+import type { PerformanceVariant } from "@/components/ui/core/PerformanceBadge";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const performersApi = {
   },
 };
 
+// Define performance categories with the required variant property
 export const performanceCategories: PerformanceCategory[] = [
   {
     label: "Not Scored",
@@ -51,6 +53,7 @@ export const performanceCategories: PerformanceCategory[] = [
     className: "text-foreground",
     Icon: AlertCircle,
     description: "Team members pending their first performance score.",
+    variant: "not-scored",
   },
   {
     label: "Star",
@@ -60,6 +63,7 @@ export const performanceCategories: PerformanceCategory[] = [
     Icon: Sparkle,
     description:
       "Exceptional performance with consistent excellence and leadership.",
+    variant: "star",
   },
   {
     label: "Strong",
@@ -69,6 +73,7 @@ export const performanceCategories: PerformanceCategory[] = [
     Icon: BicepsFlexed,
     description:
       "Highly competent with strong contributions and reliable results.",
+    variant: "strong",
   },
   {
     label: "Solid",
@@ -78,6 +83,7 @@ export const performanceCategories: PerformanceCategory[] = [
     Icon: Smile,
     description:
       "Consistently meets expectations with room for further growth.",
+    variant: "solid",
   },
   {
     label: "Lower",
@@ -87,6 +93,7 @@ export const performanceCategories: PerformanceCategory[] = [
     Icon: ArrowBigDownDash,
     description:
       "Inconsistent performance with noticeable areas needing improvement.",
+    variant: "lower",
   },
   {
     label: "Poor",
@@ -96,6 +103,7 @@ export const performanceCategories: PerformanceCategory[] = [
     Icon: LifeBuoy,
     description:
       "Significant performance concerns requiring immediate attention.",
+    variant: "poor",
   },
 ];
 
@@ -151,31 +159,38 @@ export const usePerformersStore = create<PerformersStore>((set) => ({
   setViewType: (type) => set({ viewType: type }),
 
   getPerformanceCategory: (rating, ratingsCount) => {
-
-    console.log("rating", rating, "ratingsCount", ratingsCount)
-
+    // Handle not scored case
     if (ratingsCount === 0) {
       return {
-        label: "No trend available",
+        label: "Not Scored",
         minRating: 0,
         maxRating: 0,
         className: "text-unavailable",
-        Icon: TrendingUp,
+        Icon: AlertCircle,
+        description: "Team members pending their first performance score.",
+        variant: "not-scored",
       };
     }
 
-    return (
-      performanceCategories.find(
-        (category) =>
-          rating >= category.minRating && rating <= category.maxRating
-      ) || {
+    // Find the matching category based on rating range
+    const category = performanceCategories.find(
+      (category) =>
+        rating >= category.minRating && rating <= category.maxRating
+    );
+
+    // Handle unknown or fallback case
+    if (!category) {
+      return {
         label: "Unknown",
         minRating: 0,
         maxRating: 0,
         className: "",
         Icon: TrendingUp,
-      }
-    );
+        variant: "not-scored",
+      };
+    }
+
+    return category;
   },
 
   getSortedMembers: (members) => {

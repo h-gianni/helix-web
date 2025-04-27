@@ -1,36 +1,29 @@
+// app/dashboard/teams/[teamId]/members/[memberId]/page.tsx
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
 import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
-import { PageHeader } from "@/components/ui/composite/PageHeader";
-import { ProfileCard } from "@/components/ui/composite/ProfileCard";
+import { MemberProfileHeader } from "@/components/ui/composite/MemberProfileHeader";
 import { Button } from "@/components/ui/core/Button";
-import { Card, CardContent } from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Loader } from "@/components/ui/core/Loader";
 import {
-  PenSquare,
-  ArrowLeft,
-  Crown,
-  Target,
   AlertCircle,
-  ChartNoAxesCombined,
-  Plus,
+  ArrowLeft,
 } from "lucide-react";
-import Link from "next/link";
 import { EditMemberModal } from "@/app/dashboard/components/teams/team/member/MemberEditModal";
 import PerformanceRatingModal from "@/app/dashboard/components/scoring/ScoringModal";
-import RatingsSection from "@/app/dashboard/components/teams/team/member/MemberRatingsSection";
+import ScoresSection from "@/app/dashboard/components/teams/team/member/MemberScoresSection";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
 } from "@/components/ui/core/Tabs";
-import MemberDashboard from "@/app/dashboard/components/teams/team/member/MemberDashboard";
+import MemberDashboard from "@/app/dashboard/components/teams/team/member/MemberDashboardSection";
 import { useMemberDetails, useMemberStore } from "@/store/member-store";
-import MemberReviewsList from "@/app/dashboard/components/teams/team/member/MemberReviewsList";
-import { GenerateReviewModal } from "@/app/dashboard/components/teams/team/member/GenerateReviewModal";
+import MemberReviewsList from "@/app/dashboard/components/teams/team/member/MemberReviewsSection";
+import MemberNotesSection from "@/app/dashboard/components/teams/team/member/MemberNotesSection";
 import { useState } from "react";
 
 export default function MemberDetailsPage() {
@@ -47,6 +40,8 @@ export default function MemberDetailsPage() {
   } = useMemberStore();
 
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isTransferDialogOpen, setIsTransferDialogOpen] = useState(false);
 
   const {
     data: member,
@@ -64,40 +59,79 @@ export default function MemberDetailsPage() {
       label: member?.team?.name || "Team",
     },
     {
-      label:
-        member?.firstName && member?.lastName
-          ? `${member.firstName} ${member.lastName}`
-          : member?.user?.email || "Member Details",
+      label: getDisplayName(member),
     },
   ];
 
+  // Helper function to consistently format member name
+  function getDisplayName(member: any) {
+    if (!member) return "Member Details";
+    
+    // If both first and last names exist, use them
+    if (member.firstName && member.lastName) {
+      return `${member.firstName} ${member.lastName}`;
+    }
+    
+    // If we have either first or last name, use that
+    if (member.firstName || member.lastName) {
+      return member.firstName || member.lastName;
+    }
+    
+    // If we have user data with a name, use that
+    if (member.user?.name) {
+      return member.user.name;
+    }
+    
+    // Last resort: use email or a placeholder
+    return member.user?.email?.split('@')[0] || "Team Member";
+  }
+
   const handleGenerateReview = () => {
-    console.log("handleGenerateReview");
     setIsReviewModalOpen(true);
+  };
+
+  const handleAddNote = () => {
+    // Implement note functionality or placeholder
+    console.log("Add note clicked");
+  };
+
+  const handleScorePerformance = () => {
+    setRatingModalOpen(true);
+  };
+
+  const handleEditMember = () => {
+    setEditModalOpen(true);
+  };
+
+  const handleTransferMember = () => {
+    setIsTransferDialogOpen(true);
+  };
+
+  const handleDeleteMember = () => {
+    setIsDeleteDialogOpen(true);
   };
 
   if (isLoading) {
     return (
-      <div className="loader">
-        <Loader size="base" label="Loading..." />
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <Loader label="Loading member details..." />
       </div>
     );
   }
 
   if (error || !member) {
     return (
-      <div className="ui-loader-error">
-        <Alert data-slot="alert" variant="destructive">
-          {/* Replace h-# w-# with size-4 if needed */}
+      <div className="flex flex-col items-center gap-4 p-6">
+        <Alert variant="destructive">
           <AlertCircle className="size-4" />
-          <AlertDescription data-slot="alert-description">
+          <AlertDescription>
             {error instanceof Error ? error.message : "Member not found"}
           </AlertDescription>
         </Alert>
         <Button
-          data-slot="button"
-          variant="secondary"
+          variant="ghost"
           onClick={() => router.push(`/dashboard/teams/${params.teamId}`)}
+          className="gap-2"
         >
           <ArrowLeft className="size-4" /> Back to Team
         </Button>
@@ -105,119 +139,70 @@ export default function MemberDetailsPage() {
     );
   }
 
+  // Get member name for display
+  const memberName = getDisplayName(member);
+
   return (
     <>
       <PageBreadcrumbs items={breadcrumbItems} />
-      <PageHeader
-        title={
-          member.firstName && member.lastName
-            ? `${member.firstName} ${member.lastName}`
-            : member.user.email || "Member Details"
-        }
-        backButton={{
-          onClick: () => router.push(`/dashboard/teams/${params.teamId}`),
-        }}
-        icon={member.isAdmin && <Crown className="text-warning size-4" />}
-        actions={
-          <>
-            {/* <Button data-slot="button" variant="default" onClick={handleGenerateReview}>
-              <ChartNoAxesCombined className="size-4" /> Generate Performance Review
-            </Button> */}
-            <GenerateReviewModal
-              teamId={params.teamId}
-              memberId={params.memberId}
-              // isOpen={isReviewModalOpen}
-              memberName={member.firstName + " " + member.lastName}
-              // onClose={() => setIsReviewModalOpen(false)}
-            />
-          </>
-        }
+      
+      <MemberProfileHeader
+        memberId={params.memberId}
+        teamId={params.teamId}
+        name={memberName}
+        title={member.title}
+        email={member.user.email}
+        onAddNote={handleAddNote}
+        onScorePerformance={handleScorePerformance}
+        onEditMember={handleEditMember}
+        onTransferMember={handleTransferMember}
+        onDeleteMember={handleDeleteMember}
       />
 
       <main className="layout-page-main">
-        <div className="lg:flex flex-row-reverse gap-2 space-y-4 lg:space-y-0">
-          <div className="lg:w-80">
-            <ProfileCard
-              align="vertical"
-              fields={[
-                {
-                  label: "Full Name",
-                  value:
-                    member.firstName && member.lastName
-                      ? `${member.firstName} ${member.lastName}`
-                      : "Not set",
-                },
-                {
-                  label: "Email",
-                  value: member.user.email,
-                },
-                {
-                  label: "Job Title",
-                  value: member.title || "Not set",
-                },
-                {
-                  label: "Team",
-                  value: member.team?.name || "Not found",
-                },
-                {
-                  label: "Role",
-                  value: (
-                    <>
-                      {member.isAdmin ? "Admin" : "Member"}
-                      {member.isAdmin && (
-                        <Crown className="size-4 text-warning-400" />
-                      )}
-                    </>
-                  ),
-                },
-              ]}
-              onEdit={() => setEditModalOpen(true)}
-              editButtonPosition="footer"
+        <Tabs
+          value={selectedTab}
+          onValueChange={(value) => setSelectedTab(value as any)}
+          className="w-full"
+        >
+          <TabsList className="w-full my-4">
+            <TabsTrigger value="dashboard" className="flex-1">Dashboard</TabsTrigger>
+            <TabsTrigger value="scores" className="flex-1">Scores</TabsTrigger>
+            <TabsTrigger value="notes" className="flex-1">Notes</TabsTrigger>
+            <TabsTrigger value="reviews" className="flex-1">Performance Reviews</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="dashboard">
+            <MemberDashboard
+              teamId={params.teamId}
+              memberId={params.memberId}
             />
-          </div>
+          </TabsContent>
 
-          <div className="w-full">
-            <Tabs
-              value={selectedTab}
-              onValueChange={(value) => setSelectedTab(value as any)}
-            >
-              <TabsList>
-                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-                <TabsTrigger value="ratings">Ratings</TabsTrigger>
-                <TabsTrigger value="feedbacks">Feedback</TabsTrigger>
-                {/* <TabsTrigger value="goals">Goals</TabsTrigger> */}
-                <TabsTrigger value="reviews">Performance Reviews</TabsTrigger>
-              </TabsList>
+          <TabsContent value="scores">
+            <ScoresSection
+              teamId={params.teamId}
+              memberId={params.memberId}
+              onAddRating={() => setRatingModalOpen(true)}
+            />
+          </TabsContent>
 
-              <TabsContent value="dashboard" className="mt-4">
-                <MemberDashboard
-                  teamId={params.teamId}
-                  memberId={params.memberId}
-                />
-              </TabsContent>
+          <TabsContent value="notes">
+            <MemberNotesSection
+              teamId={params.teamId}
+              memberId={params.memberId}
+              onAddNote={handleAddNote}
+            />
+          </TabsContent>
 
-              <TabsContent value="ratings">
-                <RatingsSection
-                  teamId={params.teamId}
-                  memberId={params.memberId}
-                  onAddRating={() => setRatingModalOpen(true)}
-                />
-              </TabsContent>
-
-              <TabsContent value="feedbacks">
-                <div className="missing-content">No feedback.</div>
-              </TabsContent>
-
-              <TabsContent value="reviews">
-                <MemberReviewsList
-                  teamId={params.teamId}
-                  memberId={params.memberId}
-                  onGenerateReview={handleGenerateReview}
-                />
-              </TabsContent>
-            </Tabs>
-          </div>
-        </div>
+          <TabsContent value="reviews">
+            <MemberReviewsList
+              teamId={params.teamId}
+              memberId={params.memberId}
+              onGenerateReview={handleGenerateReview}
+            />
+          </TabsContent>
+        </Tabs>
       </main>
 
       <EditMemberModal memberId={params.memberId} teamId={params.teamId} />
@@ -225,13 +210,11 @@ export default function MemberDetailsPage() {
       <PerformanceRatingModal
         teamId={params.teamId}
         memberId={params.memberId}
-        memberName={
-          member.firstName && member.lastName
-            ? `${member.firstName} ${member.lastName}`
-            : member.user.email || ""
-        }
+        memberName={memberName}
         memberTitle={member.title}
       />
+
+      {/* We would add the Transfer and Delete confirmation dialogs here */}
     </>
   );
 }

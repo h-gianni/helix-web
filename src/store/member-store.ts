@@ -42,7 +42,7 @@ interface MemberDashboardData {
   totalRatings: number
   currentQuarterRating: number
   quarterlyTrend: 'up' | 'down' | 'stable'
-  totalFeedbacks: number
+  totalNotes: number
   teamPosition: number
   teamPositionTrend: 'up' | 'down' | 'stable'
   topActivities: BusinessActivityRating[]
@@ -243,10 +243,10 @@ export function useAddMember() {
 // Zustand Store for UI State
 interface MemberStore {
   
-  selectedTab: 'dashboard' | 'ratings' | 'feedbacks' | 'goals'
+  selectedTab: 'dashboard' | 'ratings' | 'notes' | 'goals'
   isEditModalOpen: boolean
   isRatingModalOpen: boolean
-  setSelectedTab: (tab: 'dashboard' | 'ratings' | 'feedbacks' | 'goals') => void
+  setSelectedTab: (tab: 'dashboard' | 'ratings' | 'notes' | 'goals') => void
   setEditModalOpen: (isOpen: boolean) => void
   setRatingModalOpen: (isOpen: boolean) => void
 }

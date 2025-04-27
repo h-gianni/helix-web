@@ -67,10 +67,10 @@
   @apply text-base font-semibold tracking-normal leading-normal text-foreground-strong;
 }
 .heading-5 {
-  @apply text-sm font-bold tracking-normal leading-normal text-foreground-strong;
+  @apply text-sm font-semibold tracking-normal leading-normal text-foreground-strong;
 }
 .heading-6 {
-  @apply text-xs font-bold tracking-normal leading-normal text-foreground-strong;
+  @apply text-xs font-semibold tracking-normal leading-normal text-foreground-strong;
 }
 .heading-upper {
   @apply text-2xs font-medium tracking-wide uppercase leading-normal text-foreground-strong subpixel-antialiased;
@@ -121,7 +121,7 @@
 /************************* LAYOUT + SPACING */
 
 .layout-page {
-  @apply w-full p-4;
+  @apply w-full p-4 pb-24;
 }
 .layout-page-main {
   @apply space-y-4 py-2 w-full;

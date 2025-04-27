@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/core/Card";
 import { BaseRadarChart } from "@/components/ui/charts/BaseRadarChart";
 
-export function FeedbackQualityMetrics() {
-  // Sample data for feedback quality metrics
+export function NotesQualityMetrics() {
+  // Sample data for notes quality metrics
   const qualityData = [
     { name: 'Specific', value: 65 },
     { name: 'Actionable', value: 59 },
@@ -24,10 +24,10 @@ export function FeedbackQualityMetrics() {
     <Card>
       <CardHeader size="sm">
         <CardTitle>
-          Feedback Quality Metrics
+        Notes Quality Metrics
         </CardTitle>
         <CardDescription>
-          Radar chart analyzing the quality of feedback across dimensions, ensuring feedback effectiveness.
+          Radar chart analyzing the quality of notes across dimensions, ensuring notes effectiveness.
         </CardDescription>
       </CardHeader>
       <CardContent>

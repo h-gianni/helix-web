@@ -21,12 +21,14 @@ const performanceBadgeVariants = cva(
   }
 );
 
+// Updated PerformanceVariant type to include all required values
 export type PerformanceVariant =
   | "star"
   | "strong"
   | "solid"
-  | "inconsistent"
-  | "low"
+  | "lower"       // Changed from "inconsistent"
+  | "poor"        // Changed from "low"
+  | "not-scored"  // Added for consistency
   | "unavailable";
 
 export interface PerformanceBadgeProps
@@ -40,7 +42,7 @@ export interface PerformanceBadgeProps
   noPerformanceData?: boolean;
 }
 
-// Performance configuration with color circles instead of different icons
+// Updated performance configuration with new variant names
 const PERFORMANCE_CONFIG = {
   star: {
     label: "Star Performer",
@@ -57,15 +59,20 @@ const PERFORMANCE_CONFIG = {
     circleColor: "text-tertiary-500 fill-tertiary-500",
     badgeClassName: "bg-neutral-50 text-neutral-foreground",
   },
-  inconsistent: {
-    label: "Inconsistent Performer",
+  lower: {  // Changed from "inconsistent"
+    label: "Lower Performer",
     circleColor: "text-warning-500 fill-warning-500",
     badgeClassName: "bg-neutral-50 text-neutral-foreground",
   },
-  low: {
-    label: "Needs Help",
+  poor: {   // Changed from "low"
+    label: "Poor Performer",
     circleColor: "text-destructive-500 fill-destructive-500",
     badgeClassName: "bg-neutral-50 text-neutral-foreground",
+  },
+  "not-scored": {  // Added for consistency
+    label: "Not Scored",
+    circleColor: "text-neutral-400 fill-neutral-400",
+    badgeClassName: "bg-transparent text-unavailable",
   },
   unavailable: {
     label: "Not Rated",
@@ -74,7 +81,7 @@ const PERFORMANCE_CONFIG = {
   },
 } as const;
 
-// Helper function to determine variant based on numeric value
+// Updated helper function to determine variant based on numeric value
 function getVariantFromValue(
   value: number | null | undefined
 ): PerformanceVariant {
@@ -89,12 +96,12 @@ function getVariantFromValue(
   if (safeValue >= 4.5) return "star";
   if (safeValue >= 3.5) return "strong";
   if (safeValue >= 2.5) return "solid";
-  if (safeValue >= 1.5) return "inconsistent";
+  if (safeValue >= 1.5) return "lower"; // Changed from "inconsistent"
 
   // Special case for zero ratings (not rated)
-  if (safeValue === 0) return "solid";
+  if (safeValue === 0) return "not-scored"; // Changed to be more specific
 
-  return "low";
+  return "poor"; // Changed from "low"
 }
 
 type PerformanceConfigType = typeof PERFORMANCE_CONFIG;
@@ -131,10 +138,10 @@ export function PerformanceBadge({
 
   // Determine variant based on value if provided, otherwise use passed variant or default to "solid"
   const resolvedVariant: PerformanceVariant = React.useMemo(() => {
-    // If noPerformanceData is true, use unavailable variant
-    if (noPerformanceData) return "unavailable";
-    // If explicitly has no ratings, show "solid" variant
-    if (hasNoRatings) return "solid";
+    // If noPerformanceData is true, use not-scored variant
+    if (noPerformanceData) return "not-scored"; // Changed from "unavailable"
+    // If explicitly has no ratings, show "not-scored" variant
+    if (hasNoRatings) return "not-scored"; // Changed from "solid"
     // Otherwise use value if available
     if (value !== undefined && value !== null)
       return getVariantFromValue(value);
@@ -152,7 +159,7 @@ export function PerformanceBadge({
       <Badge
         className={cn(
           performanceBadgeVariants({ size }),
-          "bg-gray-200 animate-pulse",
+          "bg-neutral-200 animate-pulse",
           className
         )}
         {...props}
@@ -162,13 +169,13 @@ export function PerformanceBadge({
     );
   }
 
-  // Display a "Not Rated" badge when explicitly has no ratings
+  // Display a "Not Scored" badge when explicitly has no ratings
   if (hasNoRatings && !noPerformanceData) {
     return (
       <Badge
         className={cn(
           performanceBadgeVariants({ size }),
-          "bg-white text-gray-600",
+          "bg-white text-neutral-600",
           className
         )}
         {...props}
@@ -179,7 +186,7 @@ export function PerformanceBadge({
             size === "lg" ? "size-2.5" : "size-2"
           )}
         />
-        <span className="text-unavailable">Not Rated</span>
+        <span className="text-unavailable">Not Scored</span>
       </Badge>
     );
   }

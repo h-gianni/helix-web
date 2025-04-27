@@ -12,7 +12,7 @@ const tabsListVariants = {
 }
 
 const tabsTriggerVariants = {
-  base: "px-3 py-1 text-sm rounded-lg",
+  base: "px-3 py-1 text-sm rounded",
   lg: "px-2 lg:px-4 py-2 text-sm rounded-lg lg:rounded-full"
 }
 

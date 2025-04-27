@@ -17,17 +17,17 @@ import {
   AlertTitle,
 } from "@/components/ui/core/Alert";
 import PerformanceRatingModal from "@/app/dashboard/components/scoring/ScoringModal";
-import FeedbackModal from "@/app/dashboard/components/feedback/FeedbackModal";
+import NoteModal from "@/app/dashboard/components/note/NoteModal";
 import EmptyDashboardView from "@/app/dashboard/components/EmptyDashboardView";
 import type { Member } from "@/store/member";
 import type { TeamResponse } from "@/lib/types/api";
 import { usePerformersStore } from "@/store/performers-store";
 import { usePerformanceRatingStore } from "@/store/performance-rating-store";
-import { useFeedbackStore } from "@/store/feedback-store";
+import { useNoteStore } from "@/store/note-store";
 import ViewTeamOverview from "@/app/dashboard/components/dashboard/views/ViewTeamOverview";
 import IndividualPerformanceTab from "@/app/dashboard/components/dashboard/views/ViewIndividualPerformance";
 import ViewSkillAnalysis from "@/app/dashboard/components/dashboard/views/ViewSkillAnalysis";
-import ViewFeedbackEngagement from "@/app/dashboard/components/dashboard/views/ViewFeedbackEngagement";
+import ViewNotesEngagement from "@/app/dashboard/components/dashboard/views/ViewNotesEngagement";
 import ImageBackgroundBanner from "@/components/ui/banners/ImageBackgroundBanner";
 import SplitBanner from "@/components/ui/banners/SplitBanner";
 import CountdownBanner from "@/components/ui/banners/CountdownBanner";
@@ -48,7 +48,7 @@ export default function DashboardLayout({
 }: DashboardLayoutProps) {
   const { viewType, setViewType } = usePerformersStore();
   const { setIsOpen: openRatingModal } = usePerformanceRatingStore();
-  const { setIsOpen: openFeedbackModal } = useFeedbackStore();
+  const { setIsOpen: openNoteModal } = useNoteStore();
   const [currentTab, setCurrentTab] = useState("team");
   const [isTabsSticky, setIsTabsSticky] = useState(false);
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -93,10 +93,10 @@ export default function DashboardLayout({
               <Button
                 data-slot="button"
                 variant="outline"
-                onClick={() => openFeedbackModal(true)}
+                onClick={() => openNoteModal(true)}
                 className="gap-2"
               >
-                <MessageSquare className="hidden md:block" /> Add a Feedback
+                <MessageSquare className="hidden md:block" /> Add a note
               </Button>
               <Button
                 data-slot="button"
@@ -163,7 +163,7 @@ export default function DashboardLayout({
           <TriangleAlert className="h-4 w-4" />
           <AlertTitle>Heads up!</AlertTitle>
           <AlertDescription>
-            The more scores and feedback you give, more relevant data will be
+            The more scores and note you give, more relevant data will be
             shown.
           </AlertDescription>
         </Alert> */}
@@ -187,7 +187,7 @@ export default function DashboardLayout({
               <TabsTrigger value="team">Team Overview</TabsTrigger>
               <TabsTrigger value="standings">Team Standings</TabsTrigger>
               <TabsTrigger value="skills">Skill Analysis</TabsTrigger>
-              <TabsTrigger value="feedback">Feedback & Engagement</TabsTrigger>
+              <TabsTrigger value="note">Notes & Engagement</TabsTrigger>
             </TabsList>
           </div>
 
@@ -208,15 +208,15 @@ export default function DashboardLayout({
             <ViewSkillAnalysis />
           </TabsContent>
 
-          <TabsContent value="feedback" className="pt-2">
-            <ViewFeedbackEngagement />
+          <TabsContent value="note" className="pt-2">
+            <ViewNotesEngagement />
           </TabsContent>
         </Tabs>
       </main>
 
       {/* Global modals */}
       <PerformanceRatingModal />
-      <FeedbackModal />
+      <NoteModal />
     </>
   );
 }

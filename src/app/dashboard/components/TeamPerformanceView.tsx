@@ -55,52 +55,19 @@ export function TeamPerformanceView({
   const { getSortedMembers, getPerformanceCategory } = usePerformersStore();
 
   const sortedMembers = getSortedMembers(members);
+  
+  // Determine if we're on mobile
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Track the active view - this will always respect the viewType from props 
+  // except on mobile where we force grid view
+  const [activeView, setActiveView] = useState(viewType);
 
-  // Get the default view type based on member count
-  const getDefaultViewByMemberCount = () => {
-    return members.length > 5 ? "table" : "grid";
-  };
-
-  // We'll use a ref to track if we've applied user choices yet
-  const hasInitialized = React.useRef(false);
-
-  // Store our actual view in state
-  const [activeView, setActiveView] = useState(getDefaultViewByMemberCount());
-
-  // Set up device variant (mobile/desktop)
-  const [cardVariant, setCardVariant] = useState(mode);
-
-  // When viewType changes due to user selection, update our view
-  useEffect(() => {
-    if (hasInitialized.current) {
-      setActiveView(viewType);
-    } else {
-      // First time initialization - always use member count logic
-      const defaultView = getDefaultViewByMemberCount();
-      setActiveView(defaultView);
-
-      // If default view doesn't match store, update the store
-      if (defaultView !== viewType && onViewChange) {
-        onViewChange(defaultView);
-      }
-
-      hasInitialized.current = true;
-    }
-  }, [viewType, members.length]);
-
-  // Handle responsive layout
+  // Handle responsive layout - only use this to set mobile detection
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
-        // On mobile, always use grid view
-        setActiveView("grid");
-      } else {
-        // On desktop, use current viewType (user choice or default)
-        setActiveView(viewType);
-      }
-
-      // Update card variant based on screen size
-      setCardVariant(window.innerWidth < 768 ? "mobile" : mode);
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
     };
 
     // Initial check
@@ -111,7 +78,18 @@ export function TeamPerformanceView({
 
     // Clean up
     return () => window.removeEventListener("resize", handleResize);
-  }, [mode, viewType]);
+  }, []);
+
+  // Update activeView when viewType prop changes or mobile status changes
+  useEffect(() => {
+    // On mobile, always use grid view
+    if (isMobile) {
+      setActiveView("grid");
+    } else {
+      // On desktop, respect the viewType from props (store)
+      setActiveView(viewType);
+    }
+  }, [viewType, isMobile]);
 
   const handleNavigate = (path: string) => {
     router.push(path);
@@ -125,10 +103,10 @@ export function TeamPerformanceView({
       categoryData.averageRating !== null && 
       categoryData.ratingsCount !== 0;
     
-    // Default to unavailable if no performance data exists
+    // Default to not-scored if no performance data exists
     const variantValue = hasPerformanceData 
       ? (categoryData.variant || mapVariantFromRating(categoryData.label))
-      : "unavailable";
+      : "not-scored";
     
     // Check if we have trend data
     const hasTrendData = 
@@ -158,16 +136,16 @@ export function TeamPerformanceView({
 
   // Helper function to map performance labels to variants
   const mapVariantFromRating = (label?: string): PerformanceVariant => {
-    if (!label) return "unavailable";
+    if (!label) return "not-scored";
     
     const labelLower = (label || "").toLowerCase();
     if (labelLower.includes("star")) return "star";
     if (labelLower.includes("strong")) return "strong";
     if (labelLower.includes("solid")) return "solid";
-    if (labelLower.includes("inconsistent")) return "inconsistent";
-    if (labelLower.includes("needs help") || labelLower.includes("low")) return "low";
+    if (labelLower.includes("lower")) return "lower";
+    if (labelLower.includes("needs help") || labelLower.includes("poor")) return "poor";
     
-    return "unavailable"; // Default changed from "solid" to "unavailable"
+    return "not-scored"; // Default changed from "solid" to "not-scored"
   };
 
   if (members.length === 0) {
@@ -213,7 +191,7 @@ export function TeamPerformanceView({
                 teamId={teamId}
                 teams={teams}
                 category={completeCategory}
-                variant={cardVariant}
+                variant={isMobile ? "mobile" : mode}
                 onNavigate={handleNavigate}
               />
             );

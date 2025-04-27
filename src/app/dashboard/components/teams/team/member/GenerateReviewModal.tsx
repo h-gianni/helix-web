@@ -11,7 +11,7 @@ import {
   CardFooter,
 } from "@/components/ui/core/Card";
 import { Button } from "@/components/ui/core/Button";
-import { Loader, AlertCircle, CheckCircle, ChartNoAxesCombined } from "lucide-react";
+import { Loader, AlertCircle, CheckCircle, Sparkles } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/core/Alert";
 import {
   Select,
@@ -78,11 +78,10 @@ export function GenerateReviewModal({ teamId, memberId, memberName }: GenerateRe
     <>
       <Button
         onClick={() => setIsOptionsModalOpen(true)}
-        variant="default"
-        className="flex items-center gap-2"
+        variant="primary"
       >
-        <ChartNoAxesCombined className="size-4" />
-        Generate Performance Review
+        <Sparkles />
+        Generate Review
       </Button>
 
       {/* Options Modal */}
@@ -205,7 +204,7 @@ export function GenerateReviewModal({ teamId, memberId, memberName }: GenerateRe
             <Button variant="outline" onClick={() => setIsOptionsModalOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleGenerateReview} disabled={generateReview.isPending}>
+            <Button variant="primary" onClick={handleGenerateReview} disabled={generateReview.isPending}>
               Generate Review
             </Button>
           </DialogFooter>

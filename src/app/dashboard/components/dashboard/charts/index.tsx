@@ -9,6 +9,6 @@ export { TopPerformersChart } from './ChartTopPerformers';
 export { SkillAreaChart } from './ChartSkillArea';
 export { TopRatedActivities } from './ChartTopRatedActivities';
 export { SkillGapAnalysis } from './ChartSkillGapAnalysis';
-export { FeedbackTrendChart } from './ChartFeedbackTrend';
-export { FeedbackQualityMetrics } from './ChartFeedbackQualityMetrics';
+export { NotesTrendChart } from './ChartNotesTrend';
+export { NotesQualityMetrics } from './ChartNotesQualityMetrics';
 export { ReviewCompletionRates } from './ChartReviewCompletionRates';

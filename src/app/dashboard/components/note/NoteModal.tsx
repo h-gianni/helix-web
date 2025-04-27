@@ -11,40 +11,40 @@ import {
   ModalTitle,
 } from "@/components/ui/core/Modal";
 import {
-  useFeedbackStore,
-} from "@/store/feedback-store";
+  useNoteStore,
+} from "@/store/note-store";
 import { Loader } from "@/components/ui/core/Loader";
 import { useToast } from "@/components/ui/core/Toast/use-toast";
 
 // Import step components
 import ScoringStepTeam from "@/app/dashboard/components/scoring/ScoringStepTeam";
 import ScoringStepMember from "@/app/dashboard/components/scoring/ScoringStepMember";
-import FeedbackStepInput from "@/app/dashboard/components/feedback/FeedbackStepInput";
+import NoteStepInput from "@/app/dashboard/components/note/NoteStepInput";
 
-interface FeedbackModalProps {
+interface NoteModalProps {
   teamId?: string;
   memberId?: string;
   memberName?: string;
   memberTitle?: string | null;
 }
 
-export default function FeedbackModal({
+export default function NoteModal({
   teamId,
   memberId,
   memberName,
   memberTitle,
-}: FeedbackModalProps) {
+}: NoteModalProps) {
   const {
     isOpen,
     selectedTeamId,
     selectedMemberId,
-    feedback,
+    note,
     setIsOpen,
     setSelectedTeamId,
     setSelectedMemberId,
-    setFeedback,
+    setNote,
     reset,
-  } = useFeedbackStore();
+  } = useNoteStore();
 
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
@@ -65,9 +65,9 @@ export default function FeedbackModal({
 
       // Determine total steps based on provided props
       if (teamId && memberId) {
-        setTotalSteps(1); // Just feedback input step
+        setTotalSteps(1); // Just note input step
       } else if (teamId) {
-        setTotalSteps(2); // Member selection and feedback input
+        setTotalSteps(2); // Member selection and note input
       } else {
         setTotalSteps(3); // All steps
       }
@@ -81,7 +81,7 @@ export default function FeedbackModal({
     }
   }, [isOpen]);
 
-  // Simple simulation of feedback submission
+  // Simple simulation of note submission
   const handleSubmit = () => {
     // Immediately show loading state
     setIsSubmitting(true);
@@ -93,14 +93,14 @@ export default function FeedbackModal({
       
       // Reset form state
       reset();
-      setFeedback("");
+      setNote("");
       
       // Show success toast after modal is closed
       setTimeout(() => {
         toast({
           variant: "success",
-          title: "Feedback Submitted",
-          description: "Your feedback has been sent successfully!",
+          title: "Note Submitted",
+          description: "Your note has been sent successfully!",
           duration: 3000,
         });
         
@@ -136,7 +136,7 @@ export default function FeedbackModal({
       case 3:
         return "";
       default:
-        return "Add Feedback";
+        return "Add note";
     }
   };
 
@@ -149,7 +149,7 @@ export default function FeedbackModal({
         
         // If closing, we can reset everything
         if (!open) {
-          setFeedback("");
+          setNote("");
         }
         
         setIsOpen(open);
@@ -200,11 +200,11 @@ export default function FeedbackModal({
           )}
 
           {currentStep === 3 && (
-            <FeedbackStepInput
+            <NoteStepInput
               teamId={selectedTeamId || teamId || ""}
               memberId={selectedMemberId || memberId || ""}
-              feedback={feedback}
-              setFeedback={setFeedback}
+              note={note}
+              setNote={setNote}
               onSubmit={handleSubmit}
               isSubmitting={isSubmitting}
               error={null} // No error in prototype

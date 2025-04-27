@@ -15,9 +15,9 @@ const buttonVariants = cva(
         destructive:
           "bg-linear-to-br from-destructive-500 to-destructive-600 text-white hover:opacity-90",
         outline:
-          "border border-border-strong bg-transparent hover:bg-neutral-50 text-neutral-900 hover:bg-neutral-50",
+          "border border-border bg-transparent hover:bg-neutral-50 text-neutral-900 hover:bg-neutral-50",
         accent: "bg-linear-to-br from-accent-400 to-accent-600/80 text-accent-foreground hover:opacity-90",
-        ghost: "text-foreground-strong hover:bg-neutral-50 hover:opacity-90",
+        ghost: "text-foreground-strong hover:bg-neutral-100 hover:opacity-90",
         link: "text-primary underline-offset-4 hover:underline",
           
         // To be removed

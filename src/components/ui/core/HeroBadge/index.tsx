@@ -16,7 +16,7 @@ export interface HeroBadgeProps {
    * The color variant of the badge
    * @default "primary"
    */
-  variant?: "primary" | "neutral";
+  variant?: "primary" | "neutral" | "success" | "warning";
   /**
    * Additional CSS classes to apply to the badge
    */
@@ -49,7 +49,9 @@ export function HeroBadge({
 
   const variantClasses = {
     primary: "bg-primary-100 text-primary",
-    neutral: "bg-neutral text-foreground-strong"
+    neutral: "bg-neutral text-foreground-strong",
+    success: "bg-success-100 text-success-700",
+    warning: "bg-warning-100 text-warning-700",
   };
 
   return (

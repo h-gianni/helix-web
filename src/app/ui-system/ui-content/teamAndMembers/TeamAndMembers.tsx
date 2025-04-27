@@ -263,11 +263,11 @@ const TeamAndMembersComponents = () => {
             }}
             teams={TEAMS}
             category={{
-              label: "Inconsistent Performer",
+              label: "Lower Performer",
               minRating: 1.5,
               maxRating: 2.5,
               Icon: null,
-              variant: "inconsistent",
+              variant: "lower", // Updated from "inconsistent" to "lower"
               trend: "down"
             }}
             variant="desktop"
@@ -344,15 +344,17 @@ const TeamAndMembersComponents = () => {
 };
 
 // Helper function to determine performance variant based on rating
+// Updated to match our new naming convention
 function getPerformanceVariant(rating: number): PerformanceVariant {
   if (rating >= 4.5) return "star";
   if (rating >= 3.5) return "strong";
   if (rating >= 2.5) return "solid";
-  if (rating >= 1.5) return "inconsistent";
-  return "low";
+  if (rating >= 1.5) return "lower"; // Changed from "inconsistent" to "lower"
+  return "poor"; // Changed from "low" to "poor"
 }
 
 // Helper function to get performance label based on variant
+// Updated to match our new naming convention
 function getPerformanceLabel(variant: PerformanceVariant): string {
   switch (variant) {
     case "star":
@@ -361,10 +363,14 @@ function getPerformanceLabel(variant: PerformanceVariant): string {
       return "Strong Performer";
     case "solid":
       return "Solid Performer";
-    case "inconsistent":
-      return "Inconsistent Performer";
-    case "low":
-      return "Needs Improvement";
+    case "lower": // Changed from "inconsistent" to "lower"
+      return "Lower Performer"; // Updated label
+    case "poor": // Changed from "low" to "poor"
+      return "Poor Performer"; // Updated label
+    case "not-scored": // Added for completeness
+      return "Not Scored";
+    case "unavailable":
+      return "Not Rated";
     default:
       return "Unknown";
   }

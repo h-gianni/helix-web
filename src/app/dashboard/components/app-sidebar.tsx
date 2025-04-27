@@ -30,7 +30,7 @@ import {
 import { useTeams } from "@/lib/context/teams-context";
 import { Button } from "@/components/ui/core/Button";
 import { usePerformanceRatingStore } from "@/store/performance-rating-store";
-import { useFeedbackStore } from "@/store/feedback-store";
+import { useNoteStore } from "@/store/note-store";
 
 interface Team {
   id: string;
@@ -77,7 +77,7 @@ function AppSidebar() {
   const { teams, isLoading, fetchTeams } = useTeams();
   const pathname = usePathname();
   const { setIsOpen: openRatingModal } = usePerformanceRatingStore();
-  const { setIsOpen: openFeedbackModal } = useFeedbackStore();
+  const { setIsOpen: openNoteModal } = useNoteStore();
 
   useEffect(() => {
     fetchTeams();
@@ -120,21 +120,21 @@ function AppSidebar() {
                     onClick={() => openRatingModal(true)}
                     className="cursor-pointer"
                   >
-                    <Star className="size-4 shrink-0" />
+                    <Star />
                     <span>Score Performance</span>
                   </button>
                 </SidebarMenuButton>
               </SidebarMenuItem>
 
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Add Feedback">
+                <SidebarMenuButton asChild tooltip="Add Note">
                   <button
                     type="button"
-                    onClick={() => openFeedbackModal(true)}
+                    onClick={() => openNoteModal(true)}
                     className="cursor-pointer"
                   >
-                    <MessageSquare className="size-4 shrink-0" />
-                    <span>Add Feedback</span>
+                    <MessageSquare />
+                    <span>Add Note</span>
                   </button>
                 </SidebarMenuButton>
               </SidebarMenuItem>

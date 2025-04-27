@@ -77,10 +77,10 @@ function MembersTable({
               <TableHead data-slot="table-head" className="pl-2">
                 Name
               </TableHead>
+              <TableHead data-slot="table-head">Job Title</TableHead>
               {showTeamColumn && (
                 <TableHead data-slot="table-head">Team</TableHead>
               )}
-              <TableHead data-slot="table-head">Job Title</TableHead>
               <TableHead data-slot="table-head">Quarterly Trend</TableHead>
               <TableHead data-slot="table-head">Performance</TableHead>
               <TableHead data-slot="table-head" className="w-[200px]">
@@ -150,14 +150,6 @@ function MembersTable({
                     {member.name}
                   </span>
                 </TableCell>
-                {showTeamColumn && (
-                  <TableCell
-                    data-slot="table-cell"
-                    className="w-[15%] align-middle leading-4"
-                  >
-                    {teamNameDisplay}
-                  </TableCell>
-                )}
                 <TableCell
                   data-slot="table-cell"
                   className="w-[15%] align-middle leading-4"
@@ -166,6 +158,14 @@ function MembersTable({
                     <span className="text-unavailable">No title</span>
                   )}
                 </TableCell>
+                {showTeamColumn && (
+                  <TableCell
+                    data-slot="table-cell"
+                    className="w-[15%] align-middle leading-4"
+                  >
+                    {teamNameDisplay}
+                  </TableCell>
+                )}
                 <TableCell
                   data-slot="table-cell"
                   className="w-[15%] align-middle"

@@ -1,13 +1,9 @@
 "use client";
 
 import React from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/core/Select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/core/ToggleGroup";
+import { Table, LayoutGrid } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ViewSwitcherProps {
   viewType: 'table' | 'grid';
@@ -17,20 +13,23 @@ interface ViewSwitcherProps {
 export function ViewSwitcher({ viewType, onViewChange }: ViewSwitcherProps) {
   return (
     <div className="w-fit">
-      <Select 
+      <ToggleGroup 
+        type="single" 
         value={viewType} 
-        onValueChange={onViewChange}
+        onValueChange={(value) => {
+          if (value) onViewChange(value as 'table' | 'grid');
+        }}
+        size="default"
       >
-        <SelectTrigger data-slot="select-trigger" noBorder>
-          <SelectValue data-slot="select-value" placeholder="Select view">
-            {viewType === 'table' ? 'Table View' : 'Card View'}
-          </SelectValue>
-        </SelectTrigger>
-        <SelectContent data-slot="select-content" align="end">
-          <SelectItem data-slot="select-item" value="table">Table View</SelectItem>
-          <SelectItem data-slot="select-item" value="grid">Card View</SelectItem>
-        </SelectContent>
-      </Select>
+        <ToggleGroupItem value="table" aria-label="Table View">
+          <Table />
+          <span className="sr-only md:not-sr-only md:inline-block">Table</span>
+        </ToggleGroupItem>
+        <ToggleGroupItem value="grid" aria-label="Grid View">
+          <LayoutGrid />
+          <span className="sr-only md:not-sr-only md:inline-block">Cards</span>
+        </ToggleGroupItem>
+      </ToggleGroup>
     </div>
   );
 }

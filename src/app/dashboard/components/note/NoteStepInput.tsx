@@ -5,30 +5,30 @@ import { Label } from "@/components/ui/core/Label";
 import { Textarea } from "@/components/ui/core/Textarea";
 import { Button } from "@/components/ui/core/Button";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
-import { useTeamMembers } from "@/store/feedback-store";
+import { useTeamMembers } from "@/store/note-store";
 import { User } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
 import { Loader } from "@/components/ui/core/Loader";
 
-interface FeedbackStepInputProps {
+interface NoteStepInputProps {
   teamId: string;
   memberId: string;
-  feedback: string;
-  setFeedback: (feedback: string) => void;
+  note: string;
+  setNote: (feedback: string) => void;
   onSubmit: () => void;
   isSubmitting: boolean;
   error: Error | null | unknown;
 }
 
-export default function FeedbackStepInput({
+export default function NoteStepInput({
   teamId,
   memberId,
-  feedback,
-  setFeedback,
+  note,
+  setNote,
   onSubmit,
   isSubmitting,
   error,
-}: FeedbackStepInputProps) {
+}: NoteStepInputProps) {
   // Fetch member data to display
   const { data: members = [] } = useTeamMembers(teamId);
 
@@ -64,8 +64,8 @@ export default function FeedbackStepInput({
         </Label>
         <Textarea
           id="feedback"
-          value={feedback}
-          onChange={(e) => setFeedback(e.target.value)}
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
           placeholder="Share your feedback about this team member..."
           rows={5}
           maxLength={500}
@@ -73,7 +73,7 @@ export default function FeedbackStepInput({
           disabled={isSubmitting}
         />
         <div className="text-right text-xs text-foreground-weak">
-          {feedback.length} / 500
+          {note.length} / 500
         </div>
 
         {/* {error && (
@@ -89,7 +89,7 @@ export default function FeedbackStepInput({
           size="lg"
           className="w-full mt-4"
           onClick={onSubmit}
-          disabled={!feedback.trim() || isSubmitting}
+          disabled={!note.trim() || isSubmitting}
         >
           {isSubmitting ? (
             <span className="flex items-center gap-2">
