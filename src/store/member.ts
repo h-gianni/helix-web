@@ -1,12 +1,12 @@
 // src/store/member.ts
-import type { LucideIcon } from 'lucide-react'
+import type { LucideIcon } from "lucide-react";
 
 export interface PerformanceCategory {
   label: string;
   minRating: number;
   maxRating: number;
-  className: string;
-  Icon: LucideIcon;
+  className?: string;
+  Icon: any;
   description?: string;
 }
 
@@ -16,7 +16,7 @@ export interface Member {
   name: string;
   title: string | null;
   teamId: string;
-  teamName: string;  // Required in all cases
+  teamName: string; // Required in all cases
   averageRating: number;
   ratingsCount: number;
 }

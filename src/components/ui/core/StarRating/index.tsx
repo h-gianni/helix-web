@@ -58,10 +58,10 @@ const StarRating = React.forwardRef<HTMLDivElement, StarRatingProps>(
     // Get star size based on the size prop
     const getStarSize = () => {
       switch (size) {
-        case "sm": return 16;
+        case "sm": return 14;
         case "lg": return 24;
         case "xl": return 32;
-        default: return 20; // base size
+        default: return 18; // base size
       }
     };
 

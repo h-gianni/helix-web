@@ -5,21 +5,17 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "@/components/ui/core/Card";
 import { Button } from "@/components/ui/core/Button";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
+import { PerformanceCategory } from "@/store/member";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/core/DropdownMenu";
-import {
-  MoreVertical,
-  ChevronRight,
-  FileText,
-  Trash2,
-  LucideIcon,
-} from "lucide-react";
+import { MoreVertical, ChevronRight, FileText, Trash2 } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
+import { PerformanceBadge } from "@/components/ui/core/PerformanceBadge";
 
 export interface Team {
   id: string;
@@ -36,19 +32,11 @@ export interface Member {
   teamName: string;
 }
 
-export interface PerformanceCategory {
-  label: string;
-  minRating: number;
-  maxRating: number;
-  className: string;
-  Icon: LucideIcon;
-}
-
 export interface MemberCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  member: Member;
+  member?: Member;
   teamId?: string;
-  teams: Team[];
-  category: PerformanceCategory;
+  teams?: Team[];
+  category?: PerformanceCategory;
   onDelete?: (member: Member) => void;
   onGenerateReview?: (member: Member) => void;
   variant?: "mobile" | "desktop";
@@ -60,7 +48,7 @@ function MemberCard({
   member,
   teamId,
   teams,
-  category,
+  category: _category, // Accept but don't use
   onDelete,
   onGenerateReview,
   variant = "mobile",
@@ -68,6 +56,13 @@ function MemberCard({
   ...props
 }: MemberCardProps) {
   const router = useRouter();
+
+  // Check if member is defined
+  if (!member) {
+    return <div>No member data available</div>; // Handle the case where member is undefined
+  }
+
+  // Calculate effective team ID and encoded IDs
   const effectiveTeamId = teamId ?? member.teamId;
   const encodedTeamId = encodeURIComponent(effectiveTeamId);
   const encodedMemberId = encodeURIComponent(member.id);
@@ -92,19 +87,23 @@ function MemberCard({
       )}
       {...props}
     >
-      <CardHeader 
-        data-slot="card-header" 
+      <CardHeader
+        data-slot="card-header"
         className={cn(
           "space-y-4",
-          variant === "desktop" 
-            ? "flex flex-col items-center pt-6" 
+          variant === "desktop"
+            ? "flex flex-col items-center pt-6"
             : "md:flex md:flex-col md:items-center md:pt-6"
         )}
       >
         {/* Desktop dropdown positioning - always show for desktop variant, show on md+ for mobile variant */}
-        <div className={cn(
-          variant === "desktop" ? "absolute top-2 right-2" : "hidden md:block md:absolute md:top-2 md:right-2"
-        )}>
+        <div
+          className={cn(
+            variant === "desktop"
+              ? "absolute top-2 right-2"
+              : "hidden md:block md:absolute md:top-2 md:right-2"
+          )}
+        >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -118,12 +117,18 @@ function MemberCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent data-slot="dropdown-content" align="end">
-              <DropdownMenuItem data-slot="dropdown-item" onClick={handleViewDetails}>
+              <DropdownMenuItem
+                data-slot="dropdown-item"
+                onClick={handleViewDetails}
+              >
                 <ChevronRight className="mr-1" />
                 View Details
               </DropdownMenuItem>
-              {onGenerateReview && (
-                <DropdownMenuItem data-slot="dropdown-item" onClick={() => onGenerateReview(member)}>
+              {onGenerateReview && member && (
+                <DropdownMenuItem
+                  data-slot="dropdown-item"
+                  onClick={() => onGenerateReview(member)}
+                >
                   <FileText className="mr-1" />
                   Generate Performance Review
                 </DropdownMenuItem>
@@ -141,27 +146,31 @@ function MemberCard({
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        
-        <div className={cn(
-          "flex",
-          variant === "desktop" 
-            ? "flex-col items-center text-center" 
-            : "items-start justify-between md:flex-col md:items-center md:text-center"
-        )}>
-          <div className={cn(
+
+        <div
+          className={cn(
             "flex",
-            variant === "desktop" 
-              ? "flex-col items-center gap-2" 
-              : "gap-4 md:flex-col md:items-center md:gap-2"
-          )}>
-            <Avatar 
-              data-slot="avatar" 
+            variant === "desktop"
+              ? "flex-col items-center text-center"
+              : "items-start justify-between md:flex-col md:items-center md:text-center"
+          )}
+        >
+          <div
+            className={cn(
+              "flex",
+              variant === "desktop"
+                ? "flex-col items-center gap-2"
+                : "gap-4 md:flex-col md:items-center md:gap-2"
+            )}
+          >
+            <Avatar
+              data-slot="avatar"
               className={cn(
                 variant === "desktop" ? "size-14" : "size-8 md:size-14"
               )}
             >
-              <AvatarFallback 
-                data-slot="avatar-fallback" 
+              <AvatarFallback
+                data-slot="avatar-fallback"
                 className={cn(
                   variant === "desktop" ? "text-base" : "text-sm md:text-base"
                 )}
@@ -169,14 +178,13 @@ function MemberCard({
                 {member.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className={cn(
-              variant === "desktop" ? "text-center" : "md:text-center"
-            )}>
-              <h3 className="heading-5">
-                <button
-                  onClick={handleViewDetails}
-                  className="hover:underline"
-                >
+            <div
+              className={cn(
+                variant === "desktop" ? "text-center" : "md:text-center"
+              )}
+            >
+              <h3 className="heading-3">
+                <button onClick={handleViewDetails} className="hover:underline">
                   {member.name}
                 </button>
               </h3>
@@ -185,7 +193,7 @@ function MemberCard({
               </p>
             </div>
           </div>
-          
+
           {/* Mobile dropdown - hide on md+ breakpoint */}
           <div className={variant === "desktop" ? "hidden" : "block md:hidden"}>
             <DropdownMenu>
@@ -201,12 +209,18 @@ function MemberCard({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent data-slot="dropdown-content" align="end">
-                <DropdownMenuItem data-slot="dropdown-item" onClick={handleViewDetails}>
+                <DropdownMenuItem
+                  data-slot="dropdown-item"
+                  onClick={handleViewDetails}
+                >
                   <ChevronRight className="mr-1" />
                   View Details
                 </DropdownMenuItem>
                 {onGenerateReview && (
-                  <DropdownMenuItem data-slot="dropdown-item" onClick={() => onGenerateReview(member)}>
+                  <DropdownMenuItem
+                    data-slot="dropdown-item"
+                    onClick={() => onGenerateReview(member)}
+                  >
                     <FileText className="mr-1" />
                     Generate Performance Review
                   </DropdownMenuItem>
@@ -226,23 +240,30 @@ function MemberCard({
           </div>
         </div>
       </CardHeader>
-      <CardContent
-        data-slot="card-content"
-        className="flex-1 space-y-4"
-      >
-        <div className={cn(
-          "flex items-start justify-between gap-2 md:gap-4",
-          variant === "desktop" 
-            ? "flex-col items-center" 
-            : "flex-col md:flex-col md:items-center"
-        )}>
+      <CardContent data-slot="card-content" className="flex-1 space-y-4">
+        <div
+          className={cn(
+            "flex items-start justify-between gap-2 md:gap-3",
+            variant === "desktop"
+              ? "flex-col items-center"
+              : "flex-col md:flex-col md:items-center"
+          )}
+        >
           <div className="flex items-center gap-2">
-            {category.Icon && (
-              <category.Icon className={cn("size-4", category.className)} />
+            {_category && (
+              <>
+                {_category.Icon && (
+                  <_category.Icon
+                    className={cn("size-4", _category.className)}
+                  />
+                )}
+                <span
+                  className={cn("text-sm font-medium", _category.className)}
+                >
+                  {_category.label}
+                </span>
+              </>
             )}
-            <span className={cn("text-sm font-medium", category.className)}>
-              {category.label}
-            </span>
           </div>
           <StarRating
             value={member.averageRating}

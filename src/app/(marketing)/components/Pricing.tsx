@@ -125,18 +125,20 @@ export const Pricing = () => (
         </div>
         <h2 className="marketing-h1">Prices that make sense!</h2>
         <p className="marketing-body-lg">
-          Managing a team today is already tough. <br />Choose a plan that
-          fits your needs and become a Star Leader.
+          Managing a team today is already tough. <br />
+          Choose a plan that fits your needs and become a Star Leader.
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
         {/* Starter Plan */}
         <Card className="p-4 lg:p-8 flex flex-col justify-between">
-        <div className="space-y-4">
-          <div className="relative bg-muted/50 rounded-md h-32">
-            <Badge variant="secondary" className="absolute top-0">For the new and curious ones</Badge>
-          </div>
+          <div className="space-y-4">
+            <div className="relative bg-muted/50 rounded-md h-32">
+              <Badge variant="secondary" className="absolute top-0">
+                For the new and curious ones
+              </Badge>
+            </div>
             <h3 className="marketing-h3">Starter</h3>
             <p className="marketing-body-sm">
               Perfect for leaders wanting to test the waters—experience the
@@ -155,19 +157,28 @@ export const Pricing = () => (
               No payment info required
             </div>
             <ul className="marketing-body-xs space-y-1.5 border-t border-border pt-4">
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Up to 2 Team Members</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>2 AI generated Performance Reviews per member/year</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Basic Scoring & Dashboard</span></li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>Up to 2 Team Members</span>
+              </li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>2 AI generated Performance Reviews per member/year</span>
+              </li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>Basic Scoring & Dashboard</span>
+              </li>
             </ul>
           </div>
         </Card>
 
         {/* Professional Plan */}
         <Card className="p-4 lg:p-8 shadow-lg flex flex-col justify-between">
-        <div className="space-y-4">
-          <div className="relative bg-muted/50 rounded-md h-32">
-            <Badge variant="accent-light">Leaders unfair advantage</Badge>
-          </div>
+          <div className="space-y-4">
+            <div className="relative bg-muted/50 rounded-md h-32">
+              <Badge variant="accent">Leaders unfair advantage</Badge>
+            </div>
             <h3 className="marketing-h3">Professional</h3>
             <p className="marketing-body-sm">
               Ideal for leaders with growing teams, offering comprehensive,
@@ -186,10 +197,25 @@ export const Pricing = () => (
               <Lock className="size-4" /> Secure transaction
             </div>
             <ul className="marketing-body-xs space-y-1.5 border-t border-border pt-4">
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Unlimited Team Members & Hierarchy</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>2 AI generated Performance Reviews per member/quarter (8 in a year)</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Full AI-Powered Insights & Real-Time Scoring</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Team Member Dashboard Access</span></li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>Unlimited Team Members & Hierarchy</span>
+              </li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>
+                  2 AI generated Performance Reviews per member/quarter (8 in a
+                  year)
+                </span>
+              </li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>Full AI-Powered Insights & Real-Time Scoring</span>
+              </li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>Team Member Dashboard Access</span>
+              </li>
             </ul>
           </div>
         </Card>
@@ -197,9 +223,11 @@ export const Pricing = () => (
         {/* Enterprise Plan */}
         <Card className="p-4 lg:p-8 flex flex-col justify-between">
           <div className="space-y-4">
-          <div className="relative bg-muted/50 rounded-md h-32">
-            <Badge variant="secondary" className="absolute top-0">Impactful org results</Badge>
-          </div>
+            <div className="relative bg-muted/50 rounded-md h-32">
+              <Badge variant="secondary" className="absolute top-0">
+                Impactful org results
+              </Badge>
+            </div>
             <h3 className="marketing-h3">Enterprise</h3>
             <p className="marketing-body-sm">
               Designed for organizations or those with advanced needs—get
@@ -218,11 +246,26 @@ export const Pricing = () => (
               <Lock className="size-4" /> Secure transaction
             </div>
             <ul className="marketing-body-xs space-y-1.5 border-t border-border pt-4">
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>All Professional Features, Plus:</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>HR Super-User management</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Custom Integrations (SSO, API)</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Advanced Analytics & Standard Integrations</span></li>
-              <li className="flex gap-2.5"><Check className="size-3 text-accent mt-0.5 flex-none" /><span>Enhanced Security & Custom Branding</span></li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>All Professional Features, Plus:</span>
+              </li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>HR Super-User management</span>
+              </li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>Custom Integrations (SSO, API)</span>
+              </li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>Advanced Analytics & Standard Integrations</span>
+              </li>
+              <li className="flex gap-2.5">
+                <Check className="size-3 text-accent mt-0.5 flex-none" />
+                <span>Enhanced Security & Custom Branding</span>
+              </li>
             </ul>
           </div>
         </Card>
@@ -267,8 +310,7 @@ export const Pricing = () => (
 
 // Helper function to render icons or text based on feature availability
 const renderFeatureIcon = (value: string) => {
-  if (value === "Yes")
-    return <Check className="w-4 h-4 text-accent mx-auto" />;
+  if (value === "Yes") return <Check className="w-4 h-4 text-accent mx-auto" />;
   if (value === "No")
     return <Minus className="w-4 h-4 text-muted-foreground mx-auto" />;
   return <span>{value}</span>;

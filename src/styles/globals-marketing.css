@@ -52,7 +52,7 @@
 }
 
 .btn {
-  @apply h-14 shadow-base;
+  @apply h-14 shadow;
 }
 /* .btn-primary {
   @apply bg-primary-darkest text-accent hover:bg-accent/80;

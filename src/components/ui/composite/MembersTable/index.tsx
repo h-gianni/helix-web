@@ -23,12 +23,12 @@ import {
   PenSquare,
   ChartSpline,
   Trash2,
-  LucideIcon,
 } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
+import { PerformanceBadge } from "@/components/ui/core/PerformanceBadge";
 
-// Types remain unchanged
+// Types updated to remove PerformanceCategory dependency
 export interface Team {
   id: string;
   name: string;
@@ -44,15 +44,7 @@ export interface Member {
   teamName: string;
 }
 
-export interface PerformanceCategory {
-  label: string;
-  minRating: number;
-  maxRating: number;
-  className: string;
-  Icon: LucideIcon;
-}
-
-type MembersTableDOMProps = Omit<React.HTMLAttributes<HTMLDivElement>, "performanceCategories">;
+type MembersTableDOMProps = React.HTMLAttributes<HTMLDivElement>;
 
 export interface MembersTableProps extends MembersTableDOMProps {
   members: Member[];
@@ -64,11 +56,6 @@ export interface MembersTableProps extends MembersTableDOMProps {
   onDelete?: (member: Member) => void;
   onGenerateReview?: (member: Member) => void;
   onNavigate?: (path: string) => void;
-  performanceCategories: PerformanceCategory[];
-  getPerformanceCategory: (
-    rating: number,
-    ratingsCount: number
-  ) => PerformanceCategory;
 }
 
 function MembersTable({
@@ -82,8 +69,6 @@ function MembersTable({
   onDelete,
   onGenerateReview,
   onNavigate,
-  performanceCategories: _performanceCategories,
-  getPerformanceCategory,
   ...props
 }: MembersTableProps) {
   const showTeamColumn = teams.length > 1;
@@ -114,10 +99,6 @@ function MembersTable({
         )}
         <TableBody data-slot="table-body">
           {sortedMembers.map((member) => {
-            const category = getPerformanceCategory(
-              member.averageRating,
-              member.ratingsCount
-            );
             const effectiveTeamId = teamId || member.teamId;
             const detailsPath = `/dashboard/teams/${encodeURIComponent(
               effectiveTeamId
@@ -137,7 +118,7 @@ function MembersTable({
                     </Avatar>
                   </TableCell>
                 )}
-                <TableCell data-slot="table-cell" className={cn("w-[40%] pl-2", !showTeamColumn && "w-[55%]")}>
+                <TableCell data-slot="table-cell" className={cn("w-[40%] pl-2 align-middle", !showTeamColumn && "w-[55%]")}>
                   <button
                     onClick={() => onNavigate?.(detailsPath)}
                     className="text-sm font-semibold text-foreground-strong hover:underline"
@@ -146,29 +127,25 @@ function MembersTable({
                   </button>
                 </TableCell>
                 {showTeamColumn && (
-                  <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap">
+                  <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
                     {teamName}
                   </TableCell>
                 )}
-                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap">
+                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
                   {member.title || "No title"}
                 </TableCell>
-                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap">
+                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
                   Seniority grade
                 </TableCell>
-                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    {category.Icon && (
-                      <category.Icon
-                        className={cn("size-4", category.className)}
-                      />
-                    )}
-                    <span className={category.className}>
-                      {category.label}
-                    </span>
-                  </div>
+                <TableCell data-slot="table-cell" className="w-[15%] whitespace-nowrap align-middle">
+                  <PerformanceBadge 
+                    value={member.averageRating} 
+                    ratingsCount={member.ratingsCount}
+                    showTooltip 
+                    size="base"
+                  />
                 </TableCell>
-                <TableCell data-slot="table-cell" className="w-[200px] whitespace-nowrap">
+                <TableCell data-slot="table-cell" className="w-[200px] whitespace-nowrap align-middle">
                   <StarRating
                     value={member.averageRating}
                     disabled
@@ -178,7 +155,7 @@ function MembersTable({
                   />
                 </TableCell>
                 {showActions && (
-                  <TableCell data-slot="table-cell" className="w-0 pr-2">
+                  <TableCell data-slot="table-cell" className="w-0 pr-2 align-middle">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -219,7 +196,7 @@ function MembersTable({
                           <DropdownMenuItem
                             data-slot="dropdown-item"
                             onClick={() => onDelete(member)}
-                            className="text-destructive focus:text-destructive"
+                            className="text-destructive-foreground focus:text-destructive-foreground"
                           >
                             <Trash2 className="mr-1" />
                             Delete Member

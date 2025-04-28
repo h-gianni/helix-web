@@ -2,8 +2,9 @@
 
 import React, { ReactNode } from "react";
 import { Card, CardContent } from "@/components/ui/core/Card";
-import { TrendingUp, TrendingDown, MoveRight } from "lucide-react";
+import { TrendingUp, TrendingDown, MoveRight, LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
+import { HeroBadge } from "@/components/ui/core/HeroBadge";
 
 export interface StatItemProps {
   title: string;
@@ -11,7 +12,7 @@ export interface StatItemProps {
   trend?: "up" | "down" | "neutral";
   trendValue?: string;
   trendLabel?: string;
-  icon?: ReactNode;
+  icon?: LucideIcon; // Updated to LucideIcon type
 }
 
 export function StatItem({
@@ -51,12 +52,12 @@ export function StatItem({
   };
 
   return (
-    <div className="flex flex-col gap-0">
-      <div className="flex items-center justify-between">
-        <h3 className={`heading-6 ${isNA ? "opacity-50" : ""} !text-foreground-weak truncate`}>{title}</h3>
-        {icon && <div className="ml-2 flex-shrink-0">{icon}</div>}
+    <div className="flex flex-col">
+      <div className="flex items-center justify-between -mt-0.5">
+        <h3 className={`text-sm font-medium pb-1 -mt-0.5 ${isNA ? "opacity-50" : ""} !text-foreground-strong truncate`}>{title}</h3>
+        {icon && <div className="ml-2 flex-shrink-0 -mr-1 -mt-1"><HeroBadge icon={icon} size="sm" variant="neutral" /></div>}
       </div>
-      <div className="mt-1">
+      <div className="mt-0">
         <span className={`heading-1 ${isNA ? "opacity-50" : ""} break-words`}>{value}</span>
       </div>
       {!isNA && (trendLabel || trend) && (

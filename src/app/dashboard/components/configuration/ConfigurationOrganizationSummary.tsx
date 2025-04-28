@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/core/Button";
-import { PenSquare } from "lucide-react";
+import { Building2, Pen, PenSquare } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -29,13 +29,13 @@ function OrganizationSummary({
 
   // Use React Query hook for API data
   const { data: profileData, isLoading, error } = useProfile();
-  
+
   // Get org name from the profile data
-  const orgName = profileData?.organization?.name || '';
+  const orgName = profileData?.organization?.name || "";
 
   // Determine which data source to use based on variant
   const useConfigData = variant === "setup";
-  
+
   // Get the organization name to display
   const displayOrgName = useConfigData ? configOrgName : orgName;
 
@@ -62,24 +62,28 @@ function OrganizationSummary({
   return (
     <>
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Organization Details</CardTitle>
-          <Button
-            variant="ghost"
-            onClick={handleEdit}
-          >
-            <PenSquare className="size-4 mr-2" /> Edit
+        <CardHeader className="flex flex-row items-start justify-between pb-4">
+          <CardTitle>
+            <div className="flex-shrink-0 mb-3">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-neutral-lightest">
+                <Building2 className="size-5 text-primary" />
+              </div>
+            </div>
+            {displayOrgName}
+          </CardTitle>
+          <Button variant="ghost" onClick={handleEdit}>
+            <Pen />
           </Button>
         </CardHeader>
 
-        <CardContent data-slot="card-content">
+        {/* <CardContent data-slot="card-content">
           <div className="text-base">
             <span className="font-medium">Name: </span>
             <span>
               {displayOrgName || "[Please set your organization name]"}
             </span>
           </div>
-        </CardContent>
+        </CardContent> */}
       </Card>
 
       <OrganizationDialog

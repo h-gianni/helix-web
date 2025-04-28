@@ -125,7 +125,7 @@ export async function GET() {
       };
     });
 
-    console.log('Performers data prepared:', performers.length); // Debug log
+    console.log('Performers data prepared:----------------', performers.length); // Debug log
 
     return NextResponse.json<ApiResponse<{ performers: Performer[] }>>({
       success: true,

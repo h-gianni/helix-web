@@ -7,7 +7,7 @@
   --shadow-xl: 0px 6px 64px -8px hsl(0 0% 0% / 0.3);
 }
 
-.dark {
+:root.dark {
   --shadow-sm: none;
   --shadow-base: none;
   --shadow-md: none;

@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BrandLogo } from "@/components/BrandLogo";
+import { BrandLogo } from "@/components/logo/BrandLogo";
 import { LucideIcon, Home, Users, Settings } from "lucide-react";
 import {
   Sidebar,
@@ -90,7 +90,7 @@ function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center gap-3 px-4 py-4">
-          <BrandLogo />
+          <BrandLogo size="sm" />
         </div>
       </SidebarHeader>
 
