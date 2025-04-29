@@ -60,7 +60,7 @@ export default function ScoringStepTeam({
 
         {displayTeams.length === 0 ? (
           <div className="p-6 text-center border rounded-lg bg-muted">
-            <p className="text-foreground">No teams available</p>
+            <p className="text-unavailable">No teams available</p>
           </div>
         ) : (
           <RadioGroupCards

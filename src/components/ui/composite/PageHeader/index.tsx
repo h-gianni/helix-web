@@ -42,7 +42,7 @@ function PageHeader({
               {title}
               {icon && icon}
             </h1>
-            {caption && <p className="page-header-caption body-base">{caption}</p>}
+            {/* {caption && <p className="page-header-caption body-base">{caption}</p>} */}
           </div>
         </div>
         {actions && <div className="page-header-actions">{actions}</div>}

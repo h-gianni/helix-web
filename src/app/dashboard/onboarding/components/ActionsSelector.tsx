@@ -316,12 +316,12 @@ export default function ActionsSelector({
   }
 
   return (
-    <Card className="">
+    <Card className="p-1">
       {/* Two-column layout */}
       <div className="flex flex-col md:flex-row">
         {/* Left column: Categories */}
         <div className="w-full md:w-1/3 border-r border-border-weak">
-          <div className="p-8 pb-6">
+          <div className="py-6 px-4">
             <h2 className="heading-3">{categoriesTitle}</h2>
             {/* <p className="body-sm text-foreground-weak">
               {categoriesDescription}
@@ -346,28 +346,28 @@ export default function ActionsSelector({
                     category.name
                   );
 
-                  return (
-                    <div
-                      key={category.id}
-                      className={cn(
-                        "min-h-12 px-8 py-2 flex justify-between items-center cursor-pointer hover:bg-muted/50",
-                        isSelected &&
-                          "bg-neutral-lightest border-l-4 border-l-primary",
-                        !isSelected && "border-l-4 border-l-transparent"
-                      )}
-                      onClick={() => handleCategorySelect(category.id)}
-                    >
-                      <div>
-                        <h3 className="font-medium">{category.name}</h3>
-                      </div>
-                      {selectedCount > 0 && (
-                        <Badge variant="primary">
-                          <Check className="size-3 mr-1" /> {selectedCount}
-                        </Badge>
-                      )}
+                return (
+                  <div
+                    key={category.id}
+                    className={cn(
+                      "min-h-12 px-4 py-2 -ml-1 flex justify-between items-center cursor-pointer hover:bg-neutral-50",
+                      isSelected &&
+                        "bg-primary-50 border-l-4 border-l-primary",
+                      !isSelected && "border-l-4 border-l-transparent"
+                    )}
+                    onClick={() => handleCategorySelect(category.id)}
+                  >
+                    <div>
+                      <h3 className="font-medium">{category.name}</h3>
                     </div>
-                  );
-                })
+                    {selectedCount > 0 && (
+                      <Badge variant="primary">
+                        <Check className="size-3 mr-1" /> {selectedCount}
+                      </Badge>
+                    )}
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
@@ -376,7 +376,7 @@ export default function ActionsSelector({
         <div className="w-full md:w-2/3">
           {selectedCategory ? (
             <div className="h-full flex flex-col">
-              <div className="p-8 pb-6 flex justify-between items-center">
+              <div className="py-6 px-4 flex justify-between items-center">
                 <div>
                   <h2 className="heading-3">{selectedCategory.name} Actions</h2>
                   {/* <p className="body-sm text-foreground-weak">
@@ -447,8 +447,8 @@ export default function ActionsSelector({
                       <div
                         key={action.id}
                         className={cn(
-                          "flex items-center gap-4 px-8 py-3 cursor-pointer hover:bg-neutral-lightest",
-                          isSelected ? "bg-neutral-lightest" : "",
+                          "flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-neutral-50",
+                          isSelected ? "bg-primary-50" : "",
                           isMandatoryAction && "cursor-not-allowed"
                         )}
                         onClick={() => {
@@ -462,9 +462,9 @@ export default function ActionsSelector({
                       >
                         <div className="size-5">
                           {isSelected ? (
-                            <SquareCheck className="text-neutral-darkest size-5" />
+                            <SquareCheck className="text-primary-500 size-5" />
                           ) : (
-                            <Square className="text-neutral-light size-5" />
+                            <Square className="text-neutral-300 size-5" />
                           )}
                         </div>
                         <span className="text-base flex-1">{action.name}</span>

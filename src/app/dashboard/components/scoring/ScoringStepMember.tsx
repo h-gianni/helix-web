@@ -95,7 +95,7 @@ export default function ScoringStepMember({
         {displayMembers.length === 0 ? (
           <div className="p-6 text-center border rounded-lg bg-muted">
             <Users className="size-8 mx-auto mb-2 text-muted-foreground" />
-            <p className="text-foreground">No team members available</p>
+            <p className="text-unavailable">No team members available</p>
           </div>
         ) : (
           <RadioGroupCards

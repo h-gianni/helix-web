@@ -1,6 +1,7 @@
 import React from "react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
+import { PartyPopper } from "lucide-react";
 
 const ImageBackgroundBanner = ({
   badgeText = "Limited Time",
@@ -13,7 +14,7 @@ const ImageBackgroundBanner = ({
   imagePath = "",
 }) => {
   return (
-    <div className="w-full rounded-[var(--radius-lg)] overflow-hidden shadow-[var(--shadow-md)] relative">
+    <div className="w-full rounded-xl overflow-hidden shadow-md relative">
       {/* Background image container */}
       <div className="absolute inset-0">
         <img
@@ -28,7 +29,7 @@ const ImageBackgroundBanner = ({
       {/* Content */}
       <div className="relative z-10 p-6 md:p-8 lg:p-10">
         <div className="max-w-3xl space-y-4">
-          <Badge variant="primary-light">{badgeText}</Badge>
+          <Badge variant="primary-light"><PartyPopper className="size-4 mr-2" />{badgeText}</Badge>
           <div className="space-y-1 pb-4">
             <h2 className="display-1">{title}</h2>
             <p className="text-foreground text-base md:text-lg max-w-xl">

@@ -51,20 +51,19 @@ export default function TeamList<T extends ListItem>({
                 <li
                   key={item.id}
                   className={cn(
-                    "-ml-px py-3 pl-8 pr-4 flex items-center justify-between cursor-pointer border-l-1 border-border-weak hover:bg-neutral-lightest group",
-                    isSelected && "bg-neutral-lightest border-l-primary"
+                    "-ml-px py-3 pl-8 pr-4 flex items-center justify-between cursor-pointer border-l-1 border-border-weak hover:bg-neutral-50 group",
+                    isSelected &&
+                      "bg-primary-50 border-l-primary"
                   )}
                   onClick={() => onSelectItem(item)}
                 >
                   <div className="flex items-center gap-4">
-                    <div
-                      className={cn(
-                        "flex justify-center items-center size-12 rounded-full",
-                        isSelected
-                          ? "bg-white text-primary"
-                          : "bg-neutral-lightest text-neutral-darker"
-                      )}
-                    >
+                    <div className={cn(
+                      "flex justify-center items-center size-12 rounded-full",
+                      isSelected 
+                        ? "bg-primary-100 text-primary" 
+                        : "bg-neutral-50 text-foreground"
+                    )}>
                       {item.icon === "user" ? (
                         <User className="size-5" />
                       ) : (
@@ -87,7 +86,7 @@ export default function TeamList<T extends ListItem>({
                     {!isSelected && (
                       <Button
                         variant="ghost"
-                        size="icon"
+                        icon
                         onClick={(e) => {
                           e.stopPropagation();
                           onSelectItem(item);
@@ -114,7 +113,7 @@ export default function TeamList<T extends ListItem>({
                         <PopoverTrigger asChild>
                           <Button
                             variant="ghost"
-                            size="icon"
+                            icon
                             onClick={(e) => {
                               e.stopPropagation();
                             }}
@@ -125,20 +124,18 @@ export default function TeamList<T extends ListItem>({
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-4">
                           <div className="space-y-2">
-                            <h4 className="font-medium">Confirm Deletion</h4>
-                            <p className="text-sm">
-                              Are you sure you want to delete this item?
-                            </p>
-                            <div className="flex justify-end gap-2 pt-2">
-                              <Button
-                                variant="outline"
+                            <h4 className="heading-4">Confirm Deletion</h4>
+                            <p className="body-sm">Are you sure you want to delete this item?</p>
+                            <div className="flex justify-end gap-2.5 pt-2">
+                              <Button 
+                                variant="outline" 
                                 size="sm"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setPopoverOpenId(null);
                                 }}
                               >
-                                Cancel
+                                Keep
                               </Button>
                               <Button
                                 variant="destructive"

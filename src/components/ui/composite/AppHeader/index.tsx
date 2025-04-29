@@ -44,7 +44,7 @@ const UserNav = () => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="relative size-8 rounded-full"
+          className="relative size-10 rounded-full"
           data-slot="dropdown-trigger"
         >
           <Avatar data-slot="avatar">
@@ -67,24 +67,24 @@ const UserNav = () => {
           My Account
         </DropdownMenuLabel>
         <DropdownMenuItem data-slot="dropdown-item">
-          <Star className="mr-2 size-4" />
+          <Star />
           <span>Upgrade to Pro</span>
         </DropdownMenuItem>
         <DropdownMenuItem data-slot="dropdown-item">
-          <Settings className="mr-2 size-4" />
+          <Settings />
           <span>Settings</span>
         </DropdownMenuItem>
         <DropdownMenuItem data-slot="dropdown-item">
-          <CreditCard className="mr-2 size-4" />
+          <CreditCard />
           <span>Billing</span>
         </DropdownMenuItem>
         <DropdownMenuItem data-slot="dropdown-item">
-          <Bell className="mr-2 size-4" />
+          <Bell />
           <span>Notifications</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator data-slot="dropdown-separator" />
         <DropdownMenuItem data-slot="dropdown-item">
-          <LogOut className="mr-2 size-4" />
+          <LogOut />
           <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
@@ -96,9 +96,9 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
   const { showMainDashboard } = useSetupProgress();
 
   return (
-    <header className="flex items-center justify-between gap-8 pb-4">
+    <header className="flex items-center justify-between gap-8 pb-2 pt-1">
       {showMainDashboard ? (
-        <div className="flex items-center gap-1 -ml-1.5">
+        <div className="flex items-center gap-1">
           <SidebarTrigger className="hidden lg:flex" />
           <Breadcrumb
             className="lg:border-l border-input px-2 lg:px-4"
@@ -140,7 +140,7 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps) {
       )}
       <div className="hidden lg:flex items-center gap-4">
         {<UserButton />}
-        <Button variant="ghost" size="icon" aria-label="Notifications">
+        <Button variant="ghost" icon aria-label="Notifications">
           <Bell />
         </Button>
         <UserNav />

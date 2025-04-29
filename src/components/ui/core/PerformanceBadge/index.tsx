@@ -49,36 +49,32 @@ const PERFORMANCE_CONFIG = {
   star: {
     label: "Star Performer",
     circleColor: "text-primary-500 fill-primary-500",
-    badgeClassName: "bg-primary-100/50 text-primary-900",
-    tooltip:
-      "Top 5-10% of performers. Consistently exceeds expectations with outstanding results.",
+    badgeClassName: "bg-neutral-50 text-neutral-foreground",
+    tooltip: "Top 5-10% of performers. Consistently exceeds expectations with outstanding results."
   },
   strong: {
     label: "Strong Performer",
     circleColor: "text-secondary-500 fill-secondary-500",
-    badgeClassName: "bg-secondary-100/50 text-secondary-900",
-    tooltip:
-      "Frequently exceeds expectations. Delivers high-quality work consistently.",
+    badgeClassName: "bg-neutral-50 text-neutral-foreground",
+    tooltip: "Frequently exceeds expectations. Delivers high-quality work consistently."
   },
   solid: {
     label: "Solid Performer",
     circleColor: "text-tertiary-500 fill-tertiary-500",
-    badgeClassName: "bg-tertiary-100/50 text-tertiary-900",
-    tooltip: "Meets all expectations consistently. A reliable team member.",
+    badgeClassName: "bg-neutral-50 text-neutral-foreground",
+    tooltip: "Meets all expectations consistently. A reliable team member."
   },
   inconsistent: {
     label: "Inconsistent Performer",
     circleColor: "text-warning-500 fill-warning-500",
-    badgeClassName: "bg-warning-100/50 text-warning-900",
-    tooltip:
-      "Shows potential but results vary. Needs coaching in specific areas.",
+    badgeClassName: "bg-neutral-50 text-neutral-foreground",
+    tooltip: "Shows potential but results vary. Needs coaching in specific areas."
   },
   low: {
     label: "Needs Help",
     circleColor: "text-destructive-500 fill-destructive-500",
-    badgeClassName: "bg-destructive-100/50 text-destructive-900",
-    tooltip:
-      "Currently falling short of expectations. Requires focused development plan.",
+    badgeClassName: "bg-neutral-50 text-neutral-foreground",
+    tooltip: "Currently falling short of expectations. Requires focused development plan."
   },
 } as const;
 
@@ -182,7 +178,7 @@ export function PerformanceBadge({
             size === "lg" ? "size-2.5" : "size-2"
           )}
         />
-        <span>Not Rated</span>
+        <span className="text-unavailable">Not Rated</span>
       </Badge>
     );
   }

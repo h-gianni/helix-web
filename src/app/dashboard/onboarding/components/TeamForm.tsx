@@ -111,7 +111,7 @@ export default function TeamForm({
           <div className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="team-name">
-                Team Name <span className="text-destructive">*</span>
+                Team Name <span className="text-primary">*</span>
               </Label>
               <Input
                 id="team-name"
@@ -137,13 +137,13 @@ export default function TeamForm({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 divide-x divide-neutral-lighter">
+          <div className="grid grid-cols-2 gap-8 divide-x divide-border-weak">
             {/* Members column */}
             <div className="space-y-4">
               <div className="space-y-0.5">
                 <h3 className="heading-4">
                   Team Members{" "}
-                  {!isEditing && <span className="text-destructive">*</span>}
+                  {!isEditing && <span className="text-primary">*</span>}
                 </h3>
                 {formErrors.members && (
                   <p className="text-destructive text-xs">
@@ -197,13 +197,13 @@ export default function TeamForm({
                             >
                               <div className="size-5 flex items-center">
                                 {isChecked ? (
-                                  <SquareCheck className="text-neutral-darkest size-5" />
+                                  <SquareCheck className="text-primary-500 size-5" />
                                 ) : isDisabled ? (
                                   <div className="relative">
-                                    <Lock className="text-neutral-light size-5" />
+                                    <Lock className="text-neutral-300 size-5" />
                                   </div>
                                 ) : (
-                                  <Square className="text-neutral-light size-5" />
+                                  <Square className="text-neutral-300 size-5" />
                                 )}
                               </div>
                               <Label
@@ -245,7 +245,7 @@ export default function TeamForm({
             <div className="space-y-4">
               <div className="space-y-0.5">
                 <h3 className="heading-4">
-                  Team Function/s <span className="text-destructive">*</span>
+                  Team Function/s <span className="text-primary">*</span>
                 </h3>
                 {formErrors.functions && (
                   <p className="text-destructive text-xs">
@@ -278,9 +278,9 @@ export default function TeamForm({
                       >
                         <div className="size-5 flex items-center">
                           {isChecked ? (
-                            <SquareCheck className="text-neutral-darkest size-5" />
+                            <SquareCheck className="text-primary-500 size-5" />
                           ) : (
-                            <Square className="text-neutral-light size-5" />
+                            <Square className="text-neutral-300 size-5" />
                           )}
                         </div>
                         <Label className="cursor-pointer flex-1">
@@ -327,22 +327,22 @@ export default function TeamForm({
                 Update Team
               </Button>
               <Button
-                variant="secondary"
+                variant="default"
                 onClick={onCancelEdit}
                 size="xl"
                 className="w-full"
               >
-                Cancel
+                Cancel Edit
               </Button>
             </>
           ) : (
             <Button
-              variant="default"
+              variant="primary"
               onClick={onCreateTeam}
               size="xl"
-              className="gap-2 w-full"
+              className="w-full"
             >
-              <Plus className="size-4" /> Create Team
+              <Plus /> Create Team
             </Button>
           )}
         </div>

@@ -72,7 +72,7 @@ export default function OrganisationPage() {
       <div className="max-w-sm mx-auto space-y-4">
         <div className="space-y-2">
           <Label htmlFor="org-name">
-            Organisation Name <span className="text-destructive">*</span>
+            Organisation Name <span className="text-primary">*</span>
           </Label>
           <Input
             id="org-name"

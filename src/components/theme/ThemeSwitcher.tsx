@@ -23,7 +23,7 @@ export function ThemeSwitcher() {
   
   if (!mounted) {
     return (
-      <Button variant="ghost" size="icon" className="text-foreground">
+      <Button variant="ghost" icon className="text-foreground">
         <Sun className="h-[1.2rem] w-[1.2rem]" />
         <span className="sr-only">Toggle theme</span>
       </Button>
@@ -33,7 +33,7 @@ export function ThemeSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="text-foreground">
+        <Button variant="ghost" icon className="text-foreground">
           {theme === 'dark' ? (
             <Moon className="h-[1.2rem] w-[1.2rem]" />
           ) : (
@@ -44,15 +44,15 @@ export function ThemeSwitcher() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")} className="flex items-center gap-2">
-          <Sun className="h-4 w-4" />
+          <Sun className="size-4" />
           <span>Light</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")} className="flex items-center gap-2">
-          <Moon className="h-4 w-4" />
+          <Moon className="size-4" />
           <span>Dark</span>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")} className="flex items-center gap-2">
-          <Laptop className="h-4 w-4" />
+          <Laptop className="size-4" />
           <span>System</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

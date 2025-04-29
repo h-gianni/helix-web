@@ -3,7 +3,6 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "@/components/ui/core/Card";
-import { Button } from "@/components/ui/core/Button";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
 import { PerformanceCategory } from "@/store/member";
 import {
@@ -15,7 +14,16 @@ import {
 import { MoreVertical, ChevronRight, FileText, Trash2 } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
-import { PerformanceBadge } from "@/components/ui/core/PerformanceBadge";
+import { PerformanceBadge, PerformanceVariant } from "@/components/ui/core/PerformanceBadge";
+import { TrendBadge, type TrendVariant } from "@/components/ui/core/TrendBadge";
+
+// Define the PerformanceCategory type with trend property
+export interface PerformanceCategory {
+  label: string;
+  className: string;
+  variant: PerformanceVariant;
+  trend?: TrendVariant;
+}
 
 export interface Team {
   id: string;
@@ -37,8 +45,6 @@ export interface MemberCardProps extends React.HTMLAttributes<HTMLDivElement> {
   teamId?: string;
   teams?: Team[];
   category?: PerformanceCategory;
-  onDelete?: (member: Member) => void;
-  onGenerateReview?: (member: Member) => void;
   variant?: "mobile" | "desktop";
   onNavigate?: (path: string) => void;
 }
@@ -48,9 +54,7 @@ function MemberCard({
   member,
   teamId,
   teams,
-  category: _category, // Accept but don't use
-  onDelete,
-  onGenerateReview,
+  category,
   variant = "mobile",
   onNavigate,
   ...props
@@ -66,9 +70,10 @@ function MemberCard({
   const effectiveTeamId = teamId ?? member.teamId;
   const encodedTeamId = encodeURIComponent(effectiveTeamId);
   const encodedMemberId = encodeURIComponent(member.id);
+  const detailPath = `/dashboard/teams/${encodedTeamId}/members/${encodedMemberId}`;
 
-  const handleViewDetails = () => {
-    const path = `/dashboard/teams/${encodedTeamId}/members/${encodedMemberId}`;
+  const handleCardClick = () => {
+    const path = detailPath;
     if (onNavigate) {
       onNavigate(path);
     } else {
@@ -76,15 +81,24 @@ function MemberCard({
     }
   };
 
-  // Use responsive classes instead of JS-based media queries
   return (
     <Card
       data-slot="card"
       className={cn(
-        "flex flex-col",
+        "flex flex-col cursor-pointer transition-shadow hover:shadow-md",
         variant === "desktop" ? "relative" : "md:relative",
         className
       )}
+      onClick={handleCardClick}
+      tabIndex={0}
+      role="button"
+      aria-label={`View details for ${member.name}`}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleCardClick();
+        }
+      }}
       {...props}
     >
       <CardHeader
@@ -265,6 +279,7 @@ function MemberCard({
               </>
             )}
           </div>
+          
           <StarRating
             value={member.averageRating}
             disabled

@@ -12,11 +12,13 @@ import {
   Globe,
   PencilRuler,
   User,
+  Timer,
 } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
 import { Card } from "@/components/ui/core/Card";
 import { BrandLogo } from "@/components/logo/BrandLogo";
 import { useSetupStore } from "@/store/setup-store";
+import { HeroBadge } from "@/components/ui/core/HeroBadge";
 
 export default function OnboardingIntroPage() {
   const router = useRouter();
@@ -89,9 +91,9 @@ export default function OnboardingIntroPage() {
   return (
     <div>
       <div className="flex flex-col items-center justify-center px-8 py-16 text-center">
-        <div className="space-y-8 mb-8">
+        <div className="space-y-4 mb-8">
           <div className="mb-4">
-            <BrandLogo variant="default" />
+<BrandLogo variant="hero" />
           </div>
           <p className="body-lg text-foreground-weak max-w-xl mx-auto py-4">
             Let&apos;s get your organisation set up so you can start tracking
@@ -99,8 +101,7 @@ export default function OnboardingIntroPage() {
             This quick and easy onboarding will guide you through the
             configuration.
           </p>
-          <div className="space-y-6 pb-4">
-            <Badge variant="secondary">Est. 1-3 min</Badge>
+          <div className="space-y-6 pb-2">
             <div>
               <Button
                 size="xl"
@@ -111,6 +112,7 @@ export default function OnboardingIntroPage() {
                 Start Onboarding <ArrowRight className="size-4" />
               </Button>
             </div>
+            <Badge variant="primary-light"><Timer className="size-4 mr-2" /> Est. 1-3 min</Badge>
           </div>
           <Card className="w-full grid md:grid-cols-3 items-start gap-4 max-w-4xl p-8 text-left">
             {setupSteps.map((step, index) => (
@@ -119,9 +121,7 @@ export default function OnboardingIntroPage() {
                 className="flex flex-row justify-center gap-4 p-4 rounded-lg relative"
               >
                 <div className="flex-shrink-0">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-neutral-lightest">
-                    <step.icon className="size-5 text-primary" />
-                  </div>
+                  <HeroBadge icon={step.icon} />
                 </div>
 
                 <div className="space-y-0.5">
@@ -134,7 +134,7 @@ export default function OnboardingIntroPage() {
               </div>
             ))}
           </Card>
-          <div className="text-sm text-foreground-weak">
+          <div className="text-sm text-foreground-weak pt-4">
             <p>
               Need help? Contact our support team at{" "}
               <a

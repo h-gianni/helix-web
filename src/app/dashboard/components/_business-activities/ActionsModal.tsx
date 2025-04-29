@@ -393,7 +393,7 @@ export function ActivityModal({
                     <Button
                       data-slot="button"
                       variant="ghost"
-                      size="icon"
+                      icon
                       onClick={() => setFormData({ uploadedFile: null })}
                     >
                       <X className="size-4" />

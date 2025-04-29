@@ -5,7 +5,6 @@ import React, { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import ProgressBar from "./components/ProgressBar";
 import { cn } from "@/lib/utils";
-import "./onboarding.css";
 
 interface OnboardingLayoutProps {
   children: ReactNode;
@@ -23,9 +22,9 @@ export default function OnboardingLayout({ children }: OnboardingLayoutProps) {
       {!isIntroPage && <ProgressBar />}
       
       <div className={cn("fade-in min-h-screen flex flex-col")}>
-        <main className="flex-1 pb-24 w-full max-w-7xl mx-auto">
+        <div className="flex-1 pb-24 w-full mx-auto">
           {children}
-        </main>
+        </div>
       </div>
     </div>
   );

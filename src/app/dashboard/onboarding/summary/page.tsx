@@ -12,9 +12,9 @@ import { AlertCircle } from "lucide-react";
 import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
 import { useCompleteOnboarding } from "@/store/onboarding-store";
 import { useSetupStore } from '@/store/setup-store';
-import OrganizationSummary from "../../components/configuration/ConfigurationOrganizationSummary";
-import OrgActionsSummary from "../../components/configuration/ConfigurationActionsSummary";
-import TeamsSummary from "../../components/configuration/ConfigurationTeamsSummary";
+import OrganizationSummary from "@/app/dashboard/components/configuration/ConfigurationOrganizationSummary";
+import OrgActionsSummary from "@/app/dashboard/components/configuration/ConfigurationActionsSummary";
+import TeamsSummary from "@/app/dashboard/components/configuration/ConfigurationTeamsSummary";
 
 export default function SummaryPage() {
   const router = useRouter();

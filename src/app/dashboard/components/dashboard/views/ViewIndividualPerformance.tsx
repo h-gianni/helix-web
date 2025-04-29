@@ -67,8 +67,7 @@ export default function IndividualPerformanceTab({
     <div className="space-y-6">
       {/* Category filter and view switcher controls */}
       <div className="flex justify-between items-center mb-4">
-        <div className="">View where your team members are standing.</div>
-        <div className="flex gap-4">
+        <div className="">
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
             <SelectTrigger className="w-48">
               <SelectValue placeholder="Select category" />
@@ -89,7 +88,8 @@ export default function IndividualPerformanceTab({
               </SelectItem>
               <SelectItem value="marketing">Marketing</SelectItem>
             </SelectContent>
-          </Select>
+          </Select></div>
+        <div className="flex gap-4">
           <ViewSwitcher viewType={viewType} onViewChange={handleViewChange} />
         </div>
       </div>

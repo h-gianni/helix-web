@@ -24,15 +24,36 @@ import MEMBERS_DATA, {
   getTeamMembers,
   EMPTY_TEAM_MEMBERS,
 } from "@/app/ui-system/data/members";
+import {
+  PerformanceBadge,
+  PerformanceVariant,
+} from "@/components/ui/core/PerformanceBadge";
+import { TrendBadge, TrendVariant } from "@/components/ui/core/TrendBadge";
+
+// Import components needed for showcases
+import StarRating from "@/components/ui/core/StarRating";
+
+// Create simple trend data for demonstration
+const performanceTrends = [
+  "up" as TrendVariant,
+  "stable" as TrendVariant,
+  "stable" as TrendVariant,
+  "down" as TrendVariant,
+  "down" as TrendVariant,
+];
 
 const TeamAndMembersComponents = () => {
-  // Memoized table data for better performance
+  // Memoized table data for better performance with added trend data
   const tableMemberData = useMemo(
     () =>
-      MEMBERS_DATA.map((member) => ({
+      MEMBERS_DATA.map((member, index) => ({
         ...member,
         averageRating: member.averageRating || 0,
         ratingsCount: member.ratingsCount || 0,
+        // Add trend data to each member based on their index
+        trend: index < performanceTrends.length 
+          ? performanceTrends[index] 
+          : performanceTrends[index % performanceTrends.length],
       })),
     []
   );
@@ -44,32 +65,6 @@ const TeamAndMembersComponents = () => {
     <div className="space-y-8">
       {/* Team Cards Section */}
       <div className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {TEAMS.slice(0, 4).map((team) => {
-            // Assign different member counts to showcase variety
-            let teamMembers = EMPTY_TEAM_MEMBERS;
-            if (team.id === "team-1") {
-              teamMembers = getTeamMembers("team-1", 8); // Engineering team with 8 members
-            } else if (team.id === "team-3") {
-              teamMembers = getTeamMembers("team-3", 6); // Design team with 6 members
-            } else if (team.id !== "team-6") {
-              teamMembers = getTeamMembers(team.id, 4); // Standard 4 members
-            }
-
-            return (
-              <TeamCard
-                key={team.id}
-                id={team.id}
-                name={team.name}
-                functions={team.functions}
-                members={teamMembers}
-                averagePerformance={team.id === "team-3" ? undefined : 4.5}
-                size="sm"
-                onClick={() => console.log(`Clicked team: ${team.name}`)}
-              />
-            );
-          })}
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {TEAMS.slice(0, 3).map((team) => {
@@ -154,6 +149,7 @@ const TeamAndMembersComponents = () => {
 
       {/* Mobile/Responsive Member Cards */}
       <div className="space-y-4">
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {tableMemberData.slice(0, 3).map((member) => {
             // Empty placeholder since we no longer need to pass the category
@@ -169,19 +165,19 @@ const TeamAndMembersComponents = () => {
                 key={member.id}
                 member={member}
                 teams={TEAMS}
-                category={placeholderCategory}
-                onDelete={(m) => console.log(`Delete member: ${m.name}`)}
-                onGenerateReview={(m) =>
-                  console.log(`Generate review for: ${m.name}`)
-                }
+                category={{
+                  label: "", // Will be set by TrendBadge component
+                  className: "", // Will be set by TrendBadge component
+                  variant: performanceVariant,
+                  trend: performanceTrends[index]
+                }}
                 onNavigate={(path) => console.log(`Navigate to: ${path}`)}
               />
             );
           })}
         </div>
-
-        {/* Member Cards with Different Performance Levels */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {performanceValues.map((rating, index) => {
             // Create a sample member for each performance level
             const sampleMember = {
@@ -204,13 +200,97 @@ const TeamAndMembersComponents = () => {
                 key={sampleMember.id}
                 member={sampleMember}
                 teams={TEAMS}
-                category={placeholderCategory}
+                category={{
+                  label: "", // Will be set by TrendBadge component
+                  className: "", // Will be set by TrendBadge component
+                  variant: performanceVariant,
+                  trend: index < performanceTrends.length ? performanceTrends[index] : undefined
+                }}
                 variant="desktop"
                 onNavigate={(path) => console.log(`Navigate to: ${path}`)}
               />
             );
           })}
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Up trend */}
+          <MemberCard
+            member={{
+              ...tableMemberData[0],
+              id: "trend-up",
+              averageRating: 4.5,
+              ratingsCount: 20,
+            }}
+            teams={TEAMS}
+            category={{
+              label: "", // Will be set by TrendBadge component
+              className: "", // Will be set by TrendBadge component
+              variant: "star",
+              trend: "up"
+            }}
+            variant="desktop"
+            onNavigate={(path) => console.log(`Navigate to: ${path}`)}
+          />
+
+          {/* Stable trend */}
+          <MemberCard
+            member={{
+              ...tableMemberData[1],
+              id: "trend-stable",
+              averageRating: 3.8,
+              ratingsCount: 12,
+            }}
+            teams={TEAMS}
+            category={{
+              label: "", // Will be set by TrendBadge component
+              className: "", // Will be set by TrendBadge component
+              variant: "solid",
+              trend: "stable"
+            }}
+            variant="desktop"
+            onNavigate={(path) => console.log(`Navigate to: ${path}`)}
+          />
+
+          {/* Down trend */}
+          <MemberCard
+            member={{
+              ...tableMemberData[2],
+              id: "trend-down",
+              averageRating: 2.3,
+              ratingsCount: 15,
+            }}
+            teams={TEAMS}
+            category={{
+              label: "", // Will be set by TrendBadge component
+              className: "", // Will be set by TrendBadge component
+              variant: "inconsistent",
+              trend: "down"
+            }}
+            variant="desktop"
+            onNavigate={(path) => console.log(`Navigate to: ${path}`)}
+          />
+
+          {/* No trend data */}
+          <MemberCard
+            member={{
+              ...tableMemberData[3],
+              id: "trend-unavailable",
+              averageRating: 3.0,
+              ratingsCount: 8,
+            }}
+            teams={TEAMS}
+            category={{
+              label: "", // Will be set by TrendBadge component
+              className: "", // Will be set by TrendBadge component
+              variant: "solid",
+              // trend is intentionally omitted to demonstrate the unavailable state
+            }}
+            variant="desktop"
+            onNavigate={(path) => console.log(`Navigate to: ${path}`)}
+          />
+        </div>
+
       </div>
 
       <Separator />
@@ -265,5 +345,14 @@ const TeamAndMembersComponents = () => {
     </div>
   );
 };
+
+// Helper function to determine performance variant based on rating
+function getPerformanceVariant(rating: number): PerformanceVariant {
+  if (rating >= 4.5) return "star";
+  if (rating >= 3.5) return "strong";
+  if (rating >= 2.5) return "solid";
+  if (rating >= 1.5) return "inconsistent";
+  return "low";
+}
 
 export default TeamAndMembersComponents;

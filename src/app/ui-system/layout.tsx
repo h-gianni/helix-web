@@ -98,7 +98,7 @@ export default function SystemLayout({
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
-            size="icon"
+            icon
             className="md:hidden"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
@@ -127,7 +127,7 @@ export default function SystemLayout({
             >
               <div className="flex items-center justify-between mb-6">
                 <BrandLogo variant="icon" className="size-6" />
-                <Button variant="ghost" size="icon" onClick={closeSidebar}>
+                <Button variant="ghost" icon onClick={closeSidebar}>
                   <X className="size-5" />
                 </Button>
               </div>

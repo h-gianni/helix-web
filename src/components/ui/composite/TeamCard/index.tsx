@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Card,
   CardHeader,
@@ -9,12 +9,16 @@ import {
 import { Badge } from "@/components/ui/core/Badge";
 import { Button } from "@/components/ui/core/Button";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
-import { Users, AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import TeamActionsDialog from "@/app/dashboard/components/configuration/ConfigurationTeamActionsDialog";
-import StarRating from "../../core/StarRating";
+import StarRating from "@/components/ui/core/StarRating";
 import Image from "next/image";
-import TeamImage from "@/assets/shared/team01-primary2.svg";
+import Team01Image from "@/assets/shared/team01.svg";
+import Team02Image from "@/assets/shared/team02.svg";
+import Team03Image from "@/assets/shared/team03.svg";
+import Team04Image from "@/assets/shared/team04.svg";
+import Team05Image from "@/assets/shared/team05.svg";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 
 const TEXT = {
@@ -25,9 +29,10 @@ const TEXT = {
   MEMBERS_PLURAL: "members",
   TEAM_ACTIONS: "Team actions",
   EDIT: "Edit",
+  NO_FUNCTIONS: "No functions assigned",
 };
 
-const MAX_AVATARS = 4;
+const MAX_AVATARS = 5;
 
 interface TeamMember {
   id: string;
@@ -55,7 +60,7 @@ interface TeamCardProps {
 export function TeamCard({
   id,
   name,
-  functions,
+  functions = [], // Ensure default empty array
   members = [],
   averagePerformance,
   size = "base",
@@ -70,6 +75,18 @@ export function TeamCard({
   const memberCount = members.length;
   const hasMembers = memberCount > 0;
   const hasPerformanceData = typeof averagePerformance === 'number';
+  const hasFunctions = Array.isArray(functions) && functions.length > 0;
+
+  // Determine which team image to use based on member count
+  const teamImage = useMemo(() => {
+    if (!hasMembers) return Team01Image;
+    
+    if (memberCount === 1) return Team01Image;
+    if (memberCount === 2) return Team02Image;
+    if (memberCount === 3) return Team03Image;
+    if (memberCount === 4) return Team04Image;
+    return Team05Image; // 5+ members
+  }, [memberCount, hasMembers]);
 
   const handleRefineActions = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -116,7 +133,7 @@ export function TeamCard({
             </Avatar>
           ))}
           {memberCount > MAX_AVATARS && (
-            <div className="flex size-8 items-center justify-center rounded-full border-2 border-white bg-neutral-100 text-2xs font-medium leading-0 z-10">
+            <div className="flex size-8 items-center justify-center rounded-full border-2 border-white bg-primary-100 text-2xs font-medium leading-0 z-10">
               +{memberCount - MAX_AVATARS}
             </div>
           )}
@@ -140,13 +157,33 @@ export function TeamCard({
 
     return (
       <Image
-        src={TeamImage}
+        src={teamImage}
         alt={`${name} team image`}
         className={cn(
           imageStyles[size],
-          !hasMembers && "opacity-20 transition-opacity"
+          !hasMembers && "opacity-25 transition-opacity"
         )}
       />
+    );
+  };
+
+  const renderFunctionBadges = () => {
+    if (!hasFunctions) {
+      return <p className="text-sm text-foreground-muted">{TEXT.NO_FUNCTIONS}</p>;
+    }
+
+    return (
+      <div className="flex flex-wrap gap-1">
+        {functions.map((func, index) => (
+          <Badge 
+            key={`${func}-${index}`} 
+            data-slot="badge" 
+            variant="info-light"
+          >
+            {func}
+          </Badge>
+        ))}
+      </div>
     );
   };
 
@@ -228,13 +265,7 @@ export function TeamCard({
           <CardTitle>{name}</CardTitle>
         </CardHeader>
         <CardContent data-slot="card-content" className="space-y-3 -mt-2">
-          <div className="flex flex-wrap gap-1">
-            {functions.map((func) => (
-              <Badge key={func} data-slot="badge" variant="info-light">
-                {func}
-              </Badge>
-            ))}
-          </div>
+          {renderFunctionBadges()}
           <div className="flex-1 text-left">
             {hasMembers ? renderAvatarGroup() : renderNoMembersAlert()}
           </div>
@@ -250,13 +281,7 @@ export function TeamCard({
           <CardTitle>{name}</CardTitle>
         </CardHeader>
         <CardContent data-slot="card-content" className="space-y-3">
-          <div className="flex flex-wrap gap-1">
-            {functions.map((func) => (
-              <Badge key={func} data-slot="badge" variant="info-light">
-                {func}
-              </Badge>
-            ))}
-          </div>
+          {renderFunctionBadges()}
           <div className="flex-1 text-left space-y-1.5">
             {hasMembers ? renderAvatarGroup() : renderNoMembersAlert()}
           </div>
@@ -275,13 +300,7 @@ export function TeamCard({
           data-slot="card-content"
           className="flex flex-col gap-3 pt-4"
         >
-          <div className="flex flex-wrap gap-1">
-            {functions.map((func) => (
-              <Badge key={func} data-slot="badge" variant="info-light">
-                {func}
-              </Badge>
-            ))}
-          </div>
+          {renderFunctionBadges()}
           <div className="flex-1 text-left">
             {hasMembers ? renderAvatarGroup() : renderNoMembersAlert()}
           </div>
@@ -307,13 +326,7 @@ export function TeamCard({
             </div>
           </CardHeader>
           <CardContent data-slot="card-content" className="flex flex-col gap-3">
-            <div className="flex flex-wrap gap-1">
-              {functions.map((func) => (
-                <Badge key={func} data-slot="badge" variant="info-light">
-                  {func}
-                </Badge>
-              ))}
-            </div>
+            {renderFunctionBadges()}
             <div className="flex flex-wrap gap-6">
               <div className="flex-1">
                 {hasMembers ? renderAvatarGroup() : renderNoMembersAlert()}

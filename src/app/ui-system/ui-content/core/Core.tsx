@@ -302,7 +302,7 @@ const CoreComponents = () => {
             <Button variant="primary" size="lg">
               Large
             </Button>
-            <Button size="icon">
+            <Button icon>
               <Plus />
             </Button>
           </div>
@@ -937,7 +937,7 @@ const CoreComponents = () => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" icon>
                   <X />
                 </Button>
               </TooltipTrigger>

@@ -64,7 +64,7 @@ const AnnouncementBanner = ({
         
         <Button 
           variant="ghost" 
-          size="icon" 
+          icon
           onClick={handleDismiss}
           className="absolute right-2 top-2 md:relative md:right-0 md:top-0 text-[var(--neutral-dark)] hover:bg-[var(--neutral-lighter)]"
         >

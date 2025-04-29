@@ -4,7 +4,14 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandLogo } from "@/components/logo/BrandLogo";
-import { LucideIcon, Home, Users, Settings } from "lucide-react";
+import {
+  LucideIcon,
+  Home,
+  Users,
+  Settings,
+  Star,
+  MessageSquare,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarHeader,
@@ -18,8 +25,11 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
+  SidebarSeparator,
 } from "@/components/ui/composite/Sidebar";
 import { useTeams } from "@/lib/context/teams-context";
+import { Button } from "@/components/ui/core/Button";
+import { usePerformanceRatingStore } from "@/store/performance-rating-store";
 
 interface Team {
   id: string;
@@ -65,6 +75,7 @@ const mainNavItems: NavItem[] = [
 function AppSidebar() {
   const { teams, isLoading, fetchTeams } = useTeams();
   const pathname = usePathname();
+    const { setIsOpen: openRatingModal } = usePerformanceRatingStore();
 
   useEffect(() => {
     fetchTeams();
@@ -89,13 +100,56 @@ function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex items-center gap-3 px-4 py-4">
+        <div className="flex items-center gap-3 p-4">
           <BrandLogo size="sm" />
         </div>
       </SidebarHeader>
 
+      {/* <div className="space-y-0 px-4">
+          <div className="bg-white px-4 py-2 mb-px text-sm font-semibold text-foreground flex justify-center items-center rounded-lg shadow-sm">
+            Score a Performance
+          </div>
+        <Button variant="ghost" size="sm" className="w-full">
+          Add a Feedback
+        </Button>
+      </div> */}
+
       <SidebarContent className="px-2">
+        {/* New Performance Group */}
         <SidebarGroup>
+          <SidebarGroupLabel>Core Actions</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Score Performance">
+                  <button
+                    type="button"
+                    onClick={() => openRatingModal(true)}
+                    className=""
+                  >
+                    <Star className="size-4 shrink-0" />
+                    <span>Score Performance</span>
+                  </button>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Add Feedback">
+                  <button
+                    type="button"
+                    // onClick={() => openRatingModal(true)}
+                  >
+                    <MessageSquare />
+                    <span>Add Feedback</span>
+                  </button>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        
+        <SidebarGroup>
+          <SidebarGroupLabel>Management</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {renderNavItems().map((item) => (
@@ -119,11 +173,7 @@ function NavMenuItem({ item }: NavMenuItemProps) {
   return (
     <>
       <SidebarMenuItem>
-        <SidebarMenuButton
-          asChild
-          isActive={isActive}
-          tooltip={item.label}
-        >
+        <SidebarMenuButton asChild isActive={isActive} tooltip={item.label}>
           <Link href={item.to}>
             <Icon className="size-4 shrink-0" />
             <span>{item.label}</span>
@@ -135,10 +185,7 @@ function NavMenuItem({ item }: NavMenuItemProps) {
         <SidebarMenuSub>
           {item.subItems.map((subItem) => (
             <SidebarMenuSubItem key={subItem.to}>
-              <SidebarMenuSubButton
-                asChild
-                isActive={pathname === subItem.to}
-              >
+              <SidebarMenuSubButton asChild isActive={pathname === subItem.to}>
                 <Link href={subItem.to}>{subItem.label}</Link>
               </SidebarMenuSubButton>
             </SidebarMenuSubItem>

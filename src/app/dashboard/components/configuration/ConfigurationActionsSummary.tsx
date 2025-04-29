@@ -19,6 +19,7 @@ import { useConfigStore } from "@/store/config-store";
 import { useFavoritesStore, useFavorites } from "@/store/favorites-store";
 import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
 import { useProfileStore } from "@/store/user-store";
+import { HeroBadge } from "@/components/ui/core/HeroBadge";
 
 interface OrgActionsSummaryProps {
   onEdit?: () => void;
@@ -94,13 +95,11 @@ function OrgActionsSummary({
         >
           <CardTitle data-slot="card-title">
             <div className="flex-shrink-0 mb-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-neutral-lightest">
-                <PencilRuler className="size-5 text-primary" />
-              </div>
+              <HeroBadge variant="primary" size="base" icon={PencilRuler} />
             </div>
             Team&apos;s actions
           </CardTitle>
-          <Button data-slot="button" variant="ghost" onClick={onEdit}>
+          <Button data-slot="button" variant="ghost" icon onClick={onEdit}>
             <Pen />
           </Button>
         </CardHeader>
@@ -128,11 +127,9 @@ function OrgActionsSummary({
                       key={categoryId}
                       value={categoryId}
                       data-slot="accordion-item"
-                      className="border-b px-0"
                     >
                       <AccordionTrigger
                         data-slot="accordion-trigger"
-                        className="py-2"
                       >
                         <div className="flex justify-between items-center gap-2 w-full pr-4">
                           <span className="font-medium">{categoryName}</span>
@@ -140,7 +137,7 @@ function OrgActionsSummary({
                             {favoritesCount > 0 && (
                               <Badge
                                 data-slot="badge"
-                                className="flex items-center gap-1 bg-primary-lightest text-primary"
+                                className="flex items-center gap-1 bg-primary-50 text-primary"
                               >
                                 <Heart className="size-3 fill-primary" />
                                 {favoritesCount}
@@ -153,7 +150,7 @@ function OrgActionsSummary({
                         </div>
                       </AccordionTrigger>
                       <AccordionContent data-slot="accordion-content">
-                        <ul className="space-y-2 pb-2">
+                        <ul className="space-y-1 pb-2">
                           {activities.map((actionId) => {
                             const actionName = getActionNameById(actionId);
 
@@ -169,7 +166,7 @@ function OrgActionsSummary({
                               >
                                 {actionName}
                                 {isFavorite && (
-                                  <Heart className="size-3 text-accent fill-current" />
+                                  <Heart className="size-3 text-primary fill-current" />
                                 )}
                               </li>
                             );

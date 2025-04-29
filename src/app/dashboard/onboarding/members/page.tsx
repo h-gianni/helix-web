@@ -11,6 +11,7 @@ import TeamList from "../components/TeamList";
 import MemberForm from "../components/MemberForm";
 import { useMemberManagement } from "@/hooks/useMemberManagement";
 import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
+import { HeroBadge } from "@/components/ui/core/HeroBadge";
 import { trimDomain } from "@/lib/utils/domainUtils";
 
 // Interface for TeamList compatible item
@@ -124,18 +125,16 @@ export default function MembersPage() {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center border-l border-border-weak">
-                  <div className="text-center p-8 max-w-md">
-                    <div className="bg-neutral-lightest rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                      <UserPlus className="text-primary size-8" />
-                    </div>
-                    <h3 className="heading-4 mb-2">No Team Members</h3>
-                    <p className="text-foreground-weak mb-6">
+                  <div className="flex flex-col items-center text-center p-8 max-w-md">
+                    <HeroBadge variant="primary" size="lg" icon={UserPlus} />
+                    <h3 className="heading-4 mt-4">No Team Members</h3>
+                    <p className="text-foreground-weak mb-4">
                       Add your first team member using the form.
                     </p>
-                    <div className="text-sm text-foreground-weak">
+                    <div className="caption text-foreground-weak">
                       <p>
                         Required fields marked with{" "}
-                        <span className="text-destructive">*</span>
+                        <span className="text-primary">*</span>
                       </p>
                     </div>
                   </div>
