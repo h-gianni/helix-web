@@ -51,9 +51,10 @@ const TeamAndMembersComponents = () => {
         averageRating: member.averageRating || 0,
         ratingsCount: member.ratingsCount || 0,
         // Add trend data to each member based on their index
-        trend: index < performanceTrends.length 
-          ? performanceTrends[index] 
-          : performanceTrends[index % performanceTrends.length],
+        trend:
+          index < performanceTrends.length
+            ? performanceTrends[index]
+            : performanceTrends[index % performanceTrends.length],
       })),
     []
   );
@@ -65,7 +66,6 @@ const TeamAndMembersComponents = () => {
     <div className="space-y-8">
       {/* Team Cards Section */}
       <div className="space-y-4">
-
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {TEAMS.slice(0, 3).map((team) => {
             // Assign different member counts
@@ -149,9 +149,8 @@ const TeamAndMembersComponents = () => {
 
       {/* Mobile/Responsive Member Cards */}
       <div className="space-y-4">
-        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {tableMemberData.slice(0, 3).map((member) => {
+          {tableMemberData.slice(0, 3).map((member, index) => {
             // Empty placeholder since we no longer need to pass the category
             const placeholderCategory: PerformanceCategory = {
               label: "",
@@ -168,15 +167,15 @@ const TeamAndMembersComponents = () => {
                 category={{
                   label: "", // Will be set by TrendBadge component
                   className: "", // Will be set by TrendBadge component
-                  variant: performanceVariant,
-                  trend: performanceTrends[index]
+                  variant: "star",
+                  trend: performanceTrends[index],
                 }}
                 onNavigate={(path) => console.log(`Navigate to: ${path}`)}
               />
             );
           })}
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {performanceValues.map((rating, index) => {
             // Create a sample member for each performance level
@@ -203,8 +202,11 @@ const TeamAndMembersComponents = () => {
                 category={{
                   label: "", // Will be set by TrendBadge component
                   className: "", // Will be set by TrendBadge component
-                  variant: performanceVariant,
-                  trend: index < performanceTrends.length ? performanceTrends[index] : undefined
+                  variant: "star",
+                  trend:
+                    index < performanceTrends.length
+                      ? performanceTrends[index]
+                      : undefined,
                 }}
                 variant="desktop"
                 onNavigate={(path) => console.log(`Navigate to: ${path}`)}
@@ -227,7 +229,7 @@ const TeamAndMembersComponents = () => {
               label: "", // Will be set by TrendBadge component
               className: "", // Will be set by TrendBadge component
               variant: "star",
-              trend: "up"
+              trend: "up",
             }}
             variant="desktop"
             onNavigate={(path) => console.log(`Navigate to: ${path}`)}
@@ -246,7 +248,7 @@ const TeamAndMembersComponents = () => {
               label: "", // Will be set by TrendBadge component
               className: "", // Will be set by TrendBadge component
               variant: "solid",
-              trend: "stable"
+              trend: "stable",
             }}
             variant="desktop"
             onNavigate={(path) => console.log(`Navigate to: ${path}`)}
@@ -265,7 +267,7 @@ const TeamAndMembersComponents = () => {
               label: "", // Will be set by TrendBadge component
               className: "", // Will be set by TrendBadge component
               variant: "inconsistent",
-              trend: "down"
+              trend: "down",
             }}
             variant="desktop"
             onNavigate={(path) => console.log(`Navigate to: ${path}`)}
@@ -290,7 +292,6 @@ const TeamAndMembersComponents = () => {
             onNavigate={(path) => console.log(`Navigate to: ${path}`)}
           />
         </div>
-
       </div>
 
       <Separator />

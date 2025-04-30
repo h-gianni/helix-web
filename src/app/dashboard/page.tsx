@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -11,9 +10,10 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import EmptyDashboardView from "./components/EmptyDashboardView";
 import { useTeams, useCreateTeam } from "@/store/team-store";
 import { useSetupStore } from "@/store/setup-store";
+import { useOrgStore, useOrgSetup } from "@/store/org-store"; // Updated import
+import { useOrgSetupForSetup } from "@/store/setup-store"; // New import for setup determination
 import { usePerformers } from "@/store/performers-store";
 import { useRouter } from "next/navigation";
-import { useProfileStore } from "@/store/user-store";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -23,44 +23,33 @@ export default function DashboardPage() {
   const [shouldShowDashboard, setShouldShowDashboard] = useState(true);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
-  const {
-    data: teams = [],
-    isLoading: isTeamsLoading,
-    error: teamsError,
-    refetch: refetchTeams,
-  } = useTeams();
+  // Use the new org store
+  const organizations = useOrgStore((state) => state.organizations);
 
-  const {
-    data: performers = [],
-    isLoading: isPerformersLoading,
-    error: isPerformersError,
-    refetch: refetchPerformers,
-  } = usePerformers();
+  // Use useOrgSetupForSetup to handle setup determination based on org data
+  const orgSetupForSetupQuery = useOrgSetupForSetup();
 
-  const { profile } = useProfileStore();
+  // Use useOrgSetup for fetching organization data
+  const {
+    isLoading: isOrgLoading,
+    error: orgError,
+    refetch: refetchOrg,
+  } = useOrgSetup();
 
   const { mutateAsync: createTeam } = useCreateTeam();
 
-  const isLoading =
-    isTeamsLoading || isPerformersLoading || !initialLoadComplete;
-  const error = teamsError || isPerformersError;
+  const isLoading = isOrgLoading || !initialLoadComplete;
+  const error = orgError;
 
   // Check if the user has completed setup to determine what to display
   useEffect(() => {
-    // If the setup state and teams are loaded, we can make a decision
-    if (!isTeamsLoading && !isPerformersLoading) {
-      // Assume the user should see the dashboard if:
-      // 1. They have at least one team, OR
-      // 2. They have completed any of the setup steps
-      // const hasAnySetupProgress = Object.values(steps).some(step => step);
+    // If the setup state and org data are loaded, we can make a decision
+    if (!isOrgLoading) {
       const setupComplete = isSetupComplete();
-      const hasTeams = teams.length > 0;
-      // alert(hasTeams);
-      // setShouldShowDashboard(hasTeams || hasAnySetupProgress);
       setShouldShowDashboard(setupComplete);
       setInitialLoadComplete(true);
     }
-  }, [teams, isSetupComplete, isTeamsLoading, isPerformersLoading]);
+  }, [isSetupComplete, isOrgLoading]);
 
   // Only redirect to onboarding if necessary
   useEffect(() => {
@@ -74,6 +63,8 @@ export default function DashboardPage() {
       const newTeam = await createTeam({ name, teamFunctionId });
       setIsCreateModalOpen(false);
       completeStep("createTeam");
+      // Refresh org data after creating a team
+      refetchOrg();
     } catch (error) {
       console.error("Error creating team:", error);
       throw error;
@@ -87,6 +78,7 @@ export default function DashboardPage() {
       </div>
     );
   }
+
   if (error) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-4 p-4">
@@ -100,8 +92,7 @@ export default function DashboardPage() {
           data-slot="button"
           variant="secondary"
           onClick={() => {
-            refetchTeams();
-            refetchPerformers();
+            refetchOrg();
           }}
         >
           <RotateCcw className="size-4 mr-2" /> Retry
@@ -110,16 +101,18 @@ export default function DashboardPage() {
     );
   }
 
-  // If user has teams, show the dashboard layout
-  if (teams.length > 0) {
+  // If user has completed onboarding, show the dashboard layout with org data
+  if (steps.onboardingComplete) {
+    // Get teams from the first organization
+    const teams = organizations.length > 0 ? organizations[0].teams : [];
+
     return (
-      <DashboardLayout performers={performers} teams={teams} router={router} />
+      <>
+        <DashboardLayout performers={[]} teams={teams} router={router} />
+      </>
     );
   }
 
-  // If user should see dashboard based on other criteria (e.g., setup progress),
-  // show the empty dashboard view - they can navigate to onboarding from there if needed
-  // if (shouldShowDashboard) {
   return (
     <>
       <EmptyDashboardView onCreateTeam={() => setIsCreateModalOpen(true)} />
@@ -130,9 +123,4 @@ export default function DashboardPage() {
       />
     </>
   );
-  // }
-
-  // Otherwise, redirect to onboarding - this should rarely happen since middleware should handle this
-
-  // return null; // Will redirect
 }

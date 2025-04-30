@@ -25,31 +25,25 @@ export async function GET(request: Request) {
       );
     }
 
-    // Get favorites from customFields or initialize empty object
-    const customFields = user.customFields || {};
-    const favorites = (customFields as any).favorites || {};
-
-    // Fetch organization data and related records
+    // Fetch organization data with only the needed fields
     const organizationData = await prisma.orgName.findMany({
       where: { userId: user.id },
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            subscriptionTier: true,
-            customFields: true,
-          },
-        },
-        // Include teams associated with the organization's user
+      select: {
+        id: true,
+        name: true,
+        siteDomain: true,
         user: {
           select: {
             teams: {
-              include: {
-                teamFunction: true,
+              where: {
+                deletedAt: null,
+              },
+              select: {
+                id: true,
+                name: true,
+                description: true,
                 teamMembers: {
-                  include: {
+                  select: {
                     user: {
                       select: {
                         id: true,
@@ -57,7 +51,6 @@ export async function GET(request: Request) {
                         email: true,
                       },
                     },
-                    jobGrade: true,
                   },
                 },
               },
@@ -67,16 +60,24 @@ export async function GET(request: Request) {
       },
     });
 
+    // Transform the data structure to organizations > teams > user
+    const restructuredData = organizationData.map((org) => {
+      return {
+        id: org.id,
+        name: org.name,
+        siteDomain: org.siteDomain,
+        teams: org.user?.teams || [],
+      };
+    });
+
     return NextResponse.json<
       ApiResponse<{
-        favorites: Record<string, string[]>;
         organizations: any[];
       }>
     >({
       success: true,
       data: {
-        favorites,
-        organizations: organizationData,
+        organizations: restructuredData,
       },
     });
   } catch (error) {

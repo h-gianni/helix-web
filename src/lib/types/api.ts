@@ -1,9 +1,21 @@
 // lib/types/api.ts
-import { Priority, BusinessActionStatus, TeamMemberStatus, ReviewStatus, Prisma } from "@prisma/client";
+import {
+  Priority,
+  BusinessActionStatus,
+  TeamMemberStatus,
+  ReviewStatus,
+  Prisma,
+} from "@prisma/client";
 type OrgActionStatus = BusinessActionStatus;
 
 // Define a type for JSON fields
-export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
 
 export type ApiResponse<T> =
   | {
@@ -22,20 +34,22 @@ export interface TeamResponse {
   id: string;
   name: string;
   description?: string | null;
-  teamFunctionId: string;
-  ownerId: string;
+  teamFunctionId?: string;
+  ownerId?: string;
   customFields?: JsonValue | null;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date | null;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date | null;
   teamFunction?: {
     id: string;
     name: string;
   } | null;
-  members: Array<Pick<TeamMemberResponse, 'id' | 'title'> & {
-    name: string | null;
-    email: string;
-  }>;
+  members?: Array<
+    Pick<TeamMemberResponse, "id" | "title"> & {
+      name: string | null;
+      email: string;
+    }
+  >;
   averagePerformance?: number;
 }
 export type TeamMemberResponse = {
@@ -61,7 +75,7 @@ export type TeamMemberResponse = {
   };
 };
 
-export type TeamDetailsResponse = Omit<TeamResponse, 'members'> & {
+export type TeamDetailsResponse = Omit<TeamResponse, "members"> & {
   members: TeamMemberResponse[];
   businessActivities: BusinessActivityResponse[];
   teamFunction: {
@@ -128,7 +142,8 @@ export interface OrgActionResponse {
   updatedAt: Date | null | string;
   deletedAt: Date | null | string;
   customFields?: JsonValue;
-  action: {  // Renamed from activity to match relation name in schema
+  action: {
+    // Renamed from activity to match relation name in schema
     id: string;
     name: string;
     description: string | null;
@@ -144,7 +159,7 @@ export interface OrgActionResponse {
     name: string;
   };
   _count?: {
-    scores: number;  // Changed from ratings to scores to match schema
+    scores: number; // Changed from ratings to scores to match schema
   };
 }
 
@@ -197,31 +212,31 @@ export interface ActivityResponse {
 }
 
 export interface BusinessActivityCategoryResponse {
-  id: string
-  name: string
-  description: string | null
-  createdAt: string
-  updatedAt: string
+  id: string;
+  name: string;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
   _count: {
-    activities: number
-  }
+    activities: number;
+  };
   activities: {
-    id: string
-    name: string
-    description: string | null
-    impactScale: number | null
+    id: string;
+    name: string;
+    description: string | null;
+    impactScale: number | null;
     businessActivities: {
-      id: string
+      id: string;
       // name: string
-      status: string
-      priority: string
-    }[]
-  }[]
+      status: string;
+      priority: string;
+    }[];
+  }[];
 }
 
 export interface CreateBusinessActivityCategoryInput {
-  name: string
-  description?: string
+  name: string;
+  description?: string;
 }
 // Rating types
 export type RatingResponse = {
@@ -358,7 +373,7 @@ export type CreateTeamFunctionInput = {
   name: string;
   description?: string;
   jobTitles?: string[];
-  customFields?: Prisma.InputJsonValue; 
+  customFields?: Prisma.InputJsonValue;
 };
 
 export type UpdateTeamFunctionInput = {
@@ -393,23 +408,21 @@ export type TeamBusinessActivitySummary = {
 //   "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
 // >;
 
-
 export type CreateActivityInput = {
-  activityId: string;    // ID of the base activity to link
-  teamId: string;        // Team ID
-  priority?: Priority;   // Optional priority, defaults to MEDIUM
+  activityId: string; // ID of the base activity to link
+  teamId: string; // Team ID
+  priority?: Priority; // Optional priority, defaults to MEDIUM
   status?: OrgActionStatus; // Optional status, defaults to ACTIVE
-  dueDate?: Date;       // Optional due date
+  dueDate?: Date; // Optional due date
 };
-
 
 // Input types should also match the model
 export type CreateOrgActionInput = {
-  actionId: string;    // ID of the base action to link
-  teamId: string;      // Team ID
+  actionId: string; // ID of the base action to link
+  teamId: string; // Team ID
   priority?: Priority; // Optional priority
   status?: OrgActionStatus; // Optional status
-  dueDate?: Date;      // Optional due date
+  dueDate?: Date; // Optional due date
 };
 
 export type UpdateOrgActionInput = {

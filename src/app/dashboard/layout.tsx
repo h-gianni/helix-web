@@ -24,7 +24,7 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider>
-      <ConditionalSidebar />
+      {/* <ConditionalSidebar /> */}
       <main
         className={showMainDashboard ? "layout-page dashboard" : "layout-page"}
       >
