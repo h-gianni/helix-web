@@ -1,6 +1,9 @@
 "use client";
 
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/lib/auth/auth-store";
+import { useSignIn, useSignUp } from "@clerk/nextjs";
 
 // Core UI Components
 import { Button } from "@/components/ui/core/Button";
@@ -23,6 +26,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/core/Tabs";
 import { Badge } from "@/components/ui/core/Badge";
+import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 
 // Icons
 import {
@@ -34,16 +38,49 @@ import {
   Fingerprint,
   ShieldCheck,
   ArrowRight,
-  MessageSquareText,
+  AlertTriangle,
+  Loader2,
 } from "lucide-react";
 
-const AuthenticationForm = () => {
+interface AuthenticationFormProps {
+  activeTab?: "signin" | "signup";
+}
+
+const AuthenticationForm = ({ activeTab = "signin" }: AuthenticationFormProps) => {
+  const router = useRouter();
+  const { loading, error, isAuthenticated, setAuthError } = useAuthStore();
+  const { isLoaded: isSignInLoaded, signIn, setActive: setActiveSignIn } = useSignIn();
+  const { isLoaded: isSignUpLoaded, signUp, setActive: setActiveSignUp } = useSignUp();
+  
   // State management
   const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [passwordFeedback, setPasswordFeedback] = useState("");
   const [authMethod, setAuthMethod] = useState("password"); // "password" or "passwordless"
-  const [activeTab, setActiveTab] = useState("signin");
+  const [activeTabState, setActiveTabState] = useState<string>(activeTab);
+  const [isLoading, setIsLoading] = useState(false);
+  const [authError, setLocalAuthError] = useState<string | null>(null);
+  
+  // Form fields
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
+
+  // Clear errors when switching tabs
+  useEffect(() => {
+    setLocalAuthError(null);
+    setAuthError(null);
+  }, [activeTabState, authMethod, setAuthError]);
 
   // Password strength checker
   const checkPasswordStrength = (password: string): void => {
@@ -73,6 +110,131 @@ const AuthenticationForm = () => {
       setPasswordFeedback("Medium strength");
     } else {
       setPasswordFeedback("Strong password");
+    }
+    
+    setPassword(password);
+  };
+
+  // Handle form submissions
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isSignInLoaded) return;
+    
+    try {
+      setIsLoading(true);
+      setLocalAuthError(null);
+      
+      const result = await signIn.create({
+        identifier: email,
+        password,
+      });
+      
+      if (result.status === "complete") {
+        await setActiveSignIn({ session: result.createdSessionId });
+        router.push("/dashboard");
+      } else {
+        // Handle 2FA or other continuation requirements if needed
+        setLocalAuthError("Additional verification needed");
+      }
+    } catch (err: any) {
+      setLocalAuthError(err.errors?.[0]?.message || "Failed to sign in. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isSignUpLoaded) return;
+    
+    if (!agreeToTerms) {
+      setLocalAuthError("Please agree to the Terms of Service and Privacy Policy");
+      return;
+    }
+    
+    try {
+      setIsLoading(true);
+      setLocalAuthError(null);
+      
+      const result = await signUp.create({
+        emailAddress: email,
+        password,
+        firstName,
+        lastName,
+      });
+      
+      if (result.status === "complete") {
+        await setActiveSignUp({ session: result.createdSessionId });
+        router.push("/dashboard");
+      } else {
+        // Handle email verification or other continuation requirements if needed
+        setLocalAuthError("Please check your email to verify your account");
+      }
+    } catch (err: any) {
+      setLocalAuthError(err.errors?.[0]?.message || "Failed to create account. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePasswordlessSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isSignInLoaded) return;
+    
+    try {
+      setIsLoading(true);
+      setLocalAuthError(null);
+      
+      const result = await signIn.create({
+        strategy: "email_code",
+        identifier: email,
+      });
+      
+      if (result.status === "needs_first_factor") {
+        setLocalAuthError("Check your email for a verification code");
+      } else {
+        setLocalAuthError("Something went wrong. Please try again.");
+      }
+    } catch (err: any) {
+      setLocalAuthError(err.errors?.[0]?.message || "Failed to send login link. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    if (!isSignInLoaded) return;
+    
+    try {
+      setIsLoading(true);
+      setLocalAuthError(null);
+      
+      const result = await signIn.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: "/auth/callback",
+        redirectUrlComplete: "/dashboard",
+      });
+    } catch (err: any) {
+      setLocalAuthError(err.errors?.[0]?.message || "Failed to sign in with Google. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    if (!isSignUpLoaded) return;
+    
+    try {
+      setIsLoading(true);
+      setLocalAuthError(null);
+      
+      const result = await signUp.authenticateWithRedirect({
+        strategy: "oauth_google",
+        redirectUrl: "/auth/callback",
+        redirectUrlComplete: "/dashboard",
+      });
+    } catch (err: any) {
+      setLocalAuthError(err.errors?.[0]?.message || "Failed to sign up with Google. Please try again.");
+      setIsLoading(false);
     }
   };
 
@@ -133,36 +295,11 @@ const AuthenticationForm = () => {
     </div>
   );
 
-  // Toggle to switch between password and passwordless auth
-  const AuthToggle = () => (
-    <div className="flex items-center justify-center space-x-1 w-full my-4">
-      <Button
-        variant={authMethod === "password" ? "default" : "outline"}
-        size="sm"
-        onClick={() => setAuthMethod("password")}
-        className="rounded-r-none flex-1 bg-primary-base hover:bg-primary-dark text-white"
-      >
-        <Lock size={16} className="mr-2" />
-        Password
-      </Button>
-      <Button
-        variant={authMethod === "passwordless" ? "default" : "outline"}
-        size="sm"
-        onClick={() => setAuthMethod("passwordless")}
-        className="rounded-l-none flex-1 bg-primary-base hover:bg-primary-dark text-white"
-      >
-        <Fingerprint size={16} className="mr-2" />
-        Passwordless
-      </Button>
-    </div>
-  );
-
   // Social login buttons
   const SocialLogins = () => (
     <div className="space-y-6">
-      {/* <div className="heading-3 text-center">Sign in to JustScore</div> */}
       <h2 className="heading-3 text-center">
-        {activeTab === "signin"
+        {activeTabState === "signin"
           ? "Sign in to JustScore"
           : "Create a JustScore account"}
       </h2>
@@ -171,8 +308,10 @@ const AuthenticationForm = () => {
         variant="outline"
         size="lg"
         className="w-full mb-3"
+        onClick={activeTabState === "signin" ? handleGoogleSignIn : handleGoogleSignUp}
+        disabled={isLoading || !isSignInLoaded || !isSignUpLoaded}
       >
-        <svg viewBox="0 0 24 24">
+        <svg viewBox="0 0 24 24" className="h-5 w-5 mr-2">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
             fill="#4285F4"
@@ -190,23 +329,29 @@ const AuthenticationForm = () => {
             fill="#EA4335"
           />
         </svg>
-        Continue with Google
+        {isLoading ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <>Continue with Google</>
+        )}
       </Button>
 
       <div className="grid grid-cols-2 gap-3 w-full mb-8">
         <Button
           variant="outline"
           size="lg"
+          onClick={() => setLocalAuthError('Twitter authentication coming soon')}
         >
-          <svg viewBox="0 0 24 24" fill="currentColor">
+          <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
           </svg>
         </Button>
         <Button
           variant="outline"
           size="lg"
+          onClick={() => setLocalAuthError('LinkedIn authentication coming soon')}
         >
-          <svg fill="currentColor" viewBox="0 0 24 24">
+          <svg fill="currentColor" viewBox="0 0 24 24" className="h-5 w-5">
             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
           </svg>
         </Button>
@@ -224,9 +369,9 @@ const AuthenticationForm = () => {
     <div className="container mx-auto px-4 py-8 max-w-lg">
       <div className="mb-6">
         <Tabs
-          defaultValue="signin"
-          value={activeTab}
-          onValueChange={setActiveTab}
+          defaultValue={activeTab}
+          value={activeTabState}
+          onValueChange={setActiveTabState}
           size="lg"
           className="w-full"
         >
@@ -237,15 +382,22 @@ const AuthenticationForm = () => {
         </Tabs>
       </div>
 
+      {(authError || error) && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertTriangle className="h-4 w-4" />
+          <AlertDescription>{authError || error}</AlertDescription>
+        </Alert>
+      )}
+
       <Card className="border border-border-weak shadow-lg overflow-hidden flex flex-col">
         {/* Top Section - Authentication Forms */}
         <div className="p-6 md:p-8 bg-white">
-          {activeTab === "signin" ? (
+          {activeTabState === "signin" ? (
             // Sign In Content
             <div className="space-y-4">
               <SocialLogins />
 
-              <Tabs defaultValue="password" className="w-full">
+              <Tabs defaultValue="password" value={authMethod} onValueChange={setAuthMethod} className="w-full">
                 <TabsList className="grid grid-cols-2 mb-6 w-full">
                   <TabsTrigger
                     value="password"
@@ -262,55 +414,80 @@ const AuthenticationForm = () => {
                 </TabsList>
 
                 <TabsContent value="password" className="space-y-4">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="email-signin">Email</Label>
-                    <IconInput
-                      id="email-signin"
-                      type="email"
-                      placeholder="name@example.com"
-                      icon={Mail}
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password-signin">Password</Label>
-                    </div>
-                    <div className="relative">
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="email-signin">Email</Label>
                       <IconInput
-                        id="password-signin"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="••••••••"
-                        icon={Lock}
+                        id="email-signin"
+                        type="email"
+                        placeholder="name@example.com"
+                        icon={Mail}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
                       />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <EyeOff size={16} />
-                        ) : (
-                          <Eye size={16} />
-                        )}
-                      </Button>
                     </div>
-                  </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="remember" />
-                      <Label htmlFor="remember" className="text-sm">
-                        Remember me
-                      </Label>
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="password-signin">Password</Label>
+                      </div>
+                      <div className="relative">
+                        <IconInput
+                          id="password-signin"
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          icon={Lock}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOff size={16} />
+                          ) : (
+                            <Eye size={16} />
+                          )}
+                        </Button>
+                      </div>
                     </div>
-                  </div>
 
-                  <Button variant="primary" className="w-full" size="lg">
-                    Sign In
-                  </Button>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="remember" 
+                          checked={rememberMe}
+                          onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                        />
+                        <Label htmlFor="remember" className="text-sm">
+                          Remember me
+                        </Label>
+                      </div>
+                    </div>
+
+                    <Button 
+                      variant="primary" 
+                      className="w-full" 
+                      size="lg" 
+                      type="submit" 
+                      disabled={isLoading || !isSignInLoaded}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+                          Signing in...
+                        </>
+                      ) : (
+                        "Sign In"
+                      )}
+                    </Button>
+                  </form>
 
                   <div className="flex justify-center">
                     <Button variant="link" size="sm" className="p-0 text-xs">
@@ -333,7 +510,7 @@ const AuthenticationForm = () => {
                     </p>
                   </div>
 
-                  <div className="space-y-4">
+                  <form onSubmit={handlePasswordlessSignIn} className="space-y-4">
                     <div className="space-y-1.5">
                       <Label htmlFor="email-passwordless">Email</Label>
                       <IconInput
@@ -341,14 +518,32 @@ const AuthenticationForm = () => {
                         type="email"
                         placeholder="name@example.com"
                         icon={Mail}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
                       />
                     </div>
 
-                    <Button variant="primary" className="w-full" size="lg">
-                      Send Login Link
-                      <ArrowRight size={16} className="ml-2" />
+                    <Button 
+                      variant="primary" 
+                      className="w-full" 
+                      size="lg"
+                      type="submit"
+                      disabled={isLoading || !isSignInLoaded}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          Send Login Link
+                          <ArrowRight size={16} className="ml-2" />
+                        </>
+                      )}
                     </Button>
-                  </div>
+                  </form>
                 </TabsContent>
               </Tabs>
             </div>
@@ -357,74 +552,108 @@ const AuthenticationForm = () => {
             <div className="space-y-4">
               <SocialLogins />
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="first-name">First name</Label>
-                  <IconInput id="first-name" placeholder="John" icon={User} />
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="first-name">First name</Label>
+                    <IconInput 
+                      id="first-name" 
+                      placeholder="John" 
+                      icon={User}
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="last-name">Last name</Label>
+                    <IconInput 
+                      id="last-name" 
+                      placeholder="Doe" 
+                      icon={User}
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  </div>
                 </div>
+
                 <div className="space-y-1.5">
-                  <Label htmlFor="last-name">Last name</Label>
-                  <IconInput id="last-name" placeholder="Doe" icon={User} />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="email-signup">Email</Label>
-                <IconInput
-                  id="email-signup"
-                  type="email"
-                  placeholder="name@example.com"
-                  icon={Mail}
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="password-signup">Password</Label>
-                <div className="relative">
+                  <Label htmlFor="email-signup">Email</Label>
                   <IconInput
-                    id="password-signup"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
-                    icon={Lock}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      checkPasswordStrength(e.target.value)
-                    }
+                    id="email-signup"
+                    type="email"
+                    placeholder="name@example.com"
+                    icon={Mail}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </Button>
                 </div>
-                <PasswordStrengthIndicator />
-                <p className="text-xs text-muted-foreground mt-1">
-                  Use 8+ characters with a mix of letters, numbers & symbols
-                </p>
-              </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox id="terms" />
-                  <Label htmlFor="terms" className="text-sm">
-                    I agree to the{" "}
-                    <Button variant="link" className="h-auto p-0">
-                      Terms of Service
-                    </Button>{" "}
-                    and{" "}
-                    <Button variant="link" className="h-auto p-0">
-                      Privacy Policy
+                <div className="space-y-1.5">
+                  <Label htmlFor="password-signup">Password</Label>
+                  <div className="relative">
+                    <IconInput
+                      id="password-signup"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      icon={Lock}
+                      value={password}
+                      onChange={(e) => checkPasswordStrength(e.target.value)}
+                      required
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </Button>
-                  </Label>
+                  </div>
+                  <PasswordStrengthIndicator />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Use 8+ characters with a mix of letters, numbers & symbols
+                  </p>
                 </div>
-              </div>
 
-              <Button variant="primary" className="w-full" size="lg">
-                Create Account
-              </Button>
+                <div className="space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="terms" 
+                      checked={agreeToTerms}
+                      onCheckedChange={(checked) => setAgreeToTerms(checked as boolean)}
+                    />
+                    <Label htmlFor="terms" className="text-sm">
+                      I agree to the{" "}
+                      <Button variant="link" className="h-auto p-0" type="button">
+                        Terms of Service
+                      </Button>{" "}
+                      and{" "}
+                      <Button variant="link" className="h-auto p-0" type="button">
+                        Privacy Policy
+                      </Button>
+                    </Label>
+                  </div>
+                </div>
+
+                <Button 
+                  variant="primary" 
+                  className="w-full" 
+                  size="lg"
+                  type="submit"
+                  disabled={isLoading || !isSignUpLoaded || passwordStrength < 3}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating account...
+                    </>
+                  ) : (
+                    "Create Account"
+                  )}
+                </Button>
+              </form>
             </div>
           )}
         </div>
@@ -432,17 +661,8 @@ const AuthenticationForm = () => {
         {/* Bottom Section - Info */}
         <div className="bg-gradient-to-r from-info-darker to-info-darkest text-white p-6 md:p-8">
           <div className="">
-            {/* <h2 className="heading-2 !text-white mb-4">
-              Welcome {activeTab === "signin" ? "Back" : "to Our Platform"}
-            </h2> */}
-
             <div className="space-y-8">
               <div>
-                {/* <p className="mb-4">
-                  {activeTab === "signin"
-                    ? "Sign in to access your account and continue your journey with us."
-                    : "Create an account to get started with our services and features."}
-                </p> */}
                 <h5 className="heading-5 !text-white">Need assistance?</h5>
                 <p className="body-sm">
                   Contact our support team at support@example.com

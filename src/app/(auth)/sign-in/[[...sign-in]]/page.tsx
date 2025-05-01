@@ -1,5 +1,5 @@
-import { SignIn } from "@clerk/nextjs";
+import AuthenticationForm from '@/app/ui-system/ui-content/authentication/Authentication'
 
 export default function SignInPage() {
-  return <SignIn />;
+	return <AuthenticationForm />
 }
