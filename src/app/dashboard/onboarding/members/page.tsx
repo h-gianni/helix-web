@@ -12,6 +12,7 @@ import MemberForm from "../components/MemberForm";
 import { useMemberManagement } from "@/hooks/useMemberManagement";
 import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
 import { HeroBadge } from "@/components/ui/core/HeroBadge";
+import { trimDomain } from "@/lib/utils/domainUtils";
 
 // Interface for TeamList compatible item
 interface MemberListItem {
@@ -104,6 +105,11 @@ export default function MembersPage() {
                 onInputChange={handleInputChange}
                 onAddMember={handleAddMember}
                 onCancelEdit={handleCancelEdit}
+                defaultDomain={
+                  config?.organization.siteDomain
+                    ? trimDomain(config.organization.siteDomain)
+                    : ""
+                }
               />
             </div>
             <div className="col-span-3">

@@ -121,7 +121,10 @@
 /************************* LAYOUT + SPACING */
 
 .layout-page {
-  @apply w-full p-4;
+  @apply w-full;
+}
+.layout-page.dashboard {
+  @apply w-full p-4 sm:p-6;
 }
 .layout-page-main {
   @apply space-y-4 py-2 w-full;
@@ -247,5 +250,3 @@
   color: var(--neutral-lightest);
   background: var(--neutral-darkest);
 }
-
-

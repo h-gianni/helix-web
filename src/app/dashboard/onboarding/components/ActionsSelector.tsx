@@ -296,7 +296,9 @@ export default function ActionsSelector({
   // Set first category as selected if none is selected and categories are available
   useEffect(() => {
     if (categories?.length > 0 && !selectedCategoryId && !isLoading) {
-      setSelectedCategoryId(categories[0].id);
+      setSelectedCategoryId(
+        categories.filter((cat) => cat.actions.length > 0)[0].id
+      );
       if (setHasInteracted && !hasInteracted) {
         setHasInteracted(true);
       }

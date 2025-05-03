@@ -2,9 +2,11 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/core/Button";
 import { Card, CardContent, CardHeader } from "@/components/ui/core/Card";
 import { Avatar, AvatarFallback } from "@/components/ui/core/Avatar";
-import { PerformanceCategory } from "@/store/member";
+// import { PerformanceCategory } from "@/store/member";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +16,10 @@ import {
 import { MoreVertical, ChevronRight, FileText, Trash2 } from "lucide-react";
 import StarRating from "@/components/ui/core/StarRating";
 import { cn } from "@/lib/utils";
-import { PerformanceBadge, PerformanceVariant } from "@/components/ui/core/PerformanceBadge";
+import {
+  PerformanceBadge,
+  PerformanceVariant,
+} from "@/components/ui/core/PerformanceBadge";
 import { TrendBadge, type TrendVariant } from "@/components/ui/core/TrendBadge";
 
 // Define the PerformanceCategory type with trend property
@@ -23,6 +28,7 @@ export interface PerformanceCategory {
   className: string;
   variant: PerformanceVariant;
   trend?: TrendVariant;
+  Icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
 }
 
 export interface Team {
@@ -47,6 +53,9 @@ export interface MemberCardProps extends React.HTMLAttributes<HTMLDivElement> {
   category?: PerformanceCategory;
   variant?: "mobile" | "desktop";
   onNavigate?: (path: string) => void;
+  onGenerateReview?: (member: Member) => void;
+  handleViewDetails?: () => void;
+  onDelete?: (member: Member) => void;
 }
 
 function MemberCard({
@@ -57,6 +66,9 @@ function MemberCard({
   category,
   variant = "mobile",
   onNavigate,
+  onGenerateReview,
+  handleViewDetails,
+  onDelete,
   ...props
 }: MemberCardProps) {
   const router = useRouter();
@@ -123,7 +135,7 @@ function MemberCard({
               <Button
                 data-slot="button"
                 variant="ghost"
-                size="icon"
+                size="default"
                 className="size-8"
                 aria-label="Member actions"
               >
@@ -215,7 +227,7 @@ function MemberCard({
                 <Button
                   data-slot="button"
                   variant="ghost"
-                  size="icon"
+                  size="default"
                   className="size-8"
                   aria-label="Member actions"
                 >
@@ -264,22 +276,18 @@ function MemberCard({
           )}
         >
           <div className="flex items-center gap-2">
-            {_category && (
+            {category && (
               <>
-                {_category.Icon && (
-                  <_category.Icon
-                    className={cn("size-4", _category.className)}
-                  />
+                {category.Icon && (
+                  <category.Icon className={cn("size-4", category.className)} />
                 )}
-                <span
-                  className={cn("text-sm font-medium", _category.className)}
-                >
-                  {_category.label}
+                <span className={cn("text-sm font-medium", category.className)}>
+                  {category.label}
                 </span>
               </>
             )}
           </div>
-          
+
           <StarRating
             value={member.averageRating}
             disabled

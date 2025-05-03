@@ -16,9 +16,9 @@ import {
   User,
 } from "lucide-react";
 import { Badge } from "@/components/ui/core/Badge";
-import { useState, useEffect } from "react";
-import { useTeams } from "@/lib/context/teams-context";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useOrgStore } from "@/store/org-store"; // Import the org store
 
 // Mobile Navigation Item Component for the drawer
 const MobileNavItem = ({
@@ -77,12 +77,13 @@ interface Team {
 
 export const MobileBottomNav = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const { teams, isLoading, fetchTeams } = useTeams();
   const pathname = usePathname();
 
-  useEffect(() => {
-    fetchTeams();
-  }, [fetchTeams]);
+  // Use organizations from org store instead of useTeams
+  const organizations = useOrgStore((state) => state.organizations);
+
+  // Get teams from the first organization if it exists
+  const teams = organizations.length > 0 ? organizations[0].teams : [];
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -156,7 +157,7 @@ export const MobileBottomNav = () => {
   return (
     <>
       {/* Fullscreen Navigation Menu */}
-      {isMenuOpen && (
+      {true && (
         <div className="fixed inset-0 bg-background z-40 flex flex-col lg:hidden">
           {/* Fixed top header */}
           <div className="sticky top-0 bg-background z-10 border-b border-border">
