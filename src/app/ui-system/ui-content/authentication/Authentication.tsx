@@ -40,13 +40,13 @@ import {
 	ArrowRight,
 	AlertTriangle,
 	Loader2,
+	Check,
 } from 'lucide-react'
 
 interface AuthenticationFormProps {
 	activeTab?: 'signin' | 'signup'
 }
 
-// Custom Email Input Component
 interface EmailInputProps {
 	id: string
 	value: string
@@ -54,6 +54,43 @@ interface EmailInputProps {
 	required?: boolean
 	placeholder?: string
 	label?: string
+}
+
+interface NameInputProps {
+	id: string
+	value: string
+	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+	required?: boolean
+	placeholder?: string
+	label?: string
+}
+
+const NameInput = ({
+	id,
+	value,
+	onChange,
+	required = false,
+	placeholder = 'Enter name',
+	label = 'Name',
+}: NameInputProps) => {
+	return (
+		<div className="space-y-1.5">
+			<div className="relative">
+				<div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-dark">
+					<User size={18} />
+				</div>
+				<Input
+					id={id}
+					type="text"
+					className="pl-10"
+					placeholder={placeholder}
+					value={value}
+					onChange={onChange}
+					required={required}
+				/>
+			</div>
+		</div>
+	)
 }
 
 const EmailInput = ({
@@ -84,7 +121,6 @@ const EmailInput = ({
 	)
 }
 
-// Custom Password Input Component
 interface PasswordInputProps {
 	id: string
 	value: string
@@ -248,6 +284,7 @@ const AuthenticationForm = ({
 	const [activeTabState, setActiveTabState] = useState<string>(activeTab)
 	const [isLoading, setIsLoading] = useState(false)
 	const [authError, setLocalAuthError] = useState<string | null>(null)
+	const [successMessage, setSuccessMessage] = useState<string | null>(null)
 	const [verificationStep, setVerificationStep] = useState<'email' | 'code'>(
 		'email'
 	)
@@ -302,6 +339,7 @@ const AuthenticationForm = ({
 				setLocalAuthError('Additional verification needed')
 			}
 		} catch (err: any) {
+			console.log(err)
 			setLocalAuthError(
 				err.errors?.[0]?.message || 'Failed to sign in. Please try again.'
 			)
@@ -328,8 +366,6 @@ const AuthenticationForm = ({
 			const result = await signUp.create({
 				emailAddress: email,
 				password,
-				firstName,
-				lastName,
 			})
 
 			if (result.status === 'complete') {
@@ -356,6 +392,7 @@ const AuthenticationForm = ({
 		try {
 			setIsLoading(true)
 			setLocalAuthError(null)
+			setSuccessMessage(null)
 
 			const result = await signIn.create({
 				strategy: 'email_code',
@@ -364,7 +401,7 @@ const AuthenticationForm = ({
 
 			if (result.status === 'needs_first_factor') {
 				setVerificationStep('code')
-				setLocalAuthError(
+				setSuccessMessage(
 					'Verification code sent! Check your email for the code'
 				)
 			} else {
@@ -569,6 +606,15 @@ const AuthenticationForm = ({
 				<Alert variant="destructive" className="mb-4">
 					<AlertTriangle className="h-4 w-4" />
 					<AlertDescription>{authError || error}</AlertDescription>
+				</Alert>
+			)}
+
+			{successMessage && (
+				<Alert variant="success" className="mb-4">
+					<div className="flex items-center gap-2">
+						<Check className="h-4 w-4 text-success-700" />
+						<AlertDescription>{successMessage}</AlertDescription>
+					</div>
 				</Alert>
 			)}
 
@@ -788,20 +834,18 @@ const AuthenticationForm = ({
 								<div className="grid grid-cols-2 gap-4">
 									<div className="space-y-1.5">
 										<Label htmlFor="first-name">First name</Label>
-										<IconInput
+										<NameInput
 											id="first-name"
 											placeholder="John"
-											icon={User}
 											value={firstName}
 											onChange={(e) => setFirstName(e.target.value)}
 										/>
 									</div>
 									<div className="space-y-1.5">
 										<Label htmlFor="last-name">Last name</Label>
-										<IconInput
+										<NameInput
 											id="last-name"
 											placeholder="Doe"
-											icon={User}
 											value={lastName}
 											onChange={(e) => setLastName(e.target.value)}
 										/>
