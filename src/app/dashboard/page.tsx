@@ -10,8 +10,8 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import EmptyDashboardView from "./components/EmptyDashboardView";
 import { useTeams, useCreateTeam } from "@/store/team-store";
 import { useSetupStore } from "@/store/setup-store";
-import { useOrgStore, useOrgSetup } from "@/store/org-store"; // Updated import
-import { useOrgSetupForSetup } from "@/store/setup-store"; // New import for setup determination
+import { useOrgStore } from "@/store/org-store";
+import { useOrgSetupForSetup } from "@/store/setup-store";
 import { usePerformers } from "@/store/performers-store";
 import { useRouter } from "next/navigation";
 
@@ -23,48 +23,19 @@ export default function DashboardPage() {
   const [shouldShowDashboard, setShouldShowDashboard] = useState(true);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
-  // Use the new org store
+  // Use the hook that automatically syncs organization data to setup steps
+  const { isLoading, error } = useOrgSetupForSetup();
+
+  // Use the org store
   const organizations = useOrgStore((state) => state.organizations);
 
-  // Use useOrgSetupForSetup to handle setup determination based on org data
-  const orgSetupForSetupQuery = useOrgSetupForSetup();
-
-  // Use useOrgSetup for fetching organization data
-  const {
-    isLoading: isOrgLoading,
-    error: orgError,
-    refetch: refetchOrg,
-  } = useOrgSetup();
-
   const { mutateAsync: createTeam } = useCreateTeam();
-
-  const isLoading = isOrgLoading || !initialLoadComplete;
-  const error = orgError;
-
-  // Check if the user has completed setup to determine what to display
-  useEffect(() => {
-    // If the setup state and org data are loaded, we can make a decision
-    if (!isOrgLoading) {
-      const setupComplete = isSetupComplete();
-      setShouldShowDashboard(setupComplete);
-      setInitialLoadComplete(true);
-    }
-  }, [isSetupComplete, isOrgLoading]);
-
-  // Only redirect to onboarding if necessary
-  useEffect(() => {
-    if (initialLoadComplete && !shouldShowDashboard) {
-      router.push("/dashboard/onboarding/intro");
-    }
-  }, [router, initialLoadComplete, shouldShowDashboard]);
 
   const handleCreateTeam = async (name: string, teamFunctionId: string) => {
     try {
       const newTeam = await createTeam({ name, teamFunctionId });
       setIsCreateModalOpen(false);
       completeStep("createTeam");
-      // Refresh org data after creating a team
-      refetchOrg();
     } catch (error) {
       console.error("Error creating team:", error);
       throw error;
@@ -92,7 +63,7 @@ export default function DashboardPage() {
           data-slot="button"
           variant="secondary"
           onClick={() => {
-            refetchOrg();
+            // refetchOrg();
           }}
         >
           <RotateCcw className="size-4 mr-2" /> Retry
@@ -102,7 +73,7 @@ export default function DashboardPage() {
   }
 
   // If user has completed onboarding, show the dashboard layout with org data
-  if (steps.onboardingComplete) {
+  if (steps.teams) {
     // Get teams from the first organization
     const teams = organizations.length > 0 ? organizations[0].teams : [];
 

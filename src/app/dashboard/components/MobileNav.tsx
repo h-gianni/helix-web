@@ -157,7 +157,7 @@ export const MobileBottomNav = () => {
   return (
     <>
       {/* Fullscreen Navigation Menu */}
-      {true && (
+      {isMenuOpen && (
         <div className="fixed inset-0 bg-background z-40 flex flex-col lg:hidden">
           {/* Fixed top header */}
           <div className="sticky top-0 bg-background z-10 border-b border-border">

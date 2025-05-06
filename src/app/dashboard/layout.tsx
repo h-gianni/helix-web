@@ -7,6 +7,7 @@ import { SidebarProvider } from "@/components/ui/composite/Sidebar";
 import { MobileBottomNav } from "./components/MobileNav";
 import { useSetupStateSync } from "@/store/setup-store";
 import { useSetupProgress } from "@/hooks/useSetupProgress";
+import { useOrgSetup } from "@/store/org-store";
 
 export default function DashboardLayout({
   children,
@@ -24,7 +25,7 @@ export default function DashboardLayout({
 
   return (
     <SidebarProvider>
-      {/* <ConditionalSidebar /> */}
+      <ConditionalSidebar />
       <main
         className={showMainDashboard ? "layout-page dashboard" : "layout-page"}
       >

@@ -25,9 +25,8 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
   SidebarMenuSubButton,
-  SidebarSeparator,
 } from "@/components/ui/composite/Sidebar";
-import { useTeams } from "@/lib/context/teams-context";
+import { useOrgStore, useOrgSetup } from "@/store/org-store"; // Replace teams-context import with org-store
 import { Button } from "@/components/ui/core/Button";
 import { usePerformanceRatingStore } from "@/store/performance-rating-store";
 
@@ -73,17 +72,18 @@ const mainNavItems: NavItem[] = [
 ];
 
 function AppSidebar() {
-  const { teams, isLoading, fetchTeams } = useTeams();
+  const { data: orgData, isLoading } = useOrgSetup(); // Use useOrgSetup to load org data
+  const getOrgTeams = useOrgStore((state) => state.getOrgTeams); // Get the teams selector
   const pathname = usePathname();
-    const { setIsOpen: openRatingModal } = usePerformanceRatingStore();
+  const { setIsOpen: openRatingModal } = usePerformanceRatingStore();
 
-  useEffect(() => {
-    fetchTeams();
-  }, [fetchTeams]);
+  // We don't need to call fetchTeams as useOrgSetup handles loading the data
 
   const renderNavItems = () => {
     return mainNavItems.map((item) => {
       if (item.label === "Teams" && item.dynamicSubItems) {
+        const teams = getOrgTeams(); // Get teams from the currently selected org (or first org)
+        console.log("Teams:", teams);
         return {
           ...item,
           subItems:
@@ -147,7 +147,7 @@ function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        
+
         <SidebarGroup>
           <SidebarGroupLabel>Management</SidebarGroupLabel>
           <SidebarGroupContent>
