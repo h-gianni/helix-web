@@ -1,20 +1,14 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { useSignIn, useSignUp } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
 
-// Core UI Components
+import { Alert, AlertDescription } from '@/components/ui/core/Alert'
+import { Badge } from '@/components/ui/core/Badge'
 import { Button } from '@/components/ui/core/Button'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/core/Card'
+import { Card } from '@/components/ui/core/Card'
 import { Checkbox } from '@/components/ui/core/Checkbox'
 import { Input } from '@/components/ui/core/Input'
 import { Label } from '@/components/ui/core/Label'
@@ -25,23 +19,47 @@ import {
 	TabsList,
 	TabsTrigger,
 } from '@/components/ui/core/Tabs'
-import { Badge } from '@/components/ui/core/Badge'
-import { Alert, AlertDescription } from '@/components/ui/core/Alert'
 
-// Icons
 import {
+	AlertTriangle,
+	ArrowRight,
+	Check,
 	Eye,
 	EyeOff,
-	Mail,
-	Lock,
-	User,
 	Fingerprint,
-	ShieldCheck,
-	ArrowRight,
-	AlertTriangle,
 	Loader2,
-	Check,
+	Lock,
+	Mail,
+	ShieldCheck,
+	User,
 } from 'lucide-react'
+
+interface AlertMessageProps {
+	type: 'error' | 'success'
+	message: string | null
+}
+
+const AlertMessage = ({ type, message }: AlertMessageProps) => {
+	if (!message) return null
+
+	if (type === 'error') {
+		return (
+			<Alert variant="destructive" className="mb-4">
+				<AlertTriangle className="h-4 w-4" />
+				<AlertDescription>{message}</AlertDescription>
+			</Alert>
+		)
+	}
+
+	return (
+		<Alert variant="success" className="mb-4">
+			<div className="flex items-center gap-2">
+				<Check className="h-4 w-4 text-success-700" />
+				<AlertDescription>{message}</AlertDescription>
+			</div>
+		</Alert>
+	)
+}
 
 interface AuthenticationFormProps {
 	activeTab?: 'signin' | 'signup'
@@ -54,6 +72,7 @@ interface EmailInputProps {
 	required?: boolean
 	placeholder?: string
 	label?: string
+	autoComplete?: string
 }
 
 interface NameInputProps {
@@ -63,6 +82,7 @@ interface NameInputProps {
 	required?: boolean
 	placeholder?: string
 	label?: string
+	autoComplete?: string
 }
 
 const NameInput = ({
@@ -130,6 +150,7 @@ interface PasswordInputProps {
 	label?: string
 	showStrengthIndicator?: boolean
 	onStrengthChange?: (strength: number, feedback: string) => void
+	autoComplete?: string
 }
 
 const PasswordInput = ({
@@ -155,7 +176,6 @@ const PasswordInput = ({
 		}
 	}
 
-	// Password strength checker
 	const checkPasswordStrength = (password: string): void => {
 		if (!password) {
 			setPasswordStrength(0)
@@ -166,10 +186,7 @@ const PasswordInput = ({
 
 		let strength = 0
 
-		// Length check
 		if (password.length >= 8) strength += 1
-
-		// Character variety checks
 		if (/[A-Z]/.test(password)) strength += 1
 		if (/[a-z]/.test(password)) strength += 1
 		if (/[0-9]/.test(password)) strength += 1
@@ -178,7 +195,6 @@ const PasswordInput = ({
 		setPasswordStrength(strength)
 
 		let feedback = ''
-		// Feedback based on strength
 		if (strength <= 2) {
 			feedback = 'Weak password'
 		} else if (strength <= 4) {
@@ -191,7 +207,6 @@ const PasswordInput = ({
 		if (onStrengthChange) onStrengthChange(strength, feedback)
 	}
 
-	// Password strength indicator component
 	const StrengthIndicator = () => {
 		const getColor = (level: number): string => {
 			if (passwordStrength >= level) {
@@ -265,7 +280,15 @@ const AuthenticationForm = ({
 	activeTab = 'signin',
 }: AuthenticationFormProps) => {
 	const router = useRouter()
-	const { loading, error, isAuthenticated, setAuthError } = useAuthStore()
+	const {
+		loading: authStoreLoading,
+		error: authStoreError,
+		isAuthenticated,
+		setAuthError,
+		setIsAuthenticated,
+		setUser,
+		setLoading: setAuthStoreLoading,
+	} = useAuthStore()
 	const {
 		isLoaded: isSignInLoaded,
 		signIn,
@@ -277,10 +300,9 @@ const AuthenticationForm = ({
 		setActive: setActiveSignUp,
 	} = useSignUp()
 
-	// State management
 	const [passwordStrength, setPasswordStrength] = useState(0)
 	const [passwordFeedback, setPasswordFeedback] = useState('')
-	const [authMethod, setAuthMethod] = useState('password') // "password" or "passwordless"
+	const [authMethod, setAuthMethod] = useState('password')
 	const [activeTabState, setActiveTabState] = useState<string>(activeTab)
 	const [isLoading, setIsLoading] = useState(false)
 	const [authError, setLocalAuthError] = useState<string | null>(null)
@@ -289,8 +311,11 @@ const AuthenticationForm = ({
 		'email'
 	)
 	const [verificationCode, setVerificationCode] = useState('')
+	const [signUpVerificationStep, setSignUpVerificationStep] = useState<
+		'form' | 'verification'
+	>('form')
+	const [signUpVerificationCode, setSignUpVerificationCode] = useState('')
 
-	// Form fields
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [firstName, setFirstName] = useState('')
@@ -298,26 +323,22 @@ const AuthenticationForm = ({
 	const [rememberMe, setRememberMe] = useState(false)
 	const [agreeToTerms, setAgreeToTerms] = useState(false)
 
-	// Redirect if already authenticated
 	useEffect(() => {
 		if (isAuthenticated) {
 			router.push('/dashboard')
 		}
 	}, [isAuthenticated, router])
 
-	// Clear errors when switching tabs
 	useEffect(() => {
 		setLocalAuthError(null)
 		setAuthError(null)
 	}, [activeTabState, authMethod, setAuthError])
 
-	// Handle password strength updates from the PasswordInput component
 	const handlePasswordStrengthChange = (strength: number, feedback: string) => {
 		setPasswordStrength(strength)
 		setPasswordFeedback(feedback)
 	}
 
-	// Handle form submissions
 	const handleSignIn = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (!isSignInLoaded) return
@@ -325,6 +346,7 @@ const AuthenticationForm = ({
 		try {
 			setIsLoading(true)
 			setLocalAuthError(null)
+			setAuthStoreLoading(true)
 
 			const result = await signIn.create({
 				identifier: email,
@@ -333,9 +355,15 @@ const AuthenticationForm = ({
 
 			if (result.status === 'complete') {
 				await setActiveSignIn({ session: result.createdSessionId })
+				// Update the auth store with the user data
+				setUser({
+					id: result.id || '',
+					email,
+					name: firstName + ' ' + lastName,
+				})
+				setIsAuthenticated(true)
 				router.push('/dashboard')
 			} else {
-				// Handle 2FA or other continuation requirements if needed
 				setLocalAuthError('Additional verification needed')
 			}
 		} catch (err: any) {
@@ -343,8 +371,12 @@ const AuthenticationForm = ({
 			setLocalAuthError(
 				err.errors?.[0]?.message || 'Failed to sign in. Please try again.'
 			)
+			setAuthError(
+				err.errors?.[0]?.message || 'Failed to sign in. Please try again.'
+			)
 		} finally {
 			setIsLoading(false)
+			setAuthStoreLoading(false)
 		}
 	}
 
@@ -362,26 +394,45 @@ const AuthenticationForm = ({
 		try {
 			setIsLoading(true)
 			setLocalAuthError(null)
+			setAuthStoreLoading(true)
 
 			const result = await signUp.create({
 				emailAddress: email,
 				password,
+				firstName,
+				lastName,
 			})
+
+			await signUp.prepareEmailAddressVerification({ strategy: 'email_code' })
+
+			setSuccessMessage(
+				'Verification code sent! Please check your email for the code'
+			)
+			setSignUpVerificationStep('verification')
 
 			if (result.status === 'complete') {
 				await setActiveSignUp({ session: result.createdSessionId })
+				// Update auth store
+				setUser({
+					id: result.createdUserId || '',
+					email,
+					name: firstName + ' ' + lastName,
+				})
+				setIsAuthenticated(true)
 				router.push('/dashboard')
-			} else {
-				// Handle email verification or other continuation requirements if needed
-				setLocalAuthError('Please check your email to verify your account')
 			}
 		} catch (err: any) {
 			setLocalAuthError(
 				err.errors?.[0]?.message ||
 					'Failed to create account. Please try again.'
 			)
+			setAuthError(
+				err.errors?.[0]?.message ||
+					'Failed to create account. Please try again.'
+			)
 		} finally {
 			setIsLoading(false)
+			setAuthStoreLoading(false)
 		}
 	}
 
@@ -426,7 +477,7 @@ const AuthenticationForm = ({
 
 			const result = await signIn.authenticateWithRedirect({
 				strategy: 'oauth_google',
-				redirectUrl: '/auth/callback',
+				redirectUrl: '/callback',
 				redirectUrlComplete: '/dashboard',
 			})
 		} catch (err: any) {
@@ -447,7 +498,7 @@ const AuthenticationForm = ({
 
 			const result = await signUp.authenticateWithRedirect({
 				strategy: 'oauth_google',
-				redirectUrl: '/auth/callback',
+				redirectUrl: '/callback',
 				redirectUrlComplete: '/dashboard',
 			})
 		} catch (err: any) {
@@ -459,7 +510,6 @@ const AuthenticationForm = ({
 		}
 	}
 
-	// Input with icon component
 	interface IconInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 		icon: React.ElementType
 	}
@@ -473,7 +523,6 @@ const AuthenticationForm = ({
 		</div>
 	)
 
-	// Social login buttons
 	const SocialLogins = () => (
 		<div className="space-y-6">
 			<h2 className="heading-3 text-center">
@@ -557,7 +606,6 @@ const AuthenticationForm = ({
 			setIsLoading(true)
 			setLocalAuthError(null)
 
-			// Attempt to complete the sign-in with the verification code
 			const result = await signIn.attemptFirstFactor({
 				strategy: 'email_code',
 				code: verificationCode,
@@ -579,10 +627,38 @@ const AuthenticationForm = ({
 		}
 	}
 
-	// Reset function to go back to email input step
 	const resetVerification = () => {
 		setVerificationStep('email')
 		setVerificationCode('')
+	}
+
+	const handleSignUpVerificationSubmit = async (e: React.FormEvent) => {
+		e.preventDefault()
+		if (!isSignUpLoaded) return
+
+		try {
+			setIsLoading(true)
+			setLocalAuthError(null)
+
+			const result = await signUp.attemptVerification({
+				strategy: 'email_code',
+				code: signUpVerificationCode,
+			})
+
+			if (result.status === 'complete') {
+				await setActiveSignUp({ session: result.createdSessionId })
+				router.push('/dashboard')
+			} else {
+				setLocalAuthError('Verification failed. Please try again.')
+			}
+		} catch (err: any) {
+			setLocalAuthError(
+				err.errors?.[0]?.message ||
+					'Invalid verification code. Please try again.'
+			)
+		} finally {
+			setIsLoading(false)
+		}
 	}
 
 	return (
@@ -602,27 +678,12 @@ const AuthenticationForm = ({
 				</Tabs>
 			</div>
 
-			{(authError || error) && (
-				<Alert variant="destructive" className="mb-4">
-					<AlertTriangle className="h-4 w-4" />
-					<AlertDescription>{authError || error}</AlertDescription>
-				</Alert>
-			)}
-
-			{successMessage && (
-				<Alert variant="success" className="mb-4">
-					<div className="flex items-center gap-2">
-						<Check className="h-4 w-4 text-success-700" />
-						<AlertDescription>{successMessage}</AlertDescription>
-					</div>
-				</Alert>
-			)}
+			<AlertMessage type="error" message={authError} />
+			<AlertMessage type="success" message={successMessage} />
 
 			<Card className="border border-border-weak shadow-lg overflow-hidden flex flex-col">
-				{/* Top Section - Authentication Forms */}
 				<div className="p-6 md:p-8 bg-white">
 					{activeTabState === 'signin' ? (
-						// Sign In Content
 						<div className="space-y-4">
 							<SocialLogins />
 
@@ -656,6 +717,7 @@ const AuthenticationForm = ({
 												value={email}
 												onChange={(e) => setEmail(e.target.value)}
 												required
+												autoComplete="username email"
 											/>
 										</div>
 
@@ -668,6 +730,7 @@ const AuthenticationForm = ({
 												value={password}
 												onChange={(e) => setPassword(e.target.value)}
 												required
+												autoComplete="current-password"
 												showStrengthIndicator
 												onStrengthChange={handlePasswordStrengthChange}
 											/>
@@ -787,6 +850,9 @@ const AuthenticationForm = ({
 															setVerificationCode(e.target.value)
 														}
 														required
+														autoComplete="one-time-code"
+														inputMode="numeric"
+														pattern="[0-9]*"
 													/>
 												</div>
 											</div>
@@ -826,111 +892,183 @@ const AuthenticationForm = ({
 							</Tabs>
 						</div>
 					) : (
-						// Sign Up Content
 						<div className="space-y-4">
 							<SocialLogins />
 
-							<form onSubmit={handleSignUp} className="space-y-4">
-								<div className="grid grid-cols-2 gap-4">
+							{signUpVerificationStep === 'form' ? (
+								<form onSubmit={handleSignUp} className="space-y-4">
+									<div className="grid grid-cols-2 gap-4">
+										<div className="space-y-1.5">
+											<Label htmlFor="first-name">First name</Label>
+											<NameInput
+												id="first-name"
+												placeholder="John"
+												value={firstName}
+												onChange={(e) => setFirstName(e.target.value)}
+												required
+												autoComplete="given-name"
+											/>
+										</div>
+										<div className="space-y-1.5">
+											<Label htmlFor="last-name">Last name</Label>
+											<NameInput
+												id="last-name"
+												placeholder="Doe"
+												value={lastName}
+												onChange={(e) => setLastName(e.target.value)}
+												autoComplete="family-name"
+											/>
+										</div>
+									</div>
+
 									<div className="space-y-1.5">
-										<Label htmlFor="first-name">First name</Label>
-										<NameInput
-											id="first-name"
-											placeholder="John"
-											value={firstName}
-											onChange={(e) => setFirstName(e.target.value)}
+										<Label htmlFor="email-signup">Email</Label>
+										<EmailInput
+											id="email-signup"
+											value={email}
+											onChange={(e) => setEmail(e.target.value)}
+											required
+											autoComplete="email"
 										/>
 									</div>
+
 									<div className="space-y-1.5">
-										<Label htmlFor="last-name">Last name</Label>
-										<NameInput
-											id="last-name"
-											placeholder="Doe"
-											value={lastName}
-											onChange={(e) => setLastName(e.target.value)}
+										<Label htmlFor="password-signup">Password</Label>
+										<PasswordInput
+											id="password-signup"
+											value={password}
+											onChange={(e) => setPassword(e.target.value)}
+											required
+											autoComplete="new-password"
+											showStrengthIndicator
+											onStrengthChange={handlePasswordStrengthChange}
 										/>
+										<p className="text-xs text-muted-foreground mt-1">
+											Use 8+ characters with a mix of letters, numbers & symbols
+										</p>
 									</div>
-								</div>
 
-								<div className="space-y-1.5">
-									<Label htmlFor="email-signup">Email</Label>
-									<EmailInput
-										id="email-signup"
-										value={email}
-										onChange={(e) => setEmail(e.target.value)}
-										required
-									/>
-								</div>
+									<div className="space-y-2">
+										<div className="flex items-center space-x-2">
+											<Checkbox
+												id="terms"
+												checked={agreeToTerms}
+												onCheckedChange={(checked) =>
+													setAgreeToTerms(checked as boolean)
+												}
+											/>
+											<Label htmlFor="terms" className="text-sm">
+												I agree to the{' '}
+												<Button
+													variant="link"
+													className="h-auto p-0"
+													type="button"
+												>
+													Terms of Service
+												</Button>{' '}
+												and{' '}
+												<Button
+													variant="link"
+													className="h-auto p-0"
+													type="button"
+												>
+													Privacy Policy
+												</Button>
+											</Label>
+										</div>
+									</div>
 
-								<div className="space-y-1.5">
-									<Label htmlFor="password-signup">Password</Label>
-									<PasswordInput
-										id="password-signup"
-										value={password}
-										onChange={(e) => setPassword(e.target.value)}
-										required
-										showStrengthIndicator
-										onStrengthChange={handlePasswordStrengthChange}
-									/>
-									<p className="text-xs text-muted-foreground mt-1">
-										Use 8+ characters with a mix of letters, numbers & symbols
-									</p>
-								</div>
+									<Button
+										variant="primary"
+										className="w-full"
+										size="lg"
+										type="submit"
+										disabled={
+											isLoading || !isSignUpLoaded || passwordStrength < 3
+										}
+									>
+										{isLoading ? (
+											<>
+												<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+												Creating account...
+											</>
+										) : (
+											'Create Account'
+										)}
+									</Button>
+								</form>
+							) : (
+								<div className="mt-4">
+									<div className="text-center mb-4">
+										<Badge variant="outline" className="mb-2">
+											<Fingerprint size={14} className="mr-1" />
+											Email Verification
+										</Badge>
+										<p className="body-sm">
+											Enter the verification code sent to {email}
+										</p>
+									</div>
+									<form
+										onSubmit={handleSignUpVerificationSubmit}
+										className="space-y-4"
+									>
+										<div className="space-y-1.5">
+											<Label htmlFor="signup-verification-code">
+												Verification Code
+											</Label>
+											<div className="relative">
+												<div className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-dark">
+													<Fingerprint size={18} />
+												</div>
+												<Input
+													id="signup-verification-code"
+													className="pl-10"
+													placeholder="Enter the 6-digit code"
+													value={signUpVerificationCode}
+													onChange={(e) =>
+														setSignUpVerificationCode(e.target.value)
+													}
+													required
+												/>
+											</div>
+										</div>
 
-								<div className="space-y-2">
-									<div className="flex items-center space-x-2">
-										<Checkbox
-											id="terms"
-											checked={agreeToTerms}
-											onCheckedChange={(checked) =>
-												setAgreeToTerms(checked as boolean)
-											}
-										/>
-										<Label htmlFor="terms" className="text-sm">
-											I agree to the{' '}
+										<Button
+											variant="primary"
+											className="w-full"
+											size="lg"
+											type="submit"
+											disabled={isLoading || !isSignUpLoaded}
+										>
+											{isLoading ? (
+												<>
+													<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+													Verifying...
+												</>
+											) : (
+												'Verify and Sign Up'
+											)}
+										</Button>
+
+										<div className="flex justify-center mt-2">
 											<Button
 												variant="link"
-												className="h-auto p-0"
+												size="sm"
 												type="button"
+												className="p-0 text-xs"
+												onClick={() => setSignUpVerificationStep('form')}
+												disabled={isLoading}
 											>
-												Terms of Service
-											</Button>{' '}
-											and{' '}
-											<Button
-												variant="link"
-												className="h-auto p-0"
-												type="button"
-											>
-												Privacy Policy
+												Resend code
 											</Button>
-										</Label>
-									</div>
+										</div>
+									</form>
 								</div>
-
-								<Button
-									variant="primary"
-									className="w-full"
-									size="lg"
-									type="submit"
-									disabled={
-										isLoading || !isSignUpLoaded || passwordStrength < 3
-									}
-								>
-									{isLoading ? (
-										<>
-											<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-											Creating account...
-										</>
-									) : (
-										'Create Account'
-									)}
-								</Button>
-							</form>
+							)}
 						</div>
 					)}
 				</div>
 
-				{/* Bottom Section - Info */}
 				<div className="bg-gradient-to-r from-info-darker to-info-darkest text-white p-6 md:p-8">
 					<div className="">
 						<div className="space-y-8">
