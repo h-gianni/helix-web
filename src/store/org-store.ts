@@ -1,11 +1,10 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { useQuery, QueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api/api-client";
+import React from "react";
 
-const queryClient = new QueryClient();
-
-// Define the organization API response type to match the actual structure
+// Type definitions (as you had before)
 export interface OrgSetupResponse {
   success: boolean;
   data: {
@@ -31,17 +30,24 @@ export interface OrgSetupResponse {
 
 export interface OrgState {
   organizations: OrgSetupResponse["data"]["organizations"];
-  loading: boolean;
-  error: string | null;
+  selectedOrgId: string | null;
+
+  // Actions
   setOrganizations: (
     organizations: OrgSetupResponse["data"]["organizations"]
   ) => void;
-  setLoading: (loading: boolean) => void;
-  setError: (error: string | null) => void;
+  setSelectedOrgId: (id: string | null) => void;
   refreshOrgData: () => void;
+
+  // Selectors
+  getCurrentOrg: () => OrgSetupResponse["data"]["organizations"][0] | undefined;
+  getOrgById: (
+    id: string
+  ) => OrgSetupResponse["data"]["organizations"][0] | undefined;
+  getOrgTeams: (orgId?: string) => any[] | undefined;
 }
 
-// API function to fetch organization setup data
+// API function
 export const orgApi = {
   getOrgSetup: async (): Promise<OrgSetupResponse> => {
     const { data } = await apiClient.get<OrgSetupResponse>("/org");
@@ -51,20 +57,39 @@ export const orgApi = {
   },
 };
 
-// Create the organization store
+// Create the Zustand store
 export const useOrgStore = create<OrgState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       organizations: [],
-      loading: false,
-      error: null,
+      selectedOrgId: null,
 
+      // Actions
       setOrganizations: (organizations) => set({ organizations }),
-      setLoading: (loading) => set({ loading }),
-      setError: (error) => set({ error }),
-
+      setSelectedOrgId: (id) => set({ selectedOrgId: id }),
       refreshOrgData: () => {
-        queryClient.invalidateQueries({ queryKey: ["orgSetup"] });
+        // This will be implemented by the useOrgSetup hook
+        // to avoid direct dependencies on react-query in the store
+      },
+
+      // Selectors
+      getCurrentOrg: () => {
+        const { organizations, selectedOrgId } = get();
+        return selectedOrgId
+          ? organizations.find((org) => org.id === selectedOrgId)
+          : undefined;
+      },
+
+      getOrgById: (id) => {
+        const { organizations } = get();
+        return organizations.find((org) => org.id === id);
+      },
+
+      getOrgTeams: () => {
+        const { organizations, selectedOrgId } = get();
+
+        const org = organizations[0];
+        return org?.teams;
       },
     }),
     {
@@ -73,24 +98,27 @@ export const useOrgStore = create<OrgState>()(
   )
 );
 
-// React Query hook for fetching organization setup data
+// React Query hook that updates Zustand
 export function useOrgSetup() {
+  const queryClient = useQueryClient();
   const setOrganizations = useOrgStore((state) => state.setOrganizations);
-  const setLoading = useOrgStore((state) => state.setLoading);
-  const setError = useOrgStore((state) => state.setError);
 
-  return useQuery({
+  // Implement the refreshOrgData function
+  useOrgStore.setState({
+    refreshOrgData: () => {
+      queryClient.invalidateQueries({ queryKey: ["orgSetup"] });
+    },
+  });
+
+  const query = useQuery({
     queryKey: ["orgSetup"],
     queryFn: orgApi.getOrgSetup,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    onSuccess: (data) => {
-      setOrganizations(data.data.organizations);
-    },
-    onError: (error) => {
-      setError(error instanceof Error ? error.message : "Unknown error");
-    },
-    onSettled: () => {
-      setLoading(false);
-    },
   });
+  React.useEffect(() => {
+    if (query.data) {
+      setOrganizations(query.data.data.organizations);
+    }
+  }, [query.data, setOrganizations]);
+  return query;
 }

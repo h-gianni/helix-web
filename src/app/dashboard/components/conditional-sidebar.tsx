@@ -8,10 +8,10 @@ export default function ConditionalSidebar() {
   const { showMainDashboard } = useSetupProgress();
 
   console.log("showMainDashboard:", showMainDashboard);
-  
+
   if (!showMainDashboard) {
     return null;
   }
-  
+
   return <AppSidebar />;
 }

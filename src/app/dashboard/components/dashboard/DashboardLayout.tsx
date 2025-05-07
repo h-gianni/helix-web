@@ -82,31 +82,6 @@ export default function DashboardLayout({
   return (
     <>
       <PageBreadcrumbs items={breadcrumbItems} />
-      <div className="hidden lg:block">
-        {/* <PageHeader
-          title="Dashboard"
-          actions={
-            <>
-              <Button
-                data-slot="button"
-                variant="outline"
-                onClick={() => router.push("/dashboard/feedback")}
-                className="gap-2"
-              >
-                <MessageSquare className="hidden md:block" /> Add a Feedback
-              </Button>
-              <Button
-                data-slot="button"
-                variant="primary"
-                onClick={() => openRatingModal(true)}
-                className="gap-2"
-              >
-                <Star /> Score a Performance
-              </Button>
-            </>
-          }
-        /> */}
-      </div>
 
       <main className="layout-page-main">
         <div className="pb-4">
@@ -120,50 +95,7 @@ export default function DashboardLayout({
             onSecondaryClick={handleSecondaryBanner}
             imagePath="/hero.svg"
           />
-          {/* <SplitBanner
-            badgeText="Team Collaboration"
-            title="Work together, transparently"
-            description="You can now customize and share your team member performance reports with ease and in real-time."
-            bulletPoints={collaborationFeatures}
-            primaryCta="Upgrade to Pro"
-            secondaryCta="Watch Demo"
-            onPrimaryClick={handlePrimaryBanner}
-            onSecondaryClick={handleSecondaryBanner}
-            imagePath="/hero.svg"
-            imageAlt="People collaborating on a document"
-            imagePosition="right"
-          /> */}
-          {/* <CountdownBanner
-            badgeText="Black Friday Deal"
-            title="50% Off Premium Plan"
-            description="Our biggest discount of the year is here. Upgrade now and save big on all premium features."
-            endDate={promoEndDate}
-            primaryCta="Claim This Offer"
-            secondaryCta="See What's Included"
-            onPrimaryClick={handleClaimOffer}
-            onSecondaryClick={handleLearnMore}
-            bgColor="bg-gradient-to-r from-[var(--accent-dark)] to-[var(--primary-darker)]"
-          /> */}
-          {/* <AnnouncementBanner
-            badgeText="New feature"
-            title="Slack Integration"
-            description="Now you can score your team performance via Slack"
-            primaryCta="See it in action"
-            secondaryCta="See it in action"
-            onPrimaryClick={handlePrimaryBanner}
-            onSecondaryClick={handleSecondaryBanner}
-            color="primary"
-          /> */}
         </div>
-
-        {/* <Alert variant="warning">
-          <TriangleAlert className="h-4 w-4" />
-          <AlertTitle>Heads up!</AlertTitle>
-          <AlertDescription>
-            The more scores and feedback you give, more relevant data will be
-            shown.
-          </AlertDescription>
-        </Alert> */}
 
         <Tabs
           defaultValue="team"

@@ -36,9 +36,9 @@ export default clerkMiddleware(async (auth, request) => {
 
   // If user is at main dashboard but hasn't completed onboarding, redirect to onboarding
   if (pathname === "/dashboard" && !onboardingComplete) {
-    return NextResponse.redirect(
-      new URL("/dashboard/onboarding/intro", request.url)
-    );
+    // return NextResponse.redirect(
+    //   new URL("/dashboard/onboarding/intro", request.url)
+    // );
   }
 
   // Get the setup state from cookies
