@@ -20,6 +20,7 @@ import { useFavoritesStore, useFavorites } from "@/store/favorites-store";
 import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
 import { useProfileStore } from "@/store/user-store";
 import { HeroBadge } from "@/components/ui/core/HeroBadge";
+import { useTeamActivitiesStore } from "@/store/team-activities-store";
 
 interface OrgActionsSummaryProps {
   onEdit?: () => void;
@@ -31,6 +32,12 @@ function OrgActionsSummary({
   variant = "settings",
 }: OrgActionsSummaryProps) {
   const { data: actionCategories, isLoading } = useActions();
+
+  const { selectedActivityIds } = useTeamActivitiesStore();
+
+  console.log(selectedActivityIds, "selectedActivityIds-----------");
+
+
 
   // Load favorites
   const { data: fetchedFavorites, isLoading: isFavoritesLoading } =
