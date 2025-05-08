@@ -10,9 +10,13 @@ import {
   RadioGroupCard,
 } from "@/components/ui/core/RadioGroupCards";
 import { useTeamActivities } from "@/store/performance-rating-store";
-import { useFavoritesStore, useFavorites, useToggleFavorite } from '@/store/favorites-store';
+import {
+  useFavoritesStore,
+  useFavorites,
+  useToggleFavorite,
+} from "@/store/favorites-store";
 import { Loader, Heart, Building2, PencilRuler, Activity } from "lucide-react";
-import { 
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -26,10 +30,12 @@ interface Activity {
   id: string;
   name: string;
   description?: string | null;
-  category?: {
-    id: string;
-    name: string;
-  } | string;
+  category?:
+    | {
+        id: string;
+        name: string;
+      }
+    | string;
 }
 
 interface ScoringStepActionsProps {
@@ -46,7 +52,7 @@ export default function ScoringStepActions({
   const { data: activities = [], isLoading: activitiesLoading } =
     useTeamActivities(teamId);
   const [activeGroup, setActiveGroup] = useState<string>("favorite");
-  
+
   // Load favorites
   const { isLoading: isFavoritesLoading } = useFavorites();
   const favorites = useFavoritesStore((state) => state.favorites);
@@ -54,17 +60,19 @@ export default function ScoringStepActions({
   const isFavorite = useFavoritesStore((state) => state.isFavorite);
 
   // State to store organized activities
-  const [organizedActivities, setOrganizedActivities] = useState<Record<string, Record<string, Activity[]>>>({
+  const [organizedActivities, setOrganizedActivities] = useState<
+    Record<string, Record<string, Activity[]>>
+  >({
     favorite: { "Saved Favorites": [] },
     global: {},
-    functions: {}
+    functions: {},
   });
 
   // Helper function to extract base actionId from composed ID
   const extractBaseActionId = (composedId: string): string => {
     // If the ID follows the org-actionId-teamId-timestamp pattern
-    if (typeof composedId === 'string' && composedId.startsWith('org-')) {
-      const parts = composedId.split('-');
+    if (typeof composedId === "string" && composedId.startsWith("org-")) {
+      const parts = composedId.split("-");
       if (parts.length >= 3) {
         // Return the second part which should be the actionId
         return parts[1];
@@ -75,10 +83,16 @@ export default function ScoringStepActions({
   };
 
   // Modified isFavorite check that's aware of ID formats
-  const isActivityFavorite = (activityId: string, categoryId: string): boolean => {
+  const isActivityFavorite = (
+    activityId: string,
+    categoryId: string
+  ): boolean => {
     const baseActivityId = extractBaseActionId(activityId);
-    return (favorites[categoryId] || []).some(favId => 
-      favId === activityId || favId === baseActivityId || extractBaseActionId(favId) === baseActivityId
+    return (favorites[categoryId] || []).some(
+      (favId) =>
+        favId === activityId ||
+        favId === baseActivityId ||
+        extractBaseActionId(favId) === baseActivityId
     );
   };
 
@@ -87,8 +101,11 @@ export default function ScoringStepActions({
     console.log("Current favorites state:", favorites);
     console.log("Activities count:", activities.length);
     console.log("Favorites count:", Object.values(favorites).flat().length);
-    console.log("Saved favorites in UI:", organizedActivities.favorite["Saved Favorites"].length);
-    
+    console.log(
+      "Saved favorites in UI:",
+      organizedActivities.favorite["Saved Favorites"].length
+    );
+
     // Log individual category counts
     Object.entries(favorites).forEach(([categoryId, activityIds]) => {
       console.log(`Category ${categoryId}: ${activityIds.length} favorites`);
@@ -98,34 +115,36 @@ export default function ScoringStepActions({
   // Effect to organize activities when they are loaded
   useEffect(() => {
     console.log("Organizing activities...", { activities, favorites });
-      
+
     if (activitiesLoading || isFavoritesLoading) return;
-      
+
     // Map to track activities that have been added to favorites
     const addedToFavorites = new Set<string>();
-      
+
     // Create an organized structure of activities
     const organized: Record<string, Record<string, Activity[]>> = {
       favorite: { "Saved Favorites": [] },
       global: {},
-      functions: {}
+      functions: {},
     };
-      
+
     // Process favorites first by iterating over all categories in favorites
     Object.entries(favorites).forEach(([categoryId, activityIds]) => {
       // For each favorited activity ID in this category
-      activityIds.forEach(favoriteId => {
+      activityIds.forEach((favoriteId) => {
         // Find the matching activity in all activities
         // We need to check if any activity's ID or the extracted baseId matches our favoriteId
-        const activity = activities.find(act => {
+        const activity = activities.find((act) => {
           const baseActivityId = extractBaseActionId(act.id);
           const baseFavoriteId = extractBaseActionId(favoriteId);
-          return act.id === favoriteId || 
-                 baseActivityId === favoriteId || 
-                 baseActivityId === baseFavoriteId ||
-                 act.id === baseFavoriteId;
+          return (
+            act.id === favoriteId ||
+            baseActivityId === favoriteId ||
+            baseActivityId === baseFavoriteId ||
+            act.id === baseFavoriteId
+          );
         });
-        
+
         if (activity) {
           // Add to Saved Favorites section
           organized.favorite["Saved Favorites"].push(activity);
@@ -134,38 +153,45 @@ export default function ScoringStepActions({
         }
       });
     });
-      
+
     // Then organize the rest of the activities
-    activities.forEach(activity => {
+    activities.forEach((activity) => {
       // Skip if already in favorites
       if (addedToFavorites.has(activity.id)) return;
-        
+
       // Get category name, handling different structure possibilities
-      const categoryName = typeof activity.category === 'object' 
-        ? activity.category?.name 
-        : typeof activity.category === 'string' ? activity.category : 'Other';
-        
+      const categoryName =
+        typeof activity.category === "object"
+          ? activity.category?.name
+          : typeof activity.category === "string"
+          ? activity.category
+          : "Other";
+
       // Determine if it's a global or function-specific action
-      const isGlobal = categoryName.includes('Values') || 
-                     categoryName.includes('Culture') || 
-                     categoryName.includes('Teamwork');
-        
-      const groupKey = isGlobal ? 'global' : 'functions';
-        
+      const isGlobal =
+        categoryName.includes("Cultural Behaviours & Values") ||
+        categoryName.includes("Customer Centricity") ||
+        categoryName.includes("Teamwork");
+
+      const groupKey = isGlobal ? "global" : "functions";
+
       // Initialize the category array if it doesn't exist
       if (!organized[groupKey][categoryName]) {
         organized[groupKey][categoryName] = [];
       }
-        
+
       // Add activity to its category
       organized[groupKey][categoryName].push(activity);
     });
-      
+
     setOrganizedActivities(organized);
-    
+
     // Log the favorites status for debugging
     console.log("Organized activities:", organized);
-    console.log("Saved favorites count:", organized.favorite["Saved Favorites"].length);
+    console.log(
+      "Saved favorites count:",
+      organized.favorite["Saved Favorites"].length
+    );
   }, [activities, favorites, activitiesLoading, isFavoritesLoading]);
 
   // Use this in a useEffect to track changes
@@ -183,18 +209,18 @@ export default function ScoringStepActions({
 
   // Handle toggle favorite that's aware of ID formats
   const handleToggleFavorite = async (
-    activityId: string, 
-    categoryId: string, 
+    activityId: string,
+    categoryId: string,
     e: React.MouseEvent
   ) => {
     e.stopPropagation(); // Prevent selection
-  
+
     // Extract the base ID for consistency
     const baseActivityId = extractBaseActionId(activityId);
-    
+
     // Check if it's currently a favorite using our ID-aware check
     const currentStatus = isActivityFavorite(activityId, categoryId);
-    
+
     try {
       // Use the base ID for toggling favorite status
       await toggleFavorite.mutateAsync({
@@ -228,24 +254,26 @@ export default function ScoringStepActions({
   }
 
   const currentGroupActivities = organizedActivities[activeGroup];
-  const hasFavorites = organizedActivities.favorite["Saved Favorites"].length > 0;
+  const hasFavorites =
+    organizedActivities.favorite["Saved Favorites"].length > 0;
 
   // Render favorites section
   const renderFavoriteSection = () => {
     const favoriteActivities = organizedActivities.favorite["Saved Favorites"];
-    
+
     if (favoriteActivities.length === 0) {
       return (
         <div className="p-6 text-center border rounded-lg bg-muted">
           <Heart className="size-8 mx-auto mb-2 text-foreground-muted" />
           <p className="text-foreground font-medium">No favorites saved yet</p>
           <p className="text-sm text-foreground-muted mt-1">
-            You can mark actions as favorites in the other tabs or in the Settings/Org actions section
+            You can mark actions as favorites in the other tabs or in the
+            Settings/Org actions section
           </p>
         </div>
       );
     }
-    
+
     return (
       <div className="space-y-2.5">
         <Label className="!text-foreground-weak">Saved Favorites</Label>
@@ -263,7 +291,7 @@ export default function ScoringStepActions({
               >
                 <div className="flex items-center justify-between w-full">
                   <span>{activity.name}</span>
-                  {typeof activity.category === 'object' && (
+                  {typeof activity.category === "object" && (
                     <Badge variant="outline" className="ml-2">
                       {activity.category.name}
                     </Badge>
@@ -320,84 +348,87 @@ export default function ScoringStepActions({
       <div className="space-y-6">
         {activeGroup === "favorite" ? (
           renderFavoriteSection()
+        ) : Object.entries(currentGroupActivities).length === 0 ? (
+          <div className="p-6 text-center border rounded-lg bg-muted">
+            <Activity className="size-8 mx-auto mb-2 text-foreground" />
+            <p className="text-foreground">No activities available</p>
+          </div>
         ) : (
-          Object.entries(currentGroupActivities).length === 0 ? (
-            <div className="p-6 text-center border rounded-lg bg-muted">
-              <Activity className="size-8 mx-auto mb-2 text-foreground" />
-              <p className="text-foreground">No activities available</p>
-            </div>
-          ) : (
-            Object.entries(currentGroupActivities).map(
-              ([category, categoryActivities]) => (
-                <div key={category} className="space-y-2.5">
-                  <Label className="!text-foreground-weak">{category}</Label>
-                  <RadioGroupCards
-                    value={selectedActivityId ?? ""}
-                    onValueChange={handleActivitySelect}
+          Object.entries(currentGroupActivities).map(
+            ([category, categoryActivities]) => (
+              <div key={category} className="space-y-2.5">
+                <Label className="!text-foreground-weak">{category}</Label>
+                <RadioGroupCards
+                  value={selectedActivityId ?? ""}
+                  onValueChange={handleActivitySelect}
+                >
+                  <RadioGroupCardsContainer
+                    className="flex flex-col shadow-sm overflow-hidden rounded-lg"
+                    layout="compact"
                   >
-                    <RadioGroupCardsContainer
-                      className="flex flex-col shadow-sm overflow-hidden rounded-lg"
-                      layout="compact"
-                    >
-                      {categoryActivities.map((activity) => {
-                        const categoryId = typeof activity.category === 'object' 
-                          ? activity.category?.id 
-                          : '';
-                        const actionIsFavorite = categoryId 
-                          ? isActivityFavorite(activity.id, categoryId)
-                          : false;
-                          
-                        return (
-                          <RadioGroupCard
-                            key={activity.id}
-                            id={`activity-${activity.id}`}
-                            value={activity.id}
-                            title={activity.name}
-                            layout="compact"
-                          >
-                            <div className="flex items-center justify-between w-full">
-                              <span>{activity.name}</span>
-                              {categoryId && (
-                                <TooltipProvider>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={(e) =>
-                                          handleToggleFavorite(activity.id, categoryId, e)
-                                        }
+                    {categoryActivities.map((activity) => {
+                      const categoryId =
+                        typeof activity.category === "object"
+                          ? activity.category?.id
+                          : "";
+                      const actionIsFavorite = categoryId
+                        ? isActivityFavorite(activity.id, categoryId)
+                        : false;
+
+                      return (
+                        <RadioGroupCard
+                          key={activity.id}
+                          id={`activity-${activity.id}`}
+                          value={activity.id}
+                          title={activity.name}
+                          layout="compact"
+                        >
+                          <div className="flex items-center justify-between w-full">
+                            <span>{activity.name}</span>
+                            {categoryId && (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={(e) =>
+                                        handleToggleFavorite(
+                                          activity.id,
+                                          categoryId,
+                                          e
+                                        )
+                                      }
+                                      className={cn(
+                                        "p-1 h-7 w-7",
+                                        actionIsFavorite
+                                          ? "text-accent hover:text-accent/80"
+                                          : "text-foreground/25 hover:text-foreground/50"
+                                      )}
+                                    >
+                                      <Heart
                                         className={cn(
-                                          "p-1 h-7 w-7",
-                                          actionIsFavorite
-                                            ? "text-accent hover:text-accent/80"
-                                            : "text-foreground/25 hover:text-foreground/50"
+                                          "size-4",
+                                          actionIsFavorite && "fill-current"
                                         )}
-                                      >
-                                        <Heart
-                                          className={cn(
-                                            "size-4",
-                                            actionIsFavorite && "fill-current"
-                                          )}
-                                        />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                      {actionIsFavorite
-                                        ? "Remove from favorites"
-                                        : "Add to favorites"}
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                              )}
-                            </div>
-                          </RadioGroupCard>
-                        );
-                      })}
-                    </RadioGroupCardsContainer>
-                  </RadioGroupCards>
-                </div>
-              )
+                                      />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    {actionIsFavorite
+                                      ? "Remove from favorites"
+                                      : "Add to favorites"}
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
+                          </div>
+                        </RadioGroupCard>
+                      );
+                    })}
+                  </RadioGroupCardsContainer>
+                </RadioGroupCards>
+              </div>
             )
           )
         )}
