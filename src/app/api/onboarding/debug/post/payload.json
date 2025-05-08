@@ -1,0 +1,147 @@
+{
+  "organization": { "name": "Sarav Inc", "siteDomain": "www.saravinc.com" },
+  "activities": {
+    "selected": [
+      "cm81nrbhv000eo1asvmmvh4ma",
+      "cm81nrbqf000go1asv4b2sof6",
+      "cm81nrbyx000io1ascolou1o1",
+      "cm81nrc7g000ko1as341of0ar",
+      "cm81nrcfy000mo1asqk3ll7zl",
+      "cm81nre10000zo1as166ila3n",
+      "cm81nre9f0011o1asa7fcri0d",
+      "cm81nreh20013o1asroxzt80u",
+      "cm81nreqg0015o1asptj4j2dr",
+      "cm81nreyz0017o1asnx6qb581",
+      "cm81nrgmq001ko1asnoenxzji",
+      "cm81nrgv9001mo1asn190kmjo",
+      "cm81nrh2u001oo1as3lyrgdvh",
+      "cm81nrhaj001qo1asshathxll",
+      "cm81nrhkv001so1as9ndf80k5",
+      "cm81nrum8004so1asrv5r0kw5",
+      "cm81nrum8004so1asrv5r0kw5",
+      "cm81nrpid003mo1as61ign0m8",
+      "cm81nrpid003mo1as61ign0m8",
+      "cm81nrpq0003oo1asdy10mir1",
+      "cm81nrpq0003oo1asdy10mir1",
+      "cm81ns02h005yo1as75sd0zb4",
+      "cm81ns02h005yo1as75sd0zb4",
+      "cm81ns0a30060o1as2g0u9um5",
+      "cm81ns0a30060o1as2g0u9um5",
+      "cm81ns0hr0062o1aslupiohd9",
+      "cm81ns0hr0062o1aslupiohd9"
+    ],
+    "selectedByCategory": {
+      "cm81nr9x00002o1asohn876zu": [
+        "cm81nrbhv000eo1asvmmvh4ma",
+        "cm81nrbqf000go1asv4b2sof6",
+        "cm81nrbyx000io1ascolou1o1",
+        "cm81nrc7g000ko1as341of0ar",
+        "cm81nrcfy000mo1asqk3ll7zl"
+      ],
+      "cm81nrcnl000no1asftv0n8vk": [
+        "cm81nre10000zo1as166ila3n",
+        "cm81nre9f0011o1asa7fcri0d",
+        "cm81nreh20013o1asroxzt80u",
+        "cm81nreqg0015o1asptj4j2dr",
+        "cm81nreyz0017o1asnx6qb581"
+      ],
+      "cm81nrf7k0018o1as3c4ehgh8": [
+        "cm81nrgmq001ko1asnoenxzji",
+        "cm81nrgv9001mo1asn190kmjo",
+        "cm81nrh2u001oo1as3lyrgdvh",
+        "cm81nrhaj001qo1asshathxll",
+        "cm81nrhkv001so1as9ndf80k5"
+      ],
+      "cm81nrudn004qo1as1mv1kgwt": ["cm81nrum8004so1asrv5r0kw5"],
+      "cm81nrpan003ko1aseynusxvz": [
+        "cm81nrpid003mo1as61ign0m8",
+        "cm81nrpq0003oo1asdy10mir1"
+      ],
+      "cm81nrzr3005wo1as5d24cbak": [
+        "cm81ns02h005yo1as75sd0zb4",
+        "cm81ns0a30060o1as2g0u9um5",
+        "cm81ns0hr0062o1aslupiohd9"
+      ]
+    }
+  },
+  "teams": [
+    {
+      "id": "team-1746712072725",
+      "name": "Sales Team",
+      "functions": ["Marketing"],
+      "categories": [
+        "cm81nrudn004qo1as1mv1kgwt",
+        "cm81nr9x00002o1asohn876zu",
+        "cm81nrcnl000no1asftv0n8vk",
+        "cm81nrf7k0018o1as3c4ehgh8"
+      ],
+      "memberIds": ["member-1746709399500"]
+    },
+    {
+      "id": "team-1746712091150",
+      "name": "Prod Team",
+      "functions": ["Product"],
+      "categories": [
+        "cm81nrpan003ko1aseynusxvz",
+        "cm81nr9x00002o1asohn876zu",
+        "cm81nrcnl000no1asftv0n8vk",
+        "cm81nrf7k0018o1as3c4ehgh8"
+      ],
+      "memberIds": ["member-1746709422683", "member-1746709433358"]
+    },
+    {
+      "id": "team-1746712122893",
+      "name": "Support Team",
+      "functions": ["Customer Success & Support"],
+      "categories": [
+        "cm81nrzr3005wo1as5d24cbak",
+        "cm81nr9x00002o1asohn876zu",
+        "cm81nrcnl000no1asftv0n8vk",
+        "cm81nrf7k0018o1as3c4ehgh8"
+      ],
+      "memberIds": [
+        "member-1746709445683",
+        "member-1746709452288",
+        "member-1746709460846"
+      ]
+    }
+  ],
+  "teamMembers": [
+    {
+      "id": "member-1746709399500",
+      "fullName": "markone",
+      "email": "markone@saravinc.com",
+      "jobTitle": ""
+    },
+    {
+      "id": "member-1746709422683",
+      "fullName": "prodone",
+      "email": "prodone@saravinc.com",
+      "jobTitle": ""
+    },
+    {
+      "id": "member-1746709433358",
+      "fullName": "prodtwo",
+      "email": "prodtwo@saravinc.com",
+      "jobTitle": ""
+    },
+    {
+      "id": "member-1746709445683",
+      "fullName": "successone",
+      "email": "successone@saravinc.com",
+      "jobTitle": ""
+    },
+    {
+      "id": "member-1746709452288",
+      "fullName": "successtwo",
+      "email": "successtwo@saravinc.com",
+      "jobTitle": ""
+    },
+    {
+      "id": "member-1746709460846",
+      "fullName": "successthree",
+      "email": "successthree@saravinc.com",
+      "jobTitle": ""
+    }
+  ]
+}
