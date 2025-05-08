@@ -299,13 +299,12 @@ function useCombinedRef<T>(
         return localRef.current;
       },
       set current(value) {
-        // @ts-ignore - This pattern works for combining refs
         if (typeof forwardedRef === "function") {
           forwardedRef(value);
         } else {
           forwardedRef.current = value;
         }
-        localRef.current = value;
+        // localRef.current = value;
       },
     };
   }, [forwardedRef, localRef]);

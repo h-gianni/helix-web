@@ -8,6 +8,7 @@ import { MobileBottomNav } from "./components/MobileNav";
 import { useSetupStateSync } from "@/store/setup-store";
 import { useSetupProgress } from "@/hooks/useSetupProgress";
 import { useOrgSetup } from "@/store/org-store";
+import PerformanceRatingModal from "@/app/dashboard/components/scoring/ScoringModal";
 
 export default function DashboardLayout({
   children,
@@ -34,6 +35,7 @@ export default function DashboardLayout({
       <div className="h-16 lg:hidden">
         <MobileBottomNav />
       </div>
+      <PerformanceRatingModal />
     </SidebarProvider>
   );
 }

@@ -16,7 +16,6 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/core/Alert";
-import PerformanceRatingModal from "@/app/dashboard/components/scoring/ScoringModal";
 import EmptyDashboardView from "@/app/dashboard/components/EmptyDashboardView";
 import type { Member } from "@/store/member";
 import type { TeamResponse } from "@/lib/types/api";
@@ -142,8 +141,6 @@ export default function DashboardLayout({
           </TabsContent>
         </Tabs>
       </main>
-
-      <PerformanceRatingModal />
     </>
   );
 }

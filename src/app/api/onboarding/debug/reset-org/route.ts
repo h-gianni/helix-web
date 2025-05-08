@@ -109,7 +109,6 @@ export async function GET(request: Request) {
       {
         success: true,
         data: deletionResult,
-        message: "Successfully deleted onboarding data",
       },
       { status: 200 }
     );
