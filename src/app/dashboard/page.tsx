@@ -22,7 +22,12 @@ export default function DashboardPage() {
   const { completeStep, isSetupComplete, steps } = useSetupStore();
   const [shouldShowDashboard, setShouldShowDashboard] = useState(true);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-
+  const {
+    data: performers = [],
+    isLoading: isPerformersLoading,
+    error: isPerformersError,
+    refetch: refetchPerformers,
+  } = usePerformers();
   // Use the hook that automatically syncs organization data to setup steps
   const { isLoading, error } = useOrgSetupForSetup();
 
@@ -79,7 +84,11 @@ export default function DashboardPage() {
 
     return (
       <>
-        <DashboardLayout performers={[]} teams={teams} router={router} />
+        <DashboardLayout
+          performers={performers}
+          teams={teams}
+          router={router}
+        />
       </>
     );
   }
