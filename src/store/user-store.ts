@@ -117,6 +117,23 @@ interface ActivityData {
   ratingsCount: number;
 }
 
+interface ActionCategoryData {
+  id: string;
+  name: string;
+  description: string | null;
+  actions: {
+    id: string;
+    name: string;
+    description: string | null;
+    impactScale: number | null;
+    orgActions: {
+      id: string;
+      status: string;
+      priority: string;
+    }[];
+  }[];
+}
+
 // For backward compatibility with your existing code
 interface UserProfile {
   id: string;
@@ -166,6 +183,11 @@ const userApi = {
     if (!data.success) throw new Error(data.error || 'Failed to fetch activities');
     return data.data ?? [];
   },
+  getUserActions: async (): Promise<ActivityData[]> => {
+    const { data } = await apiClient.get<ApiResponse<ActivityData[]>>('/user/actions');
+    if (!data.success) throw new Error(data.error || 'Failed to fetch actions');
+    return data.data ?? [];
+  },
 
   getSubscription: async (): Promise<SubscriptionData> => {
     const { data } = await apiClient.get<ApiResponse<SubscriptionData>>('/user/subscription');
@@ -183,7 +205,13 @@ const userApi = {
     const { data } = await apiClient.patch<ApiResponse<any>>('/user/org-name', { name: orgName });
     if (!data.success) throw new Error(data.error || 'Failed to update organization name');
     return data.data;
-  }
+  },
+
+  getUserActionCategories: async (): Promise<ActionCategoryData[]> => {
+    const { data } = await apiClient.get<ApiResponse<ActionCategoryData[]>>('/user/actions/categories');
+    if (!data.success) throw new Error(data.error || 'Failed to fetch action categories');
+    return data.data ?? [];
+  },
 };
 
 // React Query hooks
@@ -230,6 +258,14 @@ export const useUserSubscription = (options?: { enabled?: boolean }) => {
   });
 };
 
+export const useUserActionCategories = () => {
+  return useQuery({
+    queryKey: ['userActionCategories'],
+    queryFn: userApi.getUserActionCategories,
+    staleTime: 5 * 60 * 1000 // 5 minutes
+  });
+};
+
 // Update mutations
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
@@ -253,16 +289,25 @@ export const useUpdateOrgName = () => {
   });
 };
 
+export const useUserActions = () => {
+  return useQuery({
+    queryKey: ['userActions'],
+    queryFn: userApi.getUserActions,
+  });
+};
+
 // Zustand store for state management
 interface ProfileStore {
   profile: ProfileData | null;
   orgName: string;
   isEditModalOpen: boolean;
   activeTab: string;
+  actions: ActivityData[] | null;
   setProfile: (profile: ProfileData | null) => void;
   setOrgName: (name: string) => void;
   setEditModalOpen: (isOpen: boolean) => void;
   setActiveTab: (tab: string) => void;
+  setActions: (actions: ActivityData[] | null) => void;
   initializeFromProfile: (profile: ProfileData) => void;
 }
 
@@ -271,12 +316,12 @@ export const useProfileStore = create<ProfileStore>((set) => ({
   orgName: '',
   isEditModalOpen: false,
   activeTab: 'profile',
-  
+  actions: null,
   setProfile: (profile) => set({ profile }),
   setOrgName: (name) => set({ orgName: name }),
   setEditModalOpen: (isOpen) => set({ isEditModalOpen: isOpen }),
   setActiveTab: (tab) => set({ activeTab: tab }),
-  
+  setActions: (actions) => set({ actions }),
   initializeFromProfile: (profile) => {
     let orgNameValue = '';
     

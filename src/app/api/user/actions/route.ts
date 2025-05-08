@@ -116,6 +116,8 @@ export async function GET(req: Request) {
       ratingsCount: activity._count.scores
     }));
 
+    console.log(transformedActivities, "transformedActivities-----------");
+
     return NextResponse.json({
       success: true,
       data: transformedActivities,
