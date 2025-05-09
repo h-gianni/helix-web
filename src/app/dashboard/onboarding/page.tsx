@@ -1,10 +1,10 @@
 // app/dashboard/onboarding/page.tsx
 'use client'
 
-import React, { useEffect, useLayoutEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { Loader } from '@/components/ui/core/Loader'
 import { useSetupStore } from '@/store/setup-store'
+import { useRouter } from 'next/navigation'
+import { useLayoutEffect } from 'react'
 
 export default function OnboardingLandingPage() {
 	const router = useRouter()
