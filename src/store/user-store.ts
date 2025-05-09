@@ -1,8 +1,8 @@
-import { create } from 'zustand'
-import { apiClient } from '@/lib/api/api-client'
-import type { ApiResponse } from "@/lib/types/api"
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useEffect } from 'react';
+import { create } from "zustand";
+import { apiClient } from "@/lib/api/api-client";
+import type { ApiResponse } from "@/lib/types/api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 // Define types for the modular API responses
 interface ProfileData {
@@ -29,7 +29,6 @@ interface ProfileData {
     imageUrl: string | null;
     primaryEmail: string;
     title: string | null;
-    
   };
   orgName?: { name: string }[]; // or whatever the actual type of orgName is
   createdAt: string;
@@ -144,112 +143,134 @@ interface UserProfile {
 // API clients for each endpoint
 const userApi = {
   getProfile: async (): Promise<ProfileData> => {
-    const { data } = await apiClient.get<ApiResponse<ProfileData>>('/user/profile');
-    if (!data.success) throw new Error(data.error || 'Failed to fetch profile');
-    return data.data ?? {} as ProfileData;
+    const { data } = await apiClient.get<ApiResponse<ProfileData>>(
+      "/user/profile"
+    );
+    if (!data.success) throw new Error(data.error || "Failed to fetch profile");
+    return data.data ?? ({} as ProfileData);
   },
 
   getTeams: async (): Promise<TeamsData> => {
-    const { data } = await apiClient.get<ApiResponse<TeamsData>>('/user/teams');
-    if (!data.success) throw new Error(data.error || 'Failed to fetch teams');
-    return data.data ?? {} as TeamsData;
+    const { data } = await apiClient.get<ApiResponse<TeamsData>>("/user/teams");
+    if (!data.success) throw new Error(data.error || "Failed to fetch teams");
+    return data.data ?? ({} as TeamsData);
   },
 
-  getActivities: async (options?: { page?: number; limit?: number; teamId?: string; status?: string }): Promise<ActivityData[]> => {
+  getActivities: async (options?: {
+    page?: number;
+    limit?: number;
+    teamId?: string;
+    status?: string;
+  }): Promise<ActivityData[]> => {
     const { page = 1, limit = 10, teamId, status } = options || {};
-    
-    let url = `/user/activities?page=${page}&limit=${limit}`;
+
+    let url = `/user/actions?page=${page}&limit=${limit}`;
     if (teamId) url += `&teamId=${teamId}`;
     if (status) url += `&status=${status}`;
-    
+
     const { data } = await apiClient.get<ApiResponse<ActivityData[]>>(url);
-    if (!data.success) throw new Error(data.error || 'Failed to fetch activities');
+    if (!data.success)
+      throw new Error(data.error || "Failed to fetch activities");
     return data.data ?? [];
   },
 
   getSubscription: async (): Promise<SubscriptionData> => {
-    const { data } = await apiClient.get<ApiResponse<SubscriptionData>>('/user/subscription');
-    if (!data.success) throw new Error(data.error || 'Failed to fetch subscription');
-    return data.data ?? {} as SubscriptionData;
+    const { data } = await apiClient.get<ApiResponse<SubscriptionData>>(
+      "/user/subscription"
+    );
+    if (!data.success)
+      throw new Error(data.error || "Failed to fetch subscription");
+    return data.data ?? ({} as SubscriptionData);
   },
 
-  updateProfile: async (profileData: { firstName?: string; lastName?: string; title?: string | null }): Promise<any> => {
-    const { data } = await apiClient.patch<ApiResponse<any>>('/user/profile', profileData);
-    if (!data.success) throw new Error(data.error || 'Failed to update profile');
+  updateProfile: async (profileData: {
+    firstName?: string;
+    lastName?: string;
+    title?: string | null;
+  }): Promise<any> => {
+    const { data } = await apiClient.patch<ApiResponse<any>>(
+      "/user/profile",
+      profileData
+    );
+    if (!data.success)
+      throw new Error(data.error || "Failed to update profile");
     return data.data;
   },
 
   updateOrgName: async (orgName: string): Promise<any> => {
-    const { data } = await apiClient.patch<ApiResponse<any>>('/user/org-name', { name: orgName });
-    if (!data.success) throw new Error(data.error || 'Failed to update organization name');
+    const { data } = await apiClient.patch<ApiResponse<any>>("/user/org-name", {
+      name: orgName,
+    });
+    if (!data.success)
+      throw new Error(data.error || "Failed to update organization name");
     return data.data;
-  }
+  },
 };
 
 // React Query hooks
 export const useProfile = () => {
   return useQuery({
-    queryKey: ['userProfile'],
+    queryKey: ["userProfile"],
     queryFn: userApi.getProfile,
-    staleTime: 5 * 60 * 1000 // 5 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 
 export const useUserTeams = (options?: { enabled?: boolean }) => {
   return useQuery({
-    queryKey: ['userTeams'],
+    queryKey: ["userTeams"],
     queryFn: userApi.getTeams,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    ...options
+    ...options,
   });
 };
 
-export const useUserActivities = (options?: { 
+export const useUserActivities = (options?: {
   enabled?: boolean;
-  page?: number; 
-  limit?: number; 
-  teamId?: string; 
-  status?: string 
+  page?: number;
+  limit?: number;
+  teamId?: string;
+  status?: string;
 }) => {
   const { page, limit, teamId, status, enabled } = options || {};
-  
+
   return useQuery({
-    queryKey: ['userActivities', { page, limit, teamId, status }],
+    queryKey: ["userActivities", { page, limit, teamId, status }],
     queryFn: () => userApi.getActivities({ page, limit, teamId, status }),
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: enabled !== false // Enable by default unless explicitly disabled
+    enabled: enabled !== false, // Enable by default unless explicitly disabled
   });
 };
 
 export const useUserSubscription = (options?: { enabled?: boolean }) => {
   return useQuery({
-    queryKey: ['userSubscription'],
+    queryKey: ["userSubscription"],
     queryFn: userApi.getSubscription,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    ...options
+    ...options,
   });
 };
 
 // Update mutations
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: userApi.updateProfile,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-    }
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+    },
   });
 };
 
 export const useUpdateOrgName = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: userApi.updateOrgName,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
-    }
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+    },
   });
 };
 
@@ -268,36 +289,38 @@ interface ProfileStore {
 
 export const useProfileStore = create<ProfileStore>((set) => ({
   profile: null,
-  orgName: '',
+  orgName: "",
   isEditModalOpen: false,
-  activeTab: 'profile',
-  
+  activeTab: "profile",
+
   setProfile: (profile) => set({ profile }),
   setOrgName: (name) => set({ orgName: name }),
   setEditModalOpen: (isOpen) => set({ isEditModalOpen: isOpen }),
   setActiveTab: (tab) => set({ activeTab: tab }),
-  
+
   initializeFromProfile: (profile) => {
-    let orgNameValue = '';
-    
+    let orgNameValue = "";
+
     if (profile.organization) {
       orgNameValue = profile.organization.name;
     }
-    
-    set({ 
+
+    set({
       profile,
-      orgName: orgNameValue
+      orgName: orgNameValue,
     });
-  }
+  },
 }));
 
 // For backward compatibility mapping new API to old structure
-export function mapProfileToLegacyFormat(profileData: ProfileData): UserProfile {
+export function mapProfileToLegacyFormat(
+  profileData: ProfileData
+): UserProfile {
   return {
     id: profileData.id,
     email: profileData.email,
     name: profileData.name || undefined,
-    clerkId: '', // Fill from other sources if available
+    clerkId: "", // Fill from other sources if available
     subscriptionTier: profileData.subscription.tier,
     subscriptionStart: profileData.subscription.startDate || undefined,
     subscriptionEnd: profileData.subscription.endDate || undefined,
@@ -307,18 +330,22 @@ export function mapProfileToLegacyFormat(profileData: ProfileData): UserProfile 
     teamMembers: [], // Will be filled by team-specific calls
     teams: [], // Will be filled by team-specific calls
     createdActions: [], // Will be filled by activities-specific calls
-    orgName: profileData.organization ? [{ 
-      id: profileData.organization.id, 
-      name: profileData.organization.name,
-      // createdAt: profileData.createdAt,
-      // userId: profileData.id
-    }] : [],
+    orgName: profileData.organization
+      ? [
+          {
+            id: profileData.organization.id,
+            name: profileData.organization.name,
+            // createdAt: profileData.createdAt,
+            // userId: profileData.id
+          },
+        ]
+      : [],
     clerkProfile: {
-      firstName: profileData.clerkProfile.firstName || '',
-      lastName: profileData.clerkProfile.lastName || '',
-      imageUrl: profileData.clerkProfile.imageUrl || '',
-      emailAddresses: [{ emailAddress: profileData.clerkProfile.primaryEmail }]
-    }
+      firstName: profileData.clerkProfile.firstName || "",
+      lastName: profileData.clerkProfile.lastName || "",
+      imageUrl: profileData.clerkProfile.imageUrl || "",
+      emailAddresses: [{ emailAddress: profileData.clerkProfile.primaryEmail }],
+    },
   };
 }
 
@@ -326,16 +353,16 @@ export function mapProfileToLegacyFormat(profileData: ProfileData): UserProfile 
 export function useProfileSync() {
   const { data: profileData, isLoading, error } = useProfile();
   const { initializeFromProfile } = useProfileStore();
-  
+
   useEffect(() => {
     if (profileData) {
       initializeFromProfile(profileData);
     }
   }, [profileData, initializeFromProfile]);
-  
-  return { 
+
+  return {
     profile: profileData ? mapProfileToLegacyFormat(profileData) : null,
-    isLoading, 
-    error 
+    isLoading,
+    error,
   };
 }
