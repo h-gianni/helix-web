@@ -186,9 +186,7 @@ function OrgActionsSummary({
                       value={`default-${categoryId}`}
                       data-slot="accordion-item"
                     >
-                      <AccordionTrigger
-                        data-slot="accordion-trigger"
-                      >
+                      <AccordionTrigger data-slot="accordion-trigger">
                         <div className="flex justify-between items-center gap-2 w-full pr-4">
                           <span className="font-medium">{categoryName}</span>
                           <div className="flex items-center gap-2">

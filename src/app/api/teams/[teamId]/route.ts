@@ -7,9 +7,7 @@ import type {
   JsonValue,
   TeamDetailsResponse,
   TeamResponse,
-  
 } from "@/lib/types/api";
-
 
 // Helper to check if user is team owner
 async function isTeamOwner(clerkId: string, teamId: string) {
@@ -34,9 +32,9 @@ async function isTeamOwner(clerkId: string, teamId: string) {
 async function checkTeamAccess(teamId: string, userId: string) {
   // First check if user exists and not deleted
   const user = await prisma.appUser.findUnique({
-    where: { 
+    where: {
       clerkId: userId,
-      deletedAt: null
+      deletedAt: null,
     },
   });
 
@@ -60,8 +58,8 @@ async function checkTeamAccess(teamId: string, userId: string) {
       userId: user.id,
       deletedAt: null,
       team: {
-        deletedAt: null
-      }
+        deletedAt: null,
+      },
     },
   });
 
@@ -74,7 +72,7 @@ export const GET = async (
 ) => {
   try {
     const { userId } = await auth();
-
+    console.log("User ID from auth:", userId);
     if (!userId) {
       return NextResponse.json<ApiResponse<never>>(
         {
@@ -98,23 +96,23 @@ export const GET = async (
     }
 
     const team = await prisma.gTeam.findUnique({
-      where: { 
+      where: {
         id: params.teamId,
-        deletedAt: null
+        deletedAt: null,
       },
       include: {
         teamFunction: {
           include: {
             jobTitles: {
               where: {
-                deletedAt: null
-              }
+                deletedAt: null,
+              },
             },
-          }
+          },
         },
         teamMembers: {
           where: {
-            deletedAt: null
+            deletedAt: null,
           },
           include: {
             user: {
@@ -132,15 +130,17 @@ export const GET = async (
             },
           },
         },
-        actions: {  // This is BusinessActivity
+        actions: {
+          // This is BusinessActivity
           where: {
-            deletedAt: null
+            deletedAt: null,
           },
           include: {
-            action: {  // This is Activity model
+            action: {
+              // This is Activity model
               include: {
-                category: true
-              }
+                category: true,
+              },
             },
             team: {
               select: {
@@ -177,25 +177,27 @@ export const GET = async (
       createdAt: team.createdAt,
       updatedAt: team.updatedAt,
       deletedAt: team.deletedAt,
-    
-      teamFunction: team.teamFunction ? {
-        id: team.teamFunction.id,
-        name: team.teamFunction.name,
-        description: team.teamFunction.description,
-        jobTitles: team.teamFunction.jobTitles.map(jobTitle => ({
-          id: jobTitle.id,
-          name: jobTitle.name,
-          teamFunctionId: jobTitle.teamFunctionId,
-          createdAt: jobTitle.createdAt,
-          updatedAt: jobTitle.updatedAt,
-          deletedAt: jobTitle.deletedAt,
-          customFields: jobTitle.customFields as JsonValue | undefined
-        })),
-        createdAt: team.teamFunction.createdAt,
-        updatedAt: team.teamFunction.updatedAt
-      } : null,
-    
-      members: team.teamMembers.map(member => ({
+
+      teamFunction: team.teamFunction
+        ? {
+            id: team.teamFunction.id,
+            name: team.teamFunction.name,
+            description: team.teamFunction.description,
+            jobTitles: team.teamFunction.jobTitles.map((jobTitle) => ({
+              id: jobTitle.id,
+              name: jobTitle.name,
+              teamFunctionId: jobTitle.teamFunctionId,
+              createdAt: jobTitle.createdAt,
+              updatedAt: jobTitle.updatedAt,
+              deletedAt: jobTitle.deletedAt,
+              customFields: jobTitle.customFields as JsonValue | undefined,
+            })),
+            createdAt: team.teamFunction.createdAt,
+            updatedAt: team.teamFunction.updatedAt,
+          }
+        : null,
+
+      members: team.teamMembers.map((member) => ({
         id: member.id,
         userId: member.userId,
         teamId: member.teamId,
@@ -214,11 +216,11 @@ export const GET = async (
         user: {
           id: member.user.id,
           email: member.user.email,
-          name: member.user.name
-        }
+          name: member.user.name,
+        },
       })),
-    
-      businessActivities: team.actions.map(businessActivity => ({
+
+      businessActivities: team.actions.map((businessActivity) => ({
         id: businessActivity.id,
         // Changed from activityId to actionId to match OrgActionResponse
         actionId: businessActivity.actionId,
@@ -229,17 +231,21 @@ export const GET = async (
         category: {
           id: businessActivity.action.category.id,
           name: businessActivity.action.category.name,
-          description: businessActivity.action.category.description
+          description: businessActivity.action.category.description,
         },
         priority: businessActivity.priority,
         status: businessActivity.status,
         // Convert dates to ISO strings if necessary based on your type definition
-        dueDate: businessActivity.dueDate ? businessActivity.dueDate.toISOString() : null,
+        dueDate: businessActivity.dueDate
+          ? businessActivity.dueDate.toISOString()
+          : null,
         teamId: businessActivity.teamId,
         createdBy: businessActivity.createdBy,
         createdAt: businessActivity.createdAt.toISOString(),
         updatedAt: businessActivity.updatedAt.toISOString(),
-        deletedAt: businessActivity.deletedAt ? businessActivity.deletedAt.toISOString() : null,
+        deletedAt: businessActivity.deletedAt
+          ? businessActivity.deletedAt.toISOString()
+          : null,
         customFields: businessActivity.customFields as JsonValue | undefined,
         // Renamed from activity to action to match OrgActionResponse
         action: {
@@ -250,18 +256,18 @@ export const GET = async (
           category: {
             id: businessActivity.action.category.id,
             name: businessActivity.action.category.name,
-            description: businessActivity.action.category.description
-          }
+            description: businessActivity.action.category.description,
+          },
         },
         team: {
           id: businessActivity.team.id,
-          name: businessActivity.team.name
+          name: businessActivity.team.name,
         },
         // Add _count if needed by OrgActionResponse
         _count: {
-          scores: 0 // You might want to include actual count from the database
-        }
-      }))
+          scores: 0, // You might want to include actual count from the database
+        },
+      })),
     };
     return NextResponse.json<ApiResponse<TeamDetailsResponse>>({
       success: true,
@@ -322,10 +328,10 @@ export async function PATCH(
           include: {
             jobTitles: {
               where: {
-                deletedAt: null
-              }
+                deletedAt: null,
+              },
             },
-          }
+          },
         },
       },
     });
@@ -336,7 +342,7 @@ export async function PATCH(
         id: team.id,
         name: team.name,
         description: team.description,
-        
+
         teamFunctionId: team.teamFunctionId,
         // businessFunction: {
         //   id: team.teamFunction.id,
@@ -400,8 +406,8 @@ export const DELETE = async (
           teamId: params.teamId,
         },
         select: {
-          id: true
-        }
+          id: true,
+        },
       });
 
       const memberIds = teamMembers.map((member: { id: string }) => member.id);
@@ -412,27 +418,27 @@ export const DELETE = async (
         await tx.memberScore.deleteMany({
           where: {
             teamMemberId: {
-              in: memberIds
-            }
-          }
+              in: memberIds,
+            },
+          },
         });
 
         // For StructuredFeedback - hard delete
         await tx.structuredFeedback.deleteMany({
           where: {
             teamMemberId: {
-              in: memberIds
-            }
-          }
+              in: memberIds,
+            },
+          },
         });
 
         // For MemberComment - hard delete
         await tx.memberComment.deleteMany({
           where: {
             teamMemberId: {
-              in: memberIds
-            }
-          }
+              in: memberIds,
+            },
+          },
         });
 
         // For PerformanceReview - soft delete (this model has deletedAt)
@@ -447,15 +453,15 @@ export const DELETE = async (
         //   },
         // });
 
-           // Finally, soft delete the team
-      await tx.gTeam.update({
-        where: {
-          id: params.teamId,
-        },
-        data: {
-          deletedAt: now,
-        },
-      });
+        // Finally, soft delete the team
+        await tx.gTeam.update({
+          where: {
+            id: params.teamId,
+          },
+          data: {
+            deletedAt: now,
+          },
+        });
       }
 
       // Soft delete all members
@@ -467,8 +473,6 @@ export const DELETE = async (
           deletedAt: now,
         },
       });
-
-      
 
       // Soft delete activities for this team
       await tx.orgAction.updateMany({
@@ -497,9 +501,10 @@ export const DELETE = async (
     });
   } catch (error) {
     console.error("Error deleting team:", error);
-    
+
     // More detailed error response
-    const errorMessage = error instanceof Error ? error.message : "Internal server error";
+    const errorMessage =
+      error instanceof Error ? error.message : "Internal server error";
     return NextResponse.json<ApiResponse<never>>(
       {
         success: false,

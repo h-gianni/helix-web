@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useConfigStore } from "@/store/config-store";
 import { useOnboardingValidation } from "./useOnboardingValidation";
+import { MANDATORY_CATEGORIES, useActions } from "@/store/action-store";
 
 // Types
 export interface TeamMember {
@@ -49,6 +50,9 @@ export function useTeamsManagement() {
   const selectedByCategory = config.activities.selectedByCategory || {};
   const configTeams = config.teams || [];
   const updateTeams = useConfigStore((state) => state.updateTeams);
+
+  // Get action categories to map IDs to names
+  const { data: actionCategories, isLoading: isLoadingActions } = useActions();
 
   // Local state
   const [teams, setTeams] = useState<Team[]>([]);
@@ -282,7 +286,7 @@ export function useTeamsManagement() {
         functions: currentTeam.functions.map((id) => {
           return getCategoryNameById ? getCategoryNameById(id) || id : id;
         }),
-        categories: currentTeam.functions,
+        categories: [...currentTeam.functions, ...globalCategories],
         memberIds: currentTeam.members,
       };
 
@@ -301,6 +305,25 @@ export function useTeamsManagement() {
     },
     [currentTeam, validateTeam]
   );
+  // Helper function to get category name by ID
+  const getCategoryNameUsingId = (categoryId: string): string | undefined => {
+    if (!actionCategories) return categoryId;
+
+    const category = actionCategories.find((cat) => cat.id === categoryId);
+    return category ? category.name : categoryId;
+  };
+  const globalCategories = Object.keys(selectedByCategory).filter(
+    (categoryId) => {
+      // Only include categories with selected actions
+      if (!selectedByCategory[categoryId]?.length) return false;
+
+      // Get the category name
+      const categoryName = getCategoryNameUsingId(categoryId);
+
+      // Exclude mandatory categories
+      return MANDATORY_CATEGORIES.includes(categoryName || "");
+    }
+  );
 
   // Update team
   const updateTeam = useCallback(
@@ -317,7 +340,7 @@ export function useTeamsManagement() {
               functions: currentTeam.functions.map((id) => {
                 return getCategoryNameById ? getCategoryNameById(id) || id : id;
               }),
-              categories: currentTeam.functions,
+              categories: [...currentTeam.functions, ...globalCategories],
               memberIds: currentTeam.members,
             };
           }

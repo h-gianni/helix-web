@@ -31,7 +31,8 @@ export function TeamPerformanceSummary({
   onViewChange,
 }: TeamPerformanceSummaryProps) {
   const router = useRouter();
-  const [memberToDelete, setMemberToDelete] = useState<MemberPerformance | null>(null);
+  const [memberToDelete, setMemberToDelete] =
+    useState<MemberPerformance | null>(null);
 
   if (!members || members.length === 0) {
     return null;
@@ -41,9 +42,12 @@ export function TeamPerformanceSummary({
     if (!memberToDelete) return;
 
     try {
-      const response = await fetch(`/api/teams/${teamId}/members/${memberToDelete.id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/teams/${teamId}/members/${memberToDelete.id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       const data = await response.json();
       if (data.success) {
@@ -100,7 +104,11 @@ export function TeamPerformanceSummary({
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button data-slot="button" variant="destructive" onClick={handleDeleteMember}>
+              <Button
+                data-slot="button"
+                variant="destructive"
+                onClick={handleDeleteMember}
+              >
                 Delete Member
               </Button>
             </AlertDialogAction>

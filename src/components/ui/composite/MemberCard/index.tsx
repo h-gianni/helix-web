@@ -162,7 +162,10 @@ function MemberCard({
               {onDelete && (
                 <DropdownMenuItem
                   data-slot="dropdown-item"
-                  onClick={() => onDelete(member)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(member);
+                  }}
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="mr-1" />
