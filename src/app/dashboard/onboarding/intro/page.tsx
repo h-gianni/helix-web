@@ -93,7 +93,7 @@ export default function OnboardingIntroPage() {
       <div className="flex flex-col items-center justify-center px-8 py-16 text-center">
         <div className="space-y-4 mb-8">
           <div className="mb-4">
-<BrandLogo variant="hero" />
+            <BrandLogo variant="default" />
           </div>
           <p className="body-lg text-foreground-weak max-w-xl mx-auto py-4">
             Let&apos;s get your organisation set up so you can start tracking
@@ -112,7 +112,9 @@ export default function OnboardingIntroPage() {
                 Start Onboarding <ArrowRight className="size-4" />
               </Button>
             </div>
-            <Badge variant="primary-light"><Timer className="size-4 mr-2" /> Est. 1-3 min</Badge>
+            <Badge variant="primary-light">
+              <Timer className="size-4 mr-2" /> Est. 1-3 min
+            </Badge>
           </div>
           <Card className="w-full grid md:grid-cols-3 items-start gap-4 max-w-4xl p-8 text-left">
             {setupSteps.map((step, index) => (
