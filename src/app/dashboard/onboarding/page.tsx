@@ -1,24 +1,30 @@
 // app/dashboard/onboarding/page.tsx
-"use client";
+'use client'
 
-import React, { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Loader } from "@/components/ui/core/Loader";
+import { Loader } from '@/components/ui/core/Loader'
+import { useSetupStore } from '@/store/setup-store'
+import { useRouter } from 'next/navigation'
+import { useLayoutEffect } from 'react'
 
 export default function OnboardingLandingPage() {
-  const router = useRouter();
+	const router = useRouter()
+	const isSetupComplete = useSetupStore((state) => state.isSetupComplete)
 
-  useEffect(() => {
-    // Directly go to intro step - middleware will handle redirects to correct step if needed
-    router.replace("/dashboard/onboarding/intro");
-  }, [router]);
+	useLayoutEffect(() => {
+		if (isSetupComplete()) {
+			router.replace('/dashboard')
+			return
+		}
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[50vh]">
-      <Loader size="lg" />
-      <p className="mt-4 text-foreground-weak">
-        Preparing your onboarding experience...
-      </p>
-    </div>
-  );
+		router.replace('/dashboard/onboarding/intro')
+	}, [router, isSetupComplete])
+
+	return (
+		<div className="flex flex-col items-center justify-center min-h-[50vh]">
+			<Loader size="lg" />
+			<p className="mt-4 text-foreground-weak">
+				Preparing your onboarding experience...
+			</p>
+		</div>
+	)
 }
