@@ -18,35 +18,64 @@ export async function GET(req: Request) {
       );
     }
 
- // Get only essential user data
-
- const appUser = await prisma.appUser.findUnique({
-  where: {clerkId: userId},
-  select: {
-    id: true,
-    email: true,
-    name: true,
-    subscriptionTier: true,
-    subscriptionStart: true,
-    subscriptionEnd: true,
-    createdAt: true,
-    updatedAt: true,
-    customFields: true,
-    orgName: {
+    // Get only essential user data
+    const appUser = await prisma.appUser.findUnique({
+      where: { clerkId: userId },
       select: {
         id: true,
-        name: true
+        email: true,
+        name: true,
+        subscriptionTier: true,
+        subscriptionStart: true,
+        subscriptionEnd: true,
+        createdAt: true,
+        updatedAt: true,
+        customFields: true,
+        orgName: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        teams: {
+          where: { deletedAt: null },
+          select: {
+            id: true,
+            name: true,
+            description: true,
+            
+          }
+        },
+        createdActions: {
+          where: { deletedAt: null },
+          select: {
+            id: true,
+            priority: true,
+            status: true,
+            dueDate: true,
+            action: {
+              select: {
+                id: true,
+                name: true,
+                category: {
+                  select: {
+                    id: true,
+                    name: true
+                  }
+                }
+              }
+            }
+          }
+        },
+        _count: {
+          select: {
+            teams: true,
+            teamMembers: true,
+            createdActions: true
+          }
+        }
       }
-    },
-    _count: {
-      select: {
-        teams: true,
-        teamMembers: true,
-        createdActions: true
-      }
-    }
-  }
- })
+    });
 
     if (!appUser) {
       return NextResponse.json(
@@ -57,6 +86,33 @@ export async function GET(req: Request) {
 
     // Get Clerk user profile data
     const clerkUserData = await clerkClient.users.getUser(userId);
+
+    // // Transform createdActions into category-based structure
+    // const groupedActions = appUser.createdActions.reduce((acc, curr) => {
+    //   const categoryId = curr.action.category.id;
+    //   if (!acc[categoryId]) {
+    //     acc[categoryId] = [];
+    //   }
+    //   acc[categoryId].push(curr.action.id);
+    //   return acc;
+    // }, {} as Record<string, string[]>);
+    // Transform createdActions into category-based structure
+const groupedActions = appUser.createdActions.reduce((acc, curr) => {
+  if (curr.action && curr.action.category) {
+    const categoryId = curr.action.category.id;
+    const actionId = curr.action.id;
+    
+    if (!acc[categoryId]) {
+      acc[categoryId] = [];
+    }
+    
+    // Only add if not already in the array (prevent duplicates)
+    if (!acc[categoryId].includes(actionId)) {
+      acc[categoryId].push(actionId);
+    }
+  }
+  return acc;
+}, {} as Record<string, string[]>);
 
     // Construct a clean profile response
     const profileData = {
@@ -74,6 +130,8 @@ export async function GET(req: Request) {
         teamsMember: appUser._count.teamMembers,
         activitiesCreated: appUser._count.createdActions
       },
+      teams: appUser.teams,
+      createdActions: groupedActions,
       clerkProfile: {
         firstName: clerkUserData.firstName,
         lastName: clerkUserData.lastName,

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { PageBreadcrumbs } from "@/components/ui/composite/AppHeader";
@@ -18,6 +18,7 @@ import OrgActionsSummary from "../components/configuration/ConfigurationActionsS
 import { useProfile, useProfileStore, useUpdateProfile } from "@/store/user-store";
 import TeamsEditDialog from "../components/configuration/ConfigurationTeamsEditDialog";
 import ActionsDialog from "../components/configuration/ConfigurationActionsEditDialog";
+import { useOrgStore } from "@/store/org-store";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -25,6 +26,8 @@ export default function SettingsPage() {
   const [isTeamsDialogOpen, setIsTeamsDialogOpen] = useState(false);
   const [isActionsDialogOpen, setIsActionsDialogOpen] = useState(false);
 
+  // Use the org store
+  const organizations = useOrgStore((state) => state.organizations);
   // Use the React Query hook for data fetching
   const { data: profileData, isLoading: isApiLoading, error: apiError } = useProfile();
   
@@ -33,6 +36,7 @@ export default function SettingsPage() {
 
   // Get the mutation for updating profile
   const updateProfile = useUpdateProfile();
+    const setConfig = useConfigStore((state) => state.setConfig);
 
   // Combine loading states from both Clerk and API
   const isLoading = isApiLoading || !isClerkLoaded;
@@ -40,7 +44,24 @@ export default function SettingsPage() {
   // Handle error display
   const error = apiError instanceof Error ? apiError.message : 
     apiError ? "Failed to load profile data" : null;
-
+ useEffect(() => {
+    if (profileData) {
+       setConfig({
+        organization: { name: organizations[0].name, siteDomain: organizations[0].siteDomain, id:organizations[0].id },
+        activities: {
+          selected: [],
+          selectedByCategory: profileData.createdActions,
+          favorites: {},
+          hidden: {},
+        },
+        teams: [],
+        teamMembers: [],
+      });
+    }
+  }, [profileData, setConfig]);
+  const handleProfileActionsUpdate = async (formData: { actionIds: string[] }) => {
+    // Update teams actions api call here
+  };
   const handleProfileUpdate = async (formData: { firstName: string; lastName: string; title: string | null }) => {
     try {
       // Call the mutation function with the form data
@@ -73,7 +94,8 @@ export default function SettingsPage() {
     lastName: profileData?.clerkProfile?.lastName || "",
      title: profileData?.clerkProfile?.title ?? null,
   };
-
+ 
+  // Handle modal open/close
   return (
     <>
       <PageBreadcrumbs items={[{ label: "Settings" }]} />
@@ -141,6 +163,7 @@ export default function SettingsPage() {
         <ActionsDialog
           isOpen={isActionsDialogOpen}
           onClose={() => setIsActionsDialogOpen(false)}
+          // onUpdate={() => handleProfileActionsUpdate({})} // Placeholder for actual update function 
         />
       </main>
     </>

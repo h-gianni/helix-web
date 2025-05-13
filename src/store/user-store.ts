@@ -34,6 +34,7 @@ interface ProfileData {
   createdAt: string;
   updatedAt: string;
   teams?: any[];
+  createdActions: any;
 }
 
 interface TeamsData {

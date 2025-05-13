@@ -31,10 +31,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/core/Tooltip";
+import { set } from "date-fns";
 
 interface ActionsConfigProps {
   selectedCategory: string;
   setSelectedCategory: (category: string) => void;
+  setSelectedActions: (category: string,actions: string[]) => void;
   preselectCategory?: string;
 }
 
@@ -42,6 +44,7 @@ function ActionsConfig({
   selectedCategory,
   setSelectedCategory,
   preselectCategory,
+  setSelectedActions
 }: ActionsConfigProps) {
   const MIN_REQUIRED_ACTIONS_PER_CATEGORY = 3;
 
@@ -86,48 +89,7 @@ function ActionsConfig({
     }
   }, [actionCategories]);
 
-  // Add preselection effect
-  useEffect(() => {
-    if (actionCategories && actionCategories.length > 0 && !hasPreselected) {
-      // Find mandatory categories
-      const mandatoryCategories = actionCategories.filter((cat) =>
-        MANDATORY_CATEGORIES.includes(cat.name)
-      );
-
-      if (mandatoryCategories.length > 0) {
-        // For each mandatory category, select at least MIN_REQUIRED_ACTIONS_PER_CATEGORY actions
-        let allMandatoryActions: string[] = [];
-
-        mandatoryCategories.forEach((category) => {
-          // Get the actions for this category
-          const categoryActions = category.actions.map((action) => action.id);
-          // Select at least MIN_REQUIRED_ACTIONS_PER_CATEGORY or all if fewer
-          const actionsToSelect = categoryActions.slice(
-            0,
-            Math.min(categoryActions.length, MIN_REQUIRED_ACTIONS_PER_CATEGORY)
-          );
-
-          // Add to global list
-          allMandatoryActions = [...allMandatoryActions, ...actionsToSelect];
-
-          // Update by category
-          if (actionsToSelect.length > 0) {
-            updateActivitiesByCategory(category.id, actionsToSelect);
-          }
-        });
-
-        if (allMandatoryActions.length > 0) {
-          updateActivities([...allMandatoryActions]);
-          setHasPreselected(true);
-        }
-      }
-    }
-  }, [
-    actionCategories,
-    hasPreselected,
-    updateActivities,
-    updateActivitiesByCategory,
-  ]);
+  
 
   const handleSelectActivity = (activityId: string, categoryId: string) => {
     // Check if this action is in a mandatory category
@@ -177,6 +139,7 @@ function ActionsConfig({
       }
 
       updateActivitiesByCategory(categoryId, updatedCategoryActivities);
+      setSelectedActions(categoryId,updatedCategoryActivities);
     }
   };
 

@@ -10,14 +10,7 @@ export default function OnboardingLandingPage() {
 	const router = useRouter()
 	const isSetupComplete = useSetupStore((state) => state.isSetupComplete)
 
-	useLayoutEffect(() => {
-		if (isSetupComplete()) {
-			router.replace('/dashboard')
-			return
-		}
-
-		router.replace('/dashboard/onboarding/intro')
-	}, [router, isSetupComplete])
+	
 
 	return (
 		<div className="flex flex-col items-center justify-center min-h-[50vh]">

@@ -32,7 +32,6 @@ export const useConfigStore = create<ConfigStore>()(
         })),
       updateActivities: (activities: string[]) =>
         set((state) => {
-          console.log("updateActivities", activities);
           return {
             config: {
               ...state.config,
@@ -82,11 +81,6 @@ export const useConfigStore = create<ConfigStore>()(
             [categoryId]: activities,
           };
 
-          console.log(
-            "updateActivitiesByCategory",
-            updatedSelected,
-            updatedSelectedByCategory
-          );
 
           return {
             config: {

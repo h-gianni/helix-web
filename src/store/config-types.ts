@@ -19,6 +19,7 @@ export interface Configuration {
   organization: {
     name: string;
     siteDomain: string;
+    id?:string
   };
   activities: {
     selected: string[];

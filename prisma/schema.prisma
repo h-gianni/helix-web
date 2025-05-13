@@ -85,6 +85,8 @@ model AppUser {
   teams          GTeam[]    @relation("TeamOwner")
   createdActions OrgAction[]
   orgName OrgName[]
+  orgGlobalActions OrgGlobalActions[]
+  orgTeamActions OrgTeamActions[]
   
 
   @@map("app_users")
@@ -148,6 +150,7 @@ model ActionCategory {
   id          String    @id @default(cuid())
   name        String    @unique
   description String?
+  isGlobal    Boolean   @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -169,6 +172,8 @@ model Action {
   // Relations
   category    ActionCategory @relation(fields: [categoryId], references: [id])
   orgActions OrgAction[]
+  orgGlobalActions OrgGlobalActions[]
+  orgTeamActions OrgTeamActions[]
 
   @@unique([name, categoryId])
   @@index([categoryId])
@@ -359,5 +364,53 @@ model OrgName {
   userId String
   siteDomain String?
 
+  // Add relation fields for the new action tables
+  globalActions OrgGlobalActions[]
+  teamActions OrgTeamActions[]
+
   @@map("org_name")
+}
+
+model OrgGlobalActions {
+  id          String    @id @default(cuid())
+  actionId    String    
+  status      BusinessActionStatus @default(ACTIVE)
+  createdBy   String
+  orgId       String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  // Relations
+  action      Action    @relation(fields: [actionId], references: [id])
+  user        AppUser   @relation(fields: [createdBy], references: [id])
+  org         OrgName    @relation(fields: [orgId], references: [id])
+
+  @@index([actionId])
+  @@index([createdBy])
+  @@index([orgId])
+  @@index([deletedAt])
+  @@map("org_global_actions")
+}
+
+model OrgTeamActions {
+  id          String    @id @default(cuid())
+  actionId    String    
+  status      BusinessActionStatus @default(ACTIVE)
+  createdBy   String
+  orgId       String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  // Relations
+  action      Action    @relation(fields: [actionId], references: [id])
+  user        AppUser   @relation(fields: [createdBy], references: [id])
+  org         OrgName    @relation(fields: [orgId], references: [id])
+
+  @@index([actionId])
+  @@index([createdBy])
+  @@index([orgId])
+  @@index([deletedAt])
+  @@map("org_team_actions")
 }

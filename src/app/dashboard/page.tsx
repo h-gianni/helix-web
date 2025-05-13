@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import { Button } from "@/components/ui/core/Button";
 import { Loader } from "@/components/ui/core/Loader";
@@ -46,7 +46,16 @@ export default function DashboardPage() {
       throw error;
     }
   };
+useLayoutEffect(() => {
+  if(!isLoading) {
+    if (isSetupComplete()) {
+      router.replace('/dashboard')
+      return
+    }
 
+    router.replace('/dashboard/onboarding/intro')
+  }
+  }, [router, isSetupComplete])
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">

@@ -11,6 +11,7 @@ type SubCategory = {
   name: string;
   description: string;
   key: string;
+   isGlobal?: boolean;
   actions: ActionItem[];
 };
 
@@ -18,6 +19,7 @@ type ActionParentCategory = {
   name: string;
   description: string;
   key?: string; // Optional in case some parent categories don't have keys set
+ 
   subcategories: SubCategory[];
 };
 
@@ -30,6 +32,7 @@ export const actionParentCategories:ActionParentCategory[] = [
       {
         name: "Cultural Behaviours & Values",
         description: "Activities related to company culture and values",
+        isGlobal: true,
         key: "cultural-behaviours",
         actions: [
           {
@@ -88,6 +91,7 @@ export const actionParentCategories:ActionParentCategory[] = [
         name: "Customer Centricity",
         description: "Focusing on customer needs and experience",
         key: "customer-centricity",
+        isGlobal: true,
         actions: [
           {
             name: "Customer advocacy",
@@ -145,6 +149,7 @@ export const actionParentCategories:ActionParentCategory[] = [
         name: "Teamwork",
         description: "Collaboration and effective team participation",
         key: "teamwork",
+        isGlobal: true,
         actions: [
           {
             name: "Active participation",
