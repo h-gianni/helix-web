@@ -3,6 +3,15 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { ApiResponse } from "@/lib/types/api";
 
+// Configure body parser limits
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb', // Adjust based on your needs
+    },
+  },
+};
+
 // GET - Fetch global actions for an organization
 export async function GET(request: Request) {
   try {
@@ -91,27 +100,85 @@ export async function POST(request: Request) {
       );
     }
 
-    const createdActions = await prisma.$transaction(
-      actions.map((action) =>
-        prisma.orgGlobalActions.create({
-          data: {
-            actionId: action.actionId,
-            orgId,
-            createdBy: user.id,
-            status: action.status || "ACTIVE",
-          },
-        })
-      )
-    );
+    // Fetch actions with their categories
+    const actionsWithCategories = await prisma.action.findMany({
+      where: {
+        id: {
+          in: actions.map(a => a.actionId)
+        }
+      },
+      include: {
+        category: true
+      }
+    });
+
+    // Separate actions based on category type
+    const globalActions: any[] = [];
+    const teamActions: any[] = [];
+
+    actions.forEach(action => {
+      const actionWithCategory = actionsWithCategories.find(a => a.id === action.actionId);
+      if (actionWithCategory?.category.isGlobal) {
+        globalActions.push(action);
+      } else {
+        teamActions.push(action);
+      }
+    });
+
+    // Define batch size to prevent transaction timeouts
+    const batchSize = 10; // Adjust based on your needs
+    const createdGlobalActions: any[] = [];
+    const createdTeamActions: any[] = [];
+
+    // Process global actions in batches
+    for (let i = 0; i < globalActions.length; i += batchSize) {
+      const batch = globalActions.slice(i, i + batchSize);
+      const batchResults = await Promise.all(
+        batch.map(action =>
+          prisma.orgGlobalActions.create({
+            data: {
+              actionId: action.actionId,
+              orgId,
+              createdBy: user.id,
+              status: action.status || "ACTIVE",
+            },
+          })
+        )
+      );
+      createdGlobalActions.push(...batchResults);
+    }
+
+    // Process team actions in batches
+    for (let i = 0; i < teamActions.length; i += batchSize) {
+      const batch = teamActions.slice(i, i + batchSize);
+      const batchResults = await Promise.all(
+        batch.map(action =>
+          prisma.orgTeamActions.create({
+            data: {
+              actionId: action.actionId,
+              orgId,
+              createdBy: user.id,
+              status: action.status || "ACTIVE",
+            },
+          })
+        )
+      );
+      createdTeamActions.push(...batchResults);
+    }
+
+    const result = [
+      { OrgGlobalActions: createdGlobalActions },
+      { OrgTeamActions: createdTeamActions }
+    ];
 
     return NextResponse.json<ApiResponse<{ actions: any[] }>>({
       success: true,
       data: {
-        actions: createdActions,
+        actions: result,
       },
     });
   } catch (error) {
-    console.error("Error creating global actions:", error);
+    console.error("Error creating actions:", error);
     return NextResponse.json<ApiResponse<never>>(
       { success: false, error: "Internal server error" },
       { status: 500 }
@@ -166,44 +233,64 @@ export async function PUT(request: Request) {
     const actionsToUpdate = actions.filter(a => existingActionIds.has(a.id));
     const actionsToDelete = existingActions.filter(a => !newActionIds.has(a.id));
 
-    // Perform all operations in a transaction
-    const result = await prisma.$transaction([
-      // Create new actions
-      ...actionsToCreate.map(action =>
-        prisma.orgGlobalActions.create({
-          data: {
-            actionId: action.actionId,
-            orgId,
-            createdBy: user.id,
-            status: action.status || "ACTIVE",
-          },
-        })
-      ),
-      // Update existing actions
-      ...actionsToUpdate.map(action =>
-        prisma.orgGlobalActions.update({
-          where: { id: action.id },
-          data: {
-            status: action.status,
-            updatedAt: new Date(),
-          },
-        })
-      ),
-      // Soft delete removed actions
-      ...actionsToDelete.map(action =>
-        prisma.orgGlobalActions.update({
-          where: { id: action.id },
-          data: {
-            deletedAt: new Date(),
-          },
-        })
-      ),
-    ]);
+    const batchSize = 10;
+    const results: any[] = [];
+    
+    // Process creates in batches
+    for (let i = 0; i < actionsToCreate.length; i += batchSize) {
+      const batch = actionsToCreate.slice(i, i + batchSize);
+      const batchResults = await Promise.all(
+        batch.map(action =>
+          prisma.orgGlobalActions.create({
+            data: {
+              actionId: action.actionId,
+              orgId,
+              createdBy: user.id,
+              status: action.status || "ACTIVE",
+            },
+          })
+        )
+      );
+      results.push(...batchResults);
+    }
+    
+    // Process updates in batches
+    for (let i = 0; i < actionsToUpdate.length; i += batchSize) {
+      const batch = actionsToUpdate.slice(i, i + batchSize);
+      const batchResults = await Promise.all(
+        batch.map(action =>
+          prisma.orgGlobalActions.update({
+            where: { id: action.id },
+            data: {
+              status: action.status,
+              updatedAt: new Date(),
+            },
+          })
+        )
+      );
+      results.push(...batchResults);
+    }
+    
+    // Process deletes in batches
+    for (let i = 0; i < actionsToDelete.length; i += batchSize) {
+      const batch = actionsToDelete.slice(i, i + batchSize);
+      const batchResults = await Promise.all(
+        batch.map(action =>
+          prisma.orgGlobalActions.update({
+            where: { id: action.id },
+            data: {
+              deletedAt: new Date(),
+            },
+          })
+        )
+      );
+      results.push(...batchResults);
+    }
 
     return NextResponse.json<ApiResponse<{ actions: any[] }>>({
       success: true,
       data: {
-        actions: result,
+        actions: results,
       },
     });
   } catch (error) {
@@ -227,25 +314,42 @@ export async function DELETE(request: Request) {
     }
 
     const { searchParams } = new URL(request.url);
-    const ids = searchParams.get("ids")?.split(",");
+    const idsParam = searchParams.get("ids");
+    
+    if (!idsParam) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Action IDs are required" },
+        { status: 400 }
+      );
+    }
+    
+    const ids = idsParam.split(",");
 
-    if (!ids || ids.length === 0) {
+    if (ids.length === 0) {
       return NextResponse.json<ApiResponse<never>>(
         { success: false, error: "Action IDs are required" },
         { status: 400 }
       );
     }
 
-    const deletedActions = await prisma.$transaction(
-      ids.map((id) =>
-        prisma.orgGlobalActions.update({
-          where: { id },
-          data: {
-            deletedAt: new Date(),
-          },
-        })
-      )
-    );
+    const batchSize = 10;
+    const deletedActions: any[] = [];
+    
+    // Process deletes in batches
+    for (let i = 0; i < ids.length; i += batchSize) {
+      const batchIds = ids.slice(i, i + batchSize);
+      const batchResults = await Promise.all(
+        batchIds.map(id =>
+          prisma.orgGlobalActions.update({
+            where: { id },
+            data: {
+              deletedAt: new Date(),
+            },
+          })
+        )
+      );
+      deletedActions.push(...batchResults);
+    }
 
     return NextResponse.json<ApiResponse<{ actions: any[] }>>({
       success: true,

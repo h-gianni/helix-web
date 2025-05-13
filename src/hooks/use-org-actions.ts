@@ -18,8 +18,8 @@ export function useUpdateOrgActions() {
 
   return useMutation({
     mutationFn: async ({ orgId, actions }: { orgId: string; actions: any[] }) => {
-      const response = await fetch('/api/org/global-actions', {
-        method: 'PUT',
+      const response = await fetch('/api/org/actions', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orgId, actions }),
       });

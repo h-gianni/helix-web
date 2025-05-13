@@ -27,6 +27,9 @@ function ActionsDialog({
   const configOrgId = useConfigStore(state => state.config.organization.id);
   const { mutate: updateActions, isLoading } = useUpdateOrgActions();
   const [selectedCategory, setSelectedCategory] = useState("");
+  const selectedByCategory = useConfigStore(
+      (state) => state.config.activities.selectedByCategory
+    );
   
   // Get organization name from config store or profile
   const configOrgName = useConfigStore(state => state.config.organization.name);
@@ -49,21 +52,23 @@ function ActionsDialog({
   
   const onSave = () => {
     console.log('Saving actions:', selectedActions);
-    // const actionsToSave = (Object.values(selectedActions).flat() as string[]).map((actionId) => ({
-    //   status: "ACTIVE",
-    //   actionId: actionId,
-    // }));
-    // console.log('Actions to save:', actionsToSave);
-    // updateActions(
-    //   {
-    //     orgId: configOrgId || "",
-    //     actions: actionsToSave
-    //   },
-    //   {
-    //     onSuccess: () => onClose(),
-    //     onError: (error) => console.error('Error saving actions:', error)
-    //   }
-    // );
+     console.log(selectedByCategory)
+    const actionsToSave = (Object.values(selectedByCategory).flat() as string[]).map((actionId) => ({
+      status: "ACTIVE",
+      actionId: actionId,
+    }));
+    console.log('Actions to save:', actionsToSave);
+   
+    updateActions(
+      {
+        orgId: configOrgId || "",
+        actions: actionsToSave
+      },
+      {
+        onSuccess: () => onClose(),
+        onError: (error) => console.error('Error saving actions:', error)
+      }
+    );
   };
 
   return (
