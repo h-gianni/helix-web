@@ -100,39 +100,81 @@ export async function POST(request: Request) {
       );
     }
 
-    // Fetch actions with their categories
+    // Fetch existing records
+    const existingGlobalActions = await prisma.orgGlobalActions.findMany({
+      where: { orgId, deletedAt: null },
+      select: { id: true, actionId: true }
+    });
+    const existingTeamActions = await prisma.orgTeamActions.findMany({
+      where: { orgId, deletedAt: null },
+      select: { id: true, actionId: true }
+    });
+
+    // Fetch actions with categories
     const actionsWithCategories = await prisma.action.findMany({
-      where: {
-        id: {
-          in: actions.map(a => a.actionId)
+      where: { id: { in: actions.map(a => a.actionId) } },
+      include: { category: true }
+    });
+
+    // Create sets of incoming actionIds for quick lookup
+    const incomingGlobalActionIds = new Set(
+      actions.filter(action => 
+        actionsWithCategories.find(a => a.id === action.actionId)?.category.isGlobal
+      ).map(a => a.actionId)
+    );
+
+    const incomingTeamActionIds = new Set(
+      actions.filter(action => 
+        !actionsWithCategories.find(a => a.id === action.actionId)?.category.isGlobal
+      ).map(a => a.actionId)
+    );
+
+    // Find records to delete
+    const globalActionsToDelete = existingGlobalActions.filter(
+      existing => !incomingGlobalActionIds.has(existing.actionId)
+    );
+    const teamActionsToDelete = existingTeamActions.filter(
+      existing => !incomingTeamActionIds.has(existing.actionId)
+    );
+
+    const results: any[] = [];
+console.log("Global Actions to delete:", globalActionsToDelete);
+    // Delete unnecessary global actions
+    if (globalActionsToDelete.length > 0) {
+      const deletedGlobal = await prisma.orgGlobalActions.deleteMany({
+        where: {
+          id: { in: globalActionsToDelete.map(a => a.id) }
         }
-      },
-      include: {
-        category: true
-      }
+      });
+      results.push({ type: 'global', operation: 'delete', count: deletedGlobal.count });
+    }
+
+    // Delete unnecessary team actions
+    if (teamActionsToDelete.length > 0) {
+      const deletedTeam = await prisma.orgTeamActions.deleteMany({
+        where: {
+          id: { in: teamActionsToDelete.map(a => a.id) }
+        }
+      });
+      results.push({ type: 'team', operation: 'delete', count: deletedTeam.count });
+    }
+
+    // Handle creation of new records
+    const newGlobalActions = actions.filter(action => {
+      const isGlobal = actionsWithCategories.find(a => a.id === action.actionId)?.category.isGlobal;
+      return isGlobal && !existingGlobalActions.some(existing => existing.actionId === action.actionId);
     });
 
-    // Separate actions based on category type
-    const globalActions: any[] = [];
-    const teamActions: any[] = [];
-
-    actions.forEach(action => {
-      const actionWithCategory = actionsWithCategories.find(a => a.id === action.actionId);
-      if (actionWithCategory?.category.isGlobal) {
-        globalActions.push(action);
-      } else {
-        teamActions.push(action);
-      }
+    const newTeamActions = actions.filter(action => {
+      const isGlobal = actionsWithCategories.find(a => a.id === action.actionId)?.category.isGlobal;
+      return !isGlobal && !existingTeamActions.some(existing => existing.actionId === action.actionId);
     });
 
-    // Define batch size to prevent transaction timeouts
-    const batchSize = 10; // Adjust based on your needs
-    const createdGlobalActions: any[] = [];
-    const createdTeamActions: any[] = [];
+    const batchSize = 10;
 
-    // Process global actions in batches
-    for (let i = 0; i < globalActions.length; i += batchSize) {
-      const batch = globalActions.slice(i, i + batchSize);
+    // Create new global actions
+    for (let i = 0; i < newGlobalActions.length; i += batchSize) {
+      const batch = newGlobalActions.slice(i, i + batchSize);
       const batchResults = await Promise.all(
         batch.map(action =>
           prisma.orgGlobalActions.create({
@@ -145,12 +187,12 @@ export async function POST(request: Request) {
           })
         )
       );
-      createdGlobalActions.push(...batchResults);
+      results.push({ type: 'global', operation: 'create', actions: batchResults });
     }
 
-    // Process team actions in batches
-    for (let i = 0; i < teamActions.length; i += batchSize) {
-      const batch = teamActions.slice(i, i + batchSize);
+    // Create new team actions
+    for (let i = 0; i < newTeamActions.length; i += batchSize) {
+      const batch = newTeamActions.slice(i, i + batchSize);
       const batchResults = await Promise.all(
         batch.map(action =>
           prisma.orgTeamActions.create({
@@ -163,19 +205,12 @@ export async function POST(request: Request) {
           })
         )
       );
-      createdTeamActions.push(...batchResults);
+      results.push({ type: 'team', operation: 'create', actions: batchResults });
     }
-
-    const result = [
-      { OrgGlobalActions: createdGlobalActions },
-      { OrgTeamActions: createdTeamActions }
-    ];
 
     return NextResponse.json<ApiResponse<{ actions: any[] }>>({
       success: true,
-      data: {
-        actions: result,
-      },
+      data: { actions: results },
     });
   } catch (error) {
     console.error("Error creating actions:", error);
