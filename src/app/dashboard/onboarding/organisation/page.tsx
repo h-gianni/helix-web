@@ -34,6 +34,7 @@ export default function OrganisationPage() {
 
   // Handle domain change
   const handleDomainChange = (value: string) => {
+    
     setSiteDomain(value);
     updateOrganization({
       ...orgConfig,

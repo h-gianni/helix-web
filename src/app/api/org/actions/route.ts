@@ -3,14 +3,12 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { ApiResponse } from "@/lib/types/api";
 
-// Configure body parser limits
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb', // Adjust based on your needs
-    },
-  },
-};
+// Configure route segment
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const maxDuration = 300; // 5 minutes
+
+
 
 // GET - Fetch global actions for an organization
 export async function GET(request: Request) {

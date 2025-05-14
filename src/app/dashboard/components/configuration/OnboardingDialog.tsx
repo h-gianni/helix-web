@@ -121,6 +121,7 @@ function SetupDialog({ isOpen, onClose, onCompleteSetup }: SetupDialogProps) {
             <ActionsConfig
               selectedCategory={selectedCategory}
               setSelectedCategory={setSelectedCategory}
+              setSelectedActions={() => {}}
             />
           </div>
         );

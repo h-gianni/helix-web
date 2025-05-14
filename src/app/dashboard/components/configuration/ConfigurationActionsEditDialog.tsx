@@ -25,7 +25,7 @@ function ActionsDialog({
 }: ActionsDialogProps) {
   const [selectedActions, setSelectedActions] = useState<any>({});
   const configOrgId = useConfigStore(state => state.config.organization.id);
-  const { mutate: updateActions, isLoading } = useUpdateOrgActions();
+  const { mutate: updateActions, isPending } = useUpdateOrgActions();
   const [selectedCategory, setSelectedCategory] = useState("");
   const selectedByCategory = useConfigStore(
       (state) => state.config.activities.selectedByCategory
@@ -101,15 +101,15 @@ function ActionsDialog({
             <Button
               variant="outline"
               onClick={onClose}
-              disabled={isLoading}
+              disabled={isPending}
             >
               Cancel
             </Button>
             <Button 
               onClick={onSave}
-              disabled={isLoading}
+              disabled={isPending}
             >
-              {isLoading ? 'Saving...' : 'Save Changes'}
+              {isPending ? 'Saving...' : 'Save Changes'}
             </Button>
           </div>
         </DialogFooter>
