@@ -139,6 +139,7 @@ function ActionsConfig({
       }
 
       updateActivitiesByCategory(categoryId, updatedCategoryActivities);
+      console.log(selectedByCategory)
       setSelectedActions(categoryId,updatedCategoryActivities);
     }
   };
