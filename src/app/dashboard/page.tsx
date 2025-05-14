@@ -14,6 +14,8 @@ import { useOrgStore } from "@/store/org-store";
 import { useOrgSetupForSetup } from "@/store/setup-store";
 import { usePerformers } from "@/store/performers-store";
 import { useRouter } from "next/navigation";
+import { useCheckOnboarding } from "@/store/onboarding-store";
+import { useOnboardingRedirect } from "@/hooks/use-onboarding-redirect";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -36,6 +38,10 @@ export default function DashboardPage() {
 
   const { mutateAsync: createTeam } = useCreateTeam();
 
+
+
+
+
   const handleCreateTeam = async (name: string, teamFunctionId: string) => {
     try {
       const newTeam = await createTeam({ name, teamFunctionId });
@@ -46,16 +52,24 @@ export default function DashboardPage() {
       throw error;
     }
   };
-useLayoutEffect(() => {
-  if(!isLoading) {
-    if (isSetupComplete()) {
-      router.replace('/dashboard')
-      return
-    }
 
-    router.replace('/dashboard/onboarding/intro')
-  }
-  }, [router, isSetupComplete])
+ 
+// useLayoutEffect(() => {
+//   if(!isLoading) {
+//     if (isSetupComplete()) {
+//       router.replace('/dashboard')
+//       return
+//     }
+
+//     router.replace('/dashboard/onboarding/intro')
+//   }
+//   }, [router, isSetupComplete])
+
+
+
+
+
+
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
@@ -88,6 +102,7 @@ useLayoutEffect(() => {
 
   // If user has completed onboarding, show the dashboard layout with org data
   if (steps.teams) {
+   
     // Get teams from the first organization
     const teams = organizations.length > 0 ? organizations[0].teams : [];
 

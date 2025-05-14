@@ -10,6 +10,7 @@ import { useSetupProgress } from "@/hooks/useSetupProgress";
 import { useOrgSetup } from "@/store/org-store";
 import PerformanceRatingModal from "@/app/dashboard/components/scoring/ScoringModal";
 
+
 export default function DashboardLayout({
   children,
 }: {
@@ -22,7 +23,8 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const { showMainDashboard } = useSetupProgress();
   // Check if path includes "onboarding"
-  const isOnboarding = pathname?.includes("onboarding");
+
+
 
   return (
     <SidebarProvider>

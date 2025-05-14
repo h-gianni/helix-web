@@ -1,6 +1,6 @@
 // Enhanced version of the onboarding store with improved completion handling
 import { create } from "zustand";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api/api-client";
 import type { ApiResponse } from "@/lib/types/api";
 import { useConfigStore } from "@/store/config-store";
@@ -42,6 +42,10 @@ export interface CompleteOnboardingResponse {
   activitiesCount: number;
 }
 
+export interface CheckOnboardingResponse {
+  isOnboardingComplete: boolean;
+}
+
 // Onboarding store state
 interface OnboardingState {
   currentStep: number;
@@ -68,6 +72,18 @@ const onboardingApi = {
     if (!data.success)
       throw new Error(data.error || "Failed to complete onboarding");
     return data.data!; // Add the non-null assertion operator
+  },
+};
+
+const checkOnboardingApi = {
+  checkOnboarding: async (): Promise<CheckOnboardingResponse> => {
+    console.log("Checking onboarding status...");
+    const { data } = await apiClient.get<ApiResponse<CheckOnboardingResponse>>(
+      "/check-onboarding"
+    );
+    console.log("Onboarding check response:", data);
+    if (!data.success) throw new Error(data.error || "Failed to check onboarding status");
+    return data.data!;
   },
 };
 
@@ -322,4 +338,11 @@ export const useStepValidation = () => {
   };
 
   return { validateStep };
+};
+
+export const useCheckOnboarding = () => {
+  return useQuery({
+    queryKey: ["onboarding"],
+    queryFn: () => checkOnboardingApi.checkOnboarding(),
+  });
 };

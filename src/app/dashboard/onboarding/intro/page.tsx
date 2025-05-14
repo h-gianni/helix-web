@@ -27,7 +27,7 @@ export default function OnboardingIntroPage() {
   // Redirect to dashboard if onboarding is already complete
   useEffect(() => {
     if (isSetupComplete) {
-      router.push("/dashboard");
+     // router.push("/dashboard");
     }
   }, [isSetupComplete, router]);
 

@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import type { ApiResponse } from "@/lib/types/api";
 import { Prisma } from "@prisma/client";
 import { validateOnboardingInput } from "./validation.service";
-import { manageOrganization } from "./organization.service";
 import {
   processTeamMembers,
   assignTeamMemberships,
@@ -13,10 +12,6 @@ import { processTeams } from "./team.service";
 import { processActions } from "./action.service";
 
 export interface CompleteOnboardingInput {
-  organization: {
-    name: string;
-    siteDomain: string;
-  };
   activities: {
     selected: string[];
     selectedByCategory: Record<string, string[]>;
@@ -26,7 +21,7 @@ export interface CompleteOnboardingInput {
     name: string;
     functions: string[];
     categories: string[];
-    memberIds: string[]; // Added memberIds array to store assigned member IDs
+    memberIds: string[];
   }>;
   teamMembers: Array<{
     id: string;
@@ -37,11 +32,6 @@ export interface CompleteOnboardingInput {
 }
 
 export interface CompleteOnboardingResponse {
-  organization: {
-    id: string;
-    name: string;
-    siteDomain: string;
-  };
   teams: Array<{
     id: string;
     name: string;
@@ -89,28 +79,20 @@ export async function POST(request: Request) {
       return validationResult.response;
     }
 
-    const { organization, activities, teams, teamMembers } = body;
+    const { activities, teams, teamMembers } = body;
 
     // Start transaction for the entire onboarding process
     try {
       const result = await prisma.$transaction(
         async (tx) => {
-          // 1. Create or update organization name using organization service
-          const orgResult = await manageOrganization(
-            tx,
-            user.id,
-            organization,
-            user.customFields
-          );
-
-          // 2. Process team members using the team member service
+          // 1. Process team members using the team member service
           const createdTeamMembers = await processTeamMembers(
             tx,
             teamMembers || [],
             user.id
           );
 
-          // 3. Create or update teams using team service
+          // 2. Create or update teams using team service
           const createdTeams = await processTeams(
             tx,
             teams,
@@ -118,7 +100,7 @@ export async function POST(request: Request) {
             user.id
           );
 
-          // 4. Create organization actions for each selected activity using action service
+          // 3. Create organization actions for each selected activity using action service
           const createdActions = await processActions(
             tx,
             activities,
@@ -126,11 +108,12 @@ export async function POST(request: Request) {
             user.id
           );
 
-          // 5. Insert record into teamMembers with teamId and userId using team-member service
+          // 4. Insert record into teamMembers with teamId and userId using team-member service
           await assignTeamMemberships(tx, createdTeams, createdTeamMembers);
 
           return {
             teams: createdTeams,
+            teamMembers: createdTeamMembers,
             actionsCount: createdActions.length,
           };
         },
@@ -143,18 +126,18 @@ export async function POST(request: Request) {
 
       // Return a formatted response
       const response: CompleteOnboardingResponse = {
-        organization: {
-          id: user.id,
-          name: organization.name.trim(),
-          siteDomain: organization.siteDomain.trim(),
-        },
         teams: result.teams.map((team) => ({
           id: team.id,
           name: team.name,
           teamFunctionId: team.teamFunctionId,
         })),
         activitiesCount: result.actionsCount,
-        teamMembers: [],
+        teamMembers: result.teamMembers.map((member) => ({
+          id: member.id.id,
+          fullName: member.email.split('@')[0], // Use email username as fullName
+          email: member.email,
+          jobTitle: "", // No job title available in TeamMemberResult
+        })),
       };
 
       return NextResponse.json<ApiResponse<CompleteOnboardingResponse>>(
@@ -166,8 +149,7 @@ export async function POST(request: Request) {
       return NextResponse.json<ApiResponse<never>>(
         {
           success: false,
-          error:
-            txError instanceof Error ? txError.message : "Transaction failed",
+          error: txError instanceof Error ? txError.message : "Transaction failed",
         },
         { status: 500 }
       );

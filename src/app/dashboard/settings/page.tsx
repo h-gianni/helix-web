@@ -47,7 +47,7 @@ export default function SettingsPage() {
  useEffect(() => {
     if (profileData) {
        setConfig({
-        organization: { name: organizations[0].name, siteDomain: organizations[0].siteDomain, id:organizations[0].id },
+        organization: { name: organizations[0]?.name, siteDomain: organizations[0]?.siteDomain, id:organizations[0]?.id },
         activities: {
           selected: [],
           selectedByCategory: profileData.createdActions,
