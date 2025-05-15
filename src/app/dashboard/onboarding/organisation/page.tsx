@@ -4,15 +4,14 @@ import React, { useState } from "react";
 import PageNavigator from "../components/PageNavigator";
 import { Input } from "@/components/ui/core/Input";
 import { Label } from "@/components/ui/core/Label";
-import { useConfigStore } from "@/store/config-store";
+import { useConfigStore, useUpdateOrganization } from "@/store/config-store";
 import { cn } from "@/lib/utils";
 
 export default function OrganisationPage() {
   // Get organization data from store
   const orgConfig = useConfigStore((state) => state.config.organization);
-  const updateOrganization = useConfigStore(
-    (state) => state.updateOrganization
-  );
+  const updateOrganization = useConfigStore((state) => state.updateOrganization);
+  const { mutate: updateOrgInDb, isPending: isLoading } = useUpdateOrganization();
 
   // Local state
   const [name, setName] = useState(orgConfig.name || "");
@@ -24,29 +23,43 @@ export default function OrganisationPage() {
 
   // Handle name change
   const handleNameChange = (value: string) => {
+    const trimmedValue = value.trim();
     setName(value);
     updateOrganization({
       ...orgConfig,
-      name: value.trim(),
+      name: trimmedValue,
       siteDomain: orgConfig.siteDomain,
     });
   };
 
   // Handle domain change
   const handleDomainChange = (value: string) => {
-    
+    const trimmedValue = value.trim();
     setSiteDomain(value);
     updateOrganization({
       ...orgConfig,
-      siteDomain: value.trim(),
+      siteDomain: trimmedValue,
       name: orgConfig.name,
     });
   };
 
   // Listen for Next button click
-  const handleNextAttempt = () => {
+  const handleNextAttempt = async () => {
     if (!isValid()) {
       setShowError(true);
+      return false;
+    }
+
+    try {
+      // Update in database only when clicking Next
+      await updateOrgInDb({
+        name: name.trim(),
+        siteDomain: siteDomain.trim(),
+      });
+      return true;
+    } catch (error) {
+      console.error("Error updating organization:", error);
+      return false;
     }
   };
 
@@ -68,6 +81,7 @@ export default function OrganisationPage() {
         totalSteps={6}
         disabledTooltip="Please enter your organisation name and domain to continue"
         onValidationAttempt={handleNextAttempt}
+        isLoading={isLoading}
       />
 
       <div className="max-w-sm mx-auto space-y-4">
@@ -95,6 +109,7 @@ export default function OrganisationPage() {
             }
             required
             autoFocus
+            disabled={isLoading}
           />
           {showError && !name.trim() && (
             <p id="org-name-error" className="text-sm text-destructive">
@@ -128,6 +143,7 @@ export default function OrganisationPage() {
                 : undefined
             }
             required
+            disabled={isLoading}
           />
           {showError && !siteDomain.trim() && (
             <p id="org-domain-error" className="text-sm text-destructive">

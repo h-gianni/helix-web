@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { ApiResponse } from "@/lib/types/api";
-import { Prisma } from "@prisma/client";
 
 interface OrganizationNameInput {
   name: string;
@@ -15,6 +14,7 @@ interface OrganizationNameResponse {
   siteDomain: string;
 }
 
+// Create new organization
 export async function POST(request: Request) {
   try {
     const { userId } = await auth();
@@ -49,77 +49,178 @@ export async function POST(request: Request) {
       );
     }
 
-    // Start transaction
-    try {
-      const result = await prisma.$transaction(
-        async (tx) => {
-          // Check if organization name already exists
-          const existingOrg = await tx.orgName.findFirst({
-            where: {
-              OR: [
-                { name: name.trim() },
-                { siteDomain: siteDomain.trim() }
-              ]
-            },
-          });
+    // Check if user already has an organization
+    const existingOrg = await prisma.orgName.findFirst({
+      where: { userId: user.id }
+    });
 
-          if (existingOrg) {
-            throw new Error("Organization name or site domain already exists");
-          }
+      console.log("existingOrg--------------------", existingOrg);
 
-          // Create new organization name
-          const orgName = await tx.orgName.create({
-            data: {
-              name: name.trim(),
-              siteDomain: siteDomain.trim(),
-              userId: user.id
-            },
-          });
-
-          // Update user's custom fields with organization info
-          await tx.appUser.update({
-            where: { id: user.id },
-            data: {
-              customFields: {
-                ...(user.customFields as object || {}),
-                organizationId: orgName.id,
-                organizationName: orgName.name,
-                organizationSiteDomain: orgName.siteDomain,
-              },
-            },
-          });
-
-          return orgName;
-        },
-        {
-          maxWait: 10000, // 10 seconds max wait time
-          timeout: 30000, // 30 seconds timeout
-          isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted,
-        }
-      );
-
-      const response: OrganizationNameResponse = {
-        id: result.id,
-        name: result.name,
-        siteDomain: result.siteDomain || "",
-      };
-
-      return NextResponse.json<ApiResponse<OrganizationNameResponse>>(
-        { success: true, data: response },
-        { status: 201 }
-      );
-    } catch (txError) {
-      console.error("Transaction error:", txError);
+    if (existingOrg) {
       return NextResponse.json<ApiResponse<never>>(
-        {
-          success: false,
-          error: txError instanceof Error ? txError.message : "Transaction failed",
-        },
-        { status: 500 }
+        { success: false, error: "Organization already exists for this user" },
+        { status: 400 }
       );
     }
+
+    // Create new organization
+    const orgName = await prisma.orgName.create({
+      data: {
+        name: name.trim(),
+        siteDomain: siteDomain.trim(),
+        userId: user.id
+      }
+    });
+
+    const response: OrganizationNameResponse = {
+      id: orgName.id,
+      name: orgName.name,
+      siteDomain: orgName.siteDomain || "",
+    };
+
+    return NextResponse.json<ApiResponse<OrganizationNameResponse>>(
+      { success: true, data: response },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Error creating organization name:", error);
+    console.error("Error creating organization:", error);
+    return NextResponse.json<ApiResponse<never>>(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Internal server error",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// Update existing organization
+export async function PATCH(request: Request) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const user = await prisma.appUser.findUnique({
+      where: {
+        clerkId: userId,
+        deletedAt: null,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Please complete registration first" },
+        { status: 404 }
+      );
+    }
+
+    const body: OrganizationNameInput = await request.json();
+    const { name, siteDomain } = body;
+
+    if (!name?.trim() || !siteDomain?.trim()) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Organization name and site domain are required" },
+        { status: 400 }
+      );
+    }
+
+    // Find existing organization
+    const existingOrg = await prisma.orgName.findFirst({
+      where: { userId: user.id }
+    });
+
+    if (!existingOrg) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "No organization found for this user" },
+        { status: 404 }
+      );
+    }
+
+    // Update organization
+    const orgName = await prisma.orgName.update({
+      where: { id: existingOrg.id },
+      data: {
+        name: name.trim(),
+        siteDomain: siteDomain.trim()
+      }
+    });
+
+    const response: OrganizationNameResponse = {
+      id: orgName.id,
+      name: orgName.name,
+      siteDomain: orgName.siteDomain || "",
+    };
+
+    return NextResponse.json<ApiResponse<OrganizationNameResponse>>(
+      { success: true, data: response },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating organization:", error);
+    return NextResponse.json<ApiResponse<never>>(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Internal server error",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// Get organization for current user
+export async function GET(request: Request) {
+  try {
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const user = await prisma.appUser.findUnique({
+      where: {
+        clerkId: userId,
+        deletedAt: null,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "Please complete registration first" },
+        { status: 404 }
+      );
+    }
+
+    // Find existing organization
+    const existingOrg = await prisma.orgName.findFirst({
+      where: { userId: user.id }
+    });
+
+    if (!existingOrg) {
+      return NextResponse.json<ApiResponse<never>>(
+        { success: false, error: "No organization found" },
+        { status: 404 }
+      );
+    }
+
+    const response: OrganizationNameResponse = {
+      id: existingOrg.id,
+      name: existingOrg.name,
+      siteDomain: existingOrg.siteDomain || "",
+    };
+
+    return NextResponse.json<ApiResponse<OrganizationNameResponse>>(
+      { success: true, data: response },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error fetching organization:", error);
     return NextResponse.json<ApiResponse<never>>(
       {
         success: false,

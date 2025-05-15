@@ -2,6 +2,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Configuration, ConfigStore } from "./config-types";
+import { apiClient } from "@/lib/api/api-client";
+import type { ApiResponse } from "@/lib/types/api";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const defaultConfig: Configuration = {
   organization: {
@@ -18,18 +21,76 @@ const defaultConfig: Configuration = {
   teamMembers: [], // Add the teamMembers array property
 };
 
+// React Query mutation hook for organization name
+export const useUpdateOrganization = () => {
+  const queryClient = useQueryClient();
+  const updateOrgInStore = useConfigStore((state) => state.updateOrganization);
+
+  return useMutation({
+    mutationFn: async (organization: { name: string; siteDomain: string }) => {
+      try {
+        // Check if organization exists
+        const checkResponse = await apiClient.get<ApiResponse<{ id: string; name: string; siteDomain: string }>>("/org/name");
+        
+        // If GET succeeds, organization exists - use PATCH
+        if (checkResponse.data.success) {
+          const response = await apiClient.patch<ApiResponse<{ id: string; name: string; siteDomain: string }>>(
+            "/org/name",
+            organization
+          );
+          if (!response.data.success) {
+            throw new Error(response.data.error || "Failed to update organization name");
+          }
+          return response.data.data;
+        }
+      } catch (error) {
+        // If GET fails with 404, organization doesn't exist - use POST
+        if (error instanceof Error && error.message.includes("404")) {
+          const response = await apiClient.post<ApiResponse<{ id: string; name: string; siteDomain: string }>>(
+            "/org/name",
+            organization
+          );
+          if (!response.data.success) {
+            throw new Error(response.data.error || "Failed to create organization name");
+          }
+          return response.data.data;
+        }
+        // If any other error, throw it
+        throw error;
+      }
+    },
+    onSuccess: (data, variables) => {
+      // Update Zustand store
+      updateOrgInStore(variables);
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["organization"] });
+    },
+  });
+};
+
 export const useConfigStore = create<ConfigStore>()(
   persist(
     (set) => ({
       config: defaultConfig,
       setConfig: (config) => set({ config }),
-      updateOrganization: (values: any) =>
-        set((state) => ({
-          config: {
-            ...state.config,
-            organization: { ...values },
-          },
-        })),
+      updateOrganization: (organization: { name: string; siteDomain: string }) => {
+        set((state) => {
+          const newState = {
+            config: {
+              ...state.config,
+              organization,
+            },
+          };
+
+          // Save to localStorage
+          localStorage.setItem(
+            "config",
+            JSON.stringify(newState.config)
+          );
+
+          return newState;
+        });
+      },
       updateActivities: (activities: string[]) =>
         set((state) => {
           return {

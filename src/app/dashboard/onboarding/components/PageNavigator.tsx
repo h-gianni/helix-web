@@ -19,7 +19,8 @@ interface PageNavigatorProps {
   totalSteps?: number;
   isLastStep?: boolean;
   disabledTooltip?: string;
-  onValidationAttempt?: () => void; // New prop for handling validation attempts
+  onValidationAttempt?: () => void;
+  isLoading?: boolean;
 }
 
 export default function PageNavigator({
@@ -33,19 +34,22 @@ export default function PageNavigator({
   totalSteps,
   isLastStep = false,
   disabledTooltip = "Please complete all required fields to continue",
-  onValidationAttempt, // New prop
+  onValidationAttempt,
+  isLoading,
 }: PageNavigatorProps) {
   const router = useRouter();
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
-  const handleNextClick = useCallback(() => {
+  const handleNextClick = useCallback(async () => {
     if (canContinue) {
+      // Call validation first
+      if (onValidationAttempt) {
+        await onValidationAttempt();
+      }
+      // Only navigate if validation succeeds
       router.push(nextHref);
     } else {
-      // Show error alert
       setShowErrorAlert(true);
-
-      // Notify the parent component about the validation attempt
       if (onValidationAttempt) {
         onValidationAttempt();
       }
