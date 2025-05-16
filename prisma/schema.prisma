@@ -360,13 +360,13 @@ model OrgName {
   id String @id @default(cuid())
   name String
   createdAt DateTime @default(now())
-  user AppUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user AppUser @relation(fields: [userId], references: [id], onDelete: NoAction)
   userId String
   siteDomain String?
 
   // Add relation fields for the new action tables
-  globalActions OrgGlobalActions[]
-  teamActions OrgTeamActions[]
+  globalActions OrgGlobalActions[] @relation("OrgNameToGlobalActions")
+  teamActions OrgTeamActions[] @relation("OrgNameToTeamActions")
 
   @@map("org_name")
 }
@@ -384,7 +384,7 @@ model OrgGlobalActions {
   // Relations
   action      Action    @relation(fields: [actionId], references: [id])
   user        AppUser   @relation(fields: [createdBy], references: [id])
-  org         OrgName    @relation(fields: [orgId], references: [id])
+  org         OrgName    @relation("OrgNameToGlobalActions", fields: [orgId], references: [id], onDelete: Cascade)
 
   @@index([actionId])
   @@index([createdBy])
@@ -406,7 +406,7 @@ model OrgTeamActions {
   // Relations
   action      Action    @relation(fields: [actionId], references: [id])
   user        AppUser   @relation(fields: [createdBy], references: [id])
-  org         OrgName    @relation(fields: [orgId], references: [id])
+  org         OrgName    @relation("OrgNameToTeamActions", fields: [orgId], references: [id], onDelete: Cascade)
 
   @@index([actionId])
   @@index([createdBy])

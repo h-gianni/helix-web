@@ -40,7 +40,8 @@ export interface Configuration {
 export interface ConfigStore {
   config: Configuration;
   setConfig: (config: Configuration) => void;
-  updateOrganization: (values: any) => void;
+  updateOrganization: (organization: { name: string; siteDomain: string; id?: string }) => void;
+  updateGlobalFunctions: (functions: { id: string; name: string; description: string; isEnabled: boolean }[]) => void;
   updateActivities: (activities: string[]) => void;
   updateActivitiesByCategory: (
     categoryId: string,

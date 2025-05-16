@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { Configuration, ConfigStore } from "./config-types";
 import { apiClient } from "@/lib/api/api-client";
 import type { ApiResponse } from "@/lib/types/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 
 const defaultConfig: Configuration = {
   organization: {
@@ -59,11 +59,71 @@ export const useUpdateOrganization = () => {
         throw error;
       }
     },
-    onSuccess: (data, variables) => {
-      // Update Zustand store
-      updateOrgInStore(variables);
+    onSuccess: (data) => {
+      console.log('Organization update success data:', data);
+      // Update Zustand store with the ID from the response
+      if (data) {
+        updateOrgInStore({
+          name: data.name,
+          siteDomain: data.siteDomain,
+          id: data.id
+        });
+      }
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: ["organization"] });
+    },
+  });
+};
+
+// React Query mutation hook for global functions
+export const useUpdateGlobalFunctions = () => {
+  const queryClient = useQueryClient();
+  const updateGlobalFunctionsInStore = useConfigStore((state) => state.updateGlobalFunctions);
+
+  return useMutation({
+    mutationFn: async ({ functions, orgId }: { functions: { id: string; name: string; description: string; isEnabled: boolean }[], orgId: string }) => {
+      // First update local store
+      updateGlobalFunctionsInStore(functions);
+
+      // Then push to database
+      const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
+        "/org/actions",
+        {
+          orgId,
+          actions: functions.map(func => ({
+            actionId: func.id,
+            status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
+          }))
+        }
+      );
+
+      if (!response.data.success) {
+        throw new Error(response.data.error || "Failed to update global functions");
+      }
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["global-functions"] });
+    },
+  });
+};
+
+// React Query hook for fetching global functions
+export const useGlobalFunctions = (orgId: string) => {
+  return useQuery({
+    queryKey: ["global-functions", orgId],
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<{ actions: any[] }>>(
+        `/org/actions?orgId=${orgId}`
+      );
+      if (!response.data.success) {
+        throw new Error(response.data.error || "Failed to fetch global functions");
+      }
+      if (!response.data.data?.actions) {
+        throw new Error("No actions data received");
+      }
+      return response.data.data.actions;
     },
   });
 };
@@ -73,25 +133,26 @@ export const useConfigStore = create<ConfigStore>()(
     (set) => ({
       config: defaultConfig,
       setConfig: (config) => set({ config }),
-      updateOrganization: (organization: { name: string; siteDomain: string }) => {
-        set((state) => {
-          const newState = {
-            config: {
-              ...state.config,
-              organization,
-            },
-          };
-
-          // Save to localStorage
-          localStorage.setItem(
-            "config",
-            JSON.stringify(newState.config)
-          );
-
-          return newState;
-        });
-      },
-      updateActivities: (activities: string[]) =>
+      updateOrganization: (organization) => set((state) => ({
+        config: {
+          ...state.config,
+          organization,
+        },
+      })),
+      updateGlobalFunctions: (functions) => set((state) => {
+        
+        console.log('functions------------', functions)
+        
+       return{
+        config: {
+          ...state.config,
+          globalFunctions: functions,
+        },
+       }
+        
+        
+      }),
+      updateActivities: (activities) =>
         set((state) => {
           return {
             config: {

@@ -21,6 +21,7 @@ interface PageNavigatorProps {
   disabledTooltip?: string;
   onValidationAttempt?: () => void;
   isLoading?: boolean;
+  onNext?: () => void;
 }
 
 export default function PageNavigator({
@@ -36,12 +37,17 @@ export default function PageNavigator({
   disabledTooltip = "Please complete all required fields to continue",
   onValidationAttempt,
   isLoading,
+  onNext,
 }: PageNavigatorProps) {
   const router = useRouter();
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
   const handleNextClick = useCallback(async () => {
     if (canContinue) {
+      // Call onNext first if provided
+      if (onNext) {
+        onNext();
+      }
       // Call validation first
       if (onValidationAttempt) {
         await onValidationAttempt();
@@ -54,7 +60,7 @@ export default function PageNavigator({
         onValidationAttempt();
       }
     }
-  }, [canContinue, nextHref, router, onValidationAttempt]);
+  }, [canContinue, nextHref, router, onValidationAttempt, onNext]);
 
   return (
     <div>

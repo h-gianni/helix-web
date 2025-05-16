@@ -51,11 +51,19 @@ export default function OrganisationPage() {
     }
 
     try {
-      // Update in database only when clicking Next
+      // Update in database and wait for response
       await updateOrgInDb({
         name: name.trim(),
         siteDomain: siteDomain.trim(),
       });
+
+      // Get the latest organization data from the store
+      const latestOrg = useConfigStore.getState().config.organization;
+      if (!latestOrg.id) {
+        console.error("No organization ID in store after update");
+        return false;
+      }
+
       return true;
     } catch (error) {
       console.error("Error updating organization:", error);

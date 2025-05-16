@@ -7,9 +7,15 @@ import PageNavigator from "../components/PageNavigator";
 import ActionsSelector from "../components/ActionsSelector";
 import { useActionsSelection } from "@/hooks/useActionsSelection";
 import { MANDATORY_CATEGORIES } from "@/store/action-store";
+import { useConfigStore, useUpdateGlobalFunctions } from "@/store/config-store";
 
 export default function GlobalActionsPage() {
   const MIN_REQUIRED_ACTIONS_PER_CATEGORY = 5;
+  const { mutate: updateGlobalFunctions } = useUpdateGlobalFunctions();
+  const orgConfig = useConfigStore((state) => state.config.organization);
+
+  console.log('Full config store state:', useConfigStore.getState());
+  console.log('orgConfig in global actions page:', orgConfig);
 
   // Use our custom hook for actions selection
   const {
@@ -27,8 +33,32 @@ export default function GlobalActionsPage() {
   } = useActionsSelection({
     categoryType: "general",
     minRequired: MIN_REQUIRED_ACTIONS_PER_CATEGORY,
-    autoSelect: true, // This already enables auto-selection, but we need to make sure all actions are selected
+    autoSelect: true,
   });
+
+  const handleNext = () => {
+    console.log('Full config store state in handleNext:', useConfigStore.getState());
+    console.log('orgConfig in handleNext:', orgConfig);
+    
+    if (!orgConfig.id) {
+      console.error("Organization ID is missing. Full org config:", orgConfig);
+      return;
+    }
+
+    // Convert selected activities to global functions format
+    const globalFunctions = selectedActivities.map(activity => ({
+      id: activity,
+      name: activity,
+      description: "",
+      isEnabled: true
+    }));
+    
+    // Call the mutation to update global functions
+    updateGlobalFunctions({
+      functions: globalFunctions,
+      orgId: orgConfig.id
+    });
+  };
 
   return (
     <div>
@@ -48,6 +78,7 @@ export default function GlobalActionsPage() {
         currentStep={2}
         totalSteps={6}
         disabledTooltip={`Please select at least ${MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions from each category to continue`}
+        onNext={handleNext}
       />
       <div className="max-w-5xl mx-auto">
         <ActionsSelector

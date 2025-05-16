@@ -91,6 +91,8 @@ export async function POST(request: Request) {
 
     const { orgId, actions } = await request.json();
 
+    console.log('actions from org/actions------------------', actions)
+
     if (!orgId || !actions || !Array.isArray(actions)) {
       return NextResponse.json<ApiResponse<never>>(
         { success: false, error: "Invalid request body" },
