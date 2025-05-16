@@ -128,6 +128,40 @@ export const useGlobalFunctions = (orgId: string) => {
   });
 };
 
+// React Query mutation hook for team actions
+export const useUpdateTeamActions = () => {
+  const queryClient = useQueryClient();
+  const updateTeamActionsInStore = useConfigStore((state) => state.updateTeamActions);
+
+  return useMutation({
+    mutationFn: async ({ functions, orgId }: { functions: { id: string; name: string; description: string; isEnabled: boolean }[], orgId: string }) => {
+      // First update local store
+      updateTeamActionsInStore(functions);
+
+      // Then push to database
+      const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
+        "/org/team-actions",
+        {
+          orgId,
+          actions: functions.map(func => ({
+            actionId: func.id,
+            status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
+          }))
+        }
+      );
+
+      if (!response.data.success) {
+        throw new Error(response.data.error || "Failed to update team actions");
+      }
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["team-actions"] });
+    },
+  });
+};
+
 export const useConfigStore = create<ConfigStore>()(
   persist(
     (set) => ({
@@ -139,19 +173,18 @@ export const useConfigStore = create<ConfigStore>()(
           organization,
         },
       })),
-      updateGlobalFunctions: (functions) => set((state) => {
-        
-        console.log('functions------------', functions)
-        
-       return{
+      updateGlobalFunctions: (functions) => set((state) => ({
         config: {
           ...state.config,
           globalFunctions: functions,
         },
-       }
-        
-        
-      }),
+      })),
+      updateTeamActions: (functions) => set((state) => ({
+        config: {
+          ...state.config,
+          teamActions: functions,
+        },
+      })),
       updateActivities: (activities) =>
         set((state) => {
           return {

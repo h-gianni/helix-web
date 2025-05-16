@@ -19,7 +19,7 @@ export interface Configuration {
   organization: {
     name: string;
     siteDomain: string;
-    id?:string
+    id?: string;
   };
   activities: {
     selected: string[];
@@ -27,6 +27,8 @@ export interface Configuration {
     favorites: Record<string, string[]>;
     hidden: Record<string, string[]>;
   };
+  globalFunctions?: { id: string; name: string; description: string; isEnabled: boolean }[];
+  teamActions?: { id: string; name: string; description: string; isEnabled: boolean }[];
   teams: Array<{
     id: string;
     name: string;
@@ -42,6 +44,7 @@ export interface ConfigStore {
   setConfig: (config: Configuration) => void;
   updateOrganization: (organization: { name: string; siteDomain: string; id?: string }) => void;
   updateGlobalFunctions: (functions: { id: string; name: string; description: string; isEnabled: boolean }[]) => void;
+  updateTeamActions: (functions: { id: string; name: string; description: string; isEnabled: boolean }[]) => void;
   updateActivities: (activities: string[]) => void;
   updateActivitiesByCategory: (
     categoryId: string,
