@@ -1,49 +1,51 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PageNavigator from "../components/PageNavigator";
 import { Input } from "@/components/ui/core/Input";
-import { Label } from "@/components/ui/core/Label";
-import { useConfigStore, useUpdateOrganization } from "@/store/config-store";
-import { cn } from "@/lib/utils";
+import { useConfigStore, useUpdateOrganization, useOrganizationData } from "@/store/config-store";
+import { useRouter } from "next/navigation";
 
-export default function OrganisationPage() {
-  // Get organization data from store
+export default function OrganizationPage() {
+  const router = useRouter();
+  const [showError, setShowError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { mutate: updateOrgInDb } = useUpdateOrganization();
   const orgConfig = useConfigStore((state) => state.config.organization);
   const updateOrganization = useConfigStore((state) => state.updateOrganization);
-  const { mutate: updateOrgInDb, isPending: isLoading } = useUpdateOrganization();
 
-  // Local state
-  const [name, setName] = useState(orgConfig.name || "");
-  const [siteDomain, setSiteDomain] = useState(orgConfig.siteDomain || "");
-  const [showError, setShowError] = useState(false);
+  // Fetch organization data using the hook from config store
+  const { data: orgData, isLoading: isLoadingOrg } = useOrganizationData();
+
+  // Local state for inputs
+  const [name, setName] = useState("");
+  const [siteDomain, setSiteDomain] = useState("");
+
+  // Update local state when org data is loaded
+  useEffect(() => {
+    if (orgData) {
+      setName(orgData.name || "");
+      setSiteDomain(orgData.siteDomain || "");
+    }
+  }, [orgData]);
 
   // Validation function
-  const isValid = () => Boolean(name.trim() && siteDomain.trim());
+  const isValid = () => {
+    return name.trim() !== "" && siteDomain.trim() !== "";
+  };
 
-  // Handle name change
+  // Handle input changes (only update local state)
   const handleNameChange = (value: string) => {
-    const trimmedValue = value.trim();
     setName(value);
-    updateOrganization({
-      ...orgConfig,
-      name: trimmedValue,
-      siteDomain: orgConfig.siteDomain,
-    });
+    if (showError) setShowError(false);
   };
 
-  // Handle domain change
   const handleDomainChange = (value: string) => {
-    const trimmedValue = value.trim();
     setSiteDomain(value);
-    updateOrganization({
-      ...orgConfig,
-      siteDomain: trimmedValue,
-      name: orgConfig.name,
-    });
+    if (showError) setShowError(false);
   };
 
-  // Listen for Next button click
+  // Handle Next button click
   const handleNextAttempt = async () => {
     if (!isValid()) {
       setShowError(true);
@@ -51,22 +53,26 @@ export default function OrganisationPage() {
     }
 
     try {
+      setIsSubmitting(true);
+      
       // Update in database and wait for response
       await updateOrgInDb({
         name: name.trim(),
         siteDomain: siteDomain.trim(),
       });
 
-      // Get the latest organization data from the store
-      const latestOrg = useConfigStore.getState().config.organization;
-      if (!latestOrg.id) {
-        console.error("No organization ID in store after update");
-        return false;
-      }
+      // Only update Zustand/localStorage after successful DB update
+      updateOrganization({
+        ...orgConfig,
+        name: name.trim(),
+        siteDomain: siteDomain.trim(),
+      });
 
+      setIsSubmitting(false);
       return true;
     } catch (error) {
       console.error("Error updating organization:", error);
+      setIsSubmitting(false);
       return false;
     }
   };
@@ -74,95 +80,72 @@ export default function OrganisationPage() {
   return (
     <div>
       <PageNavigator
-        title="Let's set up your organisation"
+        title="Organization Details"
         description={
           <>
-            First, let&apos;s get to know your organisation. This information
-            will help us customize your experience and make it relevant to your
-            needs.
+            Enter your organization details to get started.
+            <br />
+            This information will be used to identify your organization.
           </>
         }
-        previousHref="/dashboard/onboarding/intro"
+        previousHref="/dashboard/onboarding"
         nextHref="/dashboard/onboarding/global-actions"
         canContinue={isValid()}
         currentStep={1}
         totalSteps={6}
-        disabledTooltip="Please enter your organisation name and domain to continue"
-        onValidationAttempt={handleNextAttempt}
-        isLoading={isLoading}
+        disabledTooltip="Please enter both organization name and domain"
+        onNext={handleNextAttempt}
+        isLoading={isSubmitting || isLoadingOrg}
       />
-
-      <div className="max-w-sm mx-auto space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="org-name">
-            Organisation Name <span className="text-primary">*</span>
-          </Label>
-          <Input
-            id="org-name"
-            inputSize="xl"
-            value={name}
-            onChange={(e) => {
-              handleNameChange(e.target.value);
-              // Clear error state when user starts typing after an error
-              if (showError) setShowError(false);
-            }}
-            placeholder="Enter your organisation name"
-            className={cn(
-              "bg-white/30 backdrop-blur-lg shadow-sm",
-              showError && !name.trim() && "border-destructive"
+      <div className="max-w-5xl mx-auto">
+        <div className="space-y-6">
+          <div>
+            <label
+              htmlFor="org-name"
+              className="block text-sm font-medium text-foreground mb-1.5"
+            >
+              Organization Name <span className="text-primary">*</span>
+            </label>
+            <Input
+              id="org-name"
+              inputSize="xl"
+              value={name}
+              onChange={(e) => handleNameChange(e.target.value)}
+              placeholder="Enter your organization name"
+              aria-invalid={showError && !name.trim()}
+              aria-describedby={showError && !name.trim() ? "org-name-error" : undefined}
+              disabled={isLoadingOrg}
+            />
+            {showError && !name.trim() && (
+              <p id="org-name-error" className="text-sm text-destructive mt-1">
+                Organization name is required
+              </p>
             )}
-            aria-invalid={showError && !name.trim()}
-            aria-describedby={
-              showError && !name.trim() ? "org-name-error" : undefined
-            }
-            required
-            autoFocus
-            disabled={isLoading}
-          />
-          {showError && !name.trim() && (
-            <p id="org-name-error" className="text-sm text-destructive">
-              Organisation name is required
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="org-domain">
-            Organisation Domain <span className="text-destructive">*</span>
-          </Label>
-          <Input
-            id="org-domain"
-            inputSize="xl"
-            value={siteDomain}
-            onChange={(e) => {
-              handleDomainChange(e.target.value);
-              // Clear error state when user starts typing after an error
-              if (showError) setShowError(false);
-            }}
-            placeholder="Enter your organisation domain (e.g., example.com)"
-            className={cn(
-              "bg-white/30 backdrop-blur-lg shadow-sm",
-              showError && !siteDomain.trim() && "border-destructive"
+          </div>
+          <div>
+            <label
+              htmlFor="org-domain"
+              className="block text-sm font-medium text-foreground mb-1.5"
+            >
+              Organization Domain <span className="text-primary">*</span>
+            </label>
+            <Input
+              id="org-domain"
+              inputSize="xl"
+              value={siteDomain}
+              onChange={(e) => handleDomainChange(e.target.value)}
+              placeholder="Enter your organization domain"
+              aria-invalid={showError && !siteDomain.trim()}
+              aria-describedby={showError && !siteDomain.trim() ? "org-domain-error" : undefined}
+              disabled={isLoadingOrg}
+            />
+            {showError && !siteDomain.trim() && (
+              <p id="org-domain-error" className="text-sm text-destructive mt-1">
+                Organization domain is required
+              </p>
             )}
-            aria-invalid={showError && !siteDomain.trim()}
-            aria-describedby={
-              showError && !siteDomain.trim()
-                ? "ositeDg-domain-error"
-                : undefined
-            }
-            required
-            disabled={isLoading}
-          />
-          {showError && !siteDomain.trim() && (
-            <p id="org-domain-error" className="text-sm text-destructive">
-              Organisation domain is required
-            </p>
-          )}
+          </div>
         </div>
-
-        <p className="text-sm text-foreground-weak">
-          This information will be displayed throughout the application.
-        </p>
       </div>
     </div>
   );

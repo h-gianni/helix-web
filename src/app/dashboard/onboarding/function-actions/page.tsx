@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PageNavigator from "../components/PageNavigator";
 import ActionsSelector from "../components/ActionsSelector";
 import { useActionsSelection } from "@/hooks/useActionsSelection";
@@ -10,11 +10,15 @@ import { MANDATORY_CATEGORIES } from "@/store/action-store";
 import { useConfigStore, useUpdateTeamActions, useGlobalFunctions } from "@/store/config-store";
 
 export default function FunctionActionsPage() {
-  const MIN_REQUIRED_ACTIONS_PER_CATEGORY = 5;
   const { mutate: updateTeamActions } = useUpdateTeamActions();
   const orgConfig = useConfigStore((state) => state.config.organization);
   const updateTeamActionsInStore = useConfigStore((state) => state.updateTeamActions);
+  const teamActions = useConfigStore((state) => state.config.teamActions || []);
   const initialized = useRef(false);
+
+  // Local state for selections
+  const [localSelectedActivities, setLocalSelectedActivities] = useState<string[]>([]);
+  const [localSelectedByCategory, setLocalSelectedByCategory] = useState<Record<string, string[]>>({});
 
   // Fetch existing actions using the hook
   const { data: existingActions, isLoading: isLoadingActions } = useGlobalFunctions(orgConfig.id || "");
@@ -34,51 +38,99 @@ export default function FunctionActionsPage() {
     canContinue,
   } = useActionsSelection({
     categoryType: "core",
-    minRequired: MIN_REQUIRED_ACTIONS_PER_CATEGORY,
-    autoSelect: false, // We'll handle selection manually
+    minRequired: 0, // No minimum required for function actions
+    autoSelect: false,
   });
 
-  // Handle initial selection based on existing team actions
+  // Initialize selections from both localStorage and DB
   useEffect(() => {
-    if (!isLoadingActions && existingActions && !initialized.current) {
-      // Filter out global actions to get only team actions
-      const teamActions = existingActions.filter(action => 
+    console.log('Effect triggered with:', {
+      isLoadingActions,
+      existingActions,
+      teamActions
+    });
+
+    if (!isLoadingActions && existingActions) {
+      // First check localStorage (teamActions from Zustand store)
+      const storedActionIds = teamActions.map(action => action.id);
+      console.log('Stored action IDs from localStorage:', storedActionIds);
+      
+      // Then check DB for any additional actions
+      const dbTeamActions = existingActions.filter(action => 
         action.action && action.action.category && !action.action.category.isGlobal
       );
+      console.log('DB team actions:', dbTeamActions);
+      
+      const dbActionIds = dbTeamActions.map(action => action.actionId);
+      console.log('DB action IDs:', dbActionIds);
+      
+      // Combine both sets of IDs, removing duplicates
+      const allSelectedIds = [...new Set([...storedActionIds, ...dbActionIds])];
+      console.log('Combined selected IDs:', allSelectedIds);
+      
+      // Set the combined selections
+      setLocalSelectedActivities(allSelectedIds);
+      
+      // Group by category
+      const byCategory: Record<string, string[]> = {};
+      
+      // Add DB actions to categories
+      dbTeamActions.forEach(action => {
+        const categoryId = action.action?.category?.id;
+        console.log('Category ID:--------', categoryId);
+        if (categoryId) {
+          byCategory[categoryId] = [...(byCategory[categoryId] || []), action.actionId];
+        }
+      });
 
-      if (teamActions.length > 0) {
-        // If we have existing team actions, use those
-        const existingActions = teamActions.map(func => ({
-          id: func.actionId,
-          name: func.action.name,
-          description: "",
-          isEnabled: true
-        }));
-        updateTeamActionsInStore(existingActions);
-        updateActivities(existingActions.map(a => a.id));
-      }
-      initialized.current = true;
+      console.log('By category:-------', byCategory);
+      
+      // Add localStorage actions to categories
+      teamActions.forEach(action => {
+        const dbAction = dbTeamActions.find(db => db.actionId === action.id);
+        if (dbAction?.action?.category?.id) {
+          const categoryId = dbAction.action.category.id;
+          byCategory[categoryId] = [...(byCategory[categoryId] || []), action.id];
+        }
+      });
+      
+      console.log('Final category grouping:', byCategory);
+      setLocalSelectedByCategory(byCategory);
     }
-  }, [isLoadingActions, existingActions, updateTeamActionsInStore, updateActivities]);
+  }, [isLoadingActions, existingActions, teamActions]);
+
+  // Handle local selection updates
+  const handleLocalUpdateActivities = (activities: string[]) => {
+    console.log('Updating local activities:', activities);
+    setLocalSelectedActivities(activities);
+  };
+
+  const handleLocalUpdateActivitiesByCategory = (categoryId: string, activities: string[]) => {
+    console.log('Updating category activities:', { categoryId, activities });
+    setLocalSelectedByCategory(prev => ({
+      ...prev,
+      [categoryId]: activities
+    }));
+  };
 
   const handleNext = () => {
-    console.log('Full config store state in handleNext:', useConfigStore.getState());
-    console.log('orgConfig in handleNext:', orgConfig);
-    
     if (!orgConfig.id) {
       console.error("Organization ID is missing. Full org config:", orgConfig);
       return;
     }
 
     // Convert selected activities to team actions format
-    const teamActions = selectedActivities.map(activity => ({
+    const teamActions = localSelectedActivities.map(activity => ({
       id: activity,
       name: activity,
       description: "",
       isEnabled: true
     }));
-    
-    // Call the mutation to update team actions
+
+    console.log('Saving team actions:', teamActions);
+
+    // Update localStorage and DB
+    updateTeamActionsInStore(teamActions);
     updateTeamActions({
       functions: teamActions,
       orgId: orgConfig.id
@@ -98,27 +150,26 @@ export default function FunctionActionsPage() {
         }
         previousHref="/dashboard/onboarding/global-actions"
         nextHref="/dashboard/onboarding/teams"
-        canContinue={canContinue()}
+        canContinue={true} // Always allow continuing for function actions
         currentStep={3}
         totalSteps={6}
-        disabledTooltip={`Please select at least ${MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions from each category to continue`}
         onNext={handleNext}
         isLoading={isLoadingActions}
       />
       <div className="max-w-5xl mx-auto">
         <ActionsSelector
           categories={functionCategories}
-          selectedActivities={selectedActivities}
-          selectedByCategory={selectedByCategory}
-          updateActivities={updateActivities}
-          updateActivitiesByCategory={updateActivitiesByCategory}
+          selectedActivities={localSelectedActivities}
+          selectedByCategory={localSelectedByCategory}
+          updateActivities={handleLocalUpdateActivities}
+          updateActivitiesByCategory={handleLocalUpdateActivitiesByCategory}
           isFavorite={isFavorite}
           toggleFavorite={toggleFavorite}
           isLoading={isLoading || isLoadingActions}
-          minRequiredActionsPerCategory={MIN_REQUIRED_ACTIONS_PER_CATEGORY}
+          minRequiredActionsPerCategory={0} // No minimum required for function actions
           mandatoryCategories={MANDATORY_CATEGORIES}
           categoriesTitle="Function Categories"
-          categoriesDescription={`Select at least ${MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions from each category.`}
+          categoriesDescription="Select actions for your function or department."
           hasInteracted={hasInteracted}
           setHasInteracted={setHasInteracted}
         />

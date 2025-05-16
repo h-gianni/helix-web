@@ -150,26 +150,34 @@ export const useUpdateTeamActions = () => {
 
       const actionsWithCategories = actionsResponse.data.data.actions;
 
-      // Combine global and function actions
-      const allActions = [
-        // Global actions
-        ...globalFunctions.map(func => ({
+      // Create a Map to deduplicate actions by actionId
+      const actionMap = new Map<string, { actionId: string; status: string }>();
+
+      // Add global actions
+      globalFunctions.forEach(func => {
+        actionMap.set(func.id, {
           actionId: func.id,
           status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
-        })),
-        // Function actions
-        ...functions.map(func => ({
+        });
+      });
+
+      // Add function actions (will override global actions if same ID)
+      functions.forEach(func => {
+        actionMap.set(func.id, {
           actionId: func.id,
           status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
-        }))
-      ];
+        });
+      });
+
+      // Convert Map values to array
+      const uniqueActions = Array.from(actionMap.values());
 
       // Then push to database
       const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
         "/org/actions",
         {
           orgId,
-          actions: allActions
+          actions: uniqueActions
         }
       );
 
@@ -181,6 +189,51 @@ export const useUpdateTeamActions = () => {
     onSuccess: (data) => {
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: ["org-actions"] });
+    },
+  });
+};
+
+// React Query hook for fetching organization data
+export const useOrganizationData = () => {
+  const updateOrgInStore = useConfigStore((state) => state.updateOrganization);
+
+  return useQuery({
+    queryKey: ["organization"],
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<{ id: string; name: string; siteDomain: string }>>("/org/name");
+      if (!response.data.success) {
+        throw new Error(response.data.error || "Failed to fetch organization data");
+      }
+      
+      // Update Zustand store with fetched data
+      if (response.data.data) {
+        updateOrgInStore({
+          name: response.data.data.name,
+          siteDomain: response.data.data.siteDomain,
+          id: response.data.data.id
+        });
+      }
+      
+      return response.data.data;
+    },
+  });
+};
+
+// React Query hook for fetching team actions
+export const useTeamActions = (orgId: string) => {
+  return useQuery({
+    queryKey: ["team-actions", orgId],
+    queryFn: async () => {
+      const response = await apiClient.get<ApiResponse<{ actions: any[] }>>(
+        `/org/team-actions/?orgId=${orgId}`
+      );
+      if (!response.data.success) {
+        throw new Error(response.data.error || "Failed to fetch team actions");
+      }
+      if (!response.data.data?.actions) {
+        throw new Error("No team actions data received");
+      }
+      return response.data.data.actions;
     },
   });
 };

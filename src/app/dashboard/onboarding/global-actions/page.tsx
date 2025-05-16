@@ -39,6 +39,9 @@ export default function GlobalActionsPage() {
 
   // Handle initial selection based on existing global functions
   useEffect(() => {
+
+    console.log('Existing Global Functions:-------------', existingGlobalFunctions);
+
     if (!isLoadingGlobalFunctions && generalCategories.length > 0) {
       console.log('Existing Global Functions:', existingGlobalFunctions);
       console.log('General Categories:', generalCategories);
