@@ -2,20 +2,21 @@
 
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import PageNavigator from "../components/PageNavigator";
 import ActionsSelector from "../components/ActionsSelector";
 import { useActionsSelection } from "@/hooks/useActionsSelection";
 import { MANDATORY_CATEGORIES } from "@/store/action-store";
-import { useConfigStore, useUpdateGlobalFunctions } from "@/store/config-store";
+import { useConfigStore, useUpdateGlobalFunctions, useGlobalFunctions } from "@/store/config-store";
 
 export default function GlobalActionsPage() {
   const MIN_REQUIRED_ACTIONS_PER_CATEGORY = 5;
   const { mutate: updateGlobalFunctions } = useUpdateGlobalFunctions();
   const orgConfig = useConfigStore((state) => state.config.organization);
+  const updateGlobalFunctionsInStore = useConfigStore((state) => state.updateGlobalFunctions);
 
-  console.log('Full config store state:', useConfigStore.getState());
-  console.log('orgConfig in global actions page:', orgConfig);
+  // Fetch existing global functions
+  const { data: existingGlobalFunctions, isLoading: isLoadingGlobalFunctions } = useGlobalFunctions(orgConfig.id || "");
 
   // Use our custom hook for actions selection
   const {
@@ -33,8 +34,34 @@ export default function GlobalActionsPage() {
   } = useActionsSelection({
     categoryType: "general",
     minRequired: MIN_REQUIRED_ACTIONS_PER_CATEGORY,
-    autoSelect: true,
+    autoSelect: false, // We'll handle selection manually
   });
+
+  // Handle initial selection based on existing global functions
+  useEffect(() => {
+    if (!isLoadingGlobalFunctions && generalCategories.length > 0) {
+      if (existingGlobalFunctions && existingGlobalFunctions.length > 0) {
+        // If we have existing global functions, use those
+        const existingActions = existingGlobalFunctions.map(func => ({
+          id: func.actionId,
+          name: func.action.name,
+          description: "",
+          isEnabled: true
+        }));
+        updateGlobalFunctionsInStore(existingActions);
+        updateActivities(existingActions.map(a => a.id));
+      } else {
+        // If no existing functions, select first 5 from each category
+        const initialSelections: string[] = [];
+        generalCategories.forEach(category => {
+          const categoryActions = category.actions.slice(0, MIN_REQUIRED_ACTIONS_PER_CATEGORY);
+          initialSelections.push(...categoryActions.map(a => a.id));
+          updateActivitiesByCategory(category.id, categoryActions.map(a => a.id));
+        });
+        updateActivities(initialSelections);
+      }
+    }
+  }, [isLoadingGlobalFunctions, existingGlobalFunctions, generalCategories]);
 
   const handleNext = () => {
     console.log('Full config store state in handleNext:', useConfigStore.getState());
@@ -79,6 +106,7 @@ export default function GlobalActionsPage() {
         totalSteps={6}
         disabledTooltip={`Please select at least ${MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions from each category to continue`}
         onNext={handleNext}
+        isLoading={isLoadingGlobalFunctions}
       />
       <div className="max-w-5xl mx-auto">
         <ActionsSelector
@@ -89,7 +117,7 @@ export default function GlobalActionsPage() {
           updateActivitiesByCategory={updateActivitiesByCategory}
           isFavorite={isFavorite}
           toggleFavorite={toggleFavorite}
-          isLoading={isLoading}
+          isLoading={isLoading || isLoadingGlobalFunctions}
           minRequiredActionsPerCategory={MIN_REQUIRED_ACTIONS_PER_CATEGORY}
           mandatoryCategories={MANDATORY_CATEGORIES}
           categoriesTitle="Global Categories"

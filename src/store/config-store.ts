@@ -132,32 +132,55 @@ export const useGlobalFunctions = (orgId: string) => {
 export const useUpdateTeamActions = () => {
   const queryClient = useQueryClient();
   const updateTeamActionsInStore = useConfigStore((state) => state.updateTeamActions);
+  const globalFunctions = useConfigStore((state) => state.config.globalFunctions || []);
 
   return useMutation({
     mutationFn: async ({ functions, orgId }: { functions: { id: string; name: string; description: string; isEnabled: boolean }[], orgId: string }) => {
       // First update local store
       updateTeamActionsInStore(functions);
 
+      // Get all actions with their categories
+      const actionsResponse = await apiClient.get<ApiResponse<{ actions: any[] }>>(
+        `/org/actions?orgId=${orgId}`
+      );
+
+      if (!actionsResponse.data.success || !actionsResponse.data.data) {
+        throw new Error("Failed to fetch actions");
+      }
+
+      const actionsWithCategories = actionsResponse.data.data.actions;
+
+      // Combine global and function actions
+      const allActions = [
+        // Global actions
+        ...globalFunctions.map(func => ({
+          actionId: func.id,
+          status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
+        })),
+        // Function actions
+        ...functions.map(func => ({
+          actionId: func.id,
+          status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
+        }))
+      ];
+
       // Then push to database
       const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
-        "/org/team-actions",
+        "/org/actions",
         {
           orgId,
-          actions: functions.map(func => ({
-            actionId: func.id,
-            status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
-          }))
+          actions: allActions
         }
       );
 
       if (!response.data.success) {
-        throw new Error(response.data.error || "Failed to update team actions");
+        throw new Error(response.data.error || "Failed to update function actions");
       }
       return response.data.data;
     },
     onSuccess: (data) => {
       // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ["team-actions"] });
+      queryClient.invalidateQueries({ queryKey: ["org-actions"] });
     },
   });
 };
