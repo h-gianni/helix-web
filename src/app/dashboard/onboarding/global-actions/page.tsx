@@ -40,24 +40,35 @@ export default function GlobalActionsPage() {
   // Handle initial selection based on existing global functions
   useEffect(() => {
     if (!isLoadingGlobalFunctions && generalCategories.length > 0) {
+      console.log('Existing Global Functions:', existingGlobalFunctions);
+      console.log('General Categories:', generalCategories);
+
       if (existingGlobalFunctions && existingGlobalFunctions.length > 0) {
         // If we have existing global functions, use those
-        const existingActions = existingGlobalFunctions.map(func => ({
-          id: func.actionId,
-          name: func.action.name,
-          description: "",
-          isEnabled: true
-        }));
+        const existingActions = existingGlobalFunctions
+          .filter(func => func.status === "ACTIVE")
+          .map(func => ({
+            id: func.actionId,
+            name: func.action.name,
+            description: "",
+            isEnabled: true
+          }));
+        console.log('Mapped Existing Actions:', existingActions);
         updateGlobalFunctionsInStore(existingActions);
         updateActivities(existingActions.map(a => a.id));
       } else {
         // If no existing functions, select first 5 from each category
         const initialSelections: string[] = [];
         generalCategories.forEach(category => {
-          const categoryActions = category.actions.slice(0, MIN_REQUIRED_ACTIONS_PER_CATEGORY);
-          initialSelections.push(...categoryActions.map(a => a.id));
-          updateActivitiesByCategory(category.id, categoryActions.map(a => a.id));
+          console.log('Processing category:', category);
+          if (category.actions && category.actions.length > 0) {
+            const categoryActions = category.actions.slice(0, MIN_REQUIRED_ACTIONS_PER_CATEGORY);
+            console.log('Selected actions for category:', categoryActions);
+            initialSelections.push(...categoryActions.map(a => a.id));
+            updateActivitiesByCategory(category.id, categoryActions.map(a => a.id));
+          }
         });
+        console.log('Initial Selections:', initialSelections);
         updateActivities(initialSelections);
       }
     }

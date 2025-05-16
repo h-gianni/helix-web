@@ -82,15 +82,15 @@ export const useUpdateGlobalFunctions = () => {
 
   return useMutation({
     mutationFn: async ({ functions, orgId }: { functions: { id: string; name: string; description: string; isEnabled: boolean }[], orgId: string }) => {
-      // First update local store
-      updateGlobalFunctionsInStore(functions);
-
+      const uniqueFunctions = Array.from(
+        new Map(functions.map(f => [f.id, f])).values()
+      );
       // Then push to database
       const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
         "/org/actions",
         {
           orgId,
-          actions: functions.map(func => ({
+          actions: uniqueFunctions.map(func => ({
             actionId: func.id,
             status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
           }))
