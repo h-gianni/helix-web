@@ -21,7 +21,6 @@ export default function FunctionActionsPage() {
   const [localSelectedByCategory, setLocalSelectedByCategory] = useState<Record<string, string[]>>({});
 
   // Fetch existing actions using the hook
-  const { data: existingActions, isLoading: isLoadingActions } = useGlobalFunctions(orgConfig.id || "");
 
   // Use our custom hook for actions selection
   const {
@@ -45,59 +44,15 @@ export default function FunctionActionsPage() {
   // Initialize selections from both localStorage and DB
   useEffect(() => {
     console.log('Effect triggered with:', {
-      isLoadingActions,
-      existingActions,
+    
       teamActions
     });
 
-    if (!isLoadingActions && existingActions) {
-      // First check localStorage (teamActions from Zustand store)
-      const storedActionIds = teamActions.map(action => action.id);
-      console.log('Stored action IDs from localStorage:', storedActionIds);
-      
-      // Then check DB for any additional actions
-      const dbTeamActions = existingActions.filter(action => 
-        action.action && action.action.category && !action.action.category.isGlobal
-      );
-      console.log('DB team actions:', dbTeamActions);
-      
-      const dbActionIds = dbTeamActions.map(action => action.actionId);
-      console.log('DB action IDs:', dbActionIds);
-      
-      // Combine both sets of IDs, removing duplicates
-      const allSelectedIds = [...new Set([...storedActionIds, ...dbActionIds])];
-      console.log('Combined selected IDs:', allSelectedIds);
-      
-      // Set the combined selections
-      setLocalSelectedActivities(allSelectedIds);
-      
-      // Group by category
-      const byCategory: Record<string, string[]> = {};
-      
-      // Add DB actions to categories
-      dbTeamActions.forEach(action => {
-        const categoryId = action.action?.category?.id;
-        console.log('Category ID:--------', categoryId);
-        if (categoryId) {
-          byCategory[categoryId] = [...(byCategory[categoryId] || []), action.actionId];
-        }
-      });
+    console.log('Local Selected Activities:-------------', teamActions);
+    setLocalSelectedActivities(teamActions.map(action => action.id));
 
-      console.log('By category:-------', byCategory);
-      
-      // Add localStorage actions to categories
-      teamActions.forEach(action => {
-        const dbAction = dbTeamActions.find(db => db.actionId === action.id);
-        if (dbAction?.action?.category?.id) {
-          const categoryId = dbAction.action.category.id;
-          byCategory[categoryId] = [...(byCategory[categoryId] || []), action.id];
-        }
-      });
-      
-      console.log('Final category grouping:', byCategory);
-      setLocalSelectedByCategory(byCategory);
-    }
-  }, [isLoadingActions, existingActions, teamActions]);
+   
+  }, [ teamActions]);
 
   // Handle local selection updates
   const handleLocalUpdateActivities = (activities: string[]) => {
@@ -149,12 +104,12 @@ export default function FunctionActionsPage() {
           </>
         }
         previousHref="/dashboard/onboarding/global-actions"
-        nextHref="/dashboard/onboarding/teams"
+        nextHref="/dashboard/onboarding/members"
         canContinue={true} // Always allow continuing for function actions
         currentStep={3}
         totalSteps={6}
         onNext={handleNext}
-        isLoading={isLoadingActions}
+        isLoading={teamActions.length === 0}
       />
       <div className="max-w-5xl mx-auto">
         <ActionsSelector
@@ -165,9 +120,9 @@ export default function FunctionActionsPage() {
           updateActivitiesByCategory={handleLocalUpdateActivitiesByCategory}
           isFavorite={isFavorite}
           toggleFavorite={toggleFavorite}
-          isLoading={isLoading || isLoadingActions}
+          isLoading={isLoading}
           minRequiredActionsPerCategory={0} // No minimum required for function actions
-          mandatoryCategories={MANDATORY_CATEGORIES}
+          // mandatoryCategories={MANDATORY_CATEGORIES}
           categoriesTitle="Function Categories"
           categoriesDescription="Select actions for your function or department."
           hasInteracted={hasInteracted}

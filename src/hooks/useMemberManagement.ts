@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
+import { useUpdateTeamMembers, useConfigStore } from "@/store/config-store";
 
 export interface Member {
   id: string;
@@ -32,6 +33,8 @@ interface UseMemberManagementReturn {
 
 export function useMemberManagement(): UseMemberManagementReturn {
   const { config, isStepComplete, updateTeamMembers } = useOnboardingConfig();
+  const { mutate: updateTeamMembersInDB } = useUpdateTeamMembers();
+  const orgConfig = useConfigStore((state) => state.config.organization);
   const [members, setMembers] = useState<Member[]>(config.teamMembers || []);
   const [formData, setFormData] = useState<Omit<Member, "id">>({
     fullName: "",
@@ -59,6 +62,7 @@ export function useMemberManagement(): UseMemberManagementReturn {
 
     setIsInitialized(true);
   }, [isInitialized]);
+  
   useEffect(() => {
     try {
       setMembers(config.teamMembers);
@@ -115,7 +119,7 @@ export function useMemberManagement(): UseMemberManagementReturn {
   );
 
   // Add or update a member
-  const handleAddMember = useCallback(() => {
+  const handleAddMember = useCallback(async () => {
     // Validate form
     const errors = validateMember(formData);
 
@@ -124,39 +128,58 @@ export function useMemberManagement(): UseMemberManagementReturn {
       return;
     }
 
-    if (isEditing && selectedMemberId) {
-      // Update existing member
-      updateTeamMembers(
-        (config.teamMembers || []).map((member) =>
-          member.id === selectedMemberId ? { ...member, ...formData } : member
-        )
-      );
-
-      // Reset editing state
-      setIsEditing(false);
-      setSelectedMemberId(null);
-    } else {
-      // Add new member
-      const newMember: Member = {
-        id: `member-${Date.now()}`,
-        ...formData,
-      };
-
-      updateTeamMembers([...(config.teamMembers || []), newMember]);
+    if (!orgConfig.id) {
+      console.error("Organization ID is missing");
+      return;
     }
 
-    // Reset form
-    setFormData({
-      fullName: "",
-      email: "",
-      jobTitle: "",
-    });
+    try {
+      let updatedMembers: Member[];
+      
+      if (isEditing && selectedMemberId) {
+        // Update existing member
+        updatedMembers = (config.teamMembers || []).map((member) =>
+          member.id === selectedMemberId ? { ...member, ...formData } : member
+        );
+      } else {
+        // Add new member
+        const newMember: Member = {
+          id: `member-${Date.now()}`,
+          ...formData,
+        };
+        updatedMembers = [...(config.teamMembers || []), newMember];
+      }
+
+      // First update in DB
+      await updateTeamMembersInDB({
+        members: updatedMembers,
+        orgId: orgConfig.id
+      });
+
+      // Then update local storage
+      updateTeamMembers(updatedMembers);
+
+      // Reset form and editing state
+      setFormData({
+        fullName: "",
+        email: "",
+        jobTitle: "",
+      });
+      setIsEditing(false);
+      setSelectedMemberId(null);
+    } catch (error) {
+      console.error("Error updating members:", error);
+      // You might want to show an error message to the user here
+    }
   }, [
     formData,
     isEditing,
     selectedMemberId,
     config.teamMembers,
     validateMember,
+    orgConfig.id,
+    updateTeamMembersInDB,
+    updateTeamMembers,
   ]);
 
   // Select a member for editing

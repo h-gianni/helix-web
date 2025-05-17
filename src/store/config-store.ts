@@ -238,6 +238,37 @@ export const useTeamActions = (orgId: string) => {
   });
 };
 
+// React Query mutation hook for team members
+export const useUpdateTeamMembers = () => {
+  const queryClient = useQueryClient();
+  const updateTeamMembersInStore = useConfigStore((state) => state.updateTeamMembers);
+
+  return useMutation({
+    mutationFn: async ({ members, orgId }: { members: { id: string; fullName: string; email: string; jobTitle: string }[], orgId: string }) => {
+      // First update in DB
+      const response = await apiClient.post<ApiResponse<{ members: any[] }>>(
+        "/org/members",
+        {
+          orgId,
+          members
+        }
+      );
+
+      if (!response.data.success) {
+        throw new Error(response.data.error || "Failed to update team members");
+      }
+
+      // Then update local store
+      updateTeamMembersInStore(members);
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["org-members"] });
+    },
+  });
+};
+
 export const useConfigStore = create<ConfigStore>()(
   persist(
     (set) => ({

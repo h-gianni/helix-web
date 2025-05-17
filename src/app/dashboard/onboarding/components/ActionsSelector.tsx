@@ -45,7 +45,7 @@ interface ActionsSelectorProps {
   introContent?: React.ReactNode;
 }
 
-export default function ActionsSelector({
+const ActionsSelector = React.memo(function ActionsSelector({
   categories,
   selectedActivities,
   selectedByCategory,
@@ -65,6 +65,16 @@ export default function ActionsSelector({
 }: ActionsSelectorProps) {
   // State for the selected category
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+
+  // Memoize the filtered categories
+  const filteredCategories = useMemo(() => {
+    return categories.filter((cat) => cat.actions.length > 0);
+  }, [categories]);
+
+  // Memoize the selected activities map for faster lookups
+  const selectedActivitiesMap = useMemo(() => {
+    return new Set(selectedActivities);
+  }, [selectedActivities]);
 
   // Handle category selection
   const handleCategorySelect = useCallback(
@@ -86,10 +96,20 @@ export default function ActionsSelector({
         categories?.find((cat) => cat.id === categoryId)?.name || ""
       );
 
+      console.log('handleSelectActivity Debug:', {
+        activityId,
+        categoryId,
+        isMandatoryCategory,
+        currentSelectedCount: getSelectedCount(categoryId),
+        minRequired: minRequiredActionsPerCategory,
+        currentSelected: selectedByCategory[categoryId] || [],
+        isCurrentlySelected: selectedActivitiesMap.has(activityId)
+      });
+
       // If it's in a mandatory category, check if deselecting would violate the minimum
       if (
         isMandatoryCategory &&
-        selectedActivities.includes(activityId) &&
+        selectedActivitiesMap.has(activityId) &&
         categoryId &&
         minRequiredActionsPerCategory > 0
       ) {
@@ -105,7 +125,7 @@ export default function ActionsSelector({
         }
       }
 
-      const isCurrentlySelected = selectedActivities.includes(activityId);
+      const isCurrentlySelected = selectedActivitiesMap.has(activityId);
 
       // If we're deselecting and it's favorited, remove from favorites too
       if (isCurrentlySelected && isFavorite(activityId, categoryId)) {
@@ -152,6 +172,7 @@ export default function ActionsSelector({
       mandatoryCategories,
       categories,
       selectedActivities,
+      selectedActivitiesMap,
       selectedByCategory,
       minRequiredActionsPerCategory,
       updateActivities,
@@ -198,10 +219,10 @@ export default function ActionsSelector({
         return false;
       }
       return category.actions.every((action) =>
-        selectedActivities.includes(action.id)
+        selectedActivitiesMap.has(action.id)
       );
     },
-    [selectedActivities]
+    [selectedActivitiesMap]
   );
 
   // Toggle select all actions in a category
@@ -278,6 +299,7 @@ export default function ActionsSelector({
     },
     [
       selectedActivities,
+      selectedActivitiesMap,
       updateActivities,
       updateActivitiesByCategory,
       mandatoryCategories,
@@ -295,16 +317,14 @@ export default function ActionsSelector({
 
   // Set first category as selected if none is selected and categories are available
   useEffect(() => {
-    if (categories?.length > 0 && !selectedCategoryId && !isLoading) {
-      setSelectedCategoryId(
-        categories.filter((cat) => cat.actions.length > 0)[0].id
-      );
+    if (filteredCategories?.length > 0 && !selectedCategoryId && !isLoading) {
+      setSelectedCategoryId(filteredCategories[0].id);
       if (setHasInteracted && !hasInteracted) {
         setHasInteracted(true);
       }
     }
   }, [
-    categories,
+    filteredCategories,
     selectedCategoryId,
     isLoading,
     setHasInteracted,
@@ -323,28 +343,23 @@ export default function ActionsSelector({
         <div className="w-full md:w-1/3 border-r border-border-weak">
           <div className="py-6 px-4">
             <h2 className="heading-3">{categoriesTitle}</h2>
-            {/* <p className="body-sm text-foreground-weak">
-              {categoriesDescription}
-            </p> */}
           </div>
           <div className="divide-y divide-neutral-lighter">
-            {categories.length === 0 ? (
+            {filteredCategories.length === 0 ? (
               <div className="p-4 text-foreground-weak">
                 No functions available
               </div>
             ) : (
-              categories
-                .filter((cat) => cat.actions.length > 0)
-                .map((category) => {
-                  const selectedCount = getSelectedCount(category.id);
-                  const isSelected = selectedCategoryId === category.id;
-                  const hasMinimumSelected =
-                    minRequiredActionsPerCategory > 0
-                      ? selectedCount >= minRequiredActionsPerCategory
-                      : false;
-                  const isMandatoryCategory = mandatoryCategories.includes(
-                    category.name
-                  );
+              filteredCategories.map((category) => {
+                const selectedCount = getSelectedCount(category.id);
+                const isSelected = selectedCategoryId === category.id;
+                const hasMinimumSelected =
+                  minRequiredActionsPerCategory > 0
+                    ? selectedCount >= minRequiredActionsPerCategory
+                    : false;
+                const isMandatoryCategory = mandatoryCategories.includes(
+                  category.name
+                );
 
                 return (
                   <div
@@ -379,9 +394,6 @@ export default function ActionsSelector({
               <div className="py-6 px-4 flex justify-between items-center">
                 <div>
                   <h2 className="heading-3">{selectedCategory.name} Actions</h2>
-                  {/* <p className="body-sm text-foreground-weak">
-                    Select the actions you will expect your team to perform
-                  </p> */}
                 </div>
                 <div className="flex items-center gap-3">
                   {/* Show minimum required badge with appropriate styling based on selection */}
@@ -429,15 +441,30 @@ export default function ActionsSelector({
               <div className="flex-1 overflow-auto">
                 <div className="divide-y divide-neutral-lighter">
                   {selectedCategory.actions.map((action) => {
-                    const isSelected = selectedByCategory[
-                      selectedCategory.id
-                    ]?.includes(action.id);
+
+                    console.log('checking the catrgory:-------------', selectedCategory);
+
+                    const isSelected = selectedActivitiesMap.has(action.id);
+                    const selectedCount = getSelectedCount(selectedCategory.id);
                     const isMandatoryAction =
                       mandatoryCategories.includes(selectedCategory.name) &&
                       isSelected &&
                       minRequiredActionsPerCategory > 0 &&
-                      getSelectedCount(selectedCategory.id) <=
-                        minRequiredActionsPerCategory;
+                      selectedCount === minRequiredActionsPerCategory;
+
+                    console.log('checking the isMad:-------------', isMandatoryAction);
+
+                    console.log('Action Debug:', {
+                      actionId: action.id,
+                      categoryName: selectedCategory.name,
+                      isMandatoryCategory: mandatoryCategories.includes(selectedCategory.name),
+                      isSelected,
+                      selectedCount,
+                      minRequired: minRequiredActionsPerCategory,
+                      isMandatoryAction,
+                      allSelectedActions: selectedActivities
+                    });
+
                     const actionIsFavorite = isFavorite(
                       action.id,
                       selectedCategory.id
@@ -449,9 +476,16 @@ export default function ActionsSelector({
                         className={cn(
                           "flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-neutral-50",
                           isSelected ? "bg-primary-50" : "",
-                          isMandatoryAction && "cursor-not-allowed"
+                          isMandatoryAction ? "cursor-not-allowed" : "cursor-pointer"
                         )}
                         onClick={() => {
+                          console.log('Action clicked:', {
+                            actionId: action.id,
+                            isMandatoryAction,
+                            selectedCount,
+                            minRequired: minRequiredActionsPerCategory
+                          });
+
                           if (!isMandatoryAction) {
                             handleSelectActivity(
                               action.id,
@@ -528,4 +562,6 @@ export default function ActionsSelector({
       </div>
     </Card>
   );
-}
+});
+
+export default ActionsSelector;
