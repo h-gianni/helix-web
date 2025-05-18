@@ -2,17 +2,19 @@
 
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { AlertCircle, UserPlus } from "lucide-react";
 import PageNavigator from "../components/PageNavigator";
 import { Card } from "@/components/ui/core/Card";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
 import TeamList from "../components/TeamList";
 import MemberForm from "../components/MemberForm";
-import { useMemberManagement } from "@/hooks/useMemberManagement";
+import { useConfigStore, useUpdateTeamMembers, useSaveMembersToDatabase } from "@/store/config-store";
 import { useOnboardingConfig } from "@/hooks/useOnboardingConfig";
 import { HeroBadge } from "@/components/ui/core/HeroBadge";
 import { trimDomain } from "@/lib/utils/domainUtils";
+import { useOrganizationData } from "@/store/config-store";
+import { useRouter } from "next/navigation";
 
 // Interface for TeamList compatible item
 interface MemberListItem {
@@ -27,22 +29,141 @@ interface MemberListItem {
 
 export default function MembersPage() {
   // Use our custom hooks
-  const { config, isStepComplete, updateTeamMembers } = useOnboardingConfig();
-  const {
-    members,
-    formData,
-    formErrors,
-    selectedMemberId,
-    isEditing,
-    handleInputChange,
-    handleAddMember,
-    handleRemoveMember,
-    handleEditMember,
-    handleCancelEdit,
-  } = useMemberManagement();
+  const { config, isStepComplete } = useOnboardingConfig();
+  const { data: orgData } = useOrganizationData();
+  // const updateTeamMembers = useUpdateTeamMembers();
+  const saveMembersToDatabase = useSaveMembersToDatabase();
+  const teamMembers = useConfigStore((state) => state.config.teamMembers || []);
+  const updateTeamMembers = useConfigStore((state) => state.updateTeamMembers);
+  const router = useRouter();
+
+  // Form state
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+  });
+  const [tempFormData, setTempFormData] = useState({
+    fullName: "",
+    email: "",
+  });
+  const [formErrors, setFormErrors] = useState({
+    fullName: "",
+    email: "",
+  });
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // Handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTempFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    // Clear error when user types
+    if (formErrors[name as keyof typeof formErrors]) {
+      setFormErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  // Validate form data
+  const validateForm = () => {
+    const errors = {
+      fullName: "",
+      email: "",
+    };
+    let isValid = true;
+
+    if (!tempFormData.fullName.trim()) {
+      errors.fullName = "Full name is required";
+      isValid = false;
+    }
+
+    if (!tempFormData.email.trim()) {
+      errors.email = "Email is required";
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(tempFormData.email)) {
+      errors.email = "Invalid email format";
+      isValid = false;
+    }
+
+    setFormErrors(errors);
+    return isValid;
+  };
+
+  // Handle adding/updating member
+  const handleAddMember = async () => {
+    if (!validateForm() || !orgData?.id) return;
+
+    // Update the form data with the temporary values
+    setFormData(tempFormData);
+
+    const newMember = {
+      id: selectedMemberId || crypto.randomUUID(),
+      fullName: tempFormData.fullName,
+      email: tempFormData.email,
+      jobTitle: "",
+    };
+
+    // Update local storage through the store
+    // updateTeamMembers.mutate({
+    //   members: isEditing
+    //     ? teamMembers.map((m) =>
+    //         m.id === selectedMemberId ? newMember : m
+    //       )
+    //     : [...teamMembers, newMember],
+    //   orgId: orgData.id,
+    // });
+
+    console.log('newMember:-------------', [...teamMembers, newMember]);
+
+    updateTeamMembers([...teamMembers, newMember]);
+
+    
+
+    // Reset form
+    setFormData({ fullName: "", email: "" });
+    setTempFormData({ fullName: "", email: "" });
+    setSelectedMemberId(null);
+    setIsEditing(false);
+  };
+
+  // Handle removing member
+  const handleRemoveMember = async (id: string) => {
+    if (!orgData?.id) return;
+
+    // Update local storage through the store
+    // updateTeamMembers.mutate({
+    //   members: teamMembers.filter((m) => m.id !== id),
+    //   orgId: orgData.id,
+    // });
+  };
+
+  // Handle editing member
+  const handleEditMember = (id: string) => {
+    const member = teamMembers.find((m) => m.id === id);
+    if (member) {
+      setTempFormData({
+        fullName: member.fullName,
+        email: member.email,
+      });
+      setSelectedMemberId(id);
+      setIsEditing(true);
+    }
+  };
+
+  // Handle canceling edit
+  const handleCancelEdit = () => {
+    setTempFormData({ fullName: "", email: "" });
+    setSelectedMemberId(null);
+    setIsEditing(false);
+  };
 
   // Transform members for TeamList component
-  const memberListItems: MemberListItem[] = members?.map((member) => ({
+  const memberListItems: MemberListItem[] = teamMembers.map((member) => ({
     id: member.id,
     name: member.fullName,
     subtitle: (
@@ -66,6 +187,14 @@ export default function MembersPage() {
     return isStepComplete.members();
   };
 
+  // Handle next button click
+  const handleNextClick = async () => {
+    if (!orgData?.id) return;
+
+    // Just navigate to the teams page
+    router.push('/dashboard/onboarding/teams');
+  };
+
   return (
     <div>
       <PageNavigator
@@ -82,6 +211,7 @@ export default function MembersPage() {
         currentStep={4}
         totalSteps={6}
         disabledTooltip="Please add at least one team member to continue to the next step."
+        onNext={handleNextClick}
       />
 
       <div className="max-w-5xl mx-auto space-y-4">
@@ -98,8 +228,8 @@ export default function MembersPage() {
             <div className="col-span-2">
               {/* Member Form Component */}
               <MemberForm
-                fullName={formData.fullName}
-                email={formData.email}
+                fullName={tempFormData.fullName}
+                email={tempFormData.email}
                 formErrors={formErrors}
                 isEditing={isEditing}
                 onInputChange={handleInputChange}
@@ -114,11 +244,11 @@ export default function MembersPage() {
             </div>
             <div className="col-span-3">
               {/* Members List using TeamList component */}
-              {members?.length > 0 ? (
+              {teamMembers.length > 0 ? (
                 <TeamList
                   items={memberListItems}
                   selectedItemId={selectedMemberId}
-                  title={`Added ${members.length} Members`}
+                  title={`Added ${teamMembers.length} Members`}
                   onSelectItem={handleSelectMember}
                   onRemoveItem={handleRemoveMember}
                   showRemoveButton={true}

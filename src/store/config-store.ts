@@ -242,27 +242,70 @@ export const useTeamActions = (orgId: string) => {
 export const useUpdateTeamMembers = () => {
   const queryClient = useQueryClient();
   const updateTeamMembersInStore = useConfigStore((state) => state.updateTeamMembers);
+  
+  // return useMutation({
+  //   mutationFn: async ({ members, orgId }: { members: { id: string; fullName: string; email: string; jobTitle: string }[], orgId: string }) => {
+  //     // First update in DB
+  //     const response = await apiClient.post<ApiResponse<{ members: any[] }>>(
+  //       "/org/members",
+  //       {
+  //         orgId,
+  //         members
+  //       }
+  //     );
+
+  //     if (!response.data.success) {
+  //       throw new Error(response.data.error || "Failed to update team members");
+  //     }
+
+  //     // Then update local store
+  //     updateTeamMembersInStore(members);
+  //     return response.data.data;
+  //   },
+  //   onSuccess: (data) => {
+  //     // Invalidate relevant queries
+  //     queryClient.invalidateQueries({ queryKey: ["org-members"] });
+  //   },
+  // });
+};
+
+// React Query mutation hook for saving members to database
+export const useSaveMembersToDatabase = () => {
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ members, orgId }: { members: { id: string; fullName: string; email: string; jobTitle: string }[], orgId: string }) => {
-      // First update in DB
+    mutationFn: async ({ members, orgId }: { members: { fullName: string; email: string }[], orgId: string }) => {
       const response = await apiClient.post<ApiResponse<{ members: any[] }>>(
         "/org/members",
         {
           orgId,
-          members
+          members: members.map(member => ({
+            firstName: member.fullName.split(' ')[0],
+            lastName: member.fullName.split(' ').slice(1).join(' '),
+            email: member.email,
+            status: 'ACTIVE',
+            user: {
+              connectOrCreate: {
+                where: {
+                  email: member.email
+                },
+                create: {
+                  email: member.email,
+                  name: member.fullName
+                }
+              }
+            }
+          })),
         }
       );
 
       if (!response.data.success) {
-        throw new Error(response.data.error || "Failed to update team members");
+        throw new Error(response.data.error || "Failed to save members");
       }
 
-      // Then update local store
-      updateTeamMembersInStore(members);
       return response.data.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: ["org-members"] });
     },

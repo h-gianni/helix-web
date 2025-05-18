@@ -120,8 +120,13 @@ export function useMemberManagement(): UseMemberManagementReturn {
 
   // Add or update a member
   const handleAddMember = useCallback(async () => {
+
+    
     // Validate form
     const errors = validateMember(formData);
+   
+
+    return;
 
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
