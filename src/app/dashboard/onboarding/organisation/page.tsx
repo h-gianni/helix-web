@@ -23,11 +23,26 @@ export default function OrganizationPage() {
 
   // Update local state when org data is loaded
   useEffect(() => {
-    if (orgData) {
+    // First check if we have data in the config store (from localStorage via Zustand persist)
+    const localOrgName = orgConfig.name;
+    const localSiteDomain = orgConfig.siteDomain;
+    
+    if (localOrgName || localSiteDomain) {
+      // If data exists in localStorage, use it
+      setName(localOrgName || "");
+      setSiteDomain(localSiteDomain || "");
+      console.log("Using organization data from localStorage");
+    } else if (orgData) {
+      // If no localStorage data but API data is available, use that
       setName(orgData.name || "");
       setSiteDomain(orgData.siteDomain || "");
+      console.log("Using organization data from API");
+    } else {
+      // If neither source has data, ensure fields are empty
+      setName("");
+      setSiteDomain("");
     }
-  }, [orgData]);
+  }, [orgData, orgConfig]);
 
   // Validation function
   const isValid = () => {

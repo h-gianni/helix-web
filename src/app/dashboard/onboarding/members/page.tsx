@@ -133,6 +133,12 @@ export default function MembersPage() {
 
   // Handle removing member
   const handleRemoveMember = async (id: string) => {
+
+    const storedData = localStorage.getItem('config');
+    console.log('storedData:-------------', storedData);
+
+    return
+
     if (!orgData?.id) return;
 
     // Update local storage through the store
