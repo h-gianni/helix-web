@@ -1,7 +1,7 @@
 // data/config-store.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Configuration, ConfigStore } from "./config-types";
+import { Configuration } from "./config-types";
 import { apiClient } from "@/lib/api/api-client";
 import type { ApiResponse } from "@/lib/types/api";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
@@ -18,6 +18,7 @@ const defaultConfig: Configuration = {
     hidden: {} as Record<string, string[]>,
   },
   teams: [],
+  teamActions: [], // or whatever the proper type is
   teamMembers: [], // Add the teamMembers array property
 };
 
@@ -125,12 +126,14 @@ export const useGlobalFunctions = (orgId: string) => {
       }
       return response.data.data.actions;
     },
+    staleTime: Infinity, // Prevent refetching
   });
 };
 
 // React Query mutation hook for team actions
 export const useUpdateTeamActions = () => {
   const queryClient = useQueryClient();
+
   const updateTeamActionsInStore = useConfigStore((state) => state.updateTeamActions);
   const globalFunctions = useConfigStore((state) => state.config.globalFunctions || []);
 
@@ -312,9 +315,27 @@ export const useSaveMembersToDatabase = () => {
   });
 };
 
+export interface ConfigStore {
+  isHydrated: boolean;
+  setHydrated: (state: boolean) => void;
+  config: Configuration;
+  setConfig: (config: Configuration) => void;
+  updateOrganization: (organization: Configuration["organization"]) => void;
+  updateGlobalFunctions: (functions: Configuration["globalFunctions"]) => void;
+  updateTeamActions: (functions: Configuration["teamActions"]) => void;
+  updateActivities: (activities: string[]) => void;
+  updateActivitiesByCategory: (categoryId: string, activities: string[]) => void;
+  updateFavorites: (category: string, activities: string[]) => void;
+  updateHidden: (category: string, activities: string[]) => void;
+  updateTeams: (teams: Configuration["teams"]) => void;
+  updateTeamMembers: (teamMembers: Configuration["teamMembers"]) => void;
+}
+
 export const useConfigStore = create<ConfigStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
+      isHydrated: false,
+      setHydrated: (state) => set({ isHydrated: state }),
       config: defaultConfig,
       setConfig: (config) => set({ config }),
       updateOrganization: (organization) => set((state) => ({
@@ -329,12 +350,16 @@ export const useConfigStore = create<ConfigStore>()(
           globalFunctions: functions,
         },
       })),
-      updateTeamActions: (functions) => set((state) => ({
-        config: {
-          ...state.config,
-          teamActions: functions,
-        },
-      })),
+      updateTeamActions: (teamActions) => {
+        console.log('Updating team actions:', teamActions);
+        if(!Array.isArray(teamActions)) {
+          console.warn('Expected teamActions to be an array, got:', teamActions);
+          teamActions = [];
+        }
+        set((state) => ({
+          config: { ...state.config, teamActions },
+        }));  
+      },
       updateActivities: (activities) =>
         set((state) => {
           return {
@@ -441,6 +466,16 @@ export const useConfigStore = create<ConfigStore>()(
     }),
     {
       name: "app-configuration",
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.setHydrated(true);
+          
+          // Ensure critical arrays exist
+          if (!state.config.teamActions) {
+            state.updateTeamActions([]);  
+          }
+        }
+      }
     }
   )
 );

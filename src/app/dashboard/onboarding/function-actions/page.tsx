@@ -2,98 +2,150 @@
 
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import PageNavigator from "../components/PageNavigator";
 import ActionsSelector from "../components/ActionsSelector";
 import { useActionsSelection } from "@/hooks/useActionsSelection";
-import { MANDATORY_CATEGORIES } from "@/store/action-store";
-import { useConfigStore, useUpdateTeamActions, useGlobalFunctions } from "@/store/config-store";
+import { useConfigStore, useUpdateTeamActions } from "@/store/config-store";
 
 export default function FunctionActionsPage() {
-  const { mutate: updateTeamActions } = useUpdateTeamActions();
-  const orgConfig = useConfigStore((state) => state.config.organization);
-  const updateTeamActionsInStore = useConfigStore((state) => state.updateTeamActions);
-  const teamActions = useConfigStore((state) => state.config.teamActions || []);
+   const { mutate: updateTeamActions } = useUpdateTeamActions();
+   const orgConfig = useConfigStore((state) => state.config.organization);
+   const updateTeamActionsInStore = useConfigStore((state) => state.updateTeamActions);
+   const teamActions = useConfigStore((state) => state.config.teamActions || []);
+  
+  // Use refs to track initialization state
   const initialized = useRef(false);
+  const actionsInitialized = useRef(false);
 
-  // Local state for selections
+  // Local state for selections - initialized once
   const [localSelectedActivities, setLocalSelectedActivities] = useState<string[]>([]);
   const [localSelectedByCategory, setLocalSelectedByCategory] = useState<Record<string, string[]>>({});
 
-  // Fetch existing actions using the hook
-
   // Use our custom hook for actions selection
+  const actionsSelection = useActionsSelection({
+    categoryType: "core",
+    minRequired: 0, // No minimum required for function actions
+    autoSelect: false,
+  });
+
   const {
-    selectedActivities,
-    selectedByCategory,
-    updateActivities,
-    updateActivitiesByCategory,
     filteredCategories: functionCategories,
     isLoading,
     isFavorite,
     toggleFavorite,
     hasInteracted,
     setHasInteracted,
-    canContinue,
-  } = useActionsSelection({
-    categoryType: "core",
-    minRequired: 0, // No minimum required for function actions
-    autoSelect: false,
-  });
+  } = actionsSelection;
 
-  // Initialize selections from both localStorage and DB
+  // Initialize selections from store - ONCE only
   useEffect(() => {
-    console.log('Effect triggered with:', {
+    // if (initialized.current || teamActions.length === 0) {
+    //   return;
+    // }
     
-      teamActions
-    });
-
-    console.log('Local Selected Activities:-------------', teamActions);
+    console.log('Initializing selections from teamActions:', teamActions);
     setLocalSelectedActivities(teamActions.map(action => action.id));
+    
+    // Mark as initialized to prevent loop
+    initialized.current = true;
+  }, [teamActions]);
 
-   
-  }, [ teamActions]);
+  // Only organize by category when categories are loaded - ONCE only
+  useEffect(() => {
+    // if (actionsInitialized.current || functionCategories.length === 0 || !initialized.current) {
+    //   return;
+    // }
+    
+    // console.log('Organizing selections by category:', functionCategories);
+    
+    // Organize selections by category
+    const byCategory: Record<string, string[]> = {};
+    
+    functionCategories.forEach(category => {
+      // Find actions for this category
+      const categoryActions = category.actions
+        .filter(action => localSelectedActivities.includes(action.id))
+        .map(action => action.id);
+        
+      if (categoryActions.length > 0) {
+        byCategory[category.id] = categoryActions;
+      }
+    });
+    
+    console.log('Selections by category:', byCategory, localSelectedActivities);
+    setLocalSelectedByCategory(byCategory);
+    
+    // Mark as initialized to prevent loop
+    // actionsInitialized.current = true;
+    setHasInteracted(true);
+  }, [functionCategories, localSelectedActivities, setHasInteracted]);
 
-  // Handle local selection updates
-  const handleLocalUpdateActivities = (activities: string[]) => {
+  // Handle local selection updates - with memoized callbacks
+  const handleLocalUpdateActivities = useCallback((activities: string[]) => {
     console.log('Updating local activities:', activities);
     setLocalSelectedActivities(activities);
-  };
+  }, []);
 
-  const handleLocalUpdateActivitiesByCategory = (categoryId: string, activities: string[]) => {
+  const handleLocalUpdateActivitiesByCategory = useCallback((categoryId: string, activities: string[]) => {
     console.log('Updating category activities:', { categoryId, activities });
     setLocalSelectedByCategory(prev => ({
       ...prev,
       [categoryId]: activities
     }));
-  };
+  }, []);
 
-  const handleNext = () => {
+  //Memoize handleNext to prevent recreating on every render
+  const handleNext = useCallback(() => {
     if (!orgConfig.id) {
       console.error("Organization ID is missing. Full org config:", orgConfig);
       return;
     }
 
-    // Convert selected activities to team actions format
-    const teamActions = localSelectedActivities.map(activity => ({
-      id: activity,
-      name: activity,
-      description: "",
-      isEnabled: true
-    }));
+    console.log('Saving team actions:', localSelectedActivities[0]);
+  
 
-    console.log('Saving team actions:', teamActions);
+    try {
+      // Convert selected activities to team actions format
+      const teamActionsList = localSelectedActivities.map(activityId => {
+        // Find the action in categories to get its name
+        const action = functionCategories
+          .flatMap(cat => cat.actions)
+          .find(a => a.id === activityId);
+        
+        return {
+          id: activityId,
+          name: action?.name || activityId,
+          description: "",
+          isEnabled: true
+        };
+      });
 
-    // Update localStorage and DB
-    updateTeamActionsInStore(teamActions);
-    updateTeamActions({
-      functions: teamActions,
-      orgId: orgConfig.id
-    });
-  };
+      
+
+      console.log('Saving team actions:', teamActionsList);
+
+     
+
+      // Use setTimeout to defer the state update to next tick - prevents update cycles
+      setTimeout(() => {
+        // Update localStorage
+        updateTeamActionsInStore(teamActionsList);
+        
+        // Update DB asynchronously
+        updateTeamActions({
+          functions: teamActionsList,
+          orgId: orgConfig.id || ""
+        });
+      }, 0);
+    } catch (err) {
+      console.error("Error saving team actions:", err);
+    }
+  }, [orgConfig.id, localSelectedActivities, updateTeamActions]);
 
   return (
     <div>
+      
       <PageNavigator
         title="Select Function Actions"
         description={
@@ -109,10 +161,11 @@ export default function FunctionActionsPage() {
         currentStep={3}
         totalSteps={6}
         onNext={handleNext}
-        isLoading={teamActions.length === 0}
+        isLoading={isLoading || !initialized.current}
       />
       <div className="max-w-5xl mx-auto">
         <ActionsSelector
+          key={`function-actions-${initialized.current}-${actionsInitialized.current}`}
           categories={functionCategories}
           selectedActivities={localSelectedActivities}
           selectedByCategory={localSelectedByCategory}
@@ -120,9 +173,8 @@ export default function FunctionActionsPage() {
           updateActivitiesByCategory={handleLocalUpdateActivitiesByCategory}
           isFavorite={isFavorite}
           toggleFavorite={toggleFavorite}
-          isLoading={isLoading}
+          isLoading={isLoading || !initialized.current}
           minRequiredActionsPerCategory={0} // No minimum required for function actions
-          // mandatoryCategories={MANDATORY_CATEGORIES}
           categoriesTitle="Function Categories"
           categoriesDescription="Select actions for your function or department."
           hasInteracted={hasInteracted}

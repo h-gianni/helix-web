@@ -41,26 +41,53 @@ export default function PageNavigator({
 }: PageNavigatorProps) {
   const router = useRouter();
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
+  // The critical fix here is to make sure we don't trigger an infinite loop
+  // by properly managing the async flow and preventing multiple state updates
   const handleNextClick = useCallback(async () => {
+    // Prevent multiple clicks while processing
+    if (isProcessing) return;
+    
     if (canContinue) {
-      // Call onNext first if provided
-      if (onNext) {
-        onNext();
+      setIsProcessing(true);
+      try {
+        // Call onNext if provided, but don't wait for it
+        // This prevents state updates during render
+        if (onNext) {
+          // Use setTimeout to defer execution to next tick
+          // This helps break potential render-update cycles
+          setTimeout(() => {
+            onNext();
+          }, 0);
+        }
+        
+        // Call validation if provided
+        if (onValidationAttempt) {
+          onValidationAttempt();
+        }
+        
+        // Navigate to next page
+        router.push(nextHref);
+      } catch (error) {
+        console.error("Error in handleNextClick:", error);
+      } finally {
+        setIsProcessing(false);
       }
-      // Call validation first
-      if (onValidationAttempt) {
-        await onValidationAttempt();
-      }
-      // Only navigate if validation succeeds
-      router.push(nextHref);
     } else {
       setShowErrorAlert(true);
       if (onValidationAttempt) {
         onValidationAttempt();
       }
     }
-  }, [canContinue, nextHref, router, onValidationAttempt, onNext]);
+  }, [
+    canContinue, 
+    nextHref, 
+    router, 
+    onValidationAttempt, 
+    onNext, 
+    isProcessing
+  ]);
 
   return (
     <div>
@@ -72,6 +99,7 @@ export default function PageNavigator({
           <button
             className="flex flex-col justify-center items-center bg-transparent p-16 rounded-br-xl cursor-pointer hover:bg-neutral-50"
             onClick={() => router.push(previousHref)}
+            disabled={isProcessing || isLoading}
             aria-label="Go to previous step"
           >
             <div className="flex gap-2 items-center font-semibold">
@@ -83,18 +111,11 @@ export default function PageNavigator({
 
         {/* Title and description */}
         <div className="col-span-3 flex flex-col text-center items-center space-y-2 py-12">
-          {/* {currentStep !== undefined && totalSteps !== undefined && (
-              <Badge variant="secondary" className="mb-4">
-              Step {currentStep} of {totalSteps}
-              </Badge>
-          )} */}
-          {/* <div className="flex-shrink-0 mx-auto">
-            <div className="flex size-12 items-center justify-center rounded-full bg-neutral-50">
-              <User className="size-6 text-primary" />
-            </div>
-          </div> */}
           <h1 className="heading-1">{title}</h1>
           <p className="body-base text-foreground-weak">{description}</p>
+          {(isProcessing || isLoading) && (
+            <p className="text-sm italic mt-2">Processing...</p>
+          )}
         </div>
 
         {/* Next button - only show if not last step */}
@@ -102,8 +123,9 @@ export default function PageNavigator({
           <div></div> // Empty spacer to maintain layout
         ) : (
           <button
-            className="flex flex-col justify-center items-center bg-transparent p-16 rounded-bl-xl cursor-pointer hover:bg-neutral-50"
+            className="flex flex-col justify-center items-center bg-transparent p-16 rounded-bl-xl cursor-pointer hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleNextClick}
+            disabled={isProcessing || isLoading}
             aria-label="Go to next step"
           >
             <div className="flex items-center gap-2 text-primary font-semibold">
@@ -113,6 +135,7 @@ export default function PageNavigator({
           </button>
         )}
       </div>
+      
       {/* Show error alert if validation fails */}
       <div className="max-w-2xl mx-auto pb-4">
       {showErrorAlert && !canContinue && (

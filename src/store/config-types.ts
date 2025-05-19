@@ -42,6 +42,7 @@ export interface Configuration {
 export interface ConfigStore {
   config: Configuration;
   setConfig: (config: Configuration) => void;
+  
   updateOrganization: (organization: { name: string; siteDomain: string; id?: string }) => void;
   updateGlobalFunctions: (functions: { id: string; name: string; description: string; isEnabled: boolean }[]) => void;
   updateTeamActions: (functions: { id: string; name: string; description: string; isEnabled: boolean }[]) => void;

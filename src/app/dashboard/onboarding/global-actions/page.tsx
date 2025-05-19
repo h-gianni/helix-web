@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import PageNavigator from "../components/PageNavigator";
 import ActionsSelector from "../components/ActionsSelector";
 import { useActionsSelection } from "@/hooks/useActionsSelection";
@@ -14,11 +14,21 @@ export default function GlobalActionsPage() {
   const { mutate: updateGlobalFunctions } = useUpdateGlobalFunctions();
   const orgConfig = useConfigStore((state) => state.config.organization);
   const updateGlobalFunctionsInStore = useConfigStore((state) => state.updateGlobalFunctions);
+  const [initialSelectionDone, setInitialSelectionDone] = useState(false);
 
-  // Fetch existing global functions
-  const { data: existingGlobalFunctions, isLoading: isLoadingGlobalFunctions } = useGlobalFunctions(orgConfig.id || "");
+  // Fetch existing global functions only once at component mount
+  const { data: existingGlobalFunctions, isLoading: isLoadingGlobalFunctions } = useGlobalFunctions(
+    orgConfig.id || "",
+   
+  );
 
-  // Use our custom hook for actions selection
+  // Use our custom hook for actions selection with a stable reference
+  const actionsSelection = useActionsSelection({
+    categoryType: "general",
+    minRequired: MIN_REQUIRED_ACTIONS_PER_CATEGORY,
+    autoSelect: false, // We'll handle selection manually
+  });
+  
   const {
     selectedActivities,
     selectedByCategory,
@@ -31,75 +41,133 @@ export default function GlobalActionsPage() {
     hasInteracted,
     setHasInteracted,
     canContinue,
-  } = useActionsSelection({
-    categoryType: "general",
-    minRequired: MIN_REQUIRED_ACTIONS_PER_CATEGORY,
-    autoSelect: false, // We'll handle selection manually
-  });
+  } = actionsSelection;
 
   // Handle initial selection based on existing global functions
   useEffect(() => {
-
-    console.log('Existing Global Functions:-------------', existingGlobalFunctions);
-
-    if (!isLoadingGlobalFunctions && generalCategories.length > 0) {
-      console.log('Existing Global Functions:', existingGlobalFunctions);
-      console.log('General Categories:', generalCategories);
-
-      if (existingGlobalFunctions && existingGlobalFunctions.length > 0) {
-        // If we have existing global functions, use those
-        const existingActions = existingGlobalFunctions
-          .filter(func => func.status === "ACTIVE")
-          .map(func => ({
-            id: func.actionId,
-            name: func.action.name,
-            description: "",
-            isEnabled: true
-          }));
-        console.log('Mapped Existing Actions:', existingActions);
-        updateGlobalFunctionsInStore(existingActions);
-        updateActivities(existingActions.map(a => a.id));
-      } else {
-        // If no existing functions, select first 5 from each category
-        const initialSelections: string[] = [];
-        generalCategories.forEach(category => {
-          console.log('Processing category:', category);
-          if (category.actions && category.actions.length > 0) {
-            const categoryActions = category.actions.slice(0, MIN_REQUIRED_ACTIONS_PER_CATEGORY);
-            console.log('Selected actions for category:', categoryActions);
-            initialSelections.push(...categoryActions.map(a => a.id));
-            updateActivitiesByCategory(category.id, categoryActions.map(a => a.id));
-          }
-        });
-        console.log('Initial Selections:', initialSelections);
-        updateActivities(initialSelections);
-      }
+    if (initialSelectionDone || isLoadingGlobalFunctions || generalCategories.length === 0) {
+      return;
     }
-  }, [isLoadingGlobalFunctions, existingGlobalFunctions, generalCategories]);
 
-  const handleNext = () => {
-    console.log('Full config store state in handleNext:', useConfigStore.getState());
-    console.log('orgConfig in handleNext:', orgConfig);
+    console.log('Setting up initial selections...');
+    console.log('Existing Global Functions:', existingGlobalFunctions);
+    console.log('General Categories:', generalCategories);
+
+    // Create a map to track selections by category
+    const selectionsByCategory: Record<string, string[]> = {};
+    let allSelections: string[] = [];
     
+    if (existingGlobalFunctions && existingGlobalFunctions.length > 0) {
+      // If we have existing global functions, use those
+      const existingActions = existingGlobalFunctions
+        .filter(func => func.status === "ACTIVE")
+        .map(func => ({
+          id: func.actionId,
+          name: func.action.name,
+          description: "",
+          isEnabled: true
+        }));
+      
+      console.log('Mapped Existing Actions:', existingActions);
+      
+      // Update the store with existing functions
+      updateGlobalFunctionsInStore(existingActions);
+      
+      // Collect all action IDs
+      allSelections = existingActions.map(a => a.id);
+      
+      // Organize by category
+      generalCategories.forEach(category => {
+        // Find actions that belong to this category
+        const categoryActions = existingActions
+          .filter(action => {
+            // Find the action in the category's actions
+            return category.actions.some(a => a.id === action.id);
+          })
+          .map(a => a.id);
+        
+        if (categoryActions.length > 0) {
+          selectionsByCategory[category.id] = categoryActions;
+        }
+      });
+    } else {
+      // If no existing functions, select first 5 from each category
+      generalCategories.forEach(category => {
+        if (category.actions && category.actions.length > 0) {
+          const minActionsCount = Math.min(category.actions.length, MIN_REQUIRED_ACTIONS_PER_CATEGORY);
+          const categoryActions = category.actions.slice(0, minActionsCount);
+          const categoryActionIds = categoryActions.map(a => a.id);
+          
+          selectionsByCategory[category.id] = categoryActionIds;
+          allSelections = [...allSelections, ...categoryActionIds];
+        }
+      });
+    }
+    
+    console.log('Initial selections by category:', selectionsByCategory);
+    console.log('All initial selections:', allSelections);
+    
+    // Update state with our selections in a batch to prevent excessive rerenders
+    const batchUpdate = () => {
+      Object.entries(selectionsByCategory).forEach(([categoryId, actions]) => {
+        updateActivitiesByCategory(categoryId, actions);
+      });
+      updateActivities(allSelections);
+      
+      // Mark initialization as complete
+      setInitialSelectionDone(true);
+      setHasInteracted(true);
+    };
+    
+    batchUpdate();
+  }, [
+    isLoadingGlobalFunctions, 
+    existingGlobalFunctions, 
+    generalCategories, 
+    initialSelectionDone,
+    updateGlobalFunctionsInStore
+  ]);
+
+  // Memoize the handleNext function to prevent recreation on each render
+  const handleNext = useCallback(() => {
     if (!orgConfig.id) {
       console.error("Organization ID is missing. Full org config:", orgConfig);
       return;
     }
 
-    // Convert selected activities to global functions format
-    const globalFunctions = selectedActivities.map(activity => ({
-      id: activity,
-      name: activity,
-      description: "",
-      isEnabled: true
-    }));
-    
-    // Call the mutation to update global functions
-    updateGlobalFunctions({
-      functions: globalFunctions,
-      orgId: orgConfig.id
-    });
-  };
+    try {
+      // Get action names for the selected activity IDs
+      const actionMap = new Map();
+      generalCategories.forEach(category => {
+        category.actions.forEach(action => {
+          actionMap.set(action.id, action.name);
+        });
+      });
+
+      // Convert selected activities to global functions format
+      const globalFunctions = selectedActivities.map(activityId => ({
+        id: activityId,
+        name: actionMap.get(activityId) || activityId,
+        description: "",
+        isEnabled: true
+      }));
+      
+      console.log('Saving global functions:', globalFunctions);
+      
+      // Use setTimeout to defer execution to next tick to prevent render cycle updates
+      setTimeout(() => {
+        // Call the mutation to update global functions
+        updateGlobalFunctions({
+          functions: globalFunctions,
+          orgId: orgConfig.id || ""
+        });
+      }, 0);
+    } catch (err) {
+      console.error("Error in handleNext:", err);
+    }
+  }, [orgConfig.id, generalCategories, selectedActivities, updateGlobalFunctions]);
+
+  const isPageLoading = isLoading || isLoadingGlobalFunctions || !initialSelectionDone;
 
   return (
     <div>
@@ -120,10 +188,11 @@ export default function GlobalActionsPage() {
         totalSteps={6}
         disabledTooltip={`Please select at least ${MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions from each category to continue`}
         onNext={handleNext}
-        isLoading={isLoadingGlobalFunctions}
+        isLoading={isPageLoading}
       />
       <div className="max-w-5xl mx-auto">
         <ActionsSelector
+          key={`actions-selector-${initialSelectionDone}`} // Force re-render after initial selection
           categories={generalCategories}
           selectedActivities={selectedActivities}
           selectedByCategory={selectedByCategory}
@@ -131,7 +200,7 @@ export default function GlobalActionsPage() {
           updateActivitiesByCategory={updateActivitiesByCategory}
           isFavorite={isFavorite}
           toggleFavorite={toggleFavorite}
-          isLoading={isLoading || isLoadingGlobalFunctions}
+          isLoading={isPageLoading}
           minRequiredActionsPerCategory={MIN_REQUIRED_ACTIONS_PER_CATEGORY}
           mandatoryCategories={MANDATORY_CATEGORIES}
           categoriesTitle="Global Categories"

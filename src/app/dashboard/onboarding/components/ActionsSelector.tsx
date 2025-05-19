@@ -88,44 +88,52 @@ const ActionsSelector = React.memo(function ActionsSelector({
     [hasInteracted, setHasInteracted]
   );
 
-  // Handle action selection
+  // Get selected count for a category
+  const getSelectedCount = useCallback(
+    (categoryId: string): number => {
+      return selectedByCategory && selectedByCategory[categoryId]
+        ? selectedByCategory[categoryId].length
+        : 0;
+    },
+    [selectedByCategory]
+  );
+
+      // Handle action selection
   const handleSelectActivity = useCallback(
-    async (activityId: string, categoryId: string) => {
+    async (activityId: string, activityName: string, categoryId: string) => {
       // Check if this action is in a mandatory category
       const isMandatoryCategory = mandatoryCategories.includes(
         categories?.find((cat) => cat.id === categoryId)?.name || ""
       );
 
-      console.log('handleSelectActivity Debug:', {
+      const isCurrentlySelected = selectedActivitiesMap.has(activityId);
+      const currentSelectedCount = getSelectedCount(categoryId);
+      
+      // Calculate if deselecting would put us below the minimum
+      const wouldViolateMinimum = 
+        isMandatoryCategory &&
+        isCurrentlySelected && 
+        currentSelectedCount <= minRequiredActionsPerCategory;
+
+      console.log('handleSelectActivity Debugsd:', {
         activityId,
         categoryId,
         isMandatoryCategory,
-        currentSelectedCount: getSelectedCount(categoryId),
+        currentSelectedCount,
+        activityName,
         minRequired: minRequiredActionsPerCategory,
         currentSelected: selectedByCategory[categoryId] || [],
-        isCurrentlySelected: selectedActivitiesMap.has(activityId)
+        isCurrentlySelected,
+        wouldViolateMinimum
       });
 
-      // If it's in a mandatory category, check if deselecting would violate the minimum
-      if (
-        isMandatoryCategory &&
-        selectedActivitiesMap.has(activityId) &&
-        categoryId &&
-        minRequiredActionsPerCategory > 0
-      ) {
-        const currentSelected =
-          (selectedByCategory && selectedByCategory[categoryId]) || [];
-
-        // If deselecting would result in fewer than minimum required actions, prevent it
-        if (currentSelected.length <= minRequiredActionsPerCategory) {
-          console.log(
-            `Must keep at least ${minRequiredActionsPerCategory} actions selected in this category`
-          );
-          return;
-        }
+      // If it's in a mandatory category and deselecting would put us below minimum, prevent it
+      if (wouldViolateMinimum) {
+        console.log(
+          `Cannot deselect: Only ${currentSelectedCount} selected, minimum required is ${minRequiredActionsPerCategory}`
+        );
+        return;
       }
-
-      const isCurrentlySelected = selectedActivitiesMap.has(activityId);
 
       // If we're deselecting and it's favorited, remove from favorites too
       if (isCurrentlySelected && isFavorite(activityId, categoryId)) {
@@ -179,6 +187,7 @@ const ActionsSelector = React.memo(function ActionsSelector({
       updateActivitiesByCategory,
       isFavorite,
       toggleFavorite,
+      getSelectedCount,
     ]
   );
 
@@ -200,16 +209,6 @@ const ActionsSelector = React.memo(function ActionsSelector({
       }
     },
     [isFavorite, toggleFavorite]
-  );
-
-  // Get selected count for a category
-  const getSelectedCount = useCallback(
-    (categoryId: string): number => {
-      return selectedByCategory && selectedByCategory[categoryId]
-        ? selectedByCategory[categoryId].length
-        : 0;
-    },
-    [selectedByCategory]
   );
 
   // Check if all actions in a category are selected
@@ -235,6 +234,7 @@ const ActionsSelector = React.memo(function ActionsSelector({
       const categoryActionIds = category.actions.map((action) => action.id);
 
       if (checked) {
+        // When checking "select all", just select everything
         const newActivities = [
           ...new Set([...selectedActivities, ...categoryActionIds]),
         ];
@@ -245,30 +245,12 @@ const ActionsSelector = React.memo(function ActionsSelector({
         const isMandatory = mandatoryCategories.includes(category.name);
 
         // For each deselected action, also remove it from favorites
+        const actionsToUnfavorite: string[] = [];
+        
         for (const actionId of categoryActionIds) {
-          // Skip if it's a mandatory action we need to keep
-          if (
-            isMandatory &&
-            minRequiredActionsPerCategory > 0 &&
-            categoryActionIds.indexOf(actionId) < minRequiredActionsPerCategory
-          ) {
-            continue;
-          }
-
-          // If favorited, unfavorite it
+          // If favorited, collect for unfavoriting
           if (isFavorite(actionId, category.id)) {
-            try {
-              await toggleFavorite.mutateAsync({
-                actionId,
-                categoryId: category.id,
-                isFavorite: false,
-              });
-            } catch (err) {
-              console.error(
-                `Failed to remove favorite status for action ${actionId}:`,
-                err
-              );
-            }
+            actionsToUnfavorite.push(actionId);
           }
         }
 
@@ -287,19 +269,55 @@ const ActionsSelector = React.memo(function ActionsSelector({
           );
           updateActivities(newActivities);
           updateActivitiesByCategory(category.id, actionsToKeep);
+          
+          // Only unfavorite actions that are actually being deselected
+          const actionsToReallyUnfavorite = actionsToUnfavorite.filter(
+            id => !actionsToKeep.includes(id)
+          );
+          
+          // Unfavorite deselected actions
+          for (const actionId of actionsToReallyUnfavorite) {
+            try {
+              await toggleFavorite.mutateAsync({
+                actionId,
+                categoryId: category.id,
+                isFavorite: false,
+              });
+            } catch (err) {
+              console.error(
+                `Failed to remove favorite status for action ${actionId}:`,
+                err
+              );
+            }
+          }
         } else {
-          // For non-mandatory categories, proceed as normal
+          // For non-mandatory categories, deselect all
           const newActivities = selectedActivities.filter(
             (activityId) => !categoryActionIds.includes(activityId)
           );
           updateActivities(newActivities);
           updateActivitiesByCategory(category.id, []);
+          
+          // Unfavorite all deselected actions
+          for (const actionId of actionsToUnfavorite) {
+            try {
+              await toggleFavorite.mutateAsync({
+                actionId,
+                categoryId: category.id,
+                isFavorite: false,
+              });
+            } catch (err) {
+              console.error(
+                `Failed to remove favorite status for action ${actionId}:`,
+                err
+              );
+            }
+          }
         }
       }
     },
     [
       selectedActivities,
-      selectedActivitiesMap,
       updateActivities,
       updateActivitiesByCategory,
       mandatoryCategories,
@@ -441,54 +459,47 @@ const ActionsSelector = React.memo(function ActionsSelector({
               <div className="flex-1 overflow-auto">
                 <div className="divide-y divide-neutral-lighter">
                   {selectedCategory.actions.map((action) => {
-
-                    console.log('checking the catrgory:-------------', selectedCategory);
-
                     const isSelected = selectedActivitiesMap.has(action.id);
                     const selectedCount = getSelectedCount(selectedCategory.id);
-                    const isMandatoryAction =
-                      mandatoryCategories.includes(selectedCategory.name) &&
-                      isSelected &&
-                      minRequiredActionsPerCategory > 0 &&
-                      selectedCount === minRequiredActionsPerCategory;
-
-                    console.log('checking the isMad:-------------', isMandatoryAction);
-
-                    console.log('Action Debug:', {
-                      actionId: action.id,
-                      categoryName: selectedCategory.name,
-                      isMandatoryCategory: mandatoryCategories.includes(selectedCategory.name),
-                      isSelected,
-                      selectedCount,
-                      minRequired: minRequiredActionsPerCategory,
-                      isMandatoryAction,
-                      allSelectedActions: selectedActivities
-                    });
+                    // Check if this is a mandatory category
+                    const isMandatoryCategory = mandatoryCategories.includes(selectedCategory.name);
+                    
+                    // Calculate how many actions we can safely deselect before hitting the minimum
+                    const canDeselect = selectedCount - minRequiredActionsPerCategory;
+                    
+                    // This action is mandatory only if we're at exactly the minimum required actions
+                    // OR we have too few selected actions
+                    const isActionMandatory = 
+                      isMandatoryCategory && 
+                      isSelected && 
+                      minRequiredActionsPerCategory > 0 && 
+                      canDeselect <= 0;
 
                     const actionIsFavorite = isFavorite(
                       action.id,
                       selectedCategory.id
                     );
 
+                    // For mandatory categories, we'll disable deselection:
+                    // 1. Only if this particular action is already selected
+                    // 2. AND if removing it would put us below the minimum requirement
+                    const isActionDisabled = isActionMandatory;
+
                     return (
                       <div
                         key={action.id}
                         className={cn(
-                          "flex items-center gap-4 px-4 py-3 cursor-pointer hover:bg-neutral-50",
+                          "flex items-center gap-4 px-4 py-3",
                           isSelected ? "bg-primary-50" : "",
-                          isMandatoryAction ? "cursor-not-allowed" : "cursor-pointer"
+                          isActionDisabled
+                            ? "cursor-not-allowed"
+                            : "cursor-pointer hover:bg-neutral-50"
                         )}
                         onClick={() => {
-                          console.log('Action clicked:', {
-                            actionId: action.id,
-                            isMandatoryAction,
-                            selectedCount,
-                            minRequired: minRequiredActionsPerCategory
-                          });
-
-                          if (!isMandatoryAction) {
+                          if (!isActionDisabled) {
                             handleSelectActivity(
                               action.id,
+                              action.name,
                               selectedCategory.id
                             );
                           }
@@ -501,7 +512,14 @@ const ActionsSelector = React.memo(function ActionsSelector({
                             <Square className="text-neutral-300 size-5" />
                           )}
                         </div>
-                        <span className="text-base flex-1">{action.name}</span>
+                          <span className="text-base flex-1">
+                          {action.name}
+                          {isActionDisabled && (
+                            <span className="text-xs text-primary-700 ml-1">
+                              (Required to meet minimum)
+                            </span>
+                          )}
+                        </span>
 
                         {/* Favorite button - Only enabled when action is selected */}
                         <TooltipProvider>
