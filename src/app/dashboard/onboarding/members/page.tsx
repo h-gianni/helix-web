@@ -120,6 +120,8 @@ export default function MembersPage() {
 
     console.log('newMember:-------------', [...teamMembers, newMember]);
 
+  
+
     updateTeamMembers([...teamMembers, newMember]);
 
     
