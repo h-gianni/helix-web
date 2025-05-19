@@ -85,6 +85,9 @@ export default function TeamForm({
   }, [members, assignedMemberIds, selectedMembers]);
 
   const sortedCategories = useMemo(() => {
+
+   
+
     return [...displayCategories].sort((a, b) => {
       const nameA = getCategoryNameById(a) || "";
       const nameB = getCategoryNameById(b) || "";
@@ -94,6 +97,7 @@ export default function TeamForm({
 
   // Focus the team name input on mount when creating a new team
   React.useEffect(() => {
+    console.log('displayCategories:', displayCategories);
     if (!isEditing && teamNameInputRef.current) {
       teamNameInputRef.current.focus();
     }

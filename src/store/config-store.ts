@@ -20,7 +20,30 @@ const defaultConfig: Configuration = {
   teams: [],
   teamActions: [], // or whatever the proper type is
   teamMembers: [], // Add the teamMembers array property
+  selectedActionCategory: []
 };
+
+// Helper function to extract unique category IDs from team actions
+function extractCategoryIds(teamActions: {id: string;
+  name: string;
+  description: string;
+  categoryId?: string;
+  isEnabled: boolean;}[]): string[] {
+  if (!Array.isArray(teamActions)) return [];
+  
+  // Create a Set to ensure uniqueness
+  const categoryIdsSet = new Set<string>();
+  
+  teamActions.forEach(action => {
+    if (action && action.categoryId && typeof action.categoryId === 'string') {
+      categoryIdsSet.add(action.categoryId);
+    } else if (action && action.categoryId && typeof action.categoryId === 'object' && action.categoryId) {
+      categoryIdsSet.add(action.categoryId);
+    }
+  });
+  
+  return Array.from(categoryIdsSet);
+}
 
 // React Query mutation hook for organization name
 export const useUpdateOrganization = () => {
@@ -329,6 +352,7 @@ export interface ConfigStore {
   updateHidden: (category: string, activities: string[]) => void;
   updateTeams: (teams: Configuration["teams"]) => void;
   updateTeamMembers: (teamMembers: Configuration["teamMembers"]) => void;
+  updateSelectedActionCategory: (categoryIds: string[]) => void; // Add this new function
 }
 
 export const useConfigStore = create<ConfigStore>()(
@@ -356,10 +380,24 @@ export const useConfigStore = create<ConfigStore>()(
           console.warn('Expected teamActions to be an array, got:', teamActions);
           teamActions = [];
         }
+        
+        // Extract unique category IDs from team actions
+        const categoryIds = extractCategoryIds(teamActions);
+        
         set((state) => ({
-          config: { ...state.config, teamActions },
+          config: { 
+            ...state.config, 
+            teamActions,
+            selectedActionCategory: categoryIds // Update selectedActionCategory when teamActions changes
+          },
         }));  
       },
+      updateSelectedActionCategory: (categoryIds) => set((state) => ({
+        config: {
+          ...state.config,
+          selectedActionCategory: categoryIds,
+        },
+      })),
       updateActivities: (activities) =>
         set((state) => {
           return {
@@ -372,8 +410,6 @@ export const useConfigStore = create<ConfigStore>()(
             },
           };
         }),
-      // New function to update activities by category
-      // New function to update activities by category
       updateActivitiesByCategory: (categoryId: string, activities: string[]) =>
         set((state) => {
           if (!categoryId) {
@@ -411,6 +447,13 @@ export const useConfigStore = create<ConfigStore>()(
             [categoryId]: activities,
           };
 
+          // Check if we need to update selectedActionCategory
+          let updatedSelectedActionCategory = [...state.config.selectedActionCategory];
+          if (activities.length > 0 && !updatedSelectedActionCategory.includes(categoryId)) {
+            updatedSelectedActionCategory.push(categoryId);
+          } else if (activities.length === 0 && updatedSelectedActionCategory.includes(categoryId)) {
+            updatedSelectedActionCategory = updatedSelectedActionCategory.filter(id => id !== categoryId);
+          }
 
           return {
             config: {
@@ -420,6 +463,7 @@ export const useConfigStore = create<ConfigStore>()(
                 selected: updatedSelected,
                 selectedByCategory: updatedSelectedByCategory,
               },
+              selectedActionCategory: updatedSelectedActionCategory
             },
           };
         }),
@@ -473,6 +517,16 @@ export const useConfigStore = create<ConfigStore>()(
           // Ensure critical arrays exist
           if (!state.config.teamActions) {
             state.updateTeamActions([]);  
+          }
+          
+          // If selectedActionCategory doesn't exist, initialize it
+          if (!state.config.selectedActionCategory) {
+            state.config.selectedActionCategory = [];
+            
+            // Extract category IDs from existing team actions if available
+            if (Array.isArray(state.config.teamActions) && state.config.teamActions.length > 0) {
+              state.updateSelectedActionCategory(extractCategoryIds(state.config.teamActions));
+            }
           }
         }
       }

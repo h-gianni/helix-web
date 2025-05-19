@@ -102,22 +102,23 @@ export default function FunctionActionsPage() {
       return;
     }
 
-    console.log('Saving team actions:', localSelectedActivities[0]);
+   
   
 
     try {
       // Convert selected activities to team actions format
       const teamActionsList = localSelectedActivities.map(activityId => {
-        // Find the action in categories to get its name
+        // Find the action and its category in categories
         const action = functionCategories
-          .flatMap(cat => cat.actions)
+          .flatMap(cat => cat.actions.map(a => ({ ...a, categoryId: cat.id })))
           .find(a => a.id === activityId);
         
         return {
           id: activityId,
           name: action?.name || activityId,
           description: "",
-          isEnabled: true
+          isEnabled: true,
+          categoryId: action?.categoryId || ""
         };
       });
 

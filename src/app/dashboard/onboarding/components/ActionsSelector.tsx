@@ -335,6 +335,8 @@ const ActionsSelector = React.memo(function ActionsSelector({
 
   // Set first category as selected if none is selected and categories are available
   useEffect(() => {
+
+    console.log('filteredCategories--------:', selectedCategoryId);
     if (filteredCategories?.length > 0 && !selectedCategoryId && !isLoading) {
       setSelectedCategoryId(filteredCategories[0].id);
       if (setHasInteracted && !hasInteracted) {

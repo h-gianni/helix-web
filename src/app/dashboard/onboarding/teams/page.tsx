@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/core/Card";
 import { Badge } from "@/components/ui/core/Badge";
 import { useTeamsManagement } from "@/hooks/useTeamsManagement";
 import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
+import type { ActionCategory } from "@/lib/types/api/action";
 import { useConfigStore } from "@/store/config-store";
 import { HeroBadge } from "@/components/ui/core/HeroBadge";
 
@@ -34,7 +35,11 @@ export default function TeamsPage() {
 
   // Get the selected actions from config store
   const selectedByCategory = useConfigStore(
-    (state) => state.config.activities.selectedByCategory || {}
+    (state) => state.config.selectedActionCategory || []
+  );
+
+  const linkedTeamActions = useConfigStore(
+    (state) => state.config.teamActions || []
   );
 
   const {
@@ -67,22 +72,38 @@ export default function TeamsPage() {
   };
 
   // Filter categories to only include those with selected actions and not mandatory categories
-  const filteredDisplayCategories = Object.keys(selectedByCategory).filter(
-    (categoryId) => {
-      // Only include categories with selected actions
-      if (!selectedByCategory[categoryId]?.length) return false;
+  // const filteredDisplayCategories = Object.keys(selectedByCategory)
+  //   .filter((categoryId) => {
+  //     // Only include categories with selected actions
+  //     if (!selectedByCategory.length) return false;
 
-      // Get the category name
-      const categoryName = getCategoryNameById(categoryId);
+  //     // Get the category name
+  //     const categoryName = getCategoryNameById(categoryId);
+     
 
-      // Exclude mandatory categories
-      return !MANDATORY_CATEGORIES.includes(categoryName || "");
-    }
-  );
+  //     // Exclude mandatory categories
+  //     if (MANDATORY_CATEGORIES.includes(categoryName || "")) return false;
+
+  //     // Find the category in actionCategories
+  //     const category = actionCategories?.find(c => c.id === categoryId);
+      
+  //     // Only include core categories (team action categories)
+  //     return category && !MANDATORY_CATEGORIES.includes(category.name);
+  //   });
+
+  // Store category information for reference
+  // const categoryInfo = filteredDisplayCategories.reduce((acc, categoryId) => {
+  //   const category = actionCategories?.find(c => c.id === categoryId);
+  //   acc[categoryId] = {
+  //     name: category?.name || 'Unknown Category',
+  //     actions: selectedByCategory[categoryId] || []
+  //   };
+  //   return acc;
+  // }, {} as Record<string, { name: string; actions: string[] }>);
 
   // Helper function to get action count
   const getActionCountForCategory = (categoryId: string): number => {
-    return selectedByCategory[categoryId]?.length || 0;
+    return selectedByCategory?.length || 0;
   };
 
   // Transform teams for TeamList component
@@ -128,11 +149,11 @@ export default function TeamsPage() {
     const hasFunctions = currentTeam.functions.length > 0;
     const hasMembers = currentTeam.members.length > 0;
 
-    // Only create if all required fields are filled
-    if (hasName && hasFunctions && hasMembers) {
-      createTeam(getCategoryNameById);
-      setShowValidationErrors(false);
-    }
+    // // Only create if all required fields are filled
+    // if (hasName && hasFunctions && hasMembers) {
+    //   createTeam(getCategoryNameById);
+    //   setShowValidationErrors(false);
+    // }
   };
 
   // Handle update team with validation
@@ -145,11 +166,11 @@ export default function TeamsPage() {
     const hasFunctions = currentTeam.functions.length > 0;
     const hasMembers = currentTeam.members.length > 0;
 
-    // Only update if all required fields are filled
-    if (hasName && hasFunctions && hasMembers) {
-      updateTeam(getCategoryNameById);
-      setShowValidationErrors(false);
-    }
+    // // Only update if all required fields are filled
+    // if (hasName && hasFunctions && hasMembers) {
+    //   updateTeam(getCategoryNameById);
+    //   setShowValidationErrors(false);
+    // }
   };
 
   // Handle validation attempt
@@ -159,15 +180,18 @@ export default function TeamsPage() {
 
   // Log available categories for debugging
   useEffect(() => {
+
+    console.log('linkedTeamActions:', linkedTeamActions);
+
     if (actionCategories) {
       console.log(
         "Available categories:",
         actionCategories.map((c) => ({ id: c.id, name: c.name }))
       );
       console.log("Selected actions by category:", selectedByCategory);
-      console.log("Filtered display categories:", filteredDisplayCategories);
+      console.log("Filtered display categories:", selectedByCategory);
     }
-  }, [actionCategories, selectedByCategory, filteredDisplayCategories]);
+  }, [actionCategories, selectedByCategory, displayCategories]);
 
   return (
     <div>
@@ -226,7 +250,7 @@ export default function TeamsPage() {
               }
               isEditing={currentTeam.id !== null}
               members={members}
-              displayCategories={filteredDisplayCategories}
+              displayCategories={selectedByCategory}
               onTeamNameChange={setTeamName}
               onFunctionToggle={handleFunctionToggle}
               onMemberToggle={handleMemberToggle}
