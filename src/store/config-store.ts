@@ -109,26 +109,33 @@ export const useUpdateGlobalFunctions = () => {
       const uniqueFunctions = Array.from(
         new Map(functions.map(f => [f.id, f])).values()
       );
-      // Then push to database
+
+      const actions = uniqueFunctions.map(func => ({
+        actionId: func.id,
+        status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
+      }));
+
       const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
         "/org/actions",
         {
           orgId,
-          actions: uniqueFunctions.map(func => ({
-            actionId: func.id,
-            status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
-          }))
+          actions
         }
       );
 
       if (!response.data.success) {
         throw new Error(response.data.error || "Failed to update global functions");
       }
+
+      // Update the store with the response data
+      updateGlobalFunctionsInStore(uniqueFunctions);
+
       return response.data.data;
     },
     onSuccess: (data) => {
       // Invalidate relevant queries
       queryClient.invalidateQueries({ queryKey: ["global-functions"] });
+      queryClient.invalidateQueries({ queryKey: ["org-actions"] });
     },
   });
 };
@@ -338,6 +345,83 @@ export const useSaveMembersToDatabase = () => {
   });
 };
 
+// Add new mutation for storing global actions
+export const useStoreGlobalActions = () => {
+  const queryClient = useQueryClient();
+  const configStore = useConfigStore();
+
+  return useMutation({
+    mutationFn: async () => {
+      const selectedActivities = configStore.config.activities.selected;
+      const orgId = configStore.config.organization.id;
+
+      if (!orgId) {
+        throw new Error("Organization ID is required");
+      }
+
+      // Transform selected activities into the required format
+      const actions = selectedActivities.map(actionId => ({
+        actionId,
+        status: "ACTIVE"
+      }));
+
+      // Store in database
+      const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
+        "/org/actions",
+        {
+          orgId,
+          actions
+        }
+      );
+
+      if (!response.data.success || !response.data.data) {
+        throw new Error(response.data.error || "Failed to store global actions");
+      }
+
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      if (!data?.actions) return;
+      
+      // Update the global functions in the store
+      const globalFunctions = data.actions.map(action => ({
+        id: action.actionId,
+        name: action.name || action.actionId,
+        description: action.description || "",
+        isEnabled: action.status === "ACTIVE"
+      }));
+
+      // Update both Zustand store and localStorage
+      configStore.updateGlobalFunctions(globalFunctions);
+
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["global-functions"] });
+      queryClient.invalidateQueries({ queryKey: ["org-actions"] });
+    },
+  });
+};
+
+// Add a new function to sync selected activities with global functions
+export const useSyncSelectedActivitiesWithGlobalFunctions = () => {
+  const configStore = useConfigStore();
+  const storeGlobalActions = useStoreGlobalActions();
+
+  const syncActivities = async () => {
+    try {
+      await storeGlobalActions.mutateAsync();
+    } catch (error) {
+      console.error("Failed to sync activities with global functions:", error);
+      throw error;
+    }
+  };
+
+  return {
+    syncActivities,
+    isLoading: storeGlobalActions.isPending,
+    error: storeGlobalActions.error
+  };
+};
+
 export interface ConfigStore {
   isHydrated: boolean;
   setHydrated: (state: boolean) => void;
@@ -353,6 +437,7 @@ export interface ConfigStore {
   updateTeams: (teams: Configuration["teams"]) => void;
   updateTeamMembers: (teamMembers: Configuration["teamMembers"]) => void;
   updateSelectedActionCategory: (categoryIds: string[]) => void; // Add this new function
+  syncSelectedActivitiesWithGlobalFunctions: () => Promise<void>;
 }
 
 export const useConfigStore = create<ConfigStore>()(
@@ -419,33 +504,17 @@ export const useConfigStore = create<ConfigStore>()(
             return state; // Return state unchanged if no categoryId
           }
 
-          // Get current selected activities
-          const currentSelected = [...state.config.activities.selected];
+          // Get current selected activities and selected by category
+          const selectedByCategory = { ...state.config.activities.selectedByCategory };
+          
+          // Update the category-specific selection
+          selectedByCategory[categoryId] = activities;
 
-          // Safely get current activities for this category
-          const selectedByCategory =
-            state.config.activities.selectedByCategory || {};
-          const currentCategoryActivities =
-            selectedByCategory[categoryId] || [];
-
-          // Determine which activities to add and which to remove
-          const activitiesToRemove = currentCategoryActivities.filter(
-            (id) => !activities.includes(id)
-          );
-          const activitiesToAdd = activities.filter(
-            (id) => !currentCategoryActivities.includes(id)
-          );
-
-          // Update the global selected activities list
-          const updatedSelected = currentSelected
-            .filter((id) => !activitiesToRemove.includes(id))
-            .concat(activitiesToAdd);
-
-          // Create a new selectedByCategory object with the updated activities
-          const updatedSelectedByCategory = {
-            ...selectedByCategory,
-            [categoryId]: activities,
-          };
+          // Rebuild the global selected activities from all categories
+          const allSelected = new Set<string>();
+          Object.values(selectedByCategory).forEach(categoryActivities => {
+            categoryActivities.forEach(activity => allSelected.add(activity));
+          });
 
           // Check if we need to update selectedActionCategory
           let updatedSelectedActionCategory = [...state.config.selectedActionCategory];
@@ -455,13 +524,21 @@ export const useConfigStore = create<ConfigStore>()(
             updatedSelectedActionCategory = updatedSelectedActionCategory.filter(id => id !== categoryId);
           }
 
+          // Debug log
+          console.log('Updating activities state:', {
+            categoryId,
+            newCategoryActivities: activities,
+            newGlobalSelected: Array.from(allSelected),
+            selectedByCategory
+          });
+
           return {
             config: {
               ...state.config,
               activities: {
                 ...state.config.activities,
-                selected: updatedSelected,
-                selectedByCategory: updatedSelectedByCategory,
+                selected: Array.from(allSelected),
+                selectedByCategory,
               },
               selectedActionCategory: updatedSelectedActionCategory
             },
@@ -507,6 +584,50 @@ export const useConfigStore = create<ConfigStore>()(
             teamMembers,
           },
         })),
+      syncSelectedActivitiesWithGlobalFunctions: async () => {
+        const state = get();
+        const selectedActivities = state.config.activities.selected;
+        const orgId = state.config.organization.id;
+
+        if (!orgId) {
+          throw new Error("Organization ID is required");
+        }
+
+        try {
+          const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
+            "/org/actions",
+            {
+              orgId,
+              actions: selectedActivities.map(actionId => ({
+                actionId,
+                status: "ACTIVE"
+              }))
+            }
+          );
+
+          if (!response.data.success || !response.data.data) {
+            throw new Error(response.data.error || "Failed to sync activities");
+          }
+
+          // Update global functions in the store
+          const globalFunctions = response.data.data.actions.map(action => ({
+            id: action.actionId,
+            name: action.name || action.actionId,
+            description: action.description || "",
+            isEnabled: action.status === "ACTIVE"
+          }));
+
+          set((state) => ({
+            config: {
+              ...state.config,
+              globalFunctions
+            }
+          }));
+        } catch (error) {
+          console.error("Failed to sync activities:", error);
+          throw error;
+        }
+      }
     }),
     {
       name: "app-configuration",

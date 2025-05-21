@@ -98,15 +98,23 @@ const ActionsSelector = React.memo(function ActionsSelector({
     [selectedByCategory]
   );
 
-      // Handle action selection
+  // Handle action selection
   const handleSelectActivity = useCallback(
     async (activityId: string, activityName: string, categoryId: string) => {
+      // Prevent processing if activityId is already being processed
+      if (!activityId || !categoryId) {
+        console.log('Invalid activity or category ID');
+        return;
+      }
+
       // Check if this action is in a mandatory category
       const isMandatoryCategory = mandatoryCategories.includes(
         categories?.find((cat) => cat.id === categoryId)?.name || ""
       );
 
-      const isCurrentlySelected = selectedActivitiesMap.has(activityId);
+      // Check if activity is currently selected using the actual selectedActivities array
+      const isCurrentlySelected = selectedActivities.includes(activityId);
+      
       const currentSelectedCount = getSelectedCount(categoryId);
       
       // Calculate if deselecting would put us below the minimum
@@ -115,15 +123,14 @@ const ActionsSelector = React.memo(function ActionsSelector({
         isCurrentlySelected && 
         currentSelectedCount <= minRequiredActionsPerCategory;
 
-      console.log('handleSelectActivity Debugsd:', {
+      // Debug logging
+      console.log('Selection State Before Update:', {
         activityId,
-        categoryId,
-        isMandatoryCategory,
-        currentSelectedCount,
-        activityName,
-        minRequired: minRequiredActionsPerCategory,
-        currentSelected: selectedByCategory[categoryId] || [],
         isCurrentlySelected,
+        currentSelectedCount,
+        currentSelected: selectedActivities,
+        categorySelected: selectedByCategory[categoryId] || [],
+        categoryId,
         wouldViolateMinimum
       });
 
@@ -138,7 +145,6 @@ const ActionsSelector = React.memo(function ActionsSelector({
       // If we're deselecting and it's favorited, remove from favorites too
       if (isCurrentlySelected && isFavorite(activityId, categoryId)) {
         try {
-          // Unfavorite the action when it's deselected
           await toggleFavorite.mutateAsync({
             actionId: activityId,
             categoryId,
@@ -149,41 +155,36 @@ const ActionsSelector = React.memo(function ActionsSelector({
         }
       }
 
-      // Proceed with selection/deselection
-      const newActivities = isCurrentlySelected
-        ? selectedActivities.filter((a) => a !== activityId)
-        : [...selectedActivities, activityId];
-      updateActivities(newActivities);
+      // Get current category activities
+      const currentCategoryActivities = [...(selectedByCategory[categoryId] || [])];
 
-      if (categoryId) {
-        const currentCategoryActivities =
-          selectedByCategory && selectedByCategory[categoryId]
-            ? [...selectedByCategory[categoryId]]
-            : [];
-
-        let updatedCategoryActivities;
-        if (isCurrentlySelected) {
-          updatedCategoryActivities = currentCategoryActivities.filter(
-            (id) => id !== activityId
-          );
-        } else {
-          updatedCategoryActivities = [
-            ...currentCategoryActivities,
-            activityId,
-          ];
-        }
-
-        updateActivitiesByCategory(categoryId, updatedCategoryActivities);
+      // Update category activities
+      let newCategoryActivities: string[];
+      if (isCurrentlySelected) {
+        // Remove the activity from category
+        newCategoryActivities = currentCategoryActivities.filter(id => id !== activityId);
+      } else {
+        // Add the activity to category
+        newCategoryActivities = [...currentCategoryActivities, activityId];
       }
+
+      // Debug logging after state preparation
+      console.log('State Update:', {
+        action: isCurrentlySelected ? 'removing' : 'adding',
+        activityId,
+        categoryId,
+        newCategoryActivities
+      });
+
+      // Only update activities by category - this will handle the global selected activities
+      updateActivitiesByCategory(categoryId, newCategoryActivities);
     },
     [
-      mandatoryCategories,
       categories,
       selectedActivities,
-      selectedActivitiesMap,
       selectedByCategory,
+      mandatoryCategories,
       minRequiredActionsPerCategory,
-      updateActivities,
       updateActivitiesByCategory,
       isFavorite,
       toggleFavorite,

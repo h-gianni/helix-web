@@ -11,7 +11,7 @@ import { useConfigStore, useUpdateGlobalFunctions, useGlobalFunctions } from "@/
 
 export default function GlobalActionsPage() {
   const MIN_REQUIRED_ACTIONS_PER_CATEGORY = 5;
-  const { mutate: updateGlobalFunctions } = useUpdateGlobalFunctions();
+  // const { mutate: updateGlobalFunctions } = useUpdateGlobalFunctions();
   const orgConfig = useConfigStore((state) => state.config.organization);
   const updateGlobalFunctionsInStore = useConfigStore((state) => state.updateGlobalFunctions);
   const [initialSelectionDone, setInitialSelectionDone] = useState(false);
@@ -155,17 +155,17 @@ export default function GlobalActionsPage() {
       console.log('Saving global functions:', globalFunctions);
       
       // Use setTimeout to defer execution to next tick to prevent render cycle updates
-      setTimeout(() => {
-        // Call the mutation to update global functions
-        updateGlobalFunctions({
-          functions: globalFunctions,
-          orgId: orgConfig.id || ""
-        });
-      }, 0);
+      // setTimeout(() => {
+      //   // Call the mutation to update global functions
+      //   updateGlobalFunctions({
+      //     functions: globalFunctions,
+      //     orgId: orgConfig.id || ""
+      //   });
+      // }, 0);
     } catch (err) {
       console.error("Error in handleNext:", err);
     }
-  }, [orgConfig.id, generalCategories, selectedActivities, updateGlobalFunctions]);
+  }, [orgConfig.id, generalCategories, selectedActivities]);
 
   const isPageLoading = isLoading || isLoadingGlobalFunctions || !initialSelectionDone;
 
