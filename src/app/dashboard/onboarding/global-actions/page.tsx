@@ -10,7 +10,8 @@ import {
   useConfigStore, 
   useUpdateGlobalFunctions, 
   useGlobalFunctions,
-  useActionsSelection 
+  useActionsSelection,
+  useStoreGlobalActions 
 } from "@/store/config-store";
 
 export default function GlobalActionsPage() {
@@ -18,6 +19,7 @@ export default function GlobalActionsPage() {
   const orgConfig = useConfigStore((state) => state.config.organization);
   const updateGlobalFunctionsInStore = useConfigStore((state) => state.updateGlobalFunctions);
   const [initialSelectionDone, setInitialSelectionDone] = useState(false);
+  const { mutate: storeGlobalActions } = useStoreGlobalActions();
 
   // Fetch existing global functions only once at component mount
   const { data: existingGlobalFunctions, isLoading: isLoadingGlobalFunctions } = useGlobalFunctions(
@@ -43,22 +45,34 @@ export default function GlobalActionsPage() {
     showMandatoryOnly: true
   });
 
-  // Handle initial selection based on existing global functions
+  // Handle initial selection based on localStorage or existing global functions
   useEffect(() => {
     if (initialSelectionDone || isLoadingGlobalFunctions || generalCategories.length === 0) {
       return;
     }
 
     console.log('Setting up initial selections...');
-    console.log('Existing Global Functions:', existingGlobalFunctions);
-    console.log('General Categories:', generalCategories);
-
-    // Create a map to track selections by category
-    const selectionsByCategory: Record<string, string[]> = {};
-    let allSelections: string[] = [];
     
+    // Check localStorage first
+    const storedConfig = localStorage.getItem('app-configuration');
+    const parsedConfig = storedConfig ? JSON.parse(storedConfig) : null;
+    const storedSelections = parsedConfig?.state?.config?.activities?.selected || [];
+    const storedByCategory = parsedConfig?.state?.config?.activities?.selectedByCategory || {};
+
+    if (storedSelections.length > 0) {
+      console.log('Found stored selections in localStorage:', storedSelections);
+      updateActivities(storedSelections);
+      Object.entries(storedByCategory).forEach(([categoryId, actions]) => {
+        updateActivitiesByCategory(categoryId, actions as string[]);
+      });
+      setInitialSelectionDone(true);
+      setHasInteracted(true);
+      return;
+    }
+
+    // If no localStorage data, check database
     if (existingGlobalFunctions && existingGlobalFunctions.length > 0) {
-      // If we have existing global functions, use those
+      console.log('Using existing global functions from database:', existingGlobalFunctions);
       const existingActions = existingGlobalFunctions
         .filter(func => func.status === "ACTIVE")
         .map(func => ({
@@ -68,30 +82,34 @@ export default function GlobalActionsPage() {
           isEnabled: true
         }));
       
-      console.log('Mapped Existing Actions:', existingActions);
-      
       // Update the store with existing functions
       updateGlobalFunctionsInStore(existingActions);
       
-      // Collect all action IDs
-      allSelections = existingActions.map(a => a.id);
+      // Create selections map
+      const selectionsByCategory: Record<string, string[]> = {};
+      const allSelections = existingActions.map(a => a.id);
       
       // Organize by category
       generalCategories.forEach(category => {
-        // Find actions that belong to this category
         const categoryActions = existingActions
-          .filter(action => {
-            // Find the action in the category's actions
-            return category.actions.some(a => a.id === action.id);
-          })
+          .filter(action => category.actions.some(a => a.id === action.id))
           .map(a => a.id);
         
         if (categoryActions.length > 0) {
           selectionsByCategory[category.id] = categoryActions;
         }
       });
+
+      // Update state
+      Object.entries(selectionsByCategory).forEach(([categoryId, actions]) => {
+        updateActivitiesByCategory(categoryId, actions);
+      });
+      updateActivities(allSelections);
     } else {
-      // If no existing functions, select first 5 from each category
+      // If no existing data anywhere, select first 5 from each category
+      const selectionsByCategory: Record<string, string[]> = {};
+      let allSelections: string[] = [];
+      
       generalCategories.forEach(category => {
         if (category.actions && category.actions.length > 0) {
           const minActionsCount = Math.min(category.actions.length, MIN_REQUIRED_ACTIONS_PER_CATEGORY);
@@ -102,28 +120,20 @@ export default function GlobalActionsPage() {
           allSelections = [...allSelections, ...categoryActionIds];
         }
       });
-    }
-    
-    console.log('Initial selections by category:', selectionsByCategory);
-    console.log('All initial selections:', allSelections);
-    
-    // Update state with our selections in a batch to prevent excessive rerenders
-    const batchUpdate = () => {
+
+      // Update state
       Object.entries(selectionsByCategory).forEach(([categoryId, actions]) => {
         updateActivitiesByCategory(categoryId, actions);
       });
       updateActivities(allSelections);
-      
-      // Mark initialization as complete
-      setInitialSelectionDone(true);
-      setHasInteracted(true);
-    };
+    }
     
-    batchUpdate();
+    setInitialSelectionDone(true);
+    setHasInteracted(true);
   }, [
-    isLoadingGlobalFunctions, 
-    existingGlobalFunctions, 
-    generalCategories, 
+    isLoadingGlobalFunctions,
+    existingGlobalFunctions,
+    generalCategories,
     initialSelectionDone,
     updateGlobalFunctionsInStore,
     updateActivities,
@@ -139,33 +149,52 @@ export default function GlobalActionsPage() {
       return;
     }
 
-    try {
-      // Get action names for the selected activity IDs
-      const actionMap = new Map();
-      // generalCategories.forEach(category => {
-      //   category.actions.forEach(action => {
-      //     actionMap.set(action.id, action.name);
-      //   });
-      // });
+    // Check if each mandatory category has minimum required actions
+    const hasMinimumActions = MANDATORY_CATEGORIES.every(categoryName => {
+      const category = generalCategories.find(cat => cat.name === categoryName);
+      if (!category) return false;
+      
+      const selectedCount = selectedByCategory[category.id]?.length || 0;
+      if (selectedCount < MIN_REQUIRED_ACTIONS_PER_CATEGORY) {
+        console.error(`Category ${categoryName} has only ${selectedCount} actions selected. Minimum required: ${MIN_REQUIRED_ACTIONS_PER_CATEGORY}`);
+        return false;
+      }
+      return true;
+    });
 
+    if (!hasMinimumActions) {
+      console.error("Not all mandatory categories have minimum required actions");
+      return;
+    }
+
+    try {
       // Convert selected activities to global functions format
       const globalFunctions = selectedActivities.map(activityId => ({
         id: activityId,
-        name: actionMap.get(activityId) || activityId,
+        name: activityId,
         description: "",
         isEnabled: true
       }));
 
-      console.log('Selected activities:', selectedActivities);
-      
       console.log('Saving global functions:', globalFunctions);
       
-      // Update the store with the new global functions
+      // Update both localStorage and database
       updateGlobalFunctionsInStore(globalFunctions);
+      
+      // Store in database
+      storeGlobalActions();
+      
     } catch (err) {
       console.error("Error in handleNext:", err);
     }
-  }, [orgConfig.id, generalCategories, selectedActivities, updateGlobalFunctionsInStore]);
+  }, [
+    orgConfig.id,
+    selectedActivities,
+    selectedByCategory,
+    generalCategories,
+    updateGlobalFunctionsInStore,
+    storeGlobalActions
+  ]);
 
   const isPageLoading = isLoading || isLoadingGlobalFunctions || !initialSelectionDone;
 

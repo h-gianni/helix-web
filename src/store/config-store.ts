@@ -175,7 +175,8 @@ export const useUpdateTeamActions = () => {
   const queryClient = useQueryClient();
 
   const updateTeamActionsInStore = useConfigStore((state) => state.updateTeamActions);
-  const globalFunctions = useConfigStore((state) => state.config.globalFunctions || []);
+  //const globalFunctions = useConfigStore((state) => state.config.globalFunctions || []);
+  const globalFunctions = useConfigStore((state) => state.config.activities.selected || []);
 
   return useMutation({
     mutationFn: async ({ functions, orgId }: { functions: { id: string; name: string; description: string; isEnabled: boolean }[], orgId: string }) => {
@@ -706,21 +707,40 @@ export const useConfigStore = create<ConfigStore>()(
         }, 0);
       },
       canContinue: ({ minRequired = 0 }) => {
+
         const state = get();
         const allCategories = state.config.actions || [];
         const selectedByCategory = state.config.activities.selectedByCategory;
 
-        if (!allCategories.length) return false;
+
+        console.log('Checking if we can continue:', {
+          minRequired,
+          allCategories: state.config.actions,
+          selectedByCategory: state.config.activities.selectedByCategory
+        });
+
+
+        // if (!allCategories.length) return false;
         
         // For mandatory categories, ensure each has minimum required selections
-        const mandatoryCategories = allCategories.filter(category => 
-          MANDATORY_CATEGORIES.includes(category.name)
-        );
+        // const mandatoryCategories = allCategories.filter(category => 
+        //   MANDATORY_CATEGORIES.includes(category.name)
+        // );
 
-        return mandatoryCategories.every(category => {
-          const selectedCount = selectedByCategory[category.id]?.length || 0;
+        const mandatoryCategories = state.config.activities.selectedByCategory
+
+        console.log('Mandatory categories:', state.config.activities.selectedByCategory, selectedByCategory);
+
+        const categoryResult = Object.keys(mandatoryCategories).every(category => {
+          const selectedCount = selectedByCategory[category]?.length || 0;
           return selectedCount >= minRequired;
         });
+
+        console.log('Category result:', categoryResult);
+
+        
+
+        return categoryResult;
       },
       autoSelectActions: ({  minRequired = 0, autoSelect = false }) => {
         const state = get();
