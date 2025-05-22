@@ -186,7 +186,7 @@ export default function GlobalActionsPage() {
         canContinue={canContinue()}
         currentStep={2}
         totalSteps={6}
-        disabledTooltip={`Please select at least ${MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions from each category to continue`}
+        disabledTooltip={`Please select at least ${MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions from each mandatory category (Cultural Behaviours & Values, Customer Centricity, and Teamwork) to continue`}
         onNext={handleNext}
         isLoading={isPageLoading}
       />

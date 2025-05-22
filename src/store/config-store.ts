@@ -544,17 +544,14 @@ export const useConfigStore = create<ConfigStore>()(
 
           // Rebuild the global selected activities from all categories
           const allSelected = new Set<string>();
-          Object.values(selectedByCategory).forEach(categoryActivities => {
-            categoryActivities.forEach(activity => allSelected.add(activity));
+          Object.entries(selectedByCategory).forEach(([catId, categoryActivities]) => {
+            // Only include activities from this category if they are in the current selection
+            if (catId === categoryId) {
+              activities.forEach(activity => allSelected.add(activity));
+            } else {
+              categoryActivities.forEach(activity => allSelected.add(activity));
+            }
           });
-
-          // Check if we need to update selectedActionCategory
-          let updatedSelectedActionCategory = [...state.config.selectedActionCategory];
-          if (activities.length > 0 && !updatedSelectedActionCategory.includes(categoryId)) {
-            updatedSelectedActionCategory.push(categoryId);
-          } else if (activities.length === 0 && updatedSelectedActionCategory.includes(categoryId)) {
-            updatedSelectedActionCategory = updatedSelectedActionCategory.filter(id => id !== categoryId);
-          }
 
           // Debug log
           console.log('Updating activities state:', {
@@ -572,7 +569,9 @@ export const useConfigStore = create<ConfigStore>()(
                 selected: Array.from(allSelected),
                 selectedByCategory,
               },
-              selectedActionCategory: updatedSelectedActionCategory
+              selectedActionCategory: activities.length > 0 
+                ? [...new Set([...state.config.selectedActionCategory, categoryId])]
+                : state.config.selectedActionCategory.filter(id => id !== categoryId)
             },
           };
         }),
@@ -706,14 +705,19 @@ export const useConfigStore = create<ConfigStore>()(
           return selected > 0 ? count + 1 : count;
         }, 0);
       },
-      canContinue: ({  minRequired = 0 }) => {
+      canContinue: ({ minRequired = 0 }) => {
         const state = get();
-        const filteredCategories = state.getFilteredCategories();
+        const allCategories = state.config.actions || [];
         const selectedByCategory = state.config.activities.selectedByCategory;
 
-        if (!filteredCategories.length) return false;
+        if (!allCategories.length) return false;
         
-        return filteredCategories.some(category => {
+        // For mandatory categories, ensure each has minimum required selections
+        const mandatoryCategories = allCategories.filter(category => 
+          MANDATORY_CATEGORIES.includes(category.name)
+        );
+
+        return mandatoryCategories.every(category => {
           const selectedCount = selectedByCategory[category.id]?.length || 0;
           return selectedCount >= minRequired;
         });
