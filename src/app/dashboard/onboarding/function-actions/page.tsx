@@ -5,7 +5,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import PageNavigator from "../components/PageNavigator";
 import ActionsSelector from "../components/ActionsSelector";
-import { useActionsSelection } from "@/hooks/useActionsSelection";
+import { useActionsSelection } from "@/hooks/_useActionsSelection";
 import { useConfigStore, useUpdateTeamActions } from "@/store/config-store";
 
 export default function FunctionActionsPage() {

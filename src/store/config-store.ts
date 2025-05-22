@@ -5,8 +5,17 @@ import { Configuration } from "./config-types";
 import { apiClient } from "@/lib/api/api-client";
 import type { ApiResponse } from "@/lib/types/api";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { ActionCategory } from "@/lib/types/api/action";
+import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
+import { useFavoritesStore, useToggleFavorite, useFavorites } from "@/store/favorites-store";
 
-const defaultConfig: Configuration = {
+// Update Configuration type to include actions
+interface ExtendedConfiguration extends Configuration {
+  actions: ActionCategory[];
+}
+
+const defaultConfig: ExtendedConfiguration = {
   organization: {
     name: "",
     siteDomain: "",
@@ -18,9 +27,10 @@ const defaultConfig: Configuration = {
     hidden: {} as Record<string, string[]>,
   },
   teams: [],
-  teamActions: [], // or whatever the proper type is
-  teamMembers: [], // Add the teamMembers array property
-  selectedActionCategory: []
+  teamActions: [],
+  teamMembers: [],
+  selectedActionCategory: [],
+  actions: [] // Add default empty actions array
 };
 
 // Helper function to extract unique category IDs from team actions
@@ -422,11 +432,25 @@ export const useSyncSelectedActivitiesWithGlobalFunctions = () => {
   };
 };
 
+// Add new types for action selection
+interface ActionSelectionState {
+  hasPreselected: boolean;
+  hasInteracted: boolean;
+  filteredCategories: ActionCategory[];
+}
+
+interface ActionSelectionOptions {
+  categoryType: 'general' | 'core';
+  minRequired?: number;
+  autoSelect?: boolean;
+}
+
+// Update ConfigStore interface with ExtendedConfiguration
 export interface ConfigStore {
   isHydrated: boolean;
   setHydrated: (state: boolean) => void;
-  config: Configuration;
-  setConfig: (config: Configuration) => void;
+  config: ExtendedConfiguration;
+  setConfig: (config: ExtendedConfiguration) => void;
   updateOrganization: (organization: Configuration["organization"]) => void;
   updateGlobalFunctions: (functions: Configuration["globalFunctions"]) => void;
   updateTeamActions: (functions: Configuration["teamActions"]) => void;
@@ -438,6 +462,14 @@ export interface ConfigStore {
   updateTeamMembers: (teamMembers: Configuration["teamMembers"]) => void;
   updateSelectedActionCategory: (categoryIds: string[]) => void; // Add this new function
   syncSelectedActivitiesWithGlobalFunctions: () => Promise<void>;
+  actionSelection: ActionSelectionState;
+  setHasPreselected: (value: boolean) => void;
+  setHasInteracted: (value: boolean) => void;
+  setFilteredCategories: (categories: ActionCategory[]) => void;
+  getFilteredCategories: (categoryType: 'general' | 'core') => ActionCategory[];
+  countSelectedActionsByType: (options: ActionSelectionOptions) => number;
+  canContinue: (options: ActionSelectionOptions) => boolean;
+  autoSelectActions: (options: ActionSelectionOptions) => void;
 }
 
 export const useConfigStore = create<ConfigStore>()(
@@ -627,6 +659,121 @@ export const useConfigStore = create<ConfigStore>()(
           console.error("Failed to sync activities:", error);
           throw error;
         }
+      },
+      actionSelection: {
+        hasPreselected: false,
+        hasInteracted: false,
+        filteredCategories: [],
+      },
+      setHasPreselected: (value: boolean) => 
+        set(state => ({
+          actionSelection: {
+            ...state.actionSelection,
+            hasPreselected: value
+          }
+        })),
+      setHasInteracted: (value: boolean) => 
+        set(state => ({
+          actionSelection: {
+            ...state.actionSelection,
+            hasInteracted: value
+          }
+        })),
+      setFilteredCategories: (categories: ActionCategory[]) =>
+        set(state => ({
+          actionSelection: {
+            ...state.actionSelection,
+            filteredCategories: categories
+          }
+        })),
+      getFilteredCategories: (categoryType: 'general' | 'core') => {
+        const state = get();
+        const allCategories = state.config.actions || [];
+        
+        if (categoryType === 'general') {
+          return allCategories.filter(category => 
+            MANDATORY_CATEGORIES.includes(category.name)
+          );
+        } else {
+          return allCategories.filter(category => 
+            !MANDATORY_CATEGORIES.includes(category.name)
+          );
+        }
+      },
+      countSelectedActionsByType: ({ categoryType, minRequired = 0 }) => {
+        const state = get();
+        const filteredCategories = state.getFilteredCategories(categoryType);
+        const selectedByCategory = state.config.activities.selectedByCategory;
+
+        if (!filteredCategories.length) return 0;
+        
+        return filteredCategories.reduce((count, category) => {
+          const selected = selectedByCategory[category.id]?.length || 0;
+          if (categoryType === 'general') {
+            return selected >= minRequired ? count + 1 : count;
+          } else {
+            return selected > 0 ? count + 1 : count;
+          }
+        }, 0);
+      },
+      canContinue: ({ categoryType, minRequired = 0 }) => {
+        const state = get();
+        const filteredCategories = state.getFilteredCategories(categoryType);
+        const selectedByCategory = state.config.activities.selectedByCategory;
+
+        if (!filteredCategories.length) return false;
+        
+        if (categoryType === 'general') {
+          return filteredCategories.every(category => {
+            const selectedCount = selectedByCategory[category.id]?.length || 0;
+            return selectedCount >= minRequired;
+          });
+        } else {
+          return filteredCategories.some(category => {
+            const selectedCount = selectedByCategory[category.id]?.length || 0;
+            return selectedCount > 0;
+          });
+        }
+      },
+      autoSelectActions: ({ categoryType, minRequired = 0, autoSelect = false }) => {
+        const state = get();
+        if (!autoSelect || state.actionSelection.hasPreselected) return;
+
+        const targetCategories = state.getFilteredCategories(categoryType);
+        
+        if (targetCategories.length > 0) {
+          let allActions: string[] = [];
+          
+          targetCategories.forEach(category => {
+            if (categoryType === 'general') {
+              const categoryActions = category.actions.map(action => action.id);
+              allActions = [...allActions, ...categoryActions];
+              
+              if (categoryActions.length > 0) {
+                state.updateActivitiesByCategory(category.id, categoryActions);
+              }
+            } 
+            else if (minRequired > 0) {
+              const categoryActions = category.actions.map(action => action.id);
+              const actionsToSelect = categoryActions.slice(
+                0, 
+                Math.min(categoryActions.length, minRequired)
+              );
+              
+              allActions = [...allActions, ...actionsToSelect];
+              
+              if (actionsToSelect.length > 0) {
+                state.updateActivitiesByCategory(category.id, actionsToSelect);
+              }
+            }
+          });
+          
+          if (allActions.length > 0) {
+            state.updateActivities(allActions);
+            state.setHasPreselected(true);
+            state.setHasInteracted(true);
+          }
+        }
       }
     }),
     {
@@ -654,3 +801,55 @@ export const useConfigStore = create<ConfigStore>()(
     }
   )
 );
+
+// Create a new hook that combines the functionality
+export function useActionsSelection(options: ActionSelectionOptions) {
+  const store = useConfigStore();
+  const selectedActivities = store.config.activities.selected;
+  const selectedByCategory = store.config.activities.selectedByCategory;
+  const updateActivities = store.updateActivities;
+  const updateActivitiesByCategory = store.updateActivitiesByCategory;
+  const actionSelection = store.actionSelection;
+  const setHasInteracted = store.setHasInteracted;
+  const countSelectedActionsByType = store.countSelectedActionsByType;
+  const canContinue = store.canContinue;
+  const autoSelectActions = store.autoSelectActions;
+
+  const { data: actionCategories, isLoading: isLoadingActions } = useActions();
+  const { isLoading: isFavoritesLoading } = useFavorites();
+  const toggleFavorite = useToggleFavorite();
+  const isFavorite = useFavoritesStore(state => state.isFavorite);
+
+  // Filter categories based on type
+  useEffect(() => {
+    if (actionCategories && actionCategories.length > 0) {
+      const filteredCats = options.categoryType === 'general'
+        ? actionCategories.filter(category => MANDATORY_CATEGORIES.includes(category.name))
+        : actionCategories.filter(category => !MANDATORY_CATEGORIES.includes(category.name));
+      
+      useConfigStore.getState().setFilteredCategories(filteredCats);
+    }
+  }, [actionCategories, options.categoryType]);
+
+  // Handle auto-selection
+  useEffect(() => {
+    if (actionCategories && actionCategories.length > 0) {
+      autoSelectActions(options);
+    }
+  }, [actionCategories, options, autoSelectActions]);
+
+  return {
+    selectedActivities,
+    selectedByCategory,
+    updateActivities,
+    updateActivitiesByCategory,
+    filteredCategories: actionSelection.filteredCategories,
+    isLoading: isLoadingActions || isFavoritesLoading,
+    isFavorite,
+    toggleFavorite,
+    hasInteracted: actionSelection.hasInteracted,
+    setHasInteracted,
+    countSelectedActionsByType: () => countSelectedActionsByType(options),
+    canContinue: () => canContinue(options)
+  };
+}

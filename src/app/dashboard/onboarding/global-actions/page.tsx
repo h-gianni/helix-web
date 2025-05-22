@@ -5,30 +5,26 @@
 import React, { useEffect, useState, useCallback } from "react";
 import PageNavigator from "../components/PageNavigator";
 import ActionsSelector from "../components/ActionsSelector";
-import { useActionsSelection } from "@/hooks/useActionsSelection";
 import { MANDATORY_CATEGORIES } from "@/store/action-store";
-import { useConfigStore, useUpdateGlobalFunctions, useGlobalFunctions } from "@/store/config-store";
+import { 
+  useConfigStore, 
+  useUpdateGlobalFunctions, 
+  useGlobalFunctions,
+  useActionsSelection 
+} from "@/store/config-store";
 
 export default function GlobalActionsPage() {
   const MIN_REQUIRED_ACTIONS_PER_CATEGORY = 5;
-  // const { mutate: updateGlobalFunctions } = useUpdateGlobalFunctions();
   const orgConfig = useConfigStore((state) => state.config.organization);
   const updateGlobalFunctionsInStore = useConfigStore((state) => state.updateGlobalFunctions);
   const [initialSelectionDone, setInitialSelectionDone] = useState(false);
 
   // Fetch existing global functions only once at component mount
   const { data: existingGlobalFunctions, isLoading: isLoadingGlobalFunctions } = useGlobalFunctions(
-    orgConfig.id || "",
-   
+    orgConfig.id || ""
   );
 
-  // Use our custom hook for actions selection with a stable reference
-  const actionsSelection = useActionsSelection({
-    categoryType: "general",
-    minRequired: MIN_REQUIRED_ACTIONS_PER_CATEGORY,
-    autoSelect: false, // We'll handle selection manually
-  });
-  
+  // Use the action selection functionality from config store
   const {
     selectedActivities,
     selectedByCategory,
@@ -41,7 +37,11 @@ export default function GlobalActionsPage() {
     hasInteracted,
     setHasInteracted,
     canContinue,
-  } = actionsSelection;
+  } = useActionsSelection({
+    categoryType: "general",
+    minRequired: MIN_REQUIRED_ACTIONS_PER_CATEGORY,
+    autoSelect: false, // We'll handle selection manually
+  });
 
   // Handle initial selection based on existing global functions
   useEffect(() => {
@@ -125,7 +125,10 @@ export default function GlobalActionsPage() {
     existingGlobalFunctions, 
     generalCategories, 
     initialSelectionDone,
-    updateGlobalFunctionsInStore
+    updateGlobalFunctionsInStore,
+    updateActivities,
+    updateActivitiesByCategory,
+    setHasInteracted
   ]);
 
   // Memoize the handleNext function to prevent recreation on each render
@@ -154,18 +157,12 @@ export default function GlobalActionsPage() {
       
       console.log('Saving global functions:', globalFunctions);
       
-      // Use setTimeout to defer execution to next tick to prevent render cycle updates
-      // setTimeout(() => {
-      //   // Call the mutation to update global functions
-      //   updateGlobalFunctions({
-      //     functions: globalFunctions,
-      //     orgId: orgConfig.id || ""
-      //   });
-      // }, 0);
+      // Update the store with the new global functions
+      updateGlobalFunctionsInStore(globalFunctions);
     } catch (err) {
       console.error("Error in handleNext:", err);
     }
-  }, [orgConfig.id, generalCategories, selectedActivities]);
+  }, [orgConfig.id, generalCategories, selectedActivities, updateGlobalFunctionsInStore]);
 
   const isPageLoading = isLoading || isLoadingGlobalFunctions || !initialSelectionDone;
 
