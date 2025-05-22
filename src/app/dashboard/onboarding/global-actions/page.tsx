@@ -38,9 +38,9 @@ export default function GlobalActionsPage() {
     setHasInteracted,
     canContinue,
   } = useActionsSelection({
-    categoryType: "general",
     minRequired: MIN_REQUIRED_ACTIONS_PER_CATEGORY,
-    autoSelect: false, // We'll handle selection manually
+    autoSelect: false,
+    showMandatoryOnly: true
   });
 
   // Handle initial selection based on existing global functions
@@ -133,6 +133,7 @@ export default function GlobalActionsPage() {
 
   // Memoize the handleNext function to prevent recreation on each render
   const handleNext = useCallback(() => {
+    console.log('Selected activities:', selectedActivities);
     if (!orgConfig.id) {
       console.error("Organization ID is missing. Full org config:", orgConfig);
       return;
@@ -141,11 +142,11 @@ export default function GlobalActionsPage() {
     try {
       // Get action names for the selected activity IDs
       const actionMap = new Map();
-      generalCategories.forEach(category => {
-        category.actions.forEach(action => {
-          actionMap.set(action.id, action.name);
-        });
-      });
+      // generalCategories.forEach(category => {
+      //   category.actions.forEach(action => {
+      //     actionMap.set(action.id, action.name);
+      //   });
+      // });
 
       // Convert selected activities to global functions format
       const globalFunctions = selectedActivities.map(activityId => ({
@@ -154,6 +155,8 @@ export default function GlobalActionsPage() {
         description: "",
         isEnabled: true
       }));
+
+      console.log('Selected activities:', selectedActivities);
       
       console.log('Saving global functions:', globalFunctions);
       

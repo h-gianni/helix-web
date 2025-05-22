@@ -23,9 +23,9 @@ export default function FunctionActionsPage() {
 
   // Use our custom hook for actions selection
   const actionsSelection = useActionsSelection({
-    categoryType: "core",
     minRequired: 0, // No minimum required for function actions
     autoSelect: false,
+    showMandatoryOnly: false // Explicitly set to show non-mandatory categories
   });
 
   const {
@@ -120,6 +120,8 @@ export default function FunctionActionsPage() {
           categoryId: action?.categoryId || ""
         };
       });
+
+     
 
       
 

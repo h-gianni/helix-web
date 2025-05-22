@@ -46,12 +46,17 @@ export default function PageNavigator({
   // The critical fix here is to make sure we don't trigger an infinite loop
   // by properly managing the async flow and preventing multiple state updates
   const handleNextClick = useCallback(async () => {
+
     // Prevent multiple clicks while processing
     if (isProcessing) return;
+
+    
     
     if (canContinue) {
+      
       setIsProcessing(true);
       try {
+        
         // Call onNext if provided, but don't wait for it
         // This prevents state updates during render
         if (onNext) {

@@ -440,9 +440,9 @@ interface ActionSelectionState {
 }
 
 interface ActionSelectionOptions {
-  categoryType: 'general' | 'core';
   minRequired?: number;
   autoSelect?: boolean;
+  showMandatoryOnly?: boolean;
 }
 
 // Update ConfigStore interface with ExtendedConfiguration
@@ -466,7 +466,7 @@ export interface ConfigStore {
   setHasPreselected: (value: boolean) => void;
   setHasInteracted: (value: boolean) => void;
   setFilteredCategories: (categories: ActionCategory[]) => void;
-  getFilteredCategories: (categoryType: 'general' | 'core') => ActionCategory[];
+  getFilteredCategories: () => ActionCategory[];
   countSelectedActionsByType: (options: ActionSelectionOptions) => number;
   canContinue: (options: ActionSelectionOptions) => boolean;
   autoSelectActions: (options: ActionSelectionOptions) => void;
@@ -686,74 +686,49 @@ export const useConfigStore = create<ConfigStore>()(
             filteredCategories: categories
           }
         })),
-      getFilteredCategories: (categoryType: 'general' | 'core') => {
+      getFilteredCategories: () => {
         const state = get();
         const allCategories = state.config.actions || [];
         
-        if (categoryType === 'general') {
-          return allCategories.filter(category => 
-            MANDATORY_CATEGORIES.includes(category.name)
-          );
-        } else {
-          return allCategories.filter(category => 
-            !MANDATORY_CATEGORIES.includes(category.name)
-          );
-        }
+        return allCategories.filter(category => 
+          !MANDATORY_CATEGORIES.includes(category.name)
+        );
       },
-      countSelectedActionsByType: ({ categoryType, minRequired = 0 }) => {
+      countSelectedActionsByType: ({  minRequired = 0 }) => {
         const state = get();
-        const filteredCategories = state.getFilteredCategories(categoryType);
+        const filteredCategories = state.getFilteredCategories();
         const selectedByCategory = state.config.activities.selectedByCategory;
 
         if (!filteredCategories.length) return 0;
         
         return filteredCategories.reduce((count, category) => {
           const selected = selectedByCategory[category.id]?.length || 0;
-          if (categoryType === 'general') {
-            return selected >= minRequired ? count + 1 : count;
-          } else {
-            return selected > 0 ? count + 1 : count;
-          }
+          return selected > 0 ? count + 1 : count;
         }, 0);
       },
-      canContinue: ({ categoryType, minRequired = 0 }) => {
+      canContinue: ({  minRequired = 0 }) => {
         const state = get();
-        const filteredCategories = state.getFilteredCategories(categoryType);
+        const filteredCategories = state.getFilteredCategories();
         const selectedByCategory = state.config.activities.selectedByCategory;
 
         if (!filteredCategories.length) return false;
         
-        if (categoryType === 'general') {
-          return filteredCategories.every(category => {
-            const selectedCount = selectedByCategory[category.id]?.length || 0;
-            return selectedCount >= minRequired;
-          });
-        } else {
-          return filteredCategories.some(category => {
-            const selectedCount = selectedByCategory[category.id]?.length || 0;
-            return selectedCount > 0;
-          });
-        }
+        return filteredCategories.some(category => {
+          const selectedCount = selectedByCategory[category.id]?.length || 0;
+          return selectedCount >= minRequired;
+        });
       },
-      autoSelectActions: ({ categoryType, minRequired = 0, autoSelect = false }) => {
+      autoSelectActions: ({  minRequired = 0, autoSelect = false }) => {
         const state = get();
         if (!autoSelect || state.actionSelection.hasPreselected) return;
 
-        const targetCategories = state.getFilteredCategories(categoryType);
+        const targetCategories = state.getFilteredCategories();
         
         if (targetCategories.length > 0) {
           let allActions: string[] = [];
           
           targetCategories.forEach(category => {
-            if (categoryType === 'general') {
-              const categoryActions = category.actions.map(action => action.id);
-              allActions = [...allActions, ...categoryActions];
-              
-              if (categoryActions.length > 0) {
-                state.updateActivitiesByCategory(category.id, categoryActions);
-              }
-            } 
-            else if (minRequired > 0) {
+        
               const categoryActions = category.actions.map(action => action.id);
               const actionsToSelect = categoryActions.slice(
                 0, 
@@ -765,7 +740,7 @@ export const useConfigStore = create<ConfigStore>()(
               if (actionsToSelect.length > 0) {
                 state.updateActivitiesByCategory(category.id, actionsToSelect);
               }
-            }
+            
           });
           
           if (allActions.length > 0) {
@@ -820,16 +795,16 @@ export function useActionsSelection(options: ActionSelectionOptions) {
   const toggleFavorite = useToggleFavorite();
   const isFavorite = useFavoritesStore(state => state.isFavorite);
 
-  // Filter categories based on type
+  // Filter categories based on showMandatoryOnly flag
   useEffect(() => {
     if (actionCategories && actionCategories.length > 0) {
-      const filteredCats = options.categoryType === 'general'
+      const filteredCats = options.showMandatoryOnly
         ? actionCategories.filter(category => MANDATORY_CATEGORIES.includes(category.name))
         : actionCategories.filter(category => !MANDATORY_CATEGORIES.includes(category.name));
       
       useConfigStore.getState().setFilteredCategories(filteredCats);
     }
-  }, [actionCategories, options.categoryType]);
+  }, [actionCategories, options.showMandatoryOnly]);
 
   // Handle auto-selection
   useEffect(() => {
