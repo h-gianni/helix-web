@@ -891,3 +891,81 @@ export function useActionsSelection(options: ActionSelectionOptions) {
     canContinue: () => canContinue(options)
   };
 }
+
+export const useStoreTeamActions = () => {
+  const queryClient = useQueryClient();
+  const configStore = useConfigStore();
+
+  return useMutation({
+    mutationFn: async (teamActions: { id: string; name: string; description: string; categoryId: string; isEnabled: boolean }[]) => {
+      const orgId = configStore.config.organization.id;
+
+      console.log('Starting team actions store with:', {
+        teamActions,
+        orgId
+      });
+
+      if (!orgId) {
+        throw new Error("Organization ID is required");
+      }
+
+      if (!teamActions || teamActions.length === 0) {
+        throw new Error("No team actions selected");
+      }
+
+      // Transform team actions into the required format
+      const actions = teamActions.map(action => ({
+        actionId: action.id,
+        status: action.isEnabled ? "ACTIVE" : "ARCHIVED"
+      }));
+
+      console.log('Sending request to API:', {
+        url: '/org/functionactions',
+        body: {
+          orgId,
+          actions
+        }
+      });
+
+      // Store in database
+      const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
+        "/org/functionactions",
+        {
+          orgId,
+          actions
+        }
+      );
+
+      console.log('API Response:', {
+        success: response.data.success,
+        data: response.data.data,
+        error: response.data.error
+      });
+
+      if (!response.data.success || !response.data.data) {
+        console.error('API Error:', response.data.error);
+        throw new Error(response.data.error || "Failed to store team actions");
+      }
+
+      return response.data.data;
+    },
+    onSuccess: (data, variables) => {
+      console.log('Mutation succeeded:', data);
+      
+      if (!data?.actions) {
+        console.warn('No actions in response data');
+        return;
+      }
+
+      // Update the store with the original team actions
+      configStore.updateTeamActions(variables);
+
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["team-actions"] });
+      queryClient.invalidateQueries({ queryKey: ["org-actions"] });
+    },
+    onError: (error) => {
+      console.error('Failed to store team actions:', error);
+    }
+  });
+};
