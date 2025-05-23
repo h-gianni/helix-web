@@ -366,41 +366,77 @@ export const useStoreGlobalActions = () => {
       const selectedActivities = configStore.config.activities.selected;
       const orgId = configStore.config.organization.id;
 
+      console.log('Starting global actions store with:', {
+        selectedActivities,
+        orgId
+      });
+
       if (!orgId) {
         throw new Error("Organization ID is required");
       }
 
+      if (!selectedActivities || selectedActivities.length === 0) {
+        throw new Error("No activities selected");
+      }
+
       // Transform selected activities into the required format
       const actions = selectedActivities.map(actionId => ({
-        actionId,
+        actionId: actionId, // Ensure we're using the correct property name
         status: "ACTIVE"
       }));
 
+      console.log('Sending request to API:', {
+        url: '/org/globalactions',
+        body: {
+          orgId,
+          actions
+        }
+      });
+
       // Store in database
       const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
-        "/org/actions",
+        "/org/globalactions",
         {
           orgId,
           actions
         }
       );
 
+      console.log('API Response:', {
+        success: response.data.success,
+        data: response.data.data,
+        error: response.data.error
+      });
+
       if (!response.data.success || !response.data.data) {
+        console.error('API Error:', response.data.error);
         throw new Error(response.data.error || "Failed to store global actions");
       }
 
       return response.data.data;
     },
     onSuccess: (data) => {
-      if (!data?.actions) return;
+      console.log('Mutation succeeded:', data);
+      
+      if (!data?.actions) {
+        console.warn('No actions in response data');
+        return;
+      }
       
       // Update the global functions in the store
-      const globalFunctions = data.actions.map(action => ({
-        id: action.actionId,
-        name: action.name || action.actionId,
-        description: action.description || "",
-        isEnabled: action.status === "ACTIVE"
-      }));
+      const globalFunctions = data.actions.flatMap(actionResult => {
+        if (actionResult.operation === 'create') {
+          return actionResult.actions.map((action: any) => ({
+            id: action.actionId,
+            name: action.action?.name || action.actionId,
+            description: action.action?.description || "",
+            isEnabled: action.status === "ACTIVE"
+          }));
+        }
+        return [];
+      });
+
+      console.log('Updating store with:', globalFunctions);
 
       // Update both Zustand store and localStorage
       configStore.updateGlobalFunctions(globalFunctions);
@@ -409,6 +445,9 @@ export const useStoreGlobalActions = () => {
       queryClient.invalidateQueries({ queryKey: ["global-functions"] });
       queryClient.invalidateQueries({ queryKey: ["org-actions"] });
     },
+    onError: (error) => {
+      console.error('Failed to store global actions:', error);
+    }
   });
 };
 

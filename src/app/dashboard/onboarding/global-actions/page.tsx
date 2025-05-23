@@ -53,14 +53,12 @@ export default function GlobalActionsPage() {
 
     console.log('Setting up initial selections...');
     
-    // Check localStorage first
-    const storedConfig = localStorage.getItem('app-configuration');
-    const parsedConfig = storedConfig ? JSON.parse(storedConfig) : null;
-    const storedSelections = parsedConfig?.state?.config?.activities?.selected || [];
-    const storedByCategory = parsedConfig?.state?.config?.activities?.selectedByCategory || {};
+    // Get stored selections from Zustand store
+    const storedSelections = useConfigStore.getState().config.activities.selected;
+    const storedByCategory = useConfigStore.getState().config.activities.selectedByCategory;
 
     if (storedSelections.length > 0) {
-      console.log('Found stored selections in localStorage:', storedSelections);
+      console.log('Found stored selections in Zustand store:', storedSelections);
       updateActivities(storedSelections);
       Object.entries(storedByCategory).forEach(([categoryId, actions]) => {
         updateActivitiesByCategory(categoryId, actions as string[]);
@@ -70,7 +68,7 @@ export default function GlobalActionsPage() {
       return;
     }
 
-    // If no localStorage data, check database
+    // If no stored data, check database
     if (existingGlobalFunctions && existingGlobalFunctions.length > 0) {
       console.log('Using existing global functions from database:', existingGlobalFunctions);
       const existingActions = existingGlobalFunctions
@@ -142,7 +140,7 @@ export default function GlobalActionsPage() {
   ]);
 
   // Memoize the handleNext function to prevent recreation on each render
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback(async () => {
     console.log('Selected activities:', selectedActivities);
     if (!orgConfig.id) {
       console.error("Organization ID is missing. Full org config:", orgConfig);
@@ -181,11 +179,26 @@ export default function GlobalActionsPage() {
       // Update both localStorage and database
       updateGlobalFunctionsInStore(globalFunctions);
       
-      // Store in database
-      storeGlobalActions();
+      // Store in database and wait for completion
+      await new Promise((resolve, reject) => {
+        storeGlobalActions(undefined, {
+          onSuccess: () => {
+            console.log('Successfully stored global actions');
+            resolve(true);
+          },
+          onError: (error) => {
+            console.error('Failed to store global actions:', error);
+            reject(error);
+          }
+        });
+      });
+      
+      // Only navigate to next step after successful storage
+      window.location.href = "/dashboard/onboarding/function-actions";
       
     } catch (err) {
       console.error("Error in handleNext:", err);
+      // You might want to show an error message to the user here
     }
   }, [
     orgConfig.id,
