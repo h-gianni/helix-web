@@ -7,28 +7,70 @@ import PageNavigator from "../components/PageNavigator";
 import ActionsSelector from "../components/ActionsSelector";
 import { useConfigStore, useStoreTeamActions, useActionsSelection } from "@/store/config-store";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { apiClient } from "@/lib/api/api-client";
+import type { ApiResponse } from "@/lib/types/api";
+
+interface TeamAction {
+  id: string;
+  actionId: string;
+  status: string;
+  action?: {
+    id: string;
+    name: string;
+  };
+}
+
+interface ConfigTeamAction {
+  id: string;
+  name: string;
+  description: string;
+  categoryId: string;
+  isEnabled: boolean;
+}
 
 export default function FunctionActionsPage() {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const orgConfig = useConfigStore((state) => state.config.organization);
-  const updateTeamActionsInStore = useConfigStore((state) => state.updateTeamActions);
-  const teamActions = useConfigStore((state) => state.config.teamActions || []);
+  const teamActions = useConfigStore((state) => state.config.teamActions || []) as ConfigTeamAction[];
   const { mutate: storeTeamActions } = useStoreTeamActions();
   
   // Use refs to track initialization state
   const initialized = useRef(false);
-  const actionsInitialized = useRef(false);
 
   // Local state for selections - initialized once
   const [localSelectedActivities, setLocalSelectedActivities] = useState<string[]>([]);
   const [localSelectedByCategory, setLocalSelectedByCategory] = useState<Record<string, string[]>>({});
 
+  // Fetch team actions from database
+  const { data: dbTeamActions, isLoading: isLoadingDbActions } = useQuery({
+    queryKey: ['team-actions', orgConfig.id],
+    queryFn: async () => {
+      if (!orgConfig.id) return null;
+      
+      try {
+        const response = await apiClient.get<ApiResponse<{ actions: TeamAction[] }>>(`/org/team-actions?orgId=${orgConfig.id}`);
+        if (!response.data.success || !response.data.data) {
+          console.error('Failed to fetch team actions:', response.data.error);
+          return null;
+        }
+        return response.data.data.actions;
+      } catch (error) {
+        console.error('Error fetching team actions:', error);
+        return null;
+      }
+    },
+    enabled: !!orgConfig.id,
+    gcTime: 60000, // Keep data in garbage collection for 1 minute
+    staleTime: 30000 // Consider data fresh for 30 seconds
+  });
+
   // Use our custom hook for actions selection
   const actionsSelection = useActionsSelection({
-    minRequired: 0, // No minimum required for function actions
+    minRequired: 0,
     autoSelect: false,
-    showMandatoryOnly: false // Explicitly set to show non-mandatory categories
+    showMandatoryOnly: false
   });
 
   const {
@@ -40,60 +82,92 @@ export default function FunctionActionsPage() {
     setHasInteracted,
   } = actionsSelection;
 
-  // Initialize selections from store - ONCE only
+  // Initialize selections from store and database - ONCE only
   useEffect(() => {
-    if (initialized.current) {
+    if (!functionCategories.length || isLoadingDbActions) {
       return;
     }
-    
-    console.log('Initializing selections from teamActions:', teamActions);
-    setLocalSelectedActivities(teamActions.map(action => action.id));
-    
-    // Mark as initialized to prevent loop
-    initialized.current = true;
-  }, [teamActions]);
 
-  // Only organize by category when categories are loaded - ONCE only
-  useEffect(() => {
-    if (actionsInitialized.current || functionCategories.length === 0 || !initialized.current) {
+    console.log('Initializing selections from sources:', {
+      teamActions,
+      dbTeamActions,
+      functionCategories,
+      currentSelections: localSelectedActivities
+    });
+
+    // If we already have selections and we're not in initial load, preserve them
+    if (localSelectedActivities.length > 0 && initialized.current) {
+      console.log('Preserving existing selections:', localSelectedActivities);
       return;
     }
-    
-    // Organize selections by category
-    const byCategory: Record<string, string[]> = {};
-    
-    functionCategories.forEach(category => {
-      // Find actions for this category
-      const categoryActions = category.actions
-        .filter(action => localSelectedActivities.includes(action.id))
-        .map(action => action.id);
-        
-      if (categoryActions.length > 0) {
-        byCategory[category.id] = categoryActions;
-      }
-    });
-    
-    console.log('Selections by category:', byCategory, localSelectedActivities);
-    setLocalSelectedByCategory(byCategory);
-    
-    // Mark as initialized to prevent loop
-    actionsInitialized.current = true;
-    setHasInteracted(true);
-  }, [functionCategories, localSelectedActivities, setHasInteracted]);
+
+    // Combine actions from both sources
+    const storedActions = teamActions.map(action => action.id);
+    const dbActions = dbTeamActions?.map(action => action.actionId) || [];
+    const allActions = [...new Set([...storedActions, ...dbActions])];
+
+    if (allActions.length > 0) {
+      console.log('Setting initial selections:', allActions);
+      setLocalSelectedActivities(allActions);
+
+      // Organize by category
+      const byCategory: Record<string, string[]> = {};
+      functionCategories.forEach(category => {
+        const categoryActions = allActions.filter(actionId =>
+          category.actions.some(action => action.id === actionId)
+        );
+        if (categoryActions.length > 0) {
+          byCategory[category.id] = categoryActions;
+        }
+      });
+
+      setLocalSelectedByCategory(byCategory);
+      setHasInteracted(true);
+    }
+
+    initialized.current = true;
+  }, [teamActions, dbTeamActions, functionCategories, isLoadingDbActions, setHasInteracted, localSelectedActivities]);
 
   // Handle local selection updates - with memoized callbacks
   const handleLocalUpdateActivities = useCallback((activities: string[]) => {
     console.log('Updating local activities:', activities);
     setLocalSelectedActivities(activities);
-  }, []);
+    
+    // Also update the local by-category state to keep it in sync
+    const byCategory: Record<string, string[]> = {};
+    functionCategories.forEach(category => {
+      const categoryActions = activities.filter(activityId => 
+        category.actions.some(action => action.id === activityId)
+      );
+      if (categoryActions.length > 0) {
+        byCategory[category.id] = categoryActions;
+      }
+    });
+    setLocalSelectedByCategory(byCategory);
+  }, [functionCategories]);
 
   const handleLocalUpdateActivitiesByCategory = useCallback((categoryId: string, activities: string[]) => {
     console.log('Updating category activities:', { categoryId, activities });
+    
+    // Update the category-specific selections
     setLocalSelectedByCategory(prev => ({
       ...prev,
       [categoryId]: activities
     }));
-  }, []);
+
+    // Update the global selections list
+    setLocalSelectedActivities(prev => {
+      // Remove all activities from this category
+      const withoutCategory = prev.filter(activityId => 
+        !functionCategories
+          .find(cat => cat.id === categoryId)?.actions
+          .some(action => action.id === activityId)
+      );
+      
+      // Add the new selections for this category
+      return [...withoutCategory, ...activities];
+    });
+  }, [functionCategories]);
 
   // Memoize handleNext to prevent recreating on every render
   const handleNext = useCallback(async () => {
@@ -181,7 +255,7 @@ export default function FunctionActionsPage() {
       />
       <div className="max-w-5xl mx-auto">
         <ActionsSelector
-          key={`function-actions-${initialized.current}-${actionsInitialized.current}`}
+          key={`function-actions-${initialized.current}-${initialized.current}`}
           categories={functionCategories}
           selectedActivities={localSelectedActivities}
           selectedByCategory={localSelectedByCategory}

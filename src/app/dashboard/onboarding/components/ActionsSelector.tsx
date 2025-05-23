@@ -155,29 +155,37 @@ const ActionsSelector = React.memo(function ActionsSelector({
         }
       }
 
-      // Get current category activities
-      const currentCategoryActivities = [...(selectedByCategory[categoryId] || [])];
-
-      // Update category activities
-      let newCategoryActivities: string[];
+      // Update both global and category-specific selections
       if (isCurrentlySelected) {
-        // Remove the activity from category
-        newCategoryActivities = currentCategoryActivities.filter(id => id !== activityId);
+        // Remove from global selections
+        const newGlobalSelections = selectedActivities.filter(id => id !== activityId);
+        updateActivities(newGlobalSelections);
+        
+        // Remove from category selections
+        const newCategorySelections = (selectedByCategory[categoryId] || []).filter(id => id !== activityId);
+        updateActivitiesByCategory(categoryId, newCategorySelections);
       } else {
-        // Add the activity to category
-        newCategoryActivities = [...currentCategoryActivities, activityId];
+        // Add to global selections
+        const newGlobalSelections = [...selectedActivities, activityId];
+        updateActivities(newGlobalSelections);
+        
+        // Add to category selections
+        const currentCategorySelections = selectedByCategory[categoryId] || [];
+        const newCategorySelections = [...currentCategorySelections, activityId];
+        updateActivitiesByCategory(categoryId, newCategorySelections);
       }
 
-      // Debug logging after state preparation
-      console.log('State Update:', {
-        action: isCurrentlySelected ? 'removing' : 'adding',
+      // Debug logging after state update
+      console.log('Selection State After Update:', {
+        action: isCurrentlySelected ? 'removed' : 'added',
         activityId,
-        categoryId,
-        newCategoryActivities
+        newGlobalSelected: isCurrentlySelected 
+          ? selectedActivities.filter(id => id !== activityId)
+          : [...selectedActivities, activityId],
+        newCategorySelected: isCurrentlySelected
+          ? (selectedByCategory[categoryId] || []).filter(id => id !== activityId)
+          : [...(selectedByCategory[categoryId] || []), activityId]
       });
-
-      // Only update activities by category - this will handle the global selected activities
-      updateActivitiesByCategory(categoryId, newCategoryActivities);
     },
     [
       categories,
@@ -185,6 +193,7 @@ const ActionsSelector = React.memo(function ActionsSelector({
       selectedByCategory,
       mandatoryCategories,
       minRequiredActionsPerCategory,
+      updateActivities,
       updateActivitiesByCategory,
       isFavorite,
       toggleFavorite,
@@ -235,11 +244,9 @@ const ActionsSelector = React.memo(function ActionsSelector({
       const categoryActionIds = category.actions.map((action) => action.id);
 
       if (checked) {
-        // When checking "select all", just select everything
-        const newActivities = [
-          ...new Set([...selectedActivities, ...categoryActionIds]),
-        ];
-        updateActivities(newActivities);
+        // When checking "select all", update both global and category selections
+        const newGlobalSelections = [...new Set([...selectedActivities, ...categoryActionIds])];
+        updateActivities(newGlobalSelections);
         updateActivitiesByCategory(category.id, categoryActionIds);
       } else {
         // Check if this is a mandatory category
@@ -249,7 +256,6 @@ const ActionsSelector = React.memo(function ActionsSelector({
         const actionsToUnfavorite: string[] = [];
         
         for (const actionId of categoryActionIds) {
-          // If favorited, collect for unfavoriting
           if (isFavorite(actionId, category.id)) {
             actionsToUnfavorite.push(actionId);
           }
@@ -257,18 +263,15 @@ const ActionsSelector = React.memo(function ActionsSelector({
 
         if (isMandatory && minRequiredActionsPerCategory > 0) {
           // For mandatory categories, keep the minimum required
-          const actionsToKeep = categoryActionIds.slice(
-            0,
-            minRequiredActionsPerCategory
-          );
+          const actionsToKeep = categoryActionIds.slice(0, minRequiredActionsPerCategory);
 
-          // Update activities excluding all but the kept ones
-          const newActivities = selectedActivities.filter(
-            (activityId) =>
-              !categoryActionIds.includes(activityId) ||
-              actionsToKeep.includes(activityId)
+          // Update global selections
+          const newGlobalSelections = selectedActivities.filter(
+            activityId => !categoryActionIds.includes(activityId) || actionsToKeep.includes(activityId)
           );
-          updateActivities(newActivities);
+          updateActivities(newGlobalSelections);
+          
+          // Update category selections
           updateActivitiesByCategory(category.id, actionsToKeep);
           
           // Only unfavorite actions that are actually being deselected
@@ -285,18 +288,15 @@ const ActionsSelector = React.memo(function ActionsSelector({
                 isFavorite: false,
               });
             } catch (err) {
-              console.error(
-                `Failed to remove favorite status for action ${actionId}:`,
-                err
-              );
+              console.error(`Failed to remove favorite status for action ${actionId}:`, err);
             }
           }
         } else {
           // For non-mandatory categories, deselect all
-          const newActivities = selectedActivities.filter(
-            (activityId) => !categoryActionIds.includes(activityId)
+          const newGlobalSelections = selectedActivities.filter(
+            activityId => !categoryActionIds.includes(activityId)
           );
-          updateActivities(newActivities);
+          updateActivities(newGlobalSelections);
           updateActivitiesByCategory(category.id, []);
           
           // Unfavorite all deselected actions
@@ -308,10 +308,7 @@ const ActionsSelector = React.memo(function ActionsSelector({
                 isFavorite: false,
               });
             } catch (err) {
-              console.error(
-                `Failed to remove favorite status for action ${actionId}:`,
-                err
-              );
+              console.error(`Failed to remove favorite status for action ${actionId}:`, err);
             }
           }
         }
