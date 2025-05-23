@@ -13,13 +13,16 @@ import {
   useActionsSelection,
   useStoreGlobalActions 
 } from "@/store/config-store";
+import { useRouter } from "next/navigation";
 
 export default function GlobalActionsPage() {
   const MIN_REQUIRED_ACTIONS_PER_CATEGORY = 5;
   const orgConfig = useConfigStore((state) => state.config.organization);
   const updateGlobalFunctionsInStore = useConfigStore((state) => state.updateGlobalFunctions);
   const [initialSelectionDone, setInitialSelectionDone] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { mutate: storeGlobalActions } = useStoreGlobalActions();
+  const router = useRouter();
 
   // Fetch existing global functions only once at component mount
   const { data: existingGlobalFunctions, isLoading: isLoadingGlobalFunctions } = useGlobalFunctions(
@@ -141,6 +144,8 @@ export default function GlobalActionsPage() {
 
   // Memoize the handleNext function to prevent recreation on each render
   const handleNext = useCallback(async () => {
+    if (isSaving) return; // Prevent multiple clicks
+
     console.log('Selected activities:', selectedActivities);
     if (!orgConfig.id) {
       console.error("Organization ID is missing. Full org config:", orgConfig);
@@ -166,6 +171,8 @@ export default function GlobalActionsPage() {
     }
 
     try {
+      setIsSaving(true); // Start saving state
+
       // Convert selected activities to global functions format
       const globalFunctions = selectedActivities.map(activityId => ({
         id: activityId,
@@ -194,22 +201,26 @@ export default function GlobalActionsPage() {
       });
       
       // Only navigate to next step after successful storage
-      window.location.href = "/dashboard/onboarding/function-actions";
+      router.push("/dashboard/onboarding/function-actions");
       
     } catch (err) {
       console.error("Error in handleNext:", err);
       // You might want to show an error message to the user here
+    } finally {
+      setIsSaving(false); // Reset saving state
     }
   }, [
+    isSaving,
     orgConfig.id,
     selectedActivities,
     selectedByCategory,
     generalCategories,
     updateGlobalFunctionsInStore,
-    storeGlobalActions
+    storeGlobalActions,
+    router
   ]);
 
-  const isPageLoading = isLoading || isLoadingGlobalFunctions || !initialSelectionDone;
+  const isPageLoading = isLoading || isLoadingGlobalFunctions || !initialSelectionDone || isSaving;
 
   return (
     <div>
@@ -224,11 +235,15 @@ export default function GlobalActionsPage() {
           </>
         }
         previousHref="/dashboard/onboarding/organisation"
-        nextHref="/dashboard/onboarding/function-actions"
-        canContinue={canContinue()}
+        nextHref="#" // Prevent default navigation
+        canContinue={canContinue() && !isSaving}
         currentStep={2}
         totalSteps={6}
-        disabledTooltip={`Please select at least ${MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions from each mandatory category (Cultural Behaviours & Values, Customer Centricity, and Teamwork) to continue`}
+        disabledTooltip={
+          isSaving 
+            ? "Saving global actions..."
+            : `Please select at least ${MIN_REQUIRED_ACTIONS_PER_CATEGORY} actions from each mandatory category (Cultural Behaviours & Values, Customer Centricity, and Teamwork) to continue`
+        }
         onNext={handleNext}
         isLoading={isPageLoading}
       />
