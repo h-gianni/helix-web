@@ -1105,6 +1105,8 @@ export const useStoreTeamsWithMapping = () => {
       const teamActions = configStore.config.teamActions || [];
       const orgId = configStore.config.organization.id;
 
+    
+
       if (!teams || teams.length === 0) {
         throw new Error("No teams to store");
       }

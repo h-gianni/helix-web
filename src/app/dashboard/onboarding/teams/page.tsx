@@ -78,7 +78,7 @@ export default function TeamsPage() {
 
   // Combine all effects into one
   useEffect(() => {
-    // Check for members data once store is hydrated
+    console.log('Teams loaded from localStorage:', teams, actionCategories);
     if (isHydrated) {
       setNoMembersAvailable(!teamMembers || teamMembers.length === 0);
     }
@@ -334,6 +334,21 @@ export default function TeamsPage() {
     try {
       setIsStoring(true);
       setStoreError(null);
+
+      console.log("handleNext--------------- ", {
+        teams: teams.map(team => team.name),
+        teamMembers: teams.map(team => {
+          team.functions.map(func => {
+            console.log("func--------------- ",    {
+              func: func,
+              members: team.memberIds?.map(member => member)
+            })
+          })
+        }),
+       
+      });
+
+      return;
       
 
       // Store teams in database
@@ -361,7 +376,7 @@ export default function TeamsPage() {
           </>
         }
         previousHref="/dashboard/onboarding/members"
-        nextHref="/dashboard/onboarding/summary"
+         nextHref="/dashboard/onboarding/summary"
         canContinue={isValid() && !isStoring}
         currentStep={5}
         totalSteps={6}

@@ -204,6 +204,10 @@ export default function MembersPage() {
         jobTitle: member.jobTitle || ""
       }));
 
+      console.log("membersForStore---------------", membersForStore);
+
+     
+
       // Update config store with members
       updateTeamMembers(membersForStore);
 
