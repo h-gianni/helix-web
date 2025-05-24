@@ -987,3 +987,44 @@ export const useStoreTeamActions = () => {
     }
   });
 };
+
+// Add new mutation for storing teams
+export const useStoreTeams = () => {
+  const queryClient = useQueryClient();
+  const configStore = useConfigStore();
+
+  return useMutation({
+    mutationFn: async (teams: any[]) => {
+      const orgId = configStore.config.organization.id;
+
+      if (!orgId) {
+        throw new Error("Organization ID is required");
+      }
+
+      if (!teams || teams.length === 0) {
+        throw new Error("No teams to store");
+      }
+
+      // Store in database
+      const response = await apiClient.post<ApiResponse<{ teams: any[] }>>(
+        "/org/teams",
+        {
+          teams
+        }
+      );
+
+      if (!response.data.success || !response.data.data) {
+        throw new Error(response.data.error || "Failed to store teams");
+      }
+
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["teams"] });
+    },
+    onError: (error) => {
+      console.error('Failed to store teams:', error);
+    }
+  });
+};

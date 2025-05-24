@@ -13,8 +13,9 @@ import { Badge } from "@/components/ui/core/Badge";
 import { useTeamsManagement } from "@/hooks/useTeamsManagement";
 import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
 import type { ActionCategory } from "@/lib/types/api/action";
-import { useConfigStore } from "@/store/config-store";
+import { useConfigStore, useStoreTeams } from "@/store/config-store";
 import { HeroBadge } from "@/components/ui/core/HeroBadge";
+import { useRouter } from "next/navigation";
 
 // Interface for TeamList compatible item
 interface TeamListItem {
@@ -28,8 +29,11 @@ interface TeamListItem {
 }
 
 export default function TeamsPage() {
+  const router = useRouter();
   const [showValidationErrors, setShowValidationErrors] = useState(false);
   const [noMembersAvailable, setNoMembersAvailable] = useState(false);
+  const [isStoring, setIsStoring] = useState(false);
+  const [storeError, setStoreError] = useState<string | null>(null);
 
   // Get all hooks at the top level
   const { data: actionCategories, isLoading: isLoadingActions } = useActions();
@@ -37,6 +41,7 @@ export default function TeamsPage() {
   const isHydrated = useConfigStore((state) => state.isHydrated);
   const selectedByCategory = useConfigStore((state) => state.config.selectedActionCategory || []);
   const linkedTeamActions = useConfigStore((state) => state.config.teamActions || []);
+  const storeTeams = useStoreTeams();
 
   // Transform teamMembers to ensure they have unique IDs
   const processedMembers = useMemo(() => {
@@ -145,6 +150,16 @@ export default function TeamsPage() {
     setShowValidationErrors(false); // Reset validation errors when selecting a team
   };
 
+  // Handle team removal
+  const handleRemoveTeam = (teamId: string) => {
+    // Remove the team
+    removeTeam(teamId);
+    
+    // Update teams in config store
+    const updatedTeams = teams.filter(team => team.id !== teamId);
+    useConfigStore.getState().updateTeams(updatedTeams);
+  };
+
   // Handle create team with validation
   const handleCreateTeam = () => {
     // Show validation errors if there are any issues
@@ -155,11 +170,28 @@ export default function TeamsPage() {
     const hasFunctions = currentTeam.functions.length > 0;
     const hasMembers = currentTeam.members.length > 0;
 
-    // // Only create if all required fields are filled
-    // if (hasName && hasFunctions && hasMembers) {
-    //   createTeam(getCategoryNameById);
-    //   setShowValidationErrors(false);
-    // }
+    // Only create if all required fields are filled
+    if (hasName && hasFunctions && hasMembers) {
+      // Create the team
+      createTeam(getCategoryNameById);
+      
+      // Update teams in config store
+      const newTeam = {
+        id: currentTeam.id || `team-${Date.now()}`,
+        name: currentTeam.name,
+        functions: currentTeam.functions,
+        categories: currentTeam.functions.map(func => {
+          const categoryId = linkedTeamActions.find(action => action.name === func)?.categoryId;
+          return categoryId || func;
+        }),
+        memberIds: currentTeam.members
+      };
+      
+      const updatedTeams = [...teams, newTeam];
+      useConfigStore.getState().updateTeams(updatedTeams);
+      
+      setShowValidationErrors(false);
+    }
   };
 
   // Handle update team with validation
@@ -172,16 +204,70 @@ export default function TeamsPage() {
     const hasFunctions = currentTeam.functions.length > 0;
     const hasMembers = currentTeam.members.length > 0;
 
-    // // Only update if all required fields are filled
-    // if (hasName && hasFunctions && hasMembers) {
-    //   updateTeam(getCategoryNameById);
-    //   setShowValidationErrors(false);
-    // }
+    // Only update if all required fields are filled
+    if (hasName && hasFunctions && hasMembers) {
+      // Update the team
+      updateTeam(getCategoryNameById);
+      
+      // Update teams in config store
+      const updatedTeam = {
+        id: currentTeam.id!,
+        name: currentTeam.name,
+        functions: currentTeam.functions,
+        categories: currentTeam.functions.map(func => {
+          const categoryId = linkedTeamActions.find(action => action.name === func)?.categoryId;
+          return categoryId || func;
+        }),
+        memberIds: currentTeam.members
+      };
+      
+      const updatedTeams = teams.map(team => 
+        team.id === currentTeam.id ? updatedTeam : team
+      );
+      useConfigStore.getState().updateTeams(updatedTeams);
+      
+      setShowValidationErrors(false);
+    }
   };
 
   // Handle validation attempt
   const handleValidationAttempt = () => {
     setShowValidationErrors(true);
+  };
+
+  // Handle next step
+  const handleNext = async () => {
+    try {
+      setIsStoring(true);
+      setStoreError(null);
+
+      // Transform teams data for API
+      const teamsData = teams.map(team => ({
+        name: team.name,
+        functions: team.functions,
+        categories: team.categories,
+        members: team.memberIds.map(id => {
+          const member = processedMembers.find(m => m.id === id);
+          return {
+            id: id,
+            fullName: member?.fullName || "",
+            email: member?.email || "",
+            jobTitle: member?.jobTitle || ""
+          };
+        })
+      }));
+
+      // Store teams in database
+      await storeTeams.mutateAsync(teamsData);
+
+      // Navigate to next step
+      router.push("/dashboard/onboarding/summary");
+    } catch (error) {
+      console.error("Failed to store teams:", error);
+      setStoreError("Failed to save teams. Please try again.");
+    } finally {
+      setIsStoring(false);
+    }
   };
 
   return (
@@ -202,9 +288,18 @@ export default function TeamsPage() {
         totalSteps={6}
         disabledTooltip="Please create at least one team with a name, function, and members"
         onValidationAttempt={handleValidationAttempt}
+        onNext={handleNext}
+        isLoading={isStoring}
       />
 
       <div className="max-w-5xl mx-auto">
+        {storeError && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="size-4" />
+            <AlertDescription>{storeError}</AlertDescription>
+          </Alert>
+        )}
+
         {/* {(showAlert || showValidationErrors) && !isValid() && (
           <Alert variant="destructive" className="mb-4">
             <AlertCircle className="size-4" />
@@ -260,7 +355,7 @@ export default function TeamsPage() {
                 selectedItemId={currentTeam.id}
                 title={`Created ${teams.length} Teams`}
                 onSelectItem={handleSelectTeam}
-                onRemoveItem={removeTeam}
+                onRemoveItem={handleRemoveTeam}
                 showRemoveButton={true}
               />
             ) : (
