@@ -102,7 +102,7 @@ export default function MembersPage() {
     setFormData(tempFormData);
 
     const newMember = {
-      id: selectedMemberId || crypto.randomUUID(),
+      id: selectedMemberId || `temp-member-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       fullName: tempFormData.fullName,
       email: tempFormData.email,
       jobTitle: "",
@@ -198,8 +198,10 @@ export default function MembersPage() {
     try {
       // Store members in config store for use in teams page
       const membersForStore = teamMembers.map(member => ({
+        id: member.id, // Include the temporary ID
         fullName: member.fullName,
-        email: member.email
+        email: member.email,
+        jobTitle: member.jobTitle || ""
       }));
 
       // Update config store with members

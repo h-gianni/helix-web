@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/core/Badge";
 import { useTeamsManagement } from "@/hooks/useTeamsManagement";
 import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
 import type { ActionCategory } from "@/lib/types/api/action";
-import { useConfigStore, useStoreTeams } from "@/store/config-store";
+import { useConfigStore, useStoreTeams, useStoreTeamsWithMapping } from "@/store/config-store";
 import { HeroBadge } from "@/components/ui/core/HeroBadge";
 import { useRouter } from "next/navigation";
 
@@ -42,14 +42,16 @@ export default function TeamsPage() {
   const selectedByCategory = useConfigStore((state) => state.config.selectedActionCategory || []);
   const linkedTeamActions = useConfigStore((state) => state.config.teamActions || []);
   const storeTeams = useStoreTeams();
+  const storeTeamsWithMapping = useStoreTeamsWithMapping();
 
   // Transform teamMembers to ensure they have unique IDs
   const processedMembers = useMemo(() => {
-    return teamMembers.map((member, index) => ({
+    return teamMembers.map((member) => ({
       ...member,
-      id: member.id || `member-${index}`, // Ensure each member has a unique ID
-      name: member.fullName, // Add name field for TeamForm compatibility
-      subtitle: member.email // Add subtitle field for TeamForm compatibility
+      // Preserve the existing ID (including temp IDs) instead of creating a new one
+      id: member.id,
+      name: member.fullName,
+      subtitle: member.email
     }));
   }, [teamMembers]);
 
@@ -81,6 +83,28 @@ export default function TeamsPage() {
       setNoMembersAvailable(!teamMembers || teamMembers.length === 0);
     }
 
+    // Debug logging for team data in localStorage
+    if (actionCategories && teams.length > 0) {
+      console.log('Teams loaded from localStorage:', teams);
+      teams.forEach((team, index) => {
+        console.log(`Team ${index + 1}: "${team.name}" with ${team.memberIds?.length || 0} members`);
+        if (team.memberIds && Array.isArray(team.memberIds)) {
+          team.memberIds.forEach((member: any, memberIndex: number) => {
+            if (typeof member === 'object' && member !== null) {
+              console.log(`  Member ${memberIndex + 1}:`, {
+                id: member.id,
+                fullName: member.fullName,
+                email: member.email,
+                jobTitle: member.jobTitle
+              });
+            } else {
+              console.warn(`  Member ${memberIndex + 1}: Only ID stored (${member}) - missing full data`);
+            }
+          });
+        }
+      });
+    }
+
     // Debug logging
     if (actionCategories) {
       console.log('Available categories:', actionCategories.map((c) => ({ id: c.id, name: c.name })));
@@ -89,7 +113,7 @@ export default function TeamsPage() {
       console.log('Processed members:', processedMembers);
       console.log('Filtered display categories:', displayCategories);
     }
-  }, [isHydrated, teamMembers, actionCategories, selectedByCategory, linkedTeamActions, processedMembers, displayCategories]);
+  }, [isHydrated, teamMembers, actionCategories, selectedByCategory, linkedTeamActions, processedMembers, displayCategories, teams]);
 
   // Render loading state
   if (!isHydrated) {
@@ -134,14 +158,30 @@ export default function TeamsPage() {
             </Badge>
           ))}
         </div>
-        <span className="text-xs">{team.memberIds?.length || 0} members</span>
+        <div className="flex flex-col gap-1">
+          <span className="text-xs font-medium">{team.memberIds?.length || 0} members</span>
+          {team.memberIds && team.memberIds.length > 0 && (
+            <div className="text-xs text-foreground-weak">
+              {team.memberIds.slice(0, 2).map((member: any, index: number) => (
+                <div key={index}>
+                  {typeof member === 'object' ? member.fullName || member.name : member}
+                </div>
+              ))}
+              {team.memberIds.length > 2 && (
+                <div>+{team.memberIds.length - 2} more</div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     ),
     icon: "users" as const,
     // Keep original data
     functions: team.functions,
     categories: team.categories,
-    members: team.memberIds,
+    members: team.memberIds?.map((member: any) => 
+      typeof member === 'object' ? member.id : member
+    ) || [],
   }));
 
   // Handle selecting a team from the list
@@ -175,17 +215,44 @@ export default function TeamsPage() {
       // Create the team
       createTeam(getCategoryNameById);
       
-      // Update teams in config store
+      // Store complete member data (not just IDs) in localStorage
+      const fullMemberData = currentTeam.members.map(memberId => {
+        const member = processedMembers.find(m => m.id === memberId);
+        if (member) {
+          return {
+            id: member.id,                    // Temporary ID from members page
+            fullName: member.fullName,        // Complete name
+            email: member.email,              // Email address
+            jobTitle: member.jobTitle || "",  // Job title with fallback
+            name: member.name,                // Display name for compatibility
+            subtitle: member.subtitle         // Email for display
+          };
+        } else {
+          console.warn(`Member with ID ${memberId} not found in processedMembers`);
+          return {
+            id: memberId,
+            fullName: "",
+            email: "",
+            jobTitle: "",
+            name: "",
+            subtitle: ""
+          };
+        }
+      });
+
+      // Update teams in config store with complete member data
       const newTeam = {
-        id: currentTeam.id || `team-${Date.now()}`,
+        id: currentTeam.id || `team-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         name: currentTeam.name,
         functions: currentTeam.functions,
         categories: currentTeam.functions.map(func => {
           const categoryId = linkedTeamActions.find(action => action.name === func)?.categoryId;
           return categoryId || func;
         }),
-        memberIds: currentTeam.members
+        memberIds: fullMemberData // Store complete member objects
       };
+
+      console.log(`Creating team "${newTeam.name}" with complete member data:`, fullMemberData);
       
       const updatedTeams = [...teams, newTeam];
       useConfigStore.getState().updateTeams(updatedTeams);
@@ -209,7 +276,32 @@ export default function TeamsPage() {
       // Update the team
       updateTeam(getCategoryNameById);
       
-      // Update teams in config store
+      // Store complete member data (not just IDs) in localStorage
+      const fullMemberData = currentTeam.members.map(memberId => {
+        const member = processedMembers.find(m => m.id === memberId);
+        if (member) {
+          return {
+            id: member.id,                    // Temporary ID from members page
+            fullName: member.fullName,        // Complete name
+            email: member.email,              // Email address
+            jobTitle: member.jobTitle || "",  // Job title with fallback
+            name: member.name,                // Display name for compatibility
+            subtitle: member.subtitle         // Email for display
+          };
+        } else {
+          console.warn(`Member with ID ${memberId} not found in processedMembers`);
+          return {
+            id: memberId,
+            fullName: "",
+            email: "",
+            jobTitle: "",
+            name: "",
+            subtitle: ""
+          };
+        }
+      });
+
+      // Update teams in config store with complete member data
       const updatedTeam = {
         id: currentTeam.id!,
         name: currentTeam.name,
@@ -218,8 +310,10 @@ export default function TeamsPage() {
           const categoryId = linkedTeamActions.find(action => action.name === func)?.categoryId;
           return categoryId || func;
         }),
-        memberIds: currentTeam.members
+        memberIds: fullMemberData // Store complete member objects
       };
+
+      console.log(`Updating team "${updatedTeam.name}" with complete member data:`, fullMemberData);
       
       const updatedTeams = teams.map(team => 
         team.id === currentTeam.id ? updatedTeam : team
@@ -240,25 +334,10 @@ export default function TeamsPage() {
     try {
       setIsStoring(true);
       setStoreError(null);
-
-      // Transform teams data for API
-      const teamsData = teams.map(team => ({
-        name: team.name,
-        functions: team.functions,
-        categories: team.categories,
-        members: team.memberIds.map(id => {
-          const member = processedMembers.find(m => m.id === id);
-          return {
-            id: id,
-            fullName: member?.fullName || "",
-            email: member?.email || "",
-            jobTitle: member?.jobTitle || ""
-          };
-        })
-      }));
+      
 
       // Store teams in database
-      await storeTeams.mutateAsync(teamsData);
+      await storeTeamsWithMapping.mutateAsync();
 
       // Navigate to next step
       router.push("/dashboard/onboarding/summary");
@@ -283,10 +362,14 @@ export default function TeamsPage() {
         }
         previousHref="/dashboard/onboarding/members"
         nextHref="/dashboard/onboarding/summary"
-        canContinue={isValid()}
+        canContinue={isValid() && !isStoring}
         currentStep={5}
         totalSteps={6}
-        disabledTooltip="Please create at least one team with a name, function, and members"
+        disabledTooltip={
+          isStoring 
+            ? "Saving teams..." 
+            : "Please create at least one team with a name, function, and members"
+        }
         onValidationAttempt={handleValidationAttempt}
         onNext={handleNext}
         isLoading={isStoring}

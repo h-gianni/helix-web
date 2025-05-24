@@ -988,6 +988,71 @@ export const useStoreTeamActions = () => {
   });
 };
 
+// Add new mutation for storing teams in database
+export const useStoreTeamsInDB = () => {
+  const queryClient = useQueryClient();
+  const configStore = useConfigStore();
+
+  return useMutation({
+    mutationFn: async () => {
+      const teams = configStore.config.teams;
+
+      if (!teams || teams.length === 0) {
+        throw new Error("No teams to store");
+      }
+
+      // Transform teams data for API
+      const teamsData = teams.map(team => ({
+        name: team.name,
+        functions: team.functions,
+        categories: team.categories,
+        members: team.memberIds.map((memberData: any) => {
+          // Handle both old format (string IDs) and new format (full objects)
+          if (typeof memberData === 'string') {
+            // Old format - try to find member in teamMembers
+            const member = configStore.config.teamMembers?.find(m => m.id === memberData);
+            return {
+              fullName: member?.fullName || "",
+              email: member?.email || "",
+              jobTitle: member?.jobTitle || ""
+            };
+          } else {
+            // New format - memberData is already a full object
+            return {
+              fullName: memberData.fullName || "",
+              email: memberData.email || "",
+              jobTitle: memberData.jobTitle || ""
+            };
+          }
+        })
+      }));
+
+      console.log('Teams data:', teamsData);
+
+      // Store in database
+      const response = await apiClient.post<ApiResponse<{ teams: any[] }>>(
+        "/api/org/teams",
+        {
+          teams: teamsData
+        }
+      );
+
+      if (!response.data.success || !response.data.data) {
+        throw new Error(response.data.error || "Failed to store teams in database");
+      }
+
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["teams"] });
+    },
+    onError: (error) => {
+      console.error('Failed to store teams in database:', error);
+    }
+  });
+};
+
 // Add new mutation for storing teams
 export const useStoreTeams = () => {
   const queryClient = useQueryClient();
@@ -1025,6 +1090,92 @@ export const useStoreTeams = () => {
     },
     onError: (error) => {
       console.error('Failed to store teams:', error);
+    }
+  });
+};
+
+// Add new mutation for storing teams with proper teamFunctionId and ownerId
+export const useStoreTeamsWithMapping = () => {
+  const queryClient = useQueryClient();
+  const configStore = useConfigStore();
+
+  return useMutation({
+    mutationFn: async () => {
+      const teams = configStore.config.teams;
+      const teamActions = configStore.config.teamActions || [];
+      const orgId = configStore.config.organization.id;
+
+      if (!teams || teams.length === 0) {
+        throw new Error("No teams to store");
+      }
+
+      if (!orgId) {
+        throw new Error("Organization ID is required");
+      }
+
+      // Get current user to use as ownerId
+      const userResponse = await apiClient.get<ApiResponse<{ id: string; clerkId: string }>>("/user/profile");
+      if (!userResponse.data.success || !userResponse.data.data) {
+        throw new Error("Failed to get user information");
+      }
+      const currentUserId = userResponse.data.data.id;
+
+      // Transform teams data for API with proper mapping
+      const teamsData = teams.map(team => {
+        // Map team functions to get the first function name for teamFunctionId
+        const primaryFunction = team.functions[0]; // Use first function as primary
+        const teamAction = teamActions.find(action => action.name === primaryFunction);
+        
+        return {
+          name: team.name,
+          description: `Team created during onboarding`,
+          teamFunctionId: teamAction?.id || primaryFunction, // Use action ID or function name
+          ownerId: currentUserId, // Set current user as owner
+          functions: team.functions,
+          categories: team.categories,
+          members: team.memberIds.map((memberData: any) => {
+            // Handle both old format (string IDs) and new format (full objects)
+            if (typeof memberData === 'string') {
+              // Old format - try to find member in teamMembers
+              const member = configStore.config.teamMembers?.find(m => m.id === memberData);
+              return {
+                fullName: member?.fullName || "",
+                email: member?.email || "",
+                jobTitle: member?.jobTitle || ""
+              };
+            } else {
+              // New format - memberData is already a full object
+              return {
+                fullName: memberData.fullName || "",
+                email: memberData.email || "",
+                jobTitle: memberData.jobTitle || ""
+              };
+            }
+          })
+        };
+      });
+
+      // Store in database
+      const response = await apiClient.post<ApiResponse<{ teams: any[] }>>(
+        "/org/teams",
+        {
+          teams: teamsData
+        }
+      );
+
+      if (!response.data.success || !response.data.data) {
+        throw new Error(response.data.error || "Failed to store teams in database");
+      }
+
+      return response.data.data;
+    },
+    onSuccess: (data) => {
+      // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["teams"] });
+      queryClient.invalidateQueries({ queryKey: ["org-teams"] });
+    },
+    onError: (error) => {
+      console.error('Failed to store teams with mapping:', error);
     }
   });
 };

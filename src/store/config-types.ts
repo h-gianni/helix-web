@@ -12,7 +12,7 @@ export interface Team {
   name: string;
   functions: string[];
   categories: string[]; // Added categories array to store category IDs
-  memberIds: string[]; // Added memberIds array to store assigned member IDs
+  memberIds: TeamMember[]; // Changed to store full TeamMember objects instead of just IDs
 }
 
 export interface Configuration {
@@ -34,7 +34,7 @@ export interface Configuration {
     name: string;
     functions: string[];
     categories: string[];
-    memberIds: string[]; // Added memberIds array to store assigned member IDs
+    memberIds: TeamMember[]; // Changed to store full TeamMember objects instead of just IDs
   }>;
   teamMembers: TeamMember[];
   selectedActionCategory: string[]; // Add this new field

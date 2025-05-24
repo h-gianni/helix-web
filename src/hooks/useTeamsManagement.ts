@@ -136,6 +136,8 @@ export function useTeamsManagement() {
         };
       });
 
+      console.log('loadedTeams-------------', loadedTeams);
+
       setTeams(loadedTeams);
     } else {
       // If no teams in config, reset teams
