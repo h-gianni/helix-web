@@ -131,19 +131,19 @@ export default function MembersPage() {
 
   // Handle removing member
   const handleRemoveMember = async (id: string) => {
-
-    const storedData = localStorage.getItem('config');
-    console.log('storedData:-------------', storedData);
-
-    return
-
     if (!orgData?.id) return;
 
-    // Update local storage through the store
-    // updateTeamMembers.mutate({
-    //   members: teamMembers.filter((m) => m.id !== id),
-    //   orgId: orgData.id,
-    // });
+    // Filter out the member with the given id
+    const updatedMembers = teamMembers.filter((member) => member.id !== id);
+
+        // Reset form
+        setFormData({ fullName: "", email: "" });
+        setTempFormData({ fullName: "", email: "" });
+        setSelectedMemberId(null);
+        setIsEditing(false);
+    
+    // Update team members in the store
+    updateTeamMembers(updatedMembers);
   };
 
   // Handle editing member
