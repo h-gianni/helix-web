@@ -348,7 +348,7 @@ export default function TeamsPage() {
        
       });
 
-      return;
+   
       
 
       // Store teams in database
