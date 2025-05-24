@@ -16,6 +16,7 @@ export interface ActionCount {
     description: string | null;
     createdAt: string;
     updatedAt: string;
+    isGlobal?: boolean;
     actions: Action[];
   }
 

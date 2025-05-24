@@ -4,14 +4,38 @@ import { persist } from "zustand/middleware";
 import { Configuration } from "./config-types";
 import { apiClient } from "@/lib/api/api-client";
 import type { ApiResponse } from "@/lib/types/api";
+import type { ActionCategory } from "@/lib/types/api/action";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { ActionCategory } from "@/lib/types/api/action";
 import { useActions, MANDATORY_CATEGORIES } from "@/store/action-store";
 import { useFavoritesStore, useToggleFavorite, useFavorites } from "@/store/favorites-store";
 
+// Add type definitions at the top
+interface TeamAction {
+  id: string;
+  name: string;
+  description: string;
+  categoryId?: string;  // Make categoryId optional
+  isEnabled: boolean;
+}
+
 // Update Configuration type to include actions
 interface ExtendedConfiguration extends Configuration {
+  organization: {
+    name: string;
+    siteDomain: string;
+    id?: string;
+  };
+  activities: {
+    selected: string[];
+    selectedByCategory: Record<string, string[]>;
+    favorites: Record<string, string[]>;
+    hidden: Record<string, string[]>;
+  };
+  teams: any[];
+  teamActions: TeamAction[];
+  teamMembers: any[];
+  selectedActionCategory: string[];
   actions: ActionCategory[];
 }
 
@@ -30,24 +54,18 @@ const defaultConfig: ExtendedConfiguration = {
   teamActions: [],
   teamMembers: [],
   selectedActionCategory: [],
-  actions: [] // Add default empty actions array
+  actions: []
 };
 
 // Helper function to extract unique category IDs from team actions
-function extractCategoryIds(teamActions: {id: string;
-  name: string;
-  description: string;
-  categoryId?: string;
-  isEnabled: boolean;}[]): string[] {
+function extractCategoryIds(teamActions: TeamAction[]): string[] {
   if (!Array.isArray(teamActions)) return [];
   
   // Create a Set to ensure uniqueness
   const categoryIdsSet = new Set<string>();
   
   teamActions.forEach(action => {
-    if (action && action.categoryId && typeof action.categoryId === 'string') {
-      categoryIdsSet.add(action.categoryId);
-    } else if (action && action.categoryId && typeof action.categoryId === 'object' && action.categoryId) {
+    if (action && action.categoryId) {
       categoryIdsSet.add(action.categoryId);
     }
   });
@@ -175,17 +193,16 @@ export const useUpdateTeamActions = () => {
   const queryClient = useQueryClient();
 
   const updateTeamActionsInStore = useConfigStore((state) => state.updateTeamActions);
-  //const globalFunctions = useConfigStore((state) => state.config.globalFunctions || []);
   const globalFunctions = useConfigStore((state) => state.config.activities.selected || []);
 
   return useMutation({
-    mutationFn: async ({ functions, orgId }: { functions: { id: string; name: string; description: string; isEnabled: boolean }[], orgId: string }) => {
+    mutationFn: async ({ functions, orgId }: { functions: TeamAction[], orgId: string }) => {
       // First update local store
       updateTeamActionsInStore(functions);
 
       // Get all actions with their categories
       const actionsResponse = await apiClient.get<ApiResponse<{ actions: any[] }>>(
-        `/org/actions?orgId=${orgId}`
+        `/org/functionactions?orgId=${orgId}`
       );
 
       if (!actionsResponse.data.success || !actionsResponse.data.data) {
@@ -198,10 +215,10 @@ export const useUpdateTeamActions = () => {
       const actionMap = new Map<string, { actionId: string; status: string }>();
 
       // Add global actions
-      globalFunctions.forEach(func => {
-        actionMap.set(func.id, {
-          actionId: func.id,
-          status: func.isEnabled ? "ACTIVE" : "ARCHIVED"
+      globalFunctions.forEach(actionId => {
+        actionMap.set(actionId, {
+          actionId,
+          status: "ACTIVE"
         });
       });
 
@@ -218,20 +235,21 @@ export const useUpdateTeamActions = () => {
 
       // Then push to database
       const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
-        "/org/actions",
+        "/org/functionactions",
         {
           orgId,
           actions: uniqueActions
         }
       );
 
-      if (!response.data.success) {
+      if (!response.data.success || !response.data.data) {
         throw new Error(response.data.error || "Failed to update function actions");
       }
       return response.data.data;
     },
     onSuccess: (data) => {
       // Invalidate relevant queries
+      queryClient.invalidateQueries({ queryKey: ["function-actions"] });
       queryClient.invalidateQueries({ queryKey: ["org-actions"] });
     },
   });
@@ -268,8 +286,8 @@ export const useTeamActions = (orgId: string) => {
   return useQuery({
     queryKey: ["team-actions", orgId],
     queryFn: async () => {
-      const response = await apiClient.get<ApiResponse<{ actions: any[] }>>(
-        `/org/team-actions/?orgId=${orgId}`
+      const response = await apiClient.get<ApiResponse<{ actions: TeamAction[] }>>(
+        `/org/functionactions?orgId=${orgId}`
       );
       if (!response.data.success) {
         throw new Error(response.data.error || "Failed to fetch team actions");
@@ -483,6 +501,7 @@ interface ActionSelectionOptions {
   minRequired?: number;
   autoSelect?: boolean;
   showMandatoryOnly?: boolean;
+  filterGlobal?: boolean;
 }
 
 // Update ConfigStore interface with ExtendedConfiguration
@@ -491,16 +510,16 @@ export interface ConfigStore {
   setHydrated: (state: boolean) => void;
   config: ExtendedConfiguration;
   setConfig: (config: ExtendedConfiguration) => void;
-  updateOrganization: (organization: Configuration["organization"]) => void;
-  updateGlobalFunctions: (functions: Configuration["globalFunctions"]) => void;
-  updateTeamActions: (functions: Configuration["teamActions"]) => void;
+  updateOrganization: (organization: ExtendedConfiguration["organization"]) => void;
+  updateGlobalFunctions: (functions: any[]) => void;
+  updateTeamActions: (teamActions: TeamAction[]) => void;
   updateActivities: (activities: string[]) => void;
   updateActivitiesByCategory: (categoryId: string, activities: string[]) => void;
   updateFavorites: (category: string, activities: string[]) => void;
   updateHidden: (category: string, activities: string[]) => void;
-  updateTeams: (teams: Configuration["teams"]) => void;
-  updateTeamMembers: (teamMembers: Configuration["teamMembers"]) => void;
-  updateSelectedActionCategory: (categoryIds: string[]) => void; // Add this new function
+  updateTeams: (teams: ExtendedConfiguration["teams"]) => void;
+  updateTeamMembers: (teamMembers: ExtendedConfiguration["teamMembers"]) => void;
+  updateSelectedActionCategory: (categoryIds: string[]) => void;
   syncSelectedActivitiesWithGlobalFunctions: () => Promise<void>;
   actionSelection: ActionSelectionState;
   setHasPreselected: (value: boolean) => void;
@@ -531,7 +550,7 @@ export const useConfigStore = create<ConfigStore>()(
           globalFunctions: functions,
         },
       })),
-      updateTeamActions: (teamActions) => {
+      updateTeamActions: (teamActions: TeamAction[]) => {
         console.log('Updating team actions:', teamActions);
         if(!Array.isArray(teamActions)) {
           console.warn('Expected teamActions to be an array, got:', teamActions);
@@ -581,6 +600,11 @@ export const useConfigStore = create<ConfigStore>()(
           
           // Update the category-specific selection
           selectedByCategory[categoryId] = activities;
+
+          console.log('Updating activities by category:', {
+            categoryId,
+            activities
+          });
 
           // Rebuild the global selected activities from all categories
           const allSelected = new Set<string>();
@@ -858,16 +882,32 @@ export function useActionsSelection(options: ActionSelectionOptions) {
   const toggleFavorite = useToggleFavorite();
   const isFavorite = useFavoritesStore(state => state.isFavorite);
 
-  // Filter categories based on showMandatoryOnly flag
+  // Filter categories based on showMandatoryOnly and filterGlobal flags
   useEffect(() => {
     if (actionCategories && actionCategories.length > 0) {
-      const filteredCats = options.showMandatoryOnly
-        ? actionCategories.filter(category => MANDATORY_CATEGORIES.includes(category.name))
-        : actionCategories.filter(category => !MANDATORY_CATEGORIES.includes(category.name));
+      let filteredCats = actionCategories;
+      
+      // Filter by mandatory if needed
+      if (options.showMandatoryOnly) {
+        filteredCats = filteredCats.filter(category => 
+          MANDATORY_CATEGORIES.includes(category.name)
+        );
+      } else {
+        filteredCats = filteredCats.filter(category => 
+          !MANDATORY_CATEGORIES.includes(category.name)
+        );
+      }
+
+      // Filter out global categories if needed
+      if (options.filterGlobal) {
+        filteredCats = filteredCats.filter(category => 
+          category.isGlobal === false
+        );
+      }
       
       useConfigStore.getState().setFilteredCategories(filteredCats);
     }
-  }, [actionCategories, options.showMandatoryOnly]);
+  }, [actionCategories, options.showMandatoryOnly, options.filterGlobal]);
 
   // Handle auto-selection
   useEffect(() => {
@@ -897,13 +937,8 @@ export const useStoreTeamActions = () => {
   const configStore = useConfigStore();
 
   return useMutation({
-    mutationFn: async (teamActions: { id: string; name: string; description: string; categoryId: string; isEnabled: boolean }[]) => {
+    mutationFn: async (teamActions: TeamAction[]) => {
       const orgId = configStore.config.organization.id;
-
-      console.log('Starting team actions store with:', {
-        teamActions,
-        orgId
-      });
 
       if (!orgId) {
         throw new Error("Organization ID is required");
@@ -919,14 +954,6 @@ export const useStoreTeamActions = () => {
         status: action.isEnabled ? "ACTIVE" : "ARCHIVED"
       }));
 
-      console.log('Sending request to API:', {
-        url: '/org/functionactions',
-        body: {
-          orgId,
-          actions
-        }
-      });
-
       // Store in database
       const response = await apiClient.post<ApiResponse<{ actions: any[] }>>(
         "/org/functionactions",
@@ -936,22 +963,13 @@ export const useStoreTeamActions = () => {
         }
       );
 
-      console.log('API Response:', {
-        success: response.data.success,
-        data: response.data.data,
-        error: response.data.error
-      });
-
       if (!response.data.success || !response.data.data) {
-        console.error('API Error:', response.data.error);
         throw new Error(response.data.error || "Failed to store team actions");
       }
 
       return response.data.data;
     },
     onSuccess: (data, variables) => {
-      console.log('Mutation succeeded:', data);
-      
       if (!data?.actions) {
         console.warn('No actions in response data');
         return;
@@ -961,7 +979,7 @@ export const useStoreTeamActions = () => {
       configStore.updateTeamActions(variables);
 
       // Invalidate relevant queries
-      queryClient.invalidateQueries({ queryKey: ["team-actions"] });
+      queryClient.invalidateQueries({ queryKey: ["function-actions"] });
       queryClient.invalidateQueries({ queryKey: ["org-actions"] });
     },
     onError: (error) => {

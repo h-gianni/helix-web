@@ -3,11 +3,12 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useConfigStore, useStoreTeamActions, useActionsSelection } from "@/store/config-store";
+import { useOrganizationData } from "@/store/config-store";
+import { useQuery } from "@tanstack/react-query";
 import PageNavigator from "../components/PageNavigator";
 import ActionsSelector from "../components/ActionsSelector";
-import { useConfigStore, useStoreTeamActions, useActionsSelection } from "@/store/config-store";
-import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api/api-client";
 import type { ApiResponse } from "@/lib/types/api";
 
@@ -45,19 +46,19 @@ export default function FunctionActionsPage() {
 
   // Fetch team actions from database
   const { data: dbTeamActions, isLoading: isLoadingDbActions } = useQuery({
-    queryKey: ['team-actions', orgConfig.id],
+    queryKey: ['function-actions', orgConfig.id],
     queryFn: async () => {
       if (!orgConfig.id) return null;
       
       try {
-        const response = await apiClient.get<ApiResponse<{ actions: TeamAction[] }>>(`/org/team-actions?orgId=${orgConfig.id}`);
+        const response = await apiClient.get<ApiResponse<{ actions: TeamAction[] }>>(`/org/functionactions?orgId=${orgConfig.id}`);
         if (!response.data.success || !response.data.data) {
-          console.error('Failed to fetch team actions:', response.data.error);
+          console.error('Failed to fetch function actions:', response.data.error);
           return null;
         }
         return response.data.data.actions;
       } catch (error) {
-        console.error('Error fetching team actions:', error);
+        console.error('Error fetching function actions:', error);
         return null;
       }
     },
@@ -66,14 +67,19 @@ export default function FunctionActionsPage() {
     staleTime: 30000 // Consider data fresh for 30 seconds
   });
 
-  // Use our custom hook for actions selection
+  // Use the action selection functionality from config store
   const actionsSelection = useActionsSelection({
     minRequired: 0,
     autoSelect: false,
-    showMandatoryOnly: false
+    showMandatoryOnly: false,
+    filterGlobal: true  // Add this to filter out global categories
   });
 
   const {
+    selectedActivities,
+    selectedByCategory,
+    updateActivities,
+    updateActivitiesByCategory,
     filteredCategories: functionCategories,
     isLoading,
     isFavorite,
@@ -82,18 +88,15 @@ export default function FunctionActionsPage() {
     setHasInteracted,
   } = actionsSelection;
 
+  // Use our custom hooks
+  const teamMembers = useConfigStore((state) => state.config.teamMembers || []);
+  const updateTeamMembers = useConfigStore((state) => state.updateTeamMembers);
+
   // Initialize selections from store and database - ONCE only
   useEffect(() => {
     if (!functionCategories.length || isLoadingDbActions) {
       return;
     }
-
-    console.log('Initializing selections from sources:', {
-      teamActions,
-      dbTeamActions,
-      functionCategories,
-      currentSelections: localSelectedActivities
-    });
 
     // If we already have selections and we're not in initial load, preserve them
     if (localSelectedActivities.length > 0 && initialized.current) {
@@ -101,32 +104,69 @@ export default function FunctionActionsPage() {
       return;
     }
 
-    // Combine actions from both sources
-    const storedActions = teamActions.map(action => action.id);
-    const dbActions = dbTeamActions?.map(action => action.actionId) || [];
-    const allActions = [...new Set([...storedActions, ...dbActions])];
+    
 
-    if (allActions.length > 0) {
-      console.log('Setting initial selections:', allActions);
-      setLocalSelectedActivities(allActions);
+    // Get team actions from Zustand store
+    const storedTeamActions = teamActions;
+    
+    // If we have stored actions in Zustand, use those
+    if (storedTeamActions && storedTeamActions.length > 0) {
+      const storedActionIds = storedTeamActions.map(action => action.id);
+      console.log('Setting selections from Zustand store:', storedActionIds);
+      setLocalSelectedActivities(storedActionIds);
 
-      // Organize by category
+      // Organize by category and update store
       const byCategory: Record<string, string[]> = {};
       functionCategories.forEach(category => {
-        const categoryActions = allActions.filter(actionId =>
+        console.log('Category:', category);
+        const categoryActions = storedActionIds.filter(actionId =>
           category.actions.some(action => action.id === actionId)
         );
+        console.log('Category actions:', categoryActions);
         if (categoryActions.length > 0) {
           byCategory[category.id] = categoryActions;
+          // Update store for this category
+          updateActivitiesByCategory(category.id, categoryActions);
         }
       });
 
       setLocalSelectedByCategory(byCategory);
       setHasInteracted(true);
+    } 
+    // If no store data, check DB data
+    else if (dbTeamActions && dbTeamActions.length > 0) {
+      const dbActions = dbTeamActions.map(action => action.actionId);
+      console.log('Setting selections from DB:', dbActions);
+      setLocalSelectedActivities(dbActions);
+
+      // Organize by category and update store
+      const byCategory: Record<string, string[]> = {};
+      functionCategories.forEach(category => {
+        const categoryActions = dbActions.filter(actionId =>
+          category.actions.some(action => action.id === actionId)
+        );
+        if (categoryActions.length > 0) {
+          byCategory[category.id] = categoryActions;
+          // Update store for this category
+          updateActivitiesByCategory(category.id, categoryActions);
+        }
+      });
+
+      // Update global activities in store
+      updateActivities(dbActions);
+      setLocalSelectedByCategory(byCategory);
+      setHasInteracted(true);
+    } 
+    // If no data found anywhere, initialize with empty selections
+    else {
+      console.log('No stored actions found, initializing with empty selections');
+      setLocalSelectedActivities([]);
+      setLocalSelectedByCategory({});
+      setHasInteracted(false);
     }
 
     initialized.current = true;
-  }, [teamActions, dbTeamActions, functionCategories, isLoadingDbActions, setHasInteracted, localSelectedActivities]);
+  }, [teamActions, dbTeamActions, functionCategories, isLoadingDbActions, setHasInteracted, updateActivities, updateActivitiesByCategory]);
 
   // Handle local selection updates - with memoized callbacks
   const handleLocalUpdateActivities = useCallback((activities: string[]) => {

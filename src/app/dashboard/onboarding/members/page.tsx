@@ -108,23 +108,19 @@ export default function MembersPage() {
       jobTitle: "",
     };
 
-    // Update local storage through the store
-    // updateTeamMembers.mutate({
-    //   members: isEditing
-    //     ? teamMembers.map((m) =>
-    //         m.id === selectedMemberId ? newMember : m
-    //       )
-    //     : [...teamMembers, newMember],
-    //   orgId: orgData.id,
-    // });
+    let updatedMembers;
+    if (isEditing) {
+      // Update existing member
+      updatedMembers = teamMembers.map((member) =>
+        member.id === selectedMemberId ? newMember : member
+      );
+    } else {
+      // Add new member
+      updatedMembers = [...teamMembers, newMember];
+    }
 
-    console.log('newMember:-------------', [...teamMembers, newMember]);
-
-  
-
-    updateTeamMembers([...teamMembers, newMember]);
-
-    
+    // Update team members
+    updateTeamMembers(updatedMembers);
 
     // Reset form
     setFormData({ fullName: "", email: "" });
