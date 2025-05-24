@@ -106,7 +106,10 @@ export default function TeamsPage() {
 
   // Helper function to get action count
   const getActionCountForCategory = (categoryId: string): number => {
-    return selectedByCategory?.length || 0;
+    // Count the number of enabled actions in this category
+    return linkedTeamActions.filter(action => 
+      action.categoryId === categoryId && action.isEnabled
+    ).length;
   };
 
   // Transform teams for TeamList component
