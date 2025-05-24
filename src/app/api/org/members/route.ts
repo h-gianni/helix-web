@@ -85,77 +85,27 @@ export async function POST(request: Request) {
 
     // Create all members in a transaction
     const createdMembers = await prisma.$transaction(async (tx) => {
-      // First, check if a default team function exists
-      let teamFunction = await tx.teamFunction.findFirst({
-        where: {
-          name: "Default"
-        }
+      // Get the AppUser for the authenticated user
+      const appUser = await tx.appUser.findUnique({
+        where: { clerkId: userId }
       });
 
-      // If no default team function exists, create one
-      if (!teamFunction) {
-        teamFunction = await tx.teamFunction.create({
-          data: {
-            name: "Default",
-            description: "Default team function created during member onboarding"
-          }
-        });
+      if (!appUser) {
+        throw new Error("AppUser not found");
       }
 
-      // Check if a team exists for this org
-      let team = await tx.gTeam.findFirst({
-        where: {
-          id: orgId
-        }
-      });
-
-      // If no team exists, create a default team
-      if (!team) {
-        team = await tx.gTeam.create({
-          data: {
-            id: orgId,
-            name: "Default Team",
-            description: "Default team created during member onboarding",
-            teamFunctionId: teamFunction.id,
-            ownerId: userId
-          }
-        });
-      }
-
-      // Now create the members
+      // Create the team members
       return Promise.all(
         members.map((member) =>
           tx.teamMember.create({
             data: {
-              team: {
-                connect: {
-                  id: team.id
-                }
-              },
-              title: member.title || "",
-              isAdmin: member.isAdmin || false,
-              firstName: member.firstName,
-              lastName: member.lastName,
-              photoUrl: member.photoUrl,
-              joinedDate: member.joinedDate || new Date(),
-              jobGradeId: member.jobGradeId,
-              status: member.status || "ACTIVE",
-              user: {
-                create: {
-                  email: member.email,
-                  name: `${member.firstName} ${member.lastName}`.trim()
-                }
-              }
-            },
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  email: true,
-                  name: true,
-                },
-              },
-            },
+              userId: appUser.id, // The authenticated user who is creating the members
+              teamId: orgId,
+              firstName: member.fullName,
+              // lastName: member.fullName.split(' ').slice(1).join(' '),
+              status: "ACTIVE",
+              isAdmin: false
+            }
           })
         )
       );

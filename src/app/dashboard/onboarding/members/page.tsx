@@ -195,8 +195,21 @@ export default function MembersPage() {
   const handleNextClick = async () => {
     if (!orgData?.id) return;
 
-    // Just navigate to the teams page
-    router.push('/dashboard/onboarding/teams');
+    try {
+      // Store members in config store for use in teams page
+      const membersForStore = teamMembers.map(member => ({
+        fullName: member.fullName,
+        email: member.email
+      }));
+
+      // Update config store with members
+      updateTeamMembers(membersForStore);
+
+      // Navigate to the teams page where teams will be created and members assigned
+      router.push('/dashboard/onboarding/teams');
+    } catch (error) {
+      console.error('Failed to process members:', error);
+    }
   };
 
   return (

@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { AlertCircle, Users } from "lucide-react";
 import PageNavigator from "../components/PageNavigator";
 import { Alert, AlertDescription } from "@/components/ui/core/Alert";
@@ -29,18 +29,24 @@ interface TeamListItem {
 
 export default function TeamsPage() {
   const [showValidationErrors, setShowValidationErrors] = useState(false);
+  const [noMembersAvailable, setNoMembersAvailable] = useState(false);
 
-  // Get action categories to map IDs to names
+  // Get all hooks at the top level
   const { data: actionCategories, isLoading: isLoadingActions } = useActions();
+  const teamMembers = useConfigStore((state) => state.config.teamMembers || []);
+  const isHydrated = useConfigStore((state) => state.isHydrated);
+  const selectedByCategory = useConfigStore((state) => state.config.selectedActionCategory || []);
+  const linkedTeamActions = useConfigStore((state) => state.config.teamActions || []);
 
-  // Get the selected actions from config store
-  const selectedByCategory = useConfigStore(
-    (state) => state.config.selectedActionCategory || []
-  );
-
-  const linkedTeamActions = useConfigStore(
-    (state) => state.config.teamActions || []
-  );
+  // Transform teamMembers to ensure they have unique IDs
+  const processedMembers = useMemo(() => {
+    return teamMembers.map((member, index) => ({
+      ...member,
+      id: member.id || `member-${index}`, // Ensure each member has a unique ID
+      name: member.fullName, // Add name field for TeamForm compatibility
+      subtitle: member.email // Add subtitle field for TeamForm compatibility
+    }));
+  }, [teamMembers]);
 
   const {
     teams,
@@ -63,6 +69,33 @@ export default function TeamsPage() {
     cancelEdit,
   } = useTeamsManagement();
 
+  // Combine all effects into one
+  useEffect(() => {
+    // Check for members data once store is hydrated
+    if (isHydrated) {
+      setNoMembersAvailable(!teamMembers || teamMembers.length === 0);
+    }
+
+    // Debug logging
+    if (actionCategories) {
+      console.log('Available categories:', actionCategories.map((c) => ({ id: c.id, name: c.name })));
+      console.log('Selected actions by category:', selectedByCategory);
+      console.log('Linked team actions:', linkedTeamActions);
+      console.log('Processed members:', processedMembers);
+      console.log('Filtered display categories:', displayCategories);
+    }
+  }, [isHydrated, teamMembers, actionCategories, selectedByCategory, linkedTeamActions, processedMembers, displayCategories]);
+
+  // Render loading state
+  if (!isHydrated) {
+    return <LoadingState />;
+  }
+
+  // Render no members state
+  if (noMembersAvailable) {
+    return <NoMembersState />;
+  }
+
   // Helper function to get category name by ID
   const getCategoryNameById = (categoryId: string): string | undefined => {
     if (!actionCategories) return categoryId;
@@ -70,36 +103,6 @@ export default function TeamsPage() {
     const category = actionCategories.find((cat) => cat.id === categoryId);
     return category ? category.name : categoryId;
   };
-
-  // Filter categories to only include those with selected actions and not mandatory categories
-  // const filteredDisplayCategories = Object.keys(selectedByCategory)
-  //   .filter((categoryId) => {
-  //     // Only include categories with selected actions
-  //     if (!selectedByCategory.length) return false;
-
-  //     // Get the category name
-  //     const categoryName = getCategoryNameById(categoryId);
-     
-
-  //     // Exclude mandatory categories
-  //     if (MANDATORY_CATEGORIES.includes(categoryName || "")) return false;
-
-  //     // Find the category in actionCategories
-  //     const category = actionCategories?.find(c => c.id === categoryId);
-      
-  //     // Only include core categories (team action categories)
-  //     return category && !MANDATORY_CATEGORIES.includes(category.name);
-  //   });
-
-  // Store category information for reference
-  // const categoryInfo = filteredDisplayCategories.reduce((acc, categoryId) => {
-  //   const category = actionCategories?.find(c => c.id === categoryId);
-  //   acc[categoryId] = {
-  //     name: category?.name || 'Unknown Category',
-  //     actions: selectedByCategory[categoryId] || []
-  //   };
-  //   return acc;
-  // }, {} as Record<string, { name: string; actions: string[] }>);
 
   // Helper function to get action count
   const getActionCountForCategory = (categoryId: string): number => {
@@ -178,21 +181,6 @@ export default function TeamsPage() {
     setShowValidationErrors(true);
   };
 
-  // Log available categories for debugging
-  useEffect(() => {
-
-    console.log('linkedTeamActions:', linkedTeamActions);
-
-    if (actionCategories) {
-      console.log(
-        "Available categories:",
-        actionCategories.map((c) => ({ id: c.id, name: c.name }))
-      );
-      console.log("Selected actions by category:", selectedByCategory);
-      console.log("Filtered display categories:", selectedByCategory);
-    }
-  }, [actionCategories, selectedByCategory, displayCategories]);
-
   return (
     <div>
       <PageNavigator
@@ -249,7 +237,7 @@ export default function TeamsPage() {
                   : {}
               }
               isEditing={currentTeam.id !== null}
-              members={members}
+              members={processedMembers}
               displayCategories={selectedByCategory}
               onTeamNameChange={setTeamName}
               onFunctionToggle={handleFunctionToggle}
@@ -291,6 +279,64 @@ export default function TeamsPage() {
             )}
           </div>
         </Card>
+      </div>
+    </div>
+  );
+}
+
+// Separate components for different states
+function LoadingState() {
+  return (
+    <div>
+      <PageNavigator
+        title="Create Teams"
+        description={
+          <>
+            Create one or more teams and assign functions and members to each
+            team. <br />
+            Teams will be evaluated based on their assigned functions.
+          </>
+        }
+        previousHref="/dashboard/onboarding/members"
+        nextHref="/dashboard/onboarding/summary"
+        canContinue={false}
+        currentStep={5}
+        totalSteps={6}
+      />
+      <div className="max-w-5xl mx-auto">
+        <Card className="w-full p-4">
+          Loading...
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function NoMembersState() {
+  return (
+    <div>
+      <PageNavigator
+        title="Create Teams"
+        description={
+          <>
+            Create one or more teams and assign functions and members to each
+            team. <br />
+            Teams will be evaluated based on their assigned functions.
+          </>
+        }
+        previousHref="/dashboard/onboarding/members"
+        nextHref="/dashboard/onboarding/summary"
+        canContinue={false}
+        currentStep={5}
+        totalSteps={6}
+      />
+      <div className="max-w-5xl mx-auto">
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="size-4" />
+          <AlertDescription>
+            No team members available. Please go back and add team members first.
+          </AlertDescription>
+        </Alert>
       </div>
     </div>
   );
